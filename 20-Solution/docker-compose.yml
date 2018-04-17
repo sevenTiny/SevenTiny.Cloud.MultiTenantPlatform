@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  seventiny.cloud.multitenantplatform.web:
+    image: seventiny.cloud.multitenantplatform.web
+    build:
+      context: ./../10-Code/SevenTiny.Cloud.MultiTenantPlatform.Web
+      dockerfile: Dockerfile

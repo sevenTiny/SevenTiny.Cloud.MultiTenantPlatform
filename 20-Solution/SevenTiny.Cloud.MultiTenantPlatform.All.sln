@@ -3,9 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27004.2008
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenTiny.Cloud.MultiTenantPlatform.Model", "SevenTiny.Cloud.MultiTenantPlatform.Model\SevenTiny.Cloud.MultiTenantPlatform.Model.csproj", "{51F4A1E7-8F04-41CA-90D8-18FA8C241C93}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{96B1B369-C366-4046-95BD-478CB3145B74}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenantPlatform.Model", "..\10-Code\SevenTiny.Cloud.MultiTenantPlatform.Model\SevenTiny.Cloud.MultiTenantPlatform.Model.csproj", "{B94A691D-463D-4218-97A4-1DA473CB5A09}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenTiny.Cloud.MultiTenantPlatform.Web", "..\10-Code\SevenTiny.Cloud.MultiTenantPlatform.Web\SevenTiny.Cloud.MultiTenantPlatform.Web.csproj", "{C286A3EE-6C80-4753-9151-16519274AB58}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{A1214FC0-3BF5-44F7-A01F-2F4D4B9D862D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,10 +17,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{51F4A1E7-8F04-41CA-90D8-18FA8C241C93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{51F4A1E7-8F04-41CA-90D8-18FA8C241C93}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{51F4A1E7-8F04-41CA-90D8-18FA8C241C93}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{51F4A1E7-8F04-41CA-90D8-18FA8C241C93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B94A691D-463D-4218-97A4-1DA473CB5A09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B94A691D-463D-4218-97A4-1DA473CB5A09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B94A691D-463D-4218-97A4-1DA473CB5A09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B94A691D-463D-4218-97A4-1DA473CB5A09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C286A3EE-6C80-4753-9151-16519274AB58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C286A3EE-6C80-4753-9151-16519274AB58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C286A3EE-6C80-4753-9151-16519274AB58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C286A3EE-6C80-4753-9151-16519274AB58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1214FC0-3BF5-44F7-A01F-2F4D4B9D862D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1214FC0-3BF5-44F7-A01F-2F4D4B9D862D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1214FC0-3BF5-44F7-A01F-2F4D4B9D862D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1214FC0-3BF5-44F7-A01F-2F4D4B9D862D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
