@@ -5,9 +5,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Model.Entities
     /// <summary>
     /// MetaData
     /// </summary>
-    public class MetaObject
+    public class Data
     {
-        public MetaObject(string dataKey, DataType dataType, object dataValue)
+        public Data(string dataKey, DataType dataType, object dataValue)
         {
             this.DataKey = dataKey;
             this.DataType = dataType;

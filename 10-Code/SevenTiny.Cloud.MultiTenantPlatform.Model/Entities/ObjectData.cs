@@ -1,45 +1,67 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Model.Entities
 {
+    /// <summary>
+    /// query object data
+    /// </summary>
     public class ObjectData
     {
-        public MetaObject[] MetaObjects { get; set; }
+        /// <summary>
+        /// data id
+        /// </summary>
+        public string Id { get; set; }
+        /// <summary>
+        /// tenant id,means the data belong to the tenant
+        /// </summary>
+        public int TenantId { get; set; }
+        /// <summary>
+        /// user id,means the data belong to the user
+        /// </summary>
+        public int UserId { get; set; }
+        /// <summary>
+        /// meta object data(key,type,value)
+        /// </summary>
+        public Data[] MetaObjects { get; set; }
+
         public string MetaDataName { get; set; }
-        public string MetaDataId { get; set; }
+        public Guid MetaDataId { get; set; }
         /// <summary>
         /// get MetaObject by propertyName which same as DataKey
         /// </summary>
-        /// <param name="propertyName"></param>
+        /// <param name="fieldKey"></param>
         /// <returns></returns>
-        public object this[string propertyName]
-            => this.MetaObjectDictionary.ContainsKey(propertyName) ? this.MetaObjectDictionary[propertyName] : null;
-        private Dictionary<string, MetaObject> _MetaObjectDictionary { get; set; }
-        public Dictionary<string, MetaObject> MetaObjectDictionary
+        public object this[string fieldKey]
+            => this.MetaFields.ContainsKey(fieldKey) ? this.MetaFields[fieldKey].DataValue : null;
+
+        private Dictionary<string, Data> _MetaFields { get; set; }
+        /// <summary>
+        /// MetaObjects Dictionary type
+        /// </summary>
+        public Dictionary<string, Data> MetaFields
         {
             get
             {
-                if (this._MetaObjectDictionary == null)
+                if (this._MetaFields == null)
                 {
-                    this._MetaObjectDictionary = this.MetaObjects.ToDictionary(t => t.DataKey, v => v);
+                    this._MetaFields = this.MetaObjects.ToDictionary(t => t.DataKey, v => v);
                 }
-                return this._MetaObjectDictionary;
+                return this._MetaFields;
             }
         }
-        public void Update(string propertyName, object metaDataValue)
-        {
-            if (this.MetaObjectDictionary.ContainsKey(propertyName))
-            {
-                this.MetaObjectDictionary[propertyName].DataValue = metaDataValue;
-            }
-        }
-        public void Updata(string propertyName, MetaObject metaObject)
-        {
-            if (this.MetaObjectDictionary.ContainsKey(propertyName))
-            {
-                this.MetaObjectDictionary[propertyName] = metaObject;
-            }
-        }
+
+        public int FieldsCount => MetaObjects.Count();
+        /// <summary>
+        /// Create by which user(value is user id)
+        /// </summary>
+        public int CreateBy { get; set; }
+        public DateTimeOffset CreateTime { get; set; }
+        /// <summary>
+        /// Modify by which user(value is user id)
+        /// </summary>
+        public int ModifyBy { get; set; }
+        public DateTimeOffset ModifyTime { get; set; }
     }
 }
