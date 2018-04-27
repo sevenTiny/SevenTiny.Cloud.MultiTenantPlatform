@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <Folder Include="Arguments\" />
+    <Folder Include="DTO\" />
   </ItemGroup>
 
 </Project>
