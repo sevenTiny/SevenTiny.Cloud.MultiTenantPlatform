@@ -7,7 +7,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Model.Entities
     /// <summary>
     /// query object data
     /// </summary>
-    public class ObjectData
+    public class ObjectData: EntityInfo
     {
         /// <summary>
         /// data id

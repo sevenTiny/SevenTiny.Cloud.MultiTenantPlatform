@@ -3,7 +3,7 @@ using System;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Model.Entities
 {
-    public class MetaField
+    public class MetaField: EntityInfo
     {
         public int EntityId { get; set; }
         public int Id { get; set; }
