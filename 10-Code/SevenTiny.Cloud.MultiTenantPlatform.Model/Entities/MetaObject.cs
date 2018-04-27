@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Model.Entities
 {
-    public class MetaData
+    public class MetaObject:EntityInfo
     {
 
     }

@@ -1,11 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using SevenTiny.Cloud.MultiTenantPlatform.Model.Enums;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Model.Entities
 {
-    public class StandardInterface: EntityInfo
+    public class StandardInterface : EntityInfo
     {
-        public int Id { get; set; }
+        public InterfaceType InterfaceType { get; set; }
+        public int SearchFormId { get; set; }
+        public int TableListId { get; set; }
+        public int FormId { get; set; }
+        /// <summary>
+        /// data source of enume id
+        /// </summary>
+        public int EnumDataSourceId { get; set; }
     }
 }

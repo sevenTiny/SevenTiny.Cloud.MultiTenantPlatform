@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenant
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenantPlatform.Web", "..\10-Code\SevenTiny.Cloud.MultiTenantPlatform.Web\SevenTiny.Cloud.MultiTenantPlatform.Web.csproj", "{39B607C9-A7CB-46FB-9832-E4ED649149BB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenTiny.Cloud.MultiTenantPlatform.DataApi", "..\10-Code\SevenTiny.Cloud.MultiTenantPlatform.DataApi\SevenTiny.Cloud.MultiTenantPlatform.DataApi.csproj", "{95AC3ADD-FF94-4753-930B-B925A3F3F325}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenantPlatform.DataApi", "..\10-Code\SevenTiny.Cloud.MultiTenantPlatform.DataApi\SevenTiny.Cloud.MultiTenantPlatform.DataApi.csproj", "{95AC3ADD-FF94-4753-930B-B925A3F3F325}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "External", "External", "{B9991632-8907-4071-B5AD-E4F5FEE80504}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -10,10 +10,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Model.Entities
     public class ObjectData: EntityInfo
     {
         /// <summary>
-        /// data id
-        /// </summary>
-        public string Id { get; set; }
-        /// <summary>
         /// tenant id,means the data belong to the tenant
         /// </summary>
         public int TenantId { get; set; }
@@ -53,15 +49,5 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Model.Entities
         }
 
         public int FieldsCount => MetaObjects.Count();
-        /// <summary>
-        /// Create by which user(value is user id)
-        /// </summary>
-        public int CreateBy { get; set; }
-        public DateTimeOffset CreateTime { get; set; }
-        /// <summary>
-        /// Modify by which user(value is user id)
-        /// </summary>
-        public int ModifyBy { get; set; }
-        public DateTimeOffset ModifyTime { get; set; }
     }
 }

@@ -7,57 +7,48 @@ using SevenTiny.Cloud.MultiTenantPlatform.Model.Entities;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 {
-    public class ApplicationController : Controller
+    public class StandardInterfaceController : Controller
     {
         public IActionResult List()
         {
-            List<Application> list = new List<Application>
+            List<StandardInterface> standardInterfaces = new List<StandardInterface>
             {
-                new Application
+                new StandardInterface
                 {
-                    Id=1001,
-                    Name="图书管理",
-                    Code="Book",
+                    Id=10001,
+                    Name="图书列表",
+                    Code="BookList",
                     Description="关于图书的管理系统",
+                    TableListId=101,
                     CreateBy=100101,
                     CreateTime=DateTimeOffset.Now,
                     IsDeleted=0
                 },
-                new Application
+                new StandardInterface
                 {
                     Id=1002,
-                    Name="人员管理",
-                    Code="User",
+                    Name="人员管理列表",
+                    Code="UserList",
                     Description="关于人员管理",
+                    TableListId=102,
                     CreateBy=100101,
                     CreateTime=DateTimeOffset.Now,
                     IsDeleted=0
                 },
-                new Application
+                new StandardInterface
                 {
                     Id=1003,
-                    Name="后勤管理",
-                    Code="Back",
+                    Name="后勤管理列表",
+                    Code="BackList",
                     Description="关于后勤管理",
+                    TableListId=103,
                     CreateBy=100101,
                     CreateTime=DateTimeOffset.Now,
                     IsDeleted=0
                 }
             };
 
-            return View(list);
-        }
-        public IActionResult Add()
-        {
-            return View();
-        }
-        public IActionResult Update()
-        {
-            return View();
-        }
-        public IActionResult Delete()
-        {
-            return View();
+            return View(standardInterfaces);
         }
     }
 }
