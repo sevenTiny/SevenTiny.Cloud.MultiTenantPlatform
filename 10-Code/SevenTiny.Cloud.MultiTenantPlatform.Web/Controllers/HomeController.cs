@@ -12,11 +12,16 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
     {
         public IActionResult Index()
         {
-            return View("Application");
+            return Redirect("/Home/Application?App=7TinyCloud Demo");
         }
 
-        public IActionResult Application()
+        public IActionResult Application(string App)
         {
+            if (string.IsNullOrEmpty(App))
+            {
+                return LocalRedirect("/Home/About");
+            }
+            ViewData["Application"]=App;
             return View();
         }
 

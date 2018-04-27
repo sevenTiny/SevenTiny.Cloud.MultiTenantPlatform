@@ -1,29 +1,19 @@
-﻿
-@{
-    ViewData["Title"] = "Application";
+﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <header class="navbar-wrapper">
     <div class="navbar navbar-fixed-top">
         <div class="container-fluid cl">
-            <a class="logo navbar-logo f-l mr-10 hidden-xs" href="/aboutHui.shtml">7Tiny Cloud</a> <a class="logo navbar-logo-m f-l mr-10 visible-xs" href="/aboutHui.shtml">H-ui</a>
-            <span class="logo navbar-slogan f-l mr-10 hidden-xs">v1.0</span>
+            @*<a class="logo navbar-logo f-l mr-10 hidden-xs" href="/aboutHui.shtml">@ViewData["Title"]</a> <a class="logo navbar-logo-m f-l mr-10 visible-xs" href="/aboutHui.shtml"></a>*@
+            @*<span class="logo navbar-slogan f-l mr-10 hidden-xs"></span>*@
             <a aria-hidden="false" class="nav-toggle Hui-iconfont visible-xs" href="javascript:;">&#xe667;</a>
             <nav class="nav navbar-nav">
                 <ul class="cl">
-                    <li class="dropDown dropDown_hover">
-                        <a href="javascript:;" class="dropDown_A"><i class="Hui-iconfont">&#xe600;</i> 新增 <i class="Hui-iconfont">&#xe6d5;</i></a>
-                        <ul class="dropDown-menu menu radius box-shadow">
-                            <li><a href="javascript:;" onclick="article_add('添加资讯','article-add.html')"><i class="Hui-iconfont">&#xe616;</i> 对象</a></li>
-                            <li><a href="javascript:;" onclick="product_add('添加资讯','product-add.html')"><i class="Hui-iconfont">&#xe620;</i> 应用</a></li>
-                            @*<li><a href="javascript:;" onclick="member_add('添加用户','member-add.html','','510')"><i class="Hui-iconfont">&#xe60d;</i> 用户</a></li>*@
-                        </ul>
+                    <li class="dropDown dropDown_hover"><a href="javascript:;" class="dropDown_A" onclick="object_checkout('添加用户','member-add.html','','510')">应用：@ViewData["Application"] </a></li>
                     <li class="navbar-levelone current"><a href="javascript:;">对象管理</a></li>
                     <li class="navbar-levelone"><a href="javascript:;">应用管理</a></li>
                     <li><a href="javascript:;" onclick="object_checkout('添加用户','member-add.html','','510')"><i class="Hui-iconfont">&#xe60d;</i>切换对象</a></li>
-                    <li><a href="javascript:;" onclick="object_checkout('添加用户','member-add.html','','510')"><i class="Hui-iconfont">&#xe60d;</i>切换应用</a></li>
-                    </li>
                 </ul>
             </nav>
             <nav id="Hui-userbar" class="nav navbar-nav navbar-userbar hidden-xs">
@@ -37,7 +27,7 @@
                             <li><a href="#">退出</a></li>
                         </ul>
                     </li>
-                    <li id="Hui-msg"> <a href="#" title="消息"><span class="badge badge-danger">1</span><i class="Hui-iconfont" style="font-size:18px">&#xe68a;</i></a> </li>
+                    <li id="Hui-msg"> <a href="#" title="消息"><span class="badge badge-danger">1</span><i class="Hui-iconfont" style="font-size:18px">&#xe68a;</i></a></li>
                     <li id="Hui-skin" class="dropDown right dropDown_hover">
                         <a href="javascript:;" class="dropDown_A" title="换肤"><i class="Hui-iconfont" style="font-size:18px">&#xe62a;</i></a>
                         <ul class="dropDown-menu menu radius box-shadow">
@@ -57,7 +47,7 @@
 <aside class="Hui-aside">
     <div class="menu_dropdown bk_2">
         <dl id="menu-objects">
-            <dt  style="font-weight:bold"><i class="Hui-iconfont">&#xe616;</i> <a data-href="/Application/List" data-title="对象列表" href="javascript:void(0)">对象列表</a></dt>
+            <dt style="font-weight:bold"><i class="Hui-iconfont">&#xe616;</i> <a data-href="/Application/List" data-title="对象列表" href="javascript:void(0)">对象列表</a></dt>
         </dl>
         <dl id="menu-objsetting">
             <dt><i class="Hui-iconfont">&#xe616;</i> 对象设置<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
@@ -70,6 +60,7 @@
                     <li><a data-href="article-list.html" data-title="详情页" href="javascript:void(0)">详情页</a></li>
                     <li><a data-href="article-list.html" data-title="视图" href="javascript:void(0)">视图</a></li>
                     <li><a data-href="article-list.html" data-title="功能" href="javascript:void(0)">功能</a></li>
+                    <li><a data-href="article-list.html" data-title="标准接口" href="javascript:void(0)">标准接口</a></li>
                 </ul>
             </dd>
         </dl>
@@ -300,8 +291,7 @@
     function member_add(title, url, w, h) {
         layer_show(title, url, w, h);
     }
-    function object_checkout(title, url, w, h)
-    {
+    function object_checkout(title, url, w, h) {
         layer_show(title, url, w, h);
     }
 </script>
