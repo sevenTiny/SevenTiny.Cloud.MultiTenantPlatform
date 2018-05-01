@@ -1,7 +1,7 @@
 ﻿using SevenTiny.Cloud.MultiTenantPlatform.Model.Enums;
 using System;
 
-namespace SevenTiny.Cloud.MultiTenantPlatform.Model.Entities
+namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities
 {
     public class MetaField: EntityInfo
     {

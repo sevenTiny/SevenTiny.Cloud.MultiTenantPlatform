@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SevenTiny.Cloud.MultiTenantPlatform.Model.Entities
+namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities
 {
     /// <summary>
     /// query object data

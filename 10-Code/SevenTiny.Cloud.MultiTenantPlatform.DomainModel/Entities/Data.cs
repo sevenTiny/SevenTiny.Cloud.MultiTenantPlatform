@@ -1,6 +1,6 @@
 ﻿using SevenTiny.Cloud.MultiTenantPlatform.Model.Enums;
 
-namespace SevenTiny.Cloud.MultiTenantPlatform.Model.Entities
+namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities
 {
     /// <summary>
     /// MetaData

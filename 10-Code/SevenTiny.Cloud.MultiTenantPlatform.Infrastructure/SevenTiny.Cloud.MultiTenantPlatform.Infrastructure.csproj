@@ -4,9 +4,4 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Arguments\" />
-    <Folder Include="DTO\" />
-  </ItemGroup>
-
 </Project>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
+using System;
 
 namespace Test.ConsoleApp
 {
@@ -6,7 +7,15 @@ namespace Test.ConsoleApp
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+
+            using (var db = new MultiTenantPlatformDbContext())
+            {
+                var result = db.QueryList<Application>();
+                Console.WriteLine(result.Count);
+            }
+
+            //---------------
+            Console.ReadKey();
         }
     }
 }
