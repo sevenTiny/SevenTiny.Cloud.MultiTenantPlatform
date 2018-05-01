@@ -40,7 +40,7 @@ h4{line-height:30px}
 	#Hui-nav > ul > li{ width: 24%;text-align:center;}
 	#Hui-nav > ul > li a{ text-align: center; padding: 0}
 }
-#Hui-userbar{right:20px; position:absolute; top:0;}
+#Hui-userbar{right:20px; position:absolute; top:0}
 #Hui-userbar > ul > li > a{padding:0 10px}
 	
 #Hui-msg .badge{ position:absolute; left:19px; top:4px; font-size:12px; font-weight:normal; padding:1px 5px}

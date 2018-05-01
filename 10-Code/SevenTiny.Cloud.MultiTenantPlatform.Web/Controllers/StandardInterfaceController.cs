@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using SevenTiny.Cloud.MultiTenantPlatform.Model.Entities;
+using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 {

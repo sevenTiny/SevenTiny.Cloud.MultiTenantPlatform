@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Arguments\" />
+    <Folder Include="Aggregate\" />
+    <Folder Include="Const\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SevenTiny.Bantina.Bankinate" Version="1.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SevenTiny.Cloud.MultiTenantPlatform.Infrastructure\SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

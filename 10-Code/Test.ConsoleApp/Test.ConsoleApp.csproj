@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SevenTiny.Bantina.Bankinate" Version="1.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SevenTiny.Cloud.MultiTenantPlatform.DomainModel\SevenTiny.Cloud.MultiTenantPlatform.DomainModel.csproj" />
+  </ItemGroup>
+
+</Project>
