@@ -10,11 +10,15 @@ namespace Test.ConsoleApp
 
             using (var db = new MultiTenantPlatformDbContext())
             {
-                var result = db.QueryList<Application>();
-                Console.WriteLine(result.Count);
+                Application app = new Application();
+                app.Code = "7TinyCloudDemo";
+                app.Name = "7TinyCloud演示";
+
+                db.Add(app);
             }
 
             //---------------
+            Console.WriteLine("success!");
             Console.ReadKey();
         }
     }
