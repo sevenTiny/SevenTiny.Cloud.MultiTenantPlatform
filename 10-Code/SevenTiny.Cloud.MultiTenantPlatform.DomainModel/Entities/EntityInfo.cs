@@ -11,25 +11,25 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities
         [Key]
         [AutoIncrease]
         public int Id { get; set; }
-        [Column]
+        [Column("`Name`")]
         public string Name { get; set; }
-        [Column]
+        [Column("`Code`")]
         public string Code { get; set; }
+        [Column("`Description`")]
+        public string Description { get; set; } = string.Empty;
+        [Column("`Group`")]
+        public string Group { get; set; } = string.Empty;
         [Column]
-        public string Description { get; set; }
-        [Column]
-        public string Group { get; set; }
-        [Column]
-        public int SortNumber { get; set; }
+        public int SortNumber { get; set; } = 0;
         [Column]
         public int IsDeleted { get; set; } = 0;
         [Column]
-        public int CreateBy { get; set; }
+        public int CreateBy { get; set; } = -1;
+        [Column("`CreateTime`")]
+        public DateTime CreateTime { get; set; } = DateTime.Now;
         [Column]
-        public DateTimeOffset CreateTime { get; set; }
-        [Column]
-        public int ModifyBy { get; set; }
-        [Column]
-        public DateTimeOffset ModifyTime { get; set; }
+        public int ModifyBy { get; set; } = -1;
+        [Column("`ModifyTime`")]
+        public DateTime ModifyTime { get; set; } = DateTime.Now;
     }
 }

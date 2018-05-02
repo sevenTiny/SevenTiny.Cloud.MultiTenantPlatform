@@ -21,7 +21,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
                     Description="关于图书的管理系统",
                     TableListId=101,
                     CreateBy=100101,
-                    CreateTime=DateTimeOffset.Now,
+                    CreateTime=DateTime.Now,
                     IsDeleted=0
                 },
                 new StandardInterface
@@ -32,7 +32,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
                     Description="关于人员管理",
                     TableListId=102,
                     CreateBy=100101,
-                    CreateTime=DateTimeOffset.Now,
+                    CreateTime=DateTime.Now,
                     IsDeleted=0
                 },
                 new StandardInterface
@@ -43,7 +43,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
                     Description="关于后勤管理",
                     TableListId=103,
                     CreateBy=100101,
-                    CreateTime=DateTimeOffset.Now,
+                    CreateTime=DateTime.Now,
                     IsDeleted=0
                 }
             };

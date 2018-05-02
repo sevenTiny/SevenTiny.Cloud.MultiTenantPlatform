@@ -49,7 +49,7 @@
 
     <div class="menu_dropdown bk_2">
         <dl id="menu-objects">
-            <dt style="font-weight:bold"><i class="Hui-iconfont">&#xe616;</i> <a data-href="/Application/List" data-title="对象列表" onclick="javascript:void(0)">对象列表</a></dt>
+            <dt style="font-weight:bold"><i class="Hui-iconfont">&#xe616;</i> <a href="#" data-title="对象列表" onclick="javascript:frameOpen('/Application/List')">对象列表</a></dt>
         </dl>
         <dl id="menu-objsetting">
             <dt><i class="Hui-iconfont">&#xe616;</i> 对象设置<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
@@ -163,7 +163,7 @@
 
     <div class="menu_dropdown bk_2" style="display:none">
         <dl id="menu-objects">
-            <dt style="font-weight:bold"><i class="Hui-iconfont">&#xe616;</i> <a data-href="/Application/List" data-title="应用列表" href="javascript:void(0)">应用列表</a></dt>
+            <dt style="font-weight:bold"><i class="Hui-iconfont">&#xe616;</i> <a data-title="应用列表" href="javascript:frameOpen('/Application/List')">应用列表</a></dt>
         </dl>
         <dl id="menu-aaaaa">
 
@@ -194,7 +194,6 @@
 </section>
 
 @Html.Partial("~/Views/Shared/_FooterScripts.cshtml")
-
 <!--请在下方写此页面业务相关的脚本-->
 <script type="text/javascript">
     $(function () {
@@ -205,5 +204,9 @@
             index: 0,
         });
     });
+    function frameOpen(url)
+    {
+        $("#main_iframe").prop("src", url);
+    }
 </script>
 <!--/请在上方写此页面业务相关的脚本-->
