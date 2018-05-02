@@ -8,6 +8,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities
     [Table]
     public class Application: EntityInfo
     {
+        [Column]
         public string Icon { get; set; }
     }
 }

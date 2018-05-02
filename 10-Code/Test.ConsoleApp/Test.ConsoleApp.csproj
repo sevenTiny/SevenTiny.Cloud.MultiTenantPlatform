@@ -6,10 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SevenTiny.Bantina.Bankinate" Version="1.0.2" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\SevenTiny.Cloud.MultiTenantPlatform.DomainModel\SevenTiny.Cloud.MultiTenantPlatform.DomainModel.csproj" />
   </ItemGroup>
 
