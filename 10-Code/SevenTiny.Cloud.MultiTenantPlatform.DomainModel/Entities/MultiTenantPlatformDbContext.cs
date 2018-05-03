@@ -1,10 +1,11 @@
 ﻿using SevenTiny.Bantina.Bankinate;
+using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Configs;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities
 {
     public class MultiTenantPlatformDbContext : MySqlDbContext<MultiTenantPlatformDbContext>
     {
-        public MultiTenantPlatformDbContext() : base("server=101.201.66.247;Port=39901;database=MultiTenantPlatform;uid=root;pwd=CYj(9yyz*8;Allow User Variables=true;")
+        public MultiTenantPlatformDbContext() : base(ConnectionStringsConfig.Get("MultiTenantPlatformWeb"))
         {
             IsFromCache = false;
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
 
@@ -16,7 +17,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             {
                 return Redirect("/Home/Index?App=7TinyCloud Demo");
             }
-            ViewData["Application"] = App;
+            
+            HttpContext.Session.SetString("Application", App);
+            ViewData["Application"]=App;
             return View();
         }
 

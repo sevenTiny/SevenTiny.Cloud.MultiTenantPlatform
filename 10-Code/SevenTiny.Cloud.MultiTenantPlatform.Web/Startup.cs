@@ -21,6 +21,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //start 7tiny ---
+            //session support
+            services.AddDistributedMemoryCache();
+            services.AddSession();
+            //end 7tiny ---
+
             services.AddMvc();
         }
 
@@ -36,6 +42,13 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+
+            //start 7tiny ---
+            //session support
+            app.UseSession();
+            //end 7tiny ---
+
 
             app.UseStaticFiles();
 
