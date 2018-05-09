@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
+using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Enums;
 using domain = SevenTiny.Cloud.MultiTenantPlatform.DomainModel;
 using app = SevenTiny.Cloud.MultiTenantPlatform.Application;
 using repository = SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Repository;
@@ -15,13 +16,16 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
     {
         public IActionResult List()
         {
-            List<domain.Entities.Application> list = repository.ApplicationRepository.GetApplicationList();
-            if (list!=null)
-            {
-                list = list.OrderByDescending(t => t.SortNumber).ThenByDescending(t=>t.CreateTime).ToList();
-            }
+            List<domain.Entities.Application> list = repository.ApplicationRepository.GetApplications(t => t.IsDeleted == (int)IsDeleted.NotDeleted);
             return View(list);
         }
+
+        public IActionResult DeleteList()
+        {
+            List<domain.Entities.Application> list = repository.ApplicationRepository.GetApplications(t => t.IsDeleted == (int)IsDeleted.Deleted);
+            return View(list);
+        }
+
         public IActionResult Add()
         {
             return View();
@@ -41,7 +45,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             return RedirectToAction("List");
         }
 
-        public IActionResult AddFaild(domain.Entities.Application application,string msg)
+        public IActionResult AddFaild(domain.Entities.Application application, string msg)
         {
             return View("Add", new ActionResultModel<domain.Entities.Application>(false, "添加失败!", application));
         }

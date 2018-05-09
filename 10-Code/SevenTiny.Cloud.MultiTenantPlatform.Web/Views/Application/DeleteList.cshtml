@@ -1,6 +1,7 @@
-﻿@using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
+﻿@using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities
+
 @{
-    ViewData["Title"] = "List";
+    ViewData["Title"] = "DeleteList";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @{
@@ -12,22 +13,17 @@
     <span class="c-gray en">&gt;</span>
     应用管理
     <span class="c-gray en">&gt;</span>
-    应用列表
+    应用列表(已删除)
     <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a>
 </nav>
 
 <div class="Hui-article">
     <article class="cl pd-20">
-        <div class="cl pd-5 bg-1 bk-gray">
-            <span class="l">
-                <a class="btn btn-primary radius" href="/Application/Add"><i class="Hui-iconfont">&#xe600;</i> 添加应用</a>
-            </span>
-            <span class="r">共有数据：<strong>@applications.Count</strong> 条</span>
-        </div>
         <div class="mt-20">
             <table class="table table-border table-bordered table-bg table-hover table-sort table-responsive">
                 <thead>
                     <tr class="text-c">
+                        <th width="25"><input type="checkbox" name="" value=""></th>
                         <th width="40">ID</th>
                         <th width="80">名称</th>
                         <th width="80">编码</th>
@@ -41,6 +37,7 @@
                     @foreach (var item in applications)
                     {
                         <tr class="text-c">
+                            <td><input type="checkbox" value="" name=""></td>
                             <td>@item.Id</td>
                             <td><u style="cursor:pointer" class="text-primary" onClick="article_edit('查看','article-zhang.html','10001')" title="查看">@item.Name</u></td>
                             <td>@item.Code</td>
@@ -57,7 +54,7 @@
     </article>
 </div>
 
-@Html.Partial($"~/Views/Shared/_FooterScripts.cshtml")
+@Html.Partial("~/Views/Shared/_FooterScripts.cshtml")
 <!--请在下方写此页面业务相关的脚本-->
 <script type="text/javascript" src="~/lib/My97DatePicker/4.8/WdatePicker.js"></script>
 <script type="text/javascript" src="~/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
@@ -65,11 +62,11 @@
 <script type="text/javascript">
     $('.table-sort').dataTable({
         "aLengthMenu": [[30, 50, 100, -1], ["30", "50", "100", "All"]],//二组数组，第一组数量，
-        "aaSorting": [[4, "asc"], [0, "asc"]],//默认第几个排序
+        "aaSorting": [[5, "asc"], [1, "asc"]],//默认第几个排序
         "bStateSave": true,//状态保存
         "aoColumnDefs": [
             //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
-            { "orderable": false, "aTargets": [6] }// 不参与排序的列
+            { "orderable": false, "aTargets": [0, 7] }// 不参与排序的列
         ]
     });
 

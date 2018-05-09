@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Configs
 {
-    [ConfigClass(Name = "ConnectionStrings")]
+    [ConfigName("ConnectionStrings")]
     public class ConnectionStringsConfig : ConfigBase<ConnectionStringsConfig>
     {
         public string Key { get; set; }

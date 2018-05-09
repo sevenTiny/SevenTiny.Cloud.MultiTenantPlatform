@@ -11,8 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="SevenTiny.Bantina.Bankinate" Version="1.0.4" />
-    <PackageReference Include="SevenTiny.Bantina.Configuration" Version="1.0.0" />
+    <PackageReference Include="SevenTiny.Bantina.Bankinate" Version="1.0.32" />
   </ItemGroup>
 
   <ItemGroup>
