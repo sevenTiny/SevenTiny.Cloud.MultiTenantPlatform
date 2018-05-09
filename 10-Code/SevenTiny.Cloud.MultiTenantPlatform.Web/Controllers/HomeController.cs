@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
 
@@ -10,13 +11,24 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index(string App)
+        public IActionResult Index()
         {
-            if (string.IsNullOrEmpty(App))
+            return Redirect("/Home/ApplicationSelect");
+        }
+
+        public IActionResult Application(string app)
+        {
+            if (string.IsNullOrEmpty(app))
             {
-                return Redirect("/Home/Index?App=7TinyCloud Demo");
+                return Redirect("/Home/ApplicationSelect");
             }
-            ViewData["Application"] = App;
+            HttpContext.Session.SetString("Application", app);
+            ViewData["Application"] = app;
+            return View();
+        }
+
+        public IActionResult ApplicationSelect()
+        {
             return View();
         }
 

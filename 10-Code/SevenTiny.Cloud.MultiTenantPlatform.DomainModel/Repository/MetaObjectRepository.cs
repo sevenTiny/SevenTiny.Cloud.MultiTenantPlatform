@@ -1,27 +1,28 @@
-﻿using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Text;
+using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Repository
 {
-    public class ApplicationRepository
+    public class MetaObjectRepository
     {
-        public static List<Application> GetApplications()
+        public static List<MetaObject> GetMetaObjects()
         {
             using (var db = new MultiTenantPlatformDbContext())
             {
-                return db.QueryList<Application>();
+                return db.QueryList<MetaObject>();
             }
         }
-        public static List<Application> GetApplications(Expression<Func<Application,bool>> filter)
+        public static List<MetaObject> GetMetaObjects(Expression<Func<MetaObject,bool>> filter)
         {
             using (var db = new MultiTenantPlatformDbContext())
             {
-                return db.QueryList(filter);
+                return db.QueryList<MetaObject>(filter);
             }
         }
-        public static void AddApplication(Application application)
+        public static void AddMetaObject(MetaObject application)
         {
             using (var db = new MultiTenantPlatformDbContext())
             {
