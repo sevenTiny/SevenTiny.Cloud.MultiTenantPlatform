@@ -7,8 +7,8 @@
 }
 @{
     List<MetaObject> metaObjects = Model as List<MetaObject>;
-    List<MetaObject> metaObjectsDeleted = metaObjects?.Where(t => t.IsDeleted == (int)IsDeleted.Deleted).ToList();
-    List<MetaObject> metaObjectsUnDeleted = metaObjects?.Except(metaObjectsDeleted).ToList();
+    List<MetaObject> metaObjectsDeleted = metaObjects?.Where(t => t.IsDeleted == (int)IsDeleted.Deleted)?.ToList() ?? new List<MetaObject>();
+    List<MetaObject> metaObjectsUnDeleted = metaObjects?.Except(metaObjectsDeleted)?.ToList() ?? new List<MetaObject>();
 }
 
 <nav class="breadcrumb">
@@ -27,7 +27,7 @@
                 <a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>
                 <a class="btn btn-primary radius" href="/Application/Add"><i class="Hui-iconfont">&#xe600;</i> 新建对象</a>
             </span>
-            <span class="r">共有数据：<strong>@metaObjectsUnDeleted.Count</strong> 条</span>
+            <span class="r">共有数据：<strong>@metaObjectsUnDeleted?.Count</strong> 条</span>
         </div>
         <div class="mt-20">
             <table class="table table-border table-bordered table-bg table-hover table-sort table-responsive">

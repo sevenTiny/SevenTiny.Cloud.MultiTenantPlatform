@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,6 +21,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web
             //session support
             services.AddDistributedMemoryCache();
             services.AddSession();
+            //DI
+            services = ServiceInjector.Inject(services);
             //end 7tiny ---
 
             services.AddMvc();
@@ -59,5 +57,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web
                         template: "{controller=Home}/{action=Index}/{id?}");
             });
         }
+
+        
     }
 }
