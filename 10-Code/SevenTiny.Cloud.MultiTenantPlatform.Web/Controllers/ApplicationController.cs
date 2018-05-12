@@ -14,6 +14,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 {
     public class ApplicationController : Controller
     {
+        public IActionResult Select()
+        {
+            List<domain.Entities.Application> list = repository.ApplicationRepository.GetApplications(t => t.IsDeleted == (int)IsDeleted.NotDeleted);
+            return View(list);
+        }
+
         public IActionResult List()
         {
             List<domain.Entities.Application> list = repository.ApplicationRepository.GetApplications(t => t.IsDeleted == (int)IsDeleted.NotDeleted);

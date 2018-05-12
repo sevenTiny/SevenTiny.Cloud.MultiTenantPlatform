@@ -13,24 +13,21 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
     {
         public IActionResult Index()
         {
-            return Redirect("/Home/ApplicationSelect");
+            return Redirect("/Home/Application");
         }
 
         public IActionResult Application(string app)
         {
             if (string.IsNullOrEmpty(app))
             {
-                return Redirect("/Home/ApplicationSelect");
+                return Redirect("/Application/Select");
             }
             HttpContext.Session.SetString("Application", app);
             ViewData["Application"] = app;
             return View();
         }
 
-        public IActionResult ApplicationSelect()
-        {
-            return View();
-        }
+       
 
         public IActionResult Welcome()
         {
