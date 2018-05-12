@@ -12,8 +12,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
     {
         public IActionResult List()
         {
-            IList<MetaObject> metaObjects = MetaObjectRepository.GetMetaObjects();
-            return View(metaObjects);
+            return View();
+
+            //IList<MetaObject> metaObjects = MetaObjectRepository.GetMetaObjects();
+           // return View(metaObjects);
         }
 
         public IActionResult Add()

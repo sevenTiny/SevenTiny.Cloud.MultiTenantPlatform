@@ -23,4 +23,8 @@
     <ProjectReference Include="..\SevenTiny.Cloud.MultiTenantPlatform.Infrastructure\SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Infrastructure\" />
+  </ItemGroup>
+
 </Project>
