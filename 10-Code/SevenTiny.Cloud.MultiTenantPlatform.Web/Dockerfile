@@ -1,6 +1,6 @@
-FROM microsoft/aspnetcore:2.0
+FROM docker.io/microsoft/aspnetcore:latest
 ARG source
-WORKDIR /app
+WORKDIR /publish
 EXPOSE 80
-COPY ${source:-obj/Docker/publish} .
+COPY /. /publish
 ENTRYPOINT ["dotnet", "SevenTiny.Cloud.MultiTenantPlatform.Web.dll"]
