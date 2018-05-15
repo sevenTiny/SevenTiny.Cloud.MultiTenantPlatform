@@ -13,7 +13,14 @@
                     <li class="dropDown dropDown_hover"><a href="/Application/Select" class="dropDown_A">应用：@ViewData["Application"] </a></li>
                     <li class="navbar-levelone current"><a href="javascript:frameOpen('/MetaObject/List')">对象管理</a></li>
                     <li class="navbar-levelone"><a href="javascript:frameOpen('/Application/List')">应用管理</a></li>
-                    <li><a href="javascript:;" onclick="object_checkout('添加用户','member-add.html','','510')"><i class="Hui-iconfont">&#xe60d;</i>切换对象</a></li>
+                    <li>
+                        <select class="select" size="1" name="demo1">
+                            <option value="" selected>默认选项</option>
+                            <option value="1">学生对象</option>
+                            <option value="2">学校对象</option>
+                            <option value="3">年级年级年级年级年级年级年级年级</option>
+                        </select>
+                    </li>
                 </ul>
             </nav>
             <nav id="Hui-userbar" class="nav navbar-nav navbar-userbar hidden-xs">
@@ -63,7 +70,17 @@
                     <li><a data-href="article-list.html" data-title="详情页" href="javascript:void(0)">详情页</a></li>
                     <li><a data-href="article-list.html" data-title="视图" href="javascript:void(0)">视图</a></li>
                     <li><a data-href="article-list.html" data-title="功能" href="javascript:void(0)">功能</a></li>
-                    <li><a data-href="/StandardInterface/List" data-title="标准接口" href="javascript:void(0)">标准接口</a></li>
+                </ul>
+            </dd>
+        </dl>
+        <dl id="menu-objsetting">
+            <dt><i class="Hui-iconfont">&#xe616;</i> 标准接口<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+            <dd>
+                <ul>
+                    <li><a data-href="article-list.html" data-title="单对象" href="javascript:void(0)">单对象</a></li>
+                    <li><a data-href="article-list.html" data-title="列表集合" href="javascript:void(0)">列表集合</a></li>
+                    <li><a data-href="article-list.html" data-title="搜索条件" href="javascript:void(0)">搜索条件</a></li>
+                    <li><a data-href="/StandardInterface/List" data-title="组织接口" href="javascript:void(0)">组织接口</a></li>
                 </ul>
             </dd>
         </dl>
@@ -209,8 +226,7 @@
             index: 0,
         });
     });
-    function frameOpen(url)
-    {
+    function frameOpen(url) {
         $("#main_iframe").prop("src", url);
     }
 </script>
