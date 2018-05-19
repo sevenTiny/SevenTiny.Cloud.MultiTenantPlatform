@@ -32,8 +32,11 @@
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">图标：</label>
-            <div class="formControls col-xs-8 col-sm-9">
+            <div class="formControls col-xs-7 col-sm-8">
                 <input type="text" class="input-text" value="@result.Data.Icon" placeholder="" id="" name="icon">
+            </div>
+            <div class="formControls col-xs-1 col-sm-1">
+                <a href="http://fontawesome.dashgame.com/" target="_blank" style="color:#0abb68">图标库</a>
             </div>
         </div>
         <div class="row cl">
@@ -51,8 +54,8 @@
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">描述：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <textarea name="description" class="textarea" placeholder="说点什么...最少输入10个字符" datatype="*10-100" dragonfly="true" nullmsg="备注不能为空！" onKeyUp="textarealength(this,200)">@result.Data.Description</textarea>
-                <p class="textarea-numberbar"><em class="textarea-length">0</em>/200</p>
+                <textarea name="description" class="textarea" placeholder="说点什么...最多输入1000个字符" datatype="*0-1000" dragonfly="true" nullmsg="无备注" onKeyUp="textarealength(this,200)">@result.Data.Description</textarea>
+                <p class="textarea-numberbar"><em class="textarea-length">0</em>/1000</p>
             </div>
         </div>
         <div class="row cl">

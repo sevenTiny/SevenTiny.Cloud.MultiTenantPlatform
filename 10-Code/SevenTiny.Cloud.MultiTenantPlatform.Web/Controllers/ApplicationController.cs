@@ -36,7 +36,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 
         public IActionResult Add()
         {
-            return View();
+            DomainModel.Entities.Application application = new DomainModel.Entities.Application();
+            application.Icon = "cloud";
+            return View(new ActionResultModel<DomainModel.Entities.Application>(true, string.Empty, application));
         }
 
         public IActionResult AddLogic(DomainModel.Entities.Application application)
