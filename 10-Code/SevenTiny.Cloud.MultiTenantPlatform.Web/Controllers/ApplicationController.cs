@@ -51,10 +51,14 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             {
                 return View("Add", new ActionResultModel<DomainModel.Entities.Application>(false, "Application Code Can Not Be Null！", application));
             }
+            if (_applicationRepository.Exist(t => t.Name.Equals(application.Name)))
+            {
+                return View("Add", new ActionResultModel<DomainModel.Entities.Application>(false, "Application Name Has Been Exist！", application));
+            }
+
             _applicationRepository.Add(application);
             return RedirectToAction("List");
         }
-
 
         public IActionResult Update(int id)
         {
@@ -77,6 +81,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             {
                 return View("Update", new ActionResultModel<DomainModel.Entities.Application>(false, "Application Code Can Not Be Null！", application));
             }
+            if (_applicationRepository.Exist(t => t.Name.Equals(application.Name) && t.Id != application.Id))
+            {
+                return View("Add", new ActionResultModel<DomainModel.Entities.Application>(false, "Application Name Has Been Exist！", application));
+            }
+
             DomainModel.Entities.Application app = _applicationRepository.GetEntity(t => t.Id == application.Id);
             if (app != null)
             {

@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using SevenTiny.Bantina.Bankinate;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities
 {
     public class MetaObject:EntityInfo
     {
-
+        [Column]
+        public int ApplicationId { get; set; }
     }
 }

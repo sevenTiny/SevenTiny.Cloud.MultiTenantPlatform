@@ -50,5 +50,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Repository
         {
             throw new NotImplementedException();
         }
+
+        public bool Exist(Expression<Func<Application, bool>> filter)
+        {
+            return _context.QueryCount(filter) > 0;
+        }
     }
 }

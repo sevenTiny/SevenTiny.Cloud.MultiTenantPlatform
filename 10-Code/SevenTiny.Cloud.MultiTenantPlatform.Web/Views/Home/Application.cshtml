@@ -1,8 +1,10 @@
-﻿
+﻿@using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
 @{
     ViewData["Title"] = "Application";
     Layout = $"~/Views/Shared/_Layout.cshtml";
+    var metaObjects = ViewData["MetaObjects"] as List<MetaObject>;
 }
+
 <!--_header 作为公共模版分离出去-->
 <header class="navbar-wrapper">
     <div class="navbar navbar-fixed-top">
@@ -14,11 +16,12 @@
                     <li class="navbar-levelone current"><a href="javascript:frameOpen('/MetaObject/List')">对象管理</a></li>
                     <li class="navbar-levelone"><a href="javascript:frameOpen('/Application/List')">应用管理</a></li>
                     <li>
-                        <select class="select" size="1" name="demo1">
-                            <option value="0" selected>默认选项</option>
-                            <option value="1">学生对象</option>
-                            <option value="2">学校对象</option>
-                            <option value="3">年级年级年级年级年级年级年级年级</option>
+                        <select class="select" size="1" name="demo1" onchange="frameOpen('/MetaObject/Switch/' + $(this).val())">
+                            <option value=0 selected>--选择对象--</option>
+                            @foreach (var item in metaObjects)
+                            {
+                                <option value=@item.Id>@item.Name</option>
+                            }
                         </select>
                     </li>
                 </ul>
@@ -183,10 +186,6 @@
         <dl id="menu-objects">
             <dt style="font-weight:bold"><i class="Hui-iconfont">&#xe616;</i> <a data-title="应用列表" href="javascript:frameOpen('/Application/List')">应用列表</a></dt>
         </dl>
-        <dl id="menu-objects">
-            <dt style="font-weight:bold"><i class="Hui-iconfont">&#xe616;</i> <a data-title="已删除列表" href="javascript:frameOpen('/Application/DeleteList')">应用列表(已删除)</a></dt>
-        </dl>
-
         @*<dl id="menu-aaaaa">
 
                 <dt><i class="Hui-iconfont">&#xe616;</i> 应用设置<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>

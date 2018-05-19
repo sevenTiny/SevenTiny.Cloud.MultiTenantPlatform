@@ -19,6 +19,12 @@
 
 <div class="Hui-article">
     <article class="cl pd-20">
+        <div class="cl pd-5 bg-1 bk-gray">
+            <span class="l">
+                <a class="btn btn-secondary-outline radius" href="/Application/List"><i class="Hui-iconfont">&#xe66b;</i> 返回</a>
+            </span>
+            <span class="r">共有数据：<strong>@applications.Count</strong> 条</span>
+        </div>
         <div class="mt-20">
             <table class="table table-border table-bordered table-bg table-hover table-sort table-responsive">
                 <thead>
@@ -35,21 +41,21 @@
                 </thead>
                 <tbody>
                     @foreach (var item in applications)
-                    {
-                        <tr class="text-c">
-                            <td><input type="checkbox" value="" name=""></td>
-                            <td>@item.Id</td>
-                            <td>@item.Name</td>
-                            <td>@item.Code</td>
-                            <td>@item.Description</td>
-                            <td>@item.SortNumber</td>
-                            <td class="td-status"><span class="label label-danger radius">已删除</span></td>
-                            <td class="td-manage">
-                                <a style="text-decoration: none" href="javascript:;" onClick="member_huanyuan(this, @item.Id)" title="还原"><i class="Hui-iconfont">&#xe66b;</i></a>
-                                @*<a title="删除" href="javascript:;" onclick="article_del(this, '1')" class="ml-5" style="text-decoration: none"><i class="Hui-iconfont">&#xe6e2;</i></a>*@
-                            </td>
-                        </tr>
-                    }
+                {
+                    <tr class="text-c">
+                        <td><input type="checkbox" value="" name=""></td>
+                        <td>@item.Id</td>
+                        <td>@item.Name</td>
+                        <td>@item.Code</td>
+                        <td>@item.Description</td>
+                        <td>@item.SortNumber</td>
+                        <td class="td-status"><span class="label label-danger radius">已删除</span></td>
+                        <td class="td-manage">
+                            <a style="text-decoration: none" href="javascript:;" onClick="member_huanyuan(this, @item.Id)" title="还原"><i class="Hui-iconfont">&#xe66b;</i></a>
+                            @*<a title="删除" href="javascript:;" onclick="article_del(this, '1')" class="ml-5" style="text-decoration: none"><i class="Hui-iconfont">&#xe6e2;</i></a>*@
+                        </td>
+                    </tr>
+            }
                 </tbody>
             </table>
         </div>

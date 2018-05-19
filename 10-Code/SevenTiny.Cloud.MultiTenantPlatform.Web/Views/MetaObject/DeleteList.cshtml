@@ -1,10 +1,12 @@
-﻿@using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
+﻿@using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities
+@using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Enums
+
 @{
-    ViewData["Title"] = "List";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "DeleteList";
+    Layout = $"~/Views/Shared/_Layout.cshtml";
 }
 @{
-    List<Application> applications = Model as List<Application>;
+    List<MetaObject> metaObjects = (Model as List<MetaObject>) ?? new List<MetaObject>();
 }
 
 <nav class="breadcrumb">
@@ -20,10 +22,9 @@
     <article class="cl pd-20">
         <div class="cl pd-5 bg-1 bk-gray">
             <span class="l">
-                <a class="btn btn-primary radius" href="/Application/Add"><i class="Hui-iconfont">&#xe600;</i> 添加应用</a>
-                <a class="btn btn-danger-outline radius" href="/Application/DeleteList"><i class="Hui-iconfont">&#xe609;</i> 查看已删除应用</a>
+                <a class="btn btn-secondary-outline radius" href="/MetaObject/List"><i class="Hui-iconfont">&#xe66b;</i> 返回</a>
             </span>
-            <span class="r">共有数据：<strong>@applications.Count</strong> 条</span>
+            <span class="r">共有数据：<strong>@metaObjects?.Count</strong> 条</span>
         </div>
         <div class="mt-20">
             <table class="table table-border table-bordered table-bg table-hover table-sort table-responsive">
@@ -39,7 +40,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in applications)
+                    @foreach (var item in metaObjects)
                     {
                         <tr class="text-c">
                             <td>@item.Id</td>
@@ -57,7 +58,6 @@
                 </tbody>
             </table>
         </div>
-        <br />
     </article>
 </div>
 
@@ -68,7 +68,7 @@
 <script type="text/javascript" src="~/lib/laypage/1.2/laypage.js"></script>
 <script type="text/javascript">
     $('.table-sort').dataTable({
-        "aLengthMenu": [[30, 50, 100, -1], ["30", "50", "100", "All"]],//二组数组，第一组数量
+        "aLengthMenu": [[30, 50, 100, -1], ["30", "50", "100", "All"]],//二组数组，第一组数量，
         "aaSorting": [[4, "asc"], [0, "asc"]],//默认第几个排序
         "bStateSave": true,//状态保存
         "aoColumnDefs": [
@@ -77,11 +77,12 @@
         ]
     });
 
+    /*资讯-删除*/
     function article_del(obj, id) {
         layer.confirm('确认要删除吗？', function (index) {
             $.ajax({
                 type: 'POST',
-                url: '/Application/Delete/' + id,
+                url: '',
                 dataType: 'json',
                 success: function (data) {
                     $(obj).parents("tr").remove();
@@ -89,7 +90,7 @@
                 },
                 error: function (data) {
                     console.log(data.msg);
-                }
+                },
             });
         });
     }
