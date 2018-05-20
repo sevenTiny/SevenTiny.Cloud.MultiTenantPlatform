@@ -145,9 +145,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
         public IActionResult Delete(int id)
         {
             MetaObject metaObject = _metaObjectRepository.GetEntity(t => t.Id == id);
-            //todo:添加事务支持
-            _metaFieldRepository.Delete(t => t.MetaObjectId == id);
-            _metaObjectRepository.Delete(t => t.Id == id);
+            TransactionHelper.Transaction(() =>
+            {
+                _metaFieldRepository.Delete(t => t.MetaObjectId == id);
+                _metaObjectRepository.Delete(t => t.Id == id);
+            });
             return JsonResultModel.Success("删除成功");
         }
 
