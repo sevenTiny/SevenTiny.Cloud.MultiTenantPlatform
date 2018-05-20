@@ -28,6 +28,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Repository
         {
             _context.Add(entity);
         }
+        public void Add(IEnumerable<Application> entities)
+        {
+            _context.Add(entities);
+        }
 
         public void Update(Expression<Func<Application, bool>> filter, Application entity)
         {

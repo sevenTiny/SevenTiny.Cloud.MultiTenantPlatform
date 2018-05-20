@@ -16,8 +16,8 @@
                     <li class="navbar-levelone current"><a href="javascript:frameOpen('/MetaObject/List')">对象管理</a></li>
                     <li class="navbar-levelone"><a href="javascript:frameOpen('/Application/List')">应用管理</a></li>
                     <li>
-                        <select class="select" size="1" name="demo1" onchange="frameOpen('/MetaObject/Switch/' + $(this).val())">
-                            <option value=0 selected>--选择对象--</option>
+                        <select class="select" size="1" name="demo1" id="metaObjectSelect" onchange="metaObjectSwitch(this)">
+                            <option value=0 selected>-- 全部对象 --</option>
                             @foreach (var item in metaObjects)
                             {
                                 <option value=@item.Id>@item.Name</option>
@@ -59,20 +59,17 @@
 <aside class="Hui-aside">
 
     <div class="menu_dropdown bk_2">
-        <dl id="menu-objects">
-            <dt style="font-weight:bold"><i class="Hui-iconfont">&#xe616;</i> <a href="#" data-title="对象列表" onclick="javascript:frameOpen('/MetaObject/List')">对象列表</a></dt>
-        </dl>
         <dl id="menu-objsetting">
             <dt><i class="Hui-iconfont">&#xe616;</i> 对象设置<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
             <dd>
                 <ul>
-                    <li><a data-href="article-list.html" data-title="字段" href="javascript:void(0)">字段</a></li>
-                    <li><a data-href="article-list.html" data-title="表单" href="javascript:void(0)">表单</a></li>
-                    <li><a data-href="article-list.html" data-title="列表" href="javascript:void(0)">列表</a></li>
-                    <li><a data-href="article-list.html" data-title="搜索表单" href="javascript:void(0)">搜索表单</a></li>
-                    <li><a data-href="article-list.html" data-title="详情页" href="javascript:void(0)">详情页</a></li>
-                    <li><a data-href="article-list.html" data-title="视图" href="javascript:void(0)">视图</a></li>
-                    <li><a data-href="article-list.html" data-title="功能" href="javascript:void(0)">功能</a></li>
+                    <li><a data-title="字段" href="javascript:frameCheckOpen(1,'/MetaField/List');">字段</a></li>
+                    <li><a data-title="表单" href="javascript:void(0)">表单</a></li>
+                    <li><a data-title="列表" href="javascript:void(0)">列表</a></li>
+                    <li><a data-title="搜索表单" href="javascript:void(0)">搜索表单</a></li>
+                    <li><a data-title="详情页" href="javascript:void(0)">详情页</a></li>
+                    <li><a data-title="视图" href="javascript:void(0)">视图</a></li>
+                    <li><a data-title="功能" href="javascript:void(0)">功能</a></li>
                 </ul>
             </dd>
         </dl>
@@ -206,27 +203,44 @@
 </aside>
 <div class="dislpayArrow hidden-xs"><a class="pngfix" href="javascript:void(0);" onClick="displaynavbar(this)"></a></div>
 <!--/_menu 作为公共模版分离出去-->
-
 <section class="Hui-article-box">
     <div class="show_iframe">
         <div style="display:none" class="loading"></div>
-        <iframe id="main_iframe" scrolling="yes" frameborder="0" src="/Home/Welcome"></iframe>
+        <iframe id="main_iframe" scrolling="yes" frameborder="0" src="/MetaObject/List"></iframe>
     </div>
 </section>
-
 @Html.Partial($"~/Views/Shared/_FooterScripts.cshtml")
 <!--请在下方写此页面业务相关的脚本-->
 <script type="text/javascript">
-    $(function () {
-        $("body").Huitab({
-            tabBar: ".navbar-wrapper .navbar-levelone",
-            tabCon: ".Hui-aside .menu_dropdown",
-            className: "current",
-            index: 0,
+        $(function () {
+            $("body").Huitab({
+                tabBar: ".navbar-wrapper .navbar-levelone",
+                tabCon: ".Hui-aside .menu_dropdown",
+                className: "current",
+                index: 0,
+            });
         });
-    });
-    function frameOpen(url) {
-        $("#main_iframe").prop("src", url);
-    }
+        function frameOpen(url) {
+            $("#main_iframe").prop("src", url);
+        }
+        //检查并使iframe跳转
+        function frameCheckOpen(checkType, url) {
+            //检查是否选择的非0
+            if (checkType == 1) {
+                if ($("#metaObjectSelect").val() == 0) {
+                    alert("请先选择对象!");
+                    return;
+                }
+            }
+            frameOpen(url);
+        }
+        function metaObjectSwitch(obj) {
+            var selected = $(obj).val();
+            if (selected == 0) {
+                frameOpen('/MetaObject/List');
+            } else {
+                frameOpen('/MetaObject/Switch/' + $(obj).val());
+            }
+        }
 </script>
 <!--/请在上方写此页面业务相关的脚本-->

@@ -13,7 +13,7 @@
     <span class="c-gray en">&gt;</span>
     应用管理
     <span class="c-gray en">&gt;</span>
-    应用列表(已删除)
+    已删除应用列表
     <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a>
 </nav>
 
@@ -79,7 +79,7 @@
         ]
     });
 
-    /*资讯-删除*/
+    /*删除*/
     function article_del(obj, id) {
         layer.confirm('确认要删除吗？', function (index) {
             $.ajax({
@@ -96,7 +96,7 @@
             });
         });
     }
-    /*资讯-还原*/
+    /*还原*/
     function member_huanyuan(obj, id) {
         layer.confirm('确认要还原吗？', function (index) {
             $.ajax({

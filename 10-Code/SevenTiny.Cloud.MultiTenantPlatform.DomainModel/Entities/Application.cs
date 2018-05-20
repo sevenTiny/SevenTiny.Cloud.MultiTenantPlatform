@@ -6,7 +6,7 @@ using System.Text;
 namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities
 {
     [Table]
-    public class Application: EntityInfo
+    public class Application: CommonInfo
     {
         [Column]
         public string Icon { get; set; }

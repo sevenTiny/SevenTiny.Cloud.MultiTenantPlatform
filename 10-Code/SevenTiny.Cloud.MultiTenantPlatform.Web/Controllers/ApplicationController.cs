@@ -101,7 +101,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             return RedirectToAction("List");
         }
 
-        public IActionResult Delete(int id)
+        public IActionResult LogicDelete(int id)
         {
             DomainModel.Entities.Application application = _applicationRepository.GetEntity(t => t.Id == id);
             _applicationRepository.LogicDelete(t => t.Id == id, application);

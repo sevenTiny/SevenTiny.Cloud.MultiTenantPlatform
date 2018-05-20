@@ -15,10 +15,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
     public class HomeController : Controller
     {
         private readonly IRepository<MetaObject> _metaObjectRepository;
+        private readonly IRepository<DomainModel.Entities.Application> _applicationRepository;
 
-        public HomeController(IRepository<MetaObject> metaObjectRepository)
+        public HomeController(IRepository<MetaObject> metaObjectRepository, IRepository<DomainModel.Entities.Application> applicationRepository)
         {
             this._metaObjectRepository = metaObjectRepository;
+            this._applicationRepository = applicationRepository;
         }
 
         public IActionResult Index()
@@ -33,13 +35,14 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             {
                 return Redirect("/Application/Select");
             }
-            HttpContext.Session.SetString("ApplicationCode", app);
+            DomainModel.Entities.Application application = _applicationRepository.GetEntity(t => t.Code.Equals(app));
+            HttpContext.Session.SetInt32("ApplicationId", application.Id);
             ViewData["Application"] = app;
-            ViewData["MetaObjects"] = _metaObjectRepository.GetList(t => t.IsDeleted == (int)IsDeleted.NotDeleted);
+            ViewData["MetaObjects"] = _metaObjectRepository.GetList(t => t.ApplicationId == application.Id && t.IsDeleted == (int)IsDeleted.NotDeleted);
             return View();
         }
 
-       
+
 
         public IActionResult Welcome()
         {

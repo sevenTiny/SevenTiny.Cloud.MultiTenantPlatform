@@ -2,7 +2,7 @@
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities
 {
-    public class StandardInterface : EntityInfo
+    public class StandardInterface : CommonInfo
     {
         public InterfaceType InterfaceType { get; set; }
         public int SearchFormId { get; set; }
