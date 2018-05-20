@@ -36,7 +36,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 
         public IActionResult Add()
         {
-            return View();
+            DomainModel.Entities.Application application = new DomainModel.Entities.Application();
+            application.Icon = "cloud";
+            return View(new ActionResultModel<DomainModel.Entities.Application>(true, string.Empty, application));
         }
 
         public IActionResult AddLogic(DomainModel.Entities.Application application)
@@ -49,10 +51,14 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             {
                 return View("Add", new ActionResultModel<DomainModel.Entities.Application>(false, "Application Code Can Not Be Null！", application));
             }
+            if (_applicationRepository.Exist(t => t.Name.Equals(application.Name)))
+            {
+                return View("Add", new ActionResultModel<DomainModel.Entities.Application>(false, "Application Name Has Been Exist！", application));
+            }
+
             _applicationRepository.Add(application);
             return RedirectToAction("List");
         }
-
 
         public IActionResult Update(int id)
         {
@@ -75,6 +81,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             {
                 return View("Update", new ActionResultModel<DomainModel.Entities.Application>(false, "Application Code Can Not Be Null！", application));
             }
+            if (_applicationRepository.Exist(t => t.Name.Equals(application.Name) && t.Id != application.Id))
+            {
+                return View("Add", new ActionResultModel<DomainModel.Entities.Application>(false, "Application Name Has Been Exist！", application));
+            }
+
             DomainModel.Entities.Application app = _applicationRepository.GetEntity(t => t.Id == application.Id);
             if (app != null)
             {
@@ -90,7 +101,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             return RedirectToAction("List");
         }
 
-        public IActionResult Delete(int id)
+        public IActionResult LogicDelete(int id)
         {
             DomainModel.Entities.Application application = _applicationRepository.GetEntity(t => t.Id == id);
             _applicationRepository.LogicDelete(t => t.Id == id, application);

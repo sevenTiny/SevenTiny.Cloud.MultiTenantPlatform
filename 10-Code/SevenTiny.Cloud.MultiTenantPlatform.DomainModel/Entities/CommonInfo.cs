@@ -6,7 +6,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities
     /// <summary>
     /// EntityInfo Standard Property
     /// </summary>
-    public class EntityInfo
+    public class CommonInfo
     {
         [Key]
         [AutoIncrease]

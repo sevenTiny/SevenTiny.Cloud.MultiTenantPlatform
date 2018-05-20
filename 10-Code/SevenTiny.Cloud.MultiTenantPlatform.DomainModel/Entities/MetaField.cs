@@ -1,13 +1,20 @@
-﻿using SevenTiny.Cloud.MultiTenantPlatform.Model.Enums;
-using System;
+﻿using SevenTiny.Bantina.Bankinate;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities
 {
-    public class MetaField: EntityInfo
+    public class MetaField : CommonInfo
     {
-        public int EntityId { get; set; }
-        public FieldType FieldType { get; set; }
+        [Column]
+        public int MetaObjectId { get; set; }
+        //=DataType
+        [Column]
+        public int FieldType { get; set; }
+        //if field type is datasource
+        [Column]
+        public int DataSourceId { get; set; } = -1;
+        [Column]
         public int IsMust { get; set; }
+        [Column]
         public int IsSystem { get; set; }
     }
 }

@@ -4,20 +4,20 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @{
-    ActionResultModel<Application> result = Model as ActionResultModel<Application> ?? new ActionResultModel<Application>(true, string.Empty, new Application());
+    ActionResultModel<MetaObject> result = Model as ActionResultModel<MetaObject> ?? new ActionResultModel<MetaObject>(true, string.Empty, new MetaObject());
 }
 
 <nav class="breadcrumb">
     <i class="Hui-iconfont">&#xe67f;</i> 首页
     <span class="c-gray en">&gt;</span>
-    应用管理
+    对象管理
     <span class="c-gray en">&gt;</span>
-    修改应用
+    修改对象
     <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a>
 </nav>
 
 <article class="page-container">
-    <form class="form form-horizontal" id="form-article-add" method="post" action="/Application/UpdateLogic">
+    <form class="form form-horizontal" id="form-article-add" method="post" action="/MetaObject/UpdateLogic">
         <input type="text" class="input-text" value="@result.Data.Id" placeholder="" id="" name="id" hidden>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>名称：</label>
@@ -29,15 +29,6 @@
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>编码：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <input type="text" class="input-text" style="background-color:#cccccc;" value="@result.Data.Code" placeholder="" id="" name="code" readonly="readonly">
-            </div>
-        </div>
-        <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2">图标：</label>
-            <div class="formControls col-xs-7 col-sm-8">
-                <input type="text" class="input-text" value="@result.Data.Icon" placeholder="" id="" name="icon">
-            </div>
-            <div class="formControls col-xs-1 col-sm-1">
-                <a href="http://fontawesome.dashgame.com/" target="_blank" style="color:#0abb68">图标库</a>
             </div>
         </div>
         <div class="row cl">
@@ -62,11 +53,11 @@
         <div class="row cl">
             <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
                 <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
-                <button onClick="javascript:window.location = '/Application/List';" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+                <button onClick="javascript:window.location = '/MetaObject/List';" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
                 @if (!result.IsSuccess)
-            {
-                <br /><br /><span class="c-red">@result.Msg</span>
-        }
+                {
+                    <br /><br /><span class="c-red">@result.Msg</span>
+                }
             </div>
         </div>
     </form>

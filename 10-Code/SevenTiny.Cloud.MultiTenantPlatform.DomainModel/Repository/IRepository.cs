@@ -8,10 +8,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Repository
     {
         List<TEntity> GetList(Expression<Func<TEntity, bool>> filter);
         TEntity GetEntity(Expression<Func<TEntity, bool>> filter);
+        bool Exist(Expression<Func<TEntity, bool>> filter);
         void Add(TEntity entity);
+        void Add(IEnumerable<TEntity> entities);
         void Update(Expression<Func<TEntity, bool>> filter,TEntity entity);
+        void Delete(Expression<Func<TEntity, bool>> filter);
         void LogicDelete(Expression<Func<TEntity, bool>> filter, TEntity entity);
         void Recover(Expression<Func<TEntity, bool>> filter, TEntity entity);
-        void Delete(Expression<Func<TEntity, bool>> filter);
     }
 }

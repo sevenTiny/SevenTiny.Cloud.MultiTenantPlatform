@@ -1,4 +1,4 @@
-﻿using SevenTiny.Cloud.MultiTenantPlatform.Model.Enums;
+﻿using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Enums;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities
 {
@@ -10,11 +10,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities
         public Data(string dataKey, DataType dataType, object dataValue)
         {
             this.DataKey = dataKey;
-            this.DataType = dataType;
+            this.DataType = (int)dataType;
             this.DataValue = dataValue;
         }
         public string DataKey { get; set; }
-        public DataType DataType { get; set; }
+        public int DataType { get; set; }
         public object DataValue { get; set; }
     }
 }

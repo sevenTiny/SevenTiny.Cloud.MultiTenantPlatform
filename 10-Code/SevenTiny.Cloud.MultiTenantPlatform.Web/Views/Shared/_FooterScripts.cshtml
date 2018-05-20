@@ -4,3 +4,13 @@
 <script type="text/javascript" src="~/lib/h-ui/js/H-ui.js"></script>
 <script type="text/javascript" src="~/lib/h-ui.admin/js/H-ui.admin.page.js"></script>
 <!--/_footer /作为公共模版分离出去-->
+<script>
+    function textarealength(obj, len)
+    {
+        $(obj).next('.textarea-numberbar').children('.textarea-length').text($(obj).val().length);
+        if ($(obj).val().length > len) {
+            alert(1);
+            $(obj).val( $(obj).val().substring(0, len));
+        }
+     }
+</script>

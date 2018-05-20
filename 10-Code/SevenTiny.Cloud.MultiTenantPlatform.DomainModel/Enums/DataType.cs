@@ -1,4 +1,4 @@
-﻿namespace SevenTiny.Cloud.MultiTenantPlatform.Model.Enums
+﻿namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Enums
 {
     public enum DataType
     {
@@ -12,7 +12,7 @@
         Long = 7,
         Float = 8,
         Double = 9,
-        RatingScale = 10,
+        DataSource = 10,
         StandradDate = 11,
         StandradDateTime = 12
     }

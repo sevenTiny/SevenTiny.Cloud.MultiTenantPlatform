@@ -28,6 +28,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Repository
         {
             _context.Add(entity);
         }
+        public void Add(IEnumerable<Application> entities)
+        {
+            _context.Add(entities);
+        }
 
         public void Update(Expression<Func<Application, bool>> filter, Application entity)
         {
@@ -49,6 +53,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Repository
         public void Delete(Expression<Func<Application, bool>> filter)
         {
             throw new NotImplementedException();
+        }
+
+        public bool Exist(Expression<Func<Application, bool>> filter)
+        {
+            return _context.QueryCount(filter) > 0;
         }
     }
 }

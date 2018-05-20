@@ -1,8 +1,7 @@
-﻿@using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities
-
+﻿@using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
 @{
     ViewData["Title"] = "Add";
-    Layout = $"~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @{
     ActionResultModel<MetaObject> result = Model as ActionResultModel<MetaObject> ?? new ActionResultModel<MetaObject>(true, string.Empty, new MetaObject());
@@ -11,14 +10,14 @@
 <nav class="breadcrumb">
     <i class="Hui-iconfont">&#xe67f;</i> 首页
     <span class="c-gray en">&gt;</span>
-    应用管理
+    对象管理
     <span class="c-gray en">&gt;</span>
-    添加应用
+    添加对象
     <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a>
 </nav>
 
 <article class="page-container">
-    <form class="form form-horizontal" id="form-article-add" method="post" action="/Application/AddLogic">
+    <form class="form form-horizontal" id="form-article-add" method="post" action="/MetaObject/AddLogic">
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>名称：</label>
             <div class="formControls col-xs-8 col-sm-9">
@@ -46,21 +45,17 @@
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">描述：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <textarea name="description" class="textarea" placeholder="说点什么...最少输入10个字符" datatype="*10-100" dragonfly="true" nullmsg="备注不能为空！" onKeyUp="textarealength(this,200)">@result.Data.Description</textarea>
-                <p class="textarea-numberbar"><em class="textarea-length">0</em>/200</p>
+                <textarea name="description" class="textarea" placeholder="说点什么...最多输入1000个字符" datatype="*0-1000" dragonfly="true" nullmsg="无备注" onKeyUp="textarealength(this,1000)">@result.Data.Description</textarea>
+                <p class="textarea-numberbar"><em class="textarea-length">0</em>/1000</p>
             </div>
         </div>
         <div class="row cl">
             <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
                 <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
-                <button onClick="javascript:window.location='/Application/List';" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+                <button onClick="javascript:window.location='/MetaObject/List';" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
                 @if (!result.IsSuccess)
                 {
-                    <label class="form-label col-xs-4 col-sm-2"><span class="c-red">@result.Msg</span></label>
-                }
-                else
-                {
-                    <label class="form-label col-xs-4 col-sm-2"><span class="c-green">@result.Msg</span></label>
+                    <br /><br /><span class="c-red">@result.Msg</span>
                 }
             </div>
         </div>
@@ -73,10 +68,6 @@
 <script type="text/javascript" src="~/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
 <script type="text/javascript" src="~/lib/jquery.validation/1.14.0/validate-methods.js"></script>
 <script type="text/javascript" src="~/lib/jquery.validation/1.14.0/messages_zh.js"></script>
-<script type="text/javascript" src="~/lib/webuploader/0.1.5/webuploader.min.js"></script>
-<script type="text/javascript" src="~/lib/ueditor/1.4.3/ueditor.config.js"></script>
-<script type="text/javascript" src="~/lib/ueditor/1.4.3/ueditor.all.min.js"></script>
-<script type="text/javascript" src="~/lib/ueditor/1.4.3/lang/zh-cn/zh-cn.js"></script>
 <script type="text/javascript">
     $(function () {
         $('.skin-minimal input').iCheck({

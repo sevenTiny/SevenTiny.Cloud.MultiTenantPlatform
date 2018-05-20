@@ -5,29 +5,44 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
+using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Enums;
+using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly IRepository<MetaObject> _metaObjectRepository;
+        private readonly IRepository<DomainModel.Entities.Application> _applicationRepository;
+
+        public HomeController(IRepository<MetaObject> metaObjectRepository, IRepository<DomainModel.Entities.Application> applicationRepository)
+        {
+            this._metaObjectRepository = metaObjectRepository;
+            this._applicationRepository = applicationRepository;
+        }
+
         public IActionResult Index()
         {
             return Redirect("/Home/Application");
         }
 
+        //切换应用的公共入口
         public IActionResult Application(string app)
         {
             if (string.IsNullOrEmpty(app))
             {
                 return Redirect("/Application/Select");
             }
-            HttpContext.Session.SetString("Application", app);
+            DomainModel.Entities.Application application = _applicationRepository.GetEntity(t => t.Code.Equals(app));
+            HttpContext.Session.SetInt32("ApplicationId", application.Id);
             ViewData["Application"] = app;
+            ViewData["MetaObjects"] = _metaObjectRepository.GetList(t => t.ApplicationId == application.Id && t.IsDeleted == (int)IsDeleted.NotDeleted);
             return View();
         }
 
-       
+
 
         public IActionResult Welcome()
         {

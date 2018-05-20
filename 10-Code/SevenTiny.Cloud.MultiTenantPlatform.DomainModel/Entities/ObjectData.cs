@@ -7,7 +7,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities
     /// <summary>
     /// query object data
     /// </summary>
-    public class ObjectData: EntityInfo
+    public class ObjectData: CommonInfo
     {
         /// <summary>
         /// tenant id,means the data belong to the tenant
