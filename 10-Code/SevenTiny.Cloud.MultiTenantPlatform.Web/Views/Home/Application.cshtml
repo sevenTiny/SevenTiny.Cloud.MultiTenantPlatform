@@ -74,6 +74,14 @@
             </dd>
         </dl>
         <dl id="menu-objsetting">
+            <dt><i class="Hui-iconfont">&#xe616;</i> 基础设置<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+            <dd>
+                <ul>
+                    <li><a data-title="数据源" href="javascript:void(0)">数据源</a></li>
+                </ul>
+            </dd>
+        </dl>
+        <dl id="menu-objsetting">
             <dt><i class="Hui-iconfont">&#xe616;</i> 标准接口<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
             <dd>
                 <ul>
@@ -212,35 +220,35 @@
 @Html.Partial($"~/Views/Shared/_FooterScripts.cshtml")
 <!--请在下方写此页面业务相关的脚本-->
 <script type="text/javascript">
-        $(function () {
-            $("body").Huitab({
-                tabBar: ".navbar-wrapper .navbar-levelone",
-                tabCon: ".Hui-aside .menu_dropdown",
-                className: "current",
-                index: 0,
-            });
+    $(function () {
+        $("body").Huitab({
+            tabBar: ".navbar-wrapper .navbar-levelone",
+            tabCon: ".Hui-aside .menu_dropdown",
+            className: "current",
+            index: 0,
         });
-        function frameOpen(url) {
-            $("#main_iframe").prop("src", url);
-        }
-        //检查并使iframe跳转
-        function frameCheckOpen(checkType, url) {
-            //检查是否选择的非0
-            if (checkType == 1) {
-                if ($("#metaObjectSelect").val() == 0) {
-                    alert("请先选择对象!");
-                    return;
-                }
-            }
-            frameOpen(url);
-        }
-        function metaObjectSwitch(obj) {
-            var selected = $(obj).val();
-            if (selected == 0) {
-                frameOpen('/MetaObject/List');
-            } else {
-                frameOpen('/MetaObject/Switch/' + $(obj).val());
+    });
+    function frameOpen(url) {
+        $("#main_iframe").prop("src", url);
+    }
+    //检查并使iframe跳转
+    function frameCheckOpen(checkType, url) {
+        //检查是否选择的非0
+        if (checkType == 1) {
+            if ($("#metaObjectSelect").val() == 0) {
+                alert("请先选择对象!");
+                return;
             }
         }
+        frameOpen(url);
+    }
+    function metaObjectSwitch(obj) {
+        var selected = $(obj).val();
+        if (selected == 0) {
+            frameOpen('/MetaObject/List');
+        } else {
+            frameOpen('/MetaObject/Switch/' + $(obj).val());
+        }
+    }
 </script>
 <!--/请在上方写此页面业务相关的脚本-->

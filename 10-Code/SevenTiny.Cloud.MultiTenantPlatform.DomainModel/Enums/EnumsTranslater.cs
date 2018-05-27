@@ -29,15 +29,15 @@
                 case (int)DataType.Date:
                     return "日期";
                 case (int)DataType.Boolean:
-                    return "布尔";
+                    return "布尔（是=1，否=0）";
                 case (int)DataType.Int:
                     return "整数";
                 case (int)DataType.Long:
                     return "长整数";
                 case (int)DataType.Float:
-                    return "小数(不建议使用)";
+                    return "小数（单精度，不建议使用）";
                 case (int)DataType.Double:
-                    return "小数";
+                    return "小数（双精度）";
                 case (int)DataType.DataSource:
                     return "数据源";
                 case (int)DataType.StandradDate:

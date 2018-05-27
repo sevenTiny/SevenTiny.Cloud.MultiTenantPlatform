@@ -73,7 +73,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
                 return View("Add", new ActionResultModel<MetaObject>(false, "MetaObject Code Can Not Be Null！", metaObject));
             }
             //check metaobject of name or code exist?
-            MetaObject obj = _metaObjectRepository.GetEntity(t => t.Name.Equals(metaObject.Name) || t.Code.Equals(metaObject.Code));
+            MetaObject obj = _metaObjectRepository.GetEntity(t => (t.ApplicationId == CurrentApplicationId && t.Name.Equals(metaObject.Name)) || (t.ApplicationId == CurrentApplicationId && t.Code.Equals(metaObject.Code)));
             if (obj != null)
             {
                 if (obj.Code.Equals(metaObject.Code))
@@ -85,14 +85,13 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
                     return View("Add", new ActionResultModel<MetaObject>(false, "MetaObject Name Has Been Exist！", metaObject));
                 }
             }
-            int applicationId = HttpContext.Session.GetInt32("ApplicationId") ?? default(int);
-            if (applicationId == default(int))
+            if (CurrentApplicationId == default(int))
             {
                 return View("Add", new ActionResultModel<MetaObject>(false, "Application Id Can Not Be Null！", metaObject));
             }
-            metaObject.ApplicationId = applicationId;
+            metaObject.ApplicationId = CurrentApplicationId;
             _metaObjectRepository.Add(metaObject);
-            obj = _metaObjectRepository.GetEntity(t => t.Code.Equals(metaObject.Code));
+            obj = _metaObjectRepository.GetEntity(t => t.ApplicationId == metaObject.ApplicationId && t.Code.Equals(metaObject.Code));
             if (obj == null)
             {
                 return View("Add", new ActionResultModel<MetaObject>(false, "add metaobject then query faild！", metaObject));
@@ -124,7 +123,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             {
                 return View("Update", new ActionResultModel<MetaObject>(false, "MetaObject Code Can Not Be Null！", metaObject));
             }
-            if (_metaObjectRepository.Exist(t => t.Name.Equals(metaObject.Name) && t.Id != metaObject.Id))
+            if (_metaObjectRepository.Exist(t => t.ApplicationId != CurrentApplicationId && t.Name.Equals(metaObject.Name) && t.Id != metaObject.Id))
             {
                 return View("Add", new ActionResultModel<MetaObject>(false, "MetaObject Name Has Been Exist！", metaObject));
             }
