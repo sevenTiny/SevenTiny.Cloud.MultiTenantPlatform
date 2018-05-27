@@ -6,7 +6,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Enums;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Repository
 {
-    public class ApplicationRepository : IRepository<Application>
+    public class ApplicationRepository : IApplicationRepository
     {
         private readonly MultiTenantPlatformDbContext _context;
         public ApplicationRepository(MultiTenantPlatformDbContext context)

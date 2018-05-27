@@ -8,6 +8,7 @@
     <Folder Include="Arguments\" />
     <Folder Include="Aggregate\" />
     <Folder Include="Const\" />
+    <Folder Include="Service\" />
   </ItemGroup>
 
   <ItemGroup>

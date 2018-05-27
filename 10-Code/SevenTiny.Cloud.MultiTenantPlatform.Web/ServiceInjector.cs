@@ -15,9 +15,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web
         {
             //repository
             services.AddScoped<MultiTenantPlatformDbContext>();
-            services.AddScoped<IRepository<DomainModel.Entities.Application>, ApplicationRepository>();
-            services.AddScoped<IRepository<MetaObject>, MetaObjectRepository>();
-            services.AddScoped<IRepository<MetaField>, MetaFieldRepository>();
+            services.AddScoped<IApplicationRepository, ApplicationRepository>();
+            services.AddScoped<IMetaObjectRepository, MetaObjectRepository>();
+            services.AddScoped<IMetaFieldRepository, MetaFieldRepository>();
 
             //service
             services.AddScoped<IMetaFieldService, MetaFieldService>();

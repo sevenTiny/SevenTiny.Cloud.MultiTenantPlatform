@@ -14,10 +14,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IRepository<MetaObject> _metaObjectRepository;
-        private readonly IRepository<DomainModel.Entities.Application> _applicationRepository;
+        private readonly IMetaObjectRepository _metaObjectRepository;
+        private readonly IApplicationRepository _applicationRepository;
 
-        public HomeController(IRepository<MetaObject> metaObjectRepository, IRepository<DomainModel.Entities.Application> applicationRepository)
+        public HomeController(IMetaObjectRepository metaObjectRepository, IApplicationRepository applicationRepository)
         {
             this._metaObjectRepository = metaObjectRepository;
             this._applicationRepository = applicationRepository;

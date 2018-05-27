@@ -9,9 +9,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 {
     public class ApplicationController : Controller
     {
-        private readonly IRepository<DomainModel.Entities.Application> _applicationRepository;
+        private readonly IApplicationRepository _applicationRepository;
 
-        public ApplicationController(IRepository<DomainModel.Entities.Application> applicationRepository)
+        public ApplicationController(IApplicationRepository applicationRepository)
         {
             this._applicationRepository = applicationRepository;
         }

@@ -1,4 +1,5 @@
 ﻿using SevenTiny.Bantina.Bankinate;
+using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Enums;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities
 {
@@ -15,6 +16,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities
         [Column]
         public int IsMust { get; set; }
         [Column]
-        public int IsSystem { get; set; }
+        public int IsSystem { get; set; } = (int)TrueFalse.False;
     }
 }

@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Repository
 {
-    public class MetaObjectRepository : IRepository<MetaObject>
+    public class MetaObjectRepository : IMetaObjectRepository
     {
         private readonly MultiTenantPlatformDbContext _context;
         public MetaObjectRepository(MultiTenantPlatformDbContext context)

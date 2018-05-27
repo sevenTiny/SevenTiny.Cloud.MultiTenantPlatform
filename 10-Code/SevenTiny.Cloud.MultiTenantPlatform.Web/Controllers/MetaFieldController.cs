@@ -13,9 +13,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 {
     public class MetaFieldController : Controller
     {
-        private readonly IRepository<MetaField> _metaFieldRepository;
+        private readonly IMetaFieldRepository _metaFieldRepository;
 
-        public MetaFieldController(IRepository<MetaField> metaFieldRepository)
+        public MetaFieldController(IMetaFieldRepository metaFieldRepository)
         {
             this._metaFieldRepository = metaFieldRepository;
         }
@@ -27,7 +27,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
                 int metaObjectId = HttpContext.Session.GetInt32("MetaObjectId") ?? default(int);
                 if (metaObjectId == default(int))
                 {
-                    throw new ArgumentNullException("MetaObjectId is null,please select application first!");
+                    throw new ArgumentNullException("MetaObjectId is null,please select MetaObject first!");
                 }
                 return metaObjectId;
             }
@@ -45,36 +45,33 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 
         public IActionResult Add()
         {
-            MetaField metaObject = new MetaField();
-            return View(new ActionResultModel<MetaField>(true, string.Empty, metaObject));
+            return View();
         }
 
-        public IActionResult AddLogic(MetaField metaObject)
+        public IActionResult AddLogic(MetaField metaField)
         {
-            if (string.IsNullOrEmpty(metaObject.Name))
+            if (string.IsNullOrEmpty(metaField.Name))
             {
-                return View("Add", new ActionResultModel<MetaField>(false, "MetaField Name Can Not Be Null！", metaObject));
+                return View("Add", new ActionResultModel<MetaField>(false, "MetaField Name Can Not Be Null！", metaField));
             }
-            if (string.IsNullOrEmpty(metaObject.Code))
+            if (string.IsNullOrEmpty(metaField.Code))
             {
-                return View("Add", new ActionResultModel<MetaField>(false, "MetaField Code Can Not Be Null！", metaObject));
+                return View("Add", new ActionResultModel<MetaField>(false, "MetaField Code Can Not Be Null！", metaField));
             }
-            MetaField obj = _metaFieldRepository.GetEntity(t => t.Name.Equals(metaObject.Name) || t.Code.Equals(metaObject.Code));
-            if (obj.Code.Equals(metaObject.Code))
+            MetaField obj = _metaFieldRepository.GetEntity(t => (t.MetaObjectId == CurrentMetaObjectId && t.Name.Equals(metaField.Name)) || (t.MetaObjectId == CurrentMetaObjectId && t.Code.Equals(metaField.Code)));
+            if (obj != null)
             {
-                return View("Add", new ActionResultModel<MetaField>(false, "MetaField Code Has Been Exist！", metaObject));
+                if (obj.Code.Equals(metaField.Code))
+                {
+                    return View("Add", new ActionResultModel<MetaField>(false, "MetaField Code Has Been Exist！", metaField));
+                }
+                if (obj.Name.Equals(metaField.Name))
+                {
+                    return View("Add", new ActionResultModel<MetaField>(false, "MetaField Name Has Been Exist！", metaField));
+                }
             }
-            if (obj.Name.Equals(metaObject.Name))
-            {
-                return View("Add", new ActionResultModel<MetaField>(false, "MetaField Name Has Been Exist！", metaObject));
-            }
-            int applicationId = HttpContext.Session.GetInt32("MetaObjectId") ?? default(int);
-            if (applicationId == default(int))
-            {
-                return View("Add", new ActionResultModel<MetaField>(false, "MetaObject Id Can Not Be Null！", metaObject));
-            }
-            metaObject.MetaObjectId = applicationId;
-            _metaFieldRepository.Add(metaObject);
+            metaField.MetaObjectId = CurrentMetaObjectId;
+            _metaFieldRepository.Add(metaField);
             return RedirectToAction("List");
         }
 
@@ -86,35 +83,37 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 
         }
 
-        public IActionResult UpdateLogic(MetaField metaObject)
+        public IActionResult UpdateLogic(MetaField metaField)
         {
-            if (metaObject.Id == 0)
+            if (metaField.Id == 0)
             {
-                return View("Update", new ActionResultModel<MetaField>(false, "MetaField Id Can Not Be Null！", metaObject));
+                return View("Update", new ActionResultModel<MetaField>(false, "MetaField Id Can Not Be Null！", metaField));
             }
-            if (string.IsNullOrEmpty(metaObject.Name))
+            if (string.IsNullOrEmpty(metaField.Name))
             {
-                return View("Update", new ActionResultModel<MetaField>(false, "MetaField Name Can Not Be Null！", metaObject));
+                return View("Update", new ActionResultModel<MetaField>(false, "MetaField Name Can Not Be Null！", metaField));
             }
-            if (string.IsNullOrEmpty(metaObject.Code))
+            if (string.IsNullOrEmpty(metaField.Code))
             {
-                return View("Update", new ActionResultModel<MetaField>(false, "MetaField Code Can Not Be Null！", metaObject));
+                return View("Update", new ActionResultModel<MetaField>(false, "MetaField Code Can Not Be Null！", metaField));
             }
-            if (_metaFieldRepository.Exist(t => t.Name.Equals(metaObject.Name) && t.Id != metaObject.Id))
+            if (_metaFieldRepository.Exist(t => t.MetaObjectId == CurrentMetaObjectId && t.Name.Equals(metaField.Name) && t.Id != metaField.Id))
             {
-                return View("Add", new ActionResultModel<MetaField>(false, "MetaField Name Has Been Exist！", metaObject));
+                return View("Add", new ActionResultModel<MetaField>(false, "MetaField Name Has Been Exist！", metaField));
             }
-            MetaField app = _metaFieldRepository.GetEntity(t => t.Id == metaObject.Id);
-            if (app != null)
+            MetaField myfield = _metaFieldRepository.GetEntity(t => t.Id == metaField.Id);
+            if (myfield != null)
             {
-                app.Name = metaObject.Name;
-                app.Group = metaObject.Group;
-                app.SortNumber = metaObject.SortNumber;
-                app.Description = metaObject.Description;
-                app.ModifyBy = -1;
-                app.ModifyTime = DateTime.Now;
+                myfield.Name = metaField.Name;
+                myfield.Group = metaField.Group;
+                myfield.SortNumber = metaField.SortNumber;
+                myfield.Description = metaField.Description;
+                myfield.FieldType = metaField.FieldType;
+                myfield.DataSourceId = metaField.DataSourceId;
+                myfield.ModifyBy = -1;
+                myfield.ModifyTime = DateTime.Now;
             }
-            _metaFieldRepository.Update(t => t.Id == metaObject.Id, app);
+            _metaFieldRepository.Update(t => t.Id == metaField.Id, myfield);
             return RedirectToAction("List");
         }
 
