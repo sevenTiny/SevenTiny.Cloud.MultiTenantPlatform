@@ -15,16 +15,16 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 {
     public class MetaObjectController : Controller
     {
-        private readonly IRepository<MetaField> _metaFieldRepository;
-        private readonly IRepository<MetaObject> _metaObjectRepository;
-        private readonly IRepository<DomainModel.Entities.Application> _applicationRepository;
+        private readonly IMetaFieldRepository _metaFieldRepository;
+        private readonly IMetaObjectRepository _metaObjectRepository;
+        private readonly IApplicationRepository _applicationRepository;
         private readonly IMetaFieldService _metaFieldService;
 
         public MetaObjectController(
-            IRepository<MetaObject> metaObjectRepository,
-            IRepository<DomainModel.Entities.Application> applicationRepository,
+            IMetaObjectRepository metaObjectRepository,
+            IApplicationRepository applicationRepository,
             IMetaFieldService metaFieldService,
-            IRepository<MetaField> metaFieldRepository
+            IMetaFieldRepository metaFieldRepository
             )
         {
             this._metaObjectRepository = metaObjectRepository;

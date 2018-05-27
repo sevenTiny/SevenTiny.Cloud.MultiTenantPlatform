@@ -13,9 +13,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 {
     public class MetaFieldController : Controller
     {
-        private readonly IRepository<MetaField> _metaFieldRepository;
+        private readonly IMetaFieldRepository _metaFieldRepository;
 
-        public MetaFieldController(IRepository<MetaField> metaFieldRepository)
+        public MetaFieldController(IMetaFieldRepository metaFieldRepository)
         {
             this._metaFieldRepository = metaFieldRepository;
         }

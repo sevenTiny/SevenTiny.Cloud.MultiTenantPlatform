@@ -3,11 +3,10 @@ using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Repository
 {
-    public class MetaFieldRepository : IRepository<MetaField>
+    public class MetaFieldRepository : IMetaFieldRepository
     {
         private readonly MultiTenantPlatformDbContext _context;
         public MetaFieldRepository(MultiTenantPlatformDbContext context)

@@ -8,8 +8,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Application
 {
     public class MetaFieldService : IMetaFieldService
     {
-        private readonly IRepository<MetaField> _metaFieldRepository;
-        public MetaFieldService(IRepository<MetaField> metaFieldRepository)
+        private readonly IMetaFieldRepository _metaFieldRepository;
+        public MetaFieldService(IMetaFieldRepository metaFieldRepository)
         {
             this._metaFieldRepository = metaFieldRepository;
         }
