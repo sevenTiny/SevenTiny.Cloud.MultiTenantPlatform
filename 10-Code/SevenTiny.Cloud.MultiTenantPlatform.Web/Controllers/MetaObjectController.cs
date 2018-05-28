@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SevenTiny.Bantina;
 using SevenTiny.Cloud.MultiTenantPlatform.Application;
 using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
 using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Enums;
-using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Repository;
+using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.RepositoryInterface;
 using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
-using SevenTiny.Bantina;
+using System;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 {

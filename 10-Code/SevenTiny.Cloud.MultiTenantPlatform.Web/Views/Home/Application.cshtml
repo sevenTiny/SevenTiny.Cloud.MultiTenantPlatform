@@ -85,10 +85,9 @@
             <dt><i class="Hui-iconfont">&#xe616;</i> 标准接口<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
             <dd>
                 <ul>
-                    <li><a data-href="article-list.html" data-title="单对象" href="javascript:void(0)">单对象</a></li>
-                    <li><a data-href="article-list.html" data-title="列表集合" href="javascript:void(0)">列表集合</a></li>
+                    <li><a data-href="article-list.html" data-title="字段配置" href="javascript:void(0)">字段配置</a></li>
                     <li><a data-href="article-list.html" data-title="搜索条件" href="javascript:void(0)">搜索条件</a></li>
-                    <li><a data-href="/StandardInterface/List" data-title="组织接口" href="javascript:void(0)">组织接口</a></li>
+                    <li><a data-title="组织接口" href="javascript:frameCheckOpen(1,'/InterfaceAggregation/List');">组织接口</a></li>
                 </ul>
             </dd>
         </dl>
@@ -240,6 +239,7 @@
                 return;
             }
         }
+        //checktype = x 其他类型检查
         frameOpen(url);
     }
     function metaObjectSwitch(obj) {

@@ -2,6 +2,7 @@
 using SevenTiny.Cloud.MultiTenantPlatform.Application;
 using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
 using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Repository;
+using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.RepositoryInterface;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Web
 {
@@ -18,6 +19,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web
             services.AddScoped<IApplicationRepository, ApplicationRepository>();
             services.AddScoped<IMetaObjectRepository, MetaObjectRepository>();
             services.AddScoped<IMetaFieldRepository, MetaFieldRepository>();
+            services.AddScoped<IConditionAggregationRepository, ConditionAggregationRepository>();
+            services.AddScoped<IFieldAggregationRepository, FieldAggregationRepository>();
+            services.AddScoped<IInterfaceAggregationRepository, InterfaceAggregationRepository>();
+            services.AddScoped<IInterfaceFieldRepository, InterfaceFieldRepository>();
+            services.AddScoped<IInterfaceSearchConditionRepository, InterfaceSearchConditionRepository>();
 
             //service
             services.AddScoped<IMetaFieldService, MetaFieldService>();

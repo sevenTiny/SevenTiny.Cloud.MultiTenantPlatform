@@ -3,7 +3,7 @@
     /// <summary>
     /// 删除状态
     /// </summary>
-    public enum IsDeleted
+    public enum IsDeleted : int
     {
         /// <summary>
         /// 未删除

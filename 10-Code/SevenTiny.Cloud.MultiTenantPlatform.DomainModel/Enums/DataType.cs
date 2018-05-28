@@ -1,6 +1,6 @@
 ﻿namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Enums
 {
-    public enum DataType
+    public enum DataType : int
     {
         Unknown = 0,
         Number = 1,

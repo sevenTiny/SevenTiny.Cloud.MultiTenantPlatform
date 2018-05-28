@@ -48,5 +48,19 @@
                     return string.Empty;
             }
         }
+        public static string Tran_InterfaceType(int datatype)
+        {
+            switch (datatype)
+            {
+                case (int)InterfaceType.CloudSingleObject:
+                    return "单对象"; ;
+                case (int)InterfaceType.CloudTableList:
+                    return "数据集合"; ;
+                case (int)InterfaceType.EnumeDataSource:
+                    return "枚举数据源"; ;
+                default:
+                    return string.Empty;
+            }
+        }
     }
 }
