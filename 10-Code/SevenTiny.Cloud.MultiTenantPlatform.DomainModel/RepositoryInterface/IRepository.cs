@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Repository
+namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.RepositoryInterface
 {
     public interface IRepository<TEntity>
     {

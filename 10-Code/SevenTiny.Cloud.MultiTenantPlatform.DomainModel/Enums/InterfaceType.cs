@@ -1,4 +1,4 @@
-﻿namespace SevenTiny.Cloud.MultiTenantPlatform.Model.Enums
+﻿namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Enums
 {
     /// <summary>
     /// 标准接口类型
