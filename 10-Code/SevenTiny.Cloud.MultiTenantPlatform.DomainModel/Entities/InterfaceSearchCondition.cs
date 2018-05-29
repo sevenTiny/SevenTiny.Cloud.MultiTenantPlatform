@@ -9,6 +9,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities
     [Table]
     public class InterfaceSearchCondition : CommonInfo
     {
+        [Column]
+        public int MetaObjectId { get; set; }
         public List<ConditionAggregation> ConditionFields { get; set; }
     }
 }

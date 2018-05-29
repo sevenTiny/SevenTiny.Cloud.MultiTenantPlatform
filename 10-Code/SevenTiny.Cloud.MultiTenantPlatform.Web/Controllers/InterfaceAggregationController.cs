@@ -124,7 +124,5 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             _interfaceAggregationRepository.Recover(t => t.Id == id, entity);
             return JsonResultModel.Success("恢复成功");
         }
-
-
     }
 }

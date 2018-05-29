@@ -9,6 +9,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities
     [Table]
     public class InterfaceField : CommonInfo
     {
+        [Column]
+        public int MetaObjectId { get; set; }
         public List<MetaField> MetaFields { get; set; }
     }
 }
