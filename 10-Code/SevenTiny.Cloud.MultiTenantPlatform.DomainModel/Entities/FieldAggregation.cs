@@ -3,7 +3,7 @@
 namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities
 {
     [Table]
-    public class FieldAggregation : CommonInfo
+    public class FieldAggregation
     {
         [Column]
         public int InterfaceFieldId { get; set; }

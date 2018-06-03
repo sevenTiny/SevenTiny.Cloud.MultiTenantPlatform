@@ -1,5 +1,7 @@
 {
   "name": "asp.net",
   "private": true,
-  "dependencies": {}
+  "dependencies": {
+    "jquery-ui": "jqueryui#1.12.1"
+  }
 }
