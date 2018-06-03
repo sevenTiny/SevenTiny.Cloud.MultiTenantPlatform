@@ -1,4 +1,5 @@
 ﻿using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
+using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Enums;
 using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.RepositoryInterface;
 using System;
 using System.Collections.Generic;
@@ -26,12 +27,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Repository
 
         public void Delete(Expression<Func<InterfaceField, bool>> filter)
         {
-            throw new NotImplementedException();
+            _context.Delete(filter);
         }
 
         public bool Exist(Expression<Func<InterfaceField, bool>> filter)
         {
-            throw new NotImplementedException();
+            return _context.QueryCount(filter) > 0;
         }
 
         public InterfaceField GetEntity(Expression<Func<InterfaceField, bool>> filter)
@@ -46,17 +47,19 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Repository
 
         public void LogicDelete(Expression<Func<InterfaceField, bool>> filter, InterfaceField entity)
         {
-            throw new NotImplementedException();
+            entity.IsDeleted = (int)IsDeleted.Deleted;
+            Update(filter, entity);
         }
 
         public void Recover(Expression<Func<InterfaceField, bool>> filter, InterfaceField entity)
         {
-            throw new NotImplementedException();
+            entity.IsDeleted = (int)IsDeleted.NotDeleted;
+            Update(filter, entity);
         }
 
         public void Update(Expression<Func<InterfaceField, bool>> filter, InterfaceField entity)
         {
-            throw new NotImplementedException();
+            _context.Update(filter, entity);
         }
     }
 }
