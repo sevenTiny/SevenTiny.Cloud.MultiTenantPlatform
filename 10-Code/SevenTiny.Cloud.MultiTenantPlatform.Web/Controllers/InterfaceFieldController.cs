@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SevenTiny.Bantina;
 using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
 using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Enums;
 using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.RepositoryInterface;
@@ -79,7 +80,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             return RedirectToAction("List");
         }
 
-
         public IActionResult Update(int id)
         {
             var interfaceField = _interfaceFieldRepository.GetEntity(t => t.Id == id);
@@ -121,7 +121,13 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 
         public IActionResult Delete(int id)
         {
-            _interfaceFieldRepository.Delete(t => t.Id == id);
+            TransactionHelper.Transaction(() =>
+            {
+                //clear fields first
+                _fieldAggregationRepository.Delete(t => t.InterfaceFieldId == id);
+                //delete field config
+                _interfaceFieldRepository.Delete(t => t.Id == id);
+            });
             return JsonResultModel.Success("删除成功");
         }
 
@@ -156,7 +162,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             ViewData["InterfaceFieldId"] = id;
             return View();
         }
-
+        /// <summary>
+        /// 组织字段删除
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public IActionResult AggregateFieldAddDeal(int id)
         {
             FieldAggregation fieldAggregation = new FieldAggregation { InterfaceFieldId = id };
