@@ -44,7 +44,7 @@
                     @foreach (var item in entities)
                     {
                         <tr class="text-c">
-                            <td>@item.Name</td>
+                            <td><a class="ml-5" href="/InterfaceField/AggregateField/@item.Id"  title="组织字段">@item.Name</a></td>
                             <td>@item.Code</td>
                             <td>@item.Description</td>
                             <td>@item.SortNumber</td>
