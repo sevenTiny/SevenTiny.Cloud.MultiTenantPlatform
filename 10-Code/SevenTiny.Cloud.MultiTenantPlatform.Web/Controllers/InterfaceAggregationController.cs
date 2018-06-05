@@ -11,10 +11,14 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
     public class InterfaceAggregationController : Controller
     {
         private readonly IInterfaceAggregationRepository _interfaceAggregationRepository;
+        private readonly IInterfaceFieldRepository _interfaceFieldRepository;
+        private readonly IInterfaceSearchConditionRepository _interfaceSearchConditionRepository;
 
-        public InterfaceAggregationController(IInterfaceAggregationRepository interfaceAggregationRepository)
+        public InterfaceAggregationController(IInterfaceSearchConditionRepository interfaceSearchConditionRepository, IInterfaceFieldRepository interfaceFieldRepository, IInterfaceAggregationRepository interfaceAggregationRepository)
         {
             this._interfaceAggregationRepository = interfaceAggregationRepository;
+            this._interfaceFieldRepository = interfaceFieldRepository;
+            this._interfaceSearchConditionRepository = interfaceSearchConditionRepository;
         }
 
         private int CurrentMetaObjectId
@@ -42,11 +46,16 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 
         public IActionResult Add()
         {
+            ViewData["InterfaceFields"] = _interfaceFieldRepository.GetList(t => t.MetaObjectId == CurrentMetaObjectId && t.IsDeleted == (int)IsDeleted.NotDeleted);
+            ViewData["SearchConditions"] = _interfaceSearchConditionRepository.GetList(t => t.MetaObjectId == CurrentMetaObjectId && t.IsDeleted == (int)IsDeleted.NotDeleted);
             return View();
         }
 
         public IActionResult AddLogic(InterfaceAggregation entity)
         {
+            ViewData["InterfaceFields"] = _interfaceFieldRepository.GetList(t => t.MetaObjectId == CurrentMetaObjectId && t.IsDeleted == (int)IsDeleted.NotDeleted);
+            ViewData["SearchConditions"] = _interfaceSearchConditionRepository.GetList(t => t.MetaObjectId == CurrentMetaObjectId && t.IsDeleted == (int)IsDeleted.NotDeleted);
+
             if (string.IsNullOrEmpty(entity.Name))
             {
                 return View("Add", new ActionResultModel<InterfaceAggregation>(false, "Interface Name Can Not Be Null！", entity));

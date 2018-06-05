@@ -1,5 +1,7 @@
 ﻿using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
 using System;
+using System.Linq.Expressions;
+using Newtonsoft.Json;
 
 namespace Test.ConsoleApp
 {
@@ -8,34 +10,18 @@ namespace Test.ConsoleApp
         static void Main(string[] args)
         {
 
-            //using (var db = new MultiTenantPlatformDbContext())
-            //{
-            //    Application app = new Application();
-            //    app.Code = "7TinyCloudDemo";
-            //    app.Name = "7TinyCloud演示";
+            Expression<Func<ConditionAggregation, bool>> func = t => t.Id == 1 && t.Name.Equals("3");
 
-            //    db.Add(app);
-            //}
+            Console.WriteLine(func.ToString());
 
+            string test = "t => ((t.Id == 1) AndAlso t.Name.Equals(\"3\"))";
 
-            int n = 5;
-            int max = 0;
+            var exp = JsonConvert.DeserializeObject<Expression<Func<ConditionAggregation, bool>>>(test);
 
-            for (int i = 0; i < n; i++)
-            {
-                //输入一个数
-                int input = Convert.ToInt32(Console.ReadLine());
-                if (input >= 100 && input <= 200 && input > max)
-                {
-                    max = input;
-                }
-            }
-
-            Console.WriteLine(max);
+            Console.WriteLine(JsonConvert.SerializeObject(func));
 
 
             //---------------
-            Console.WriteLine("success!");
             Console.ReadKey();
         }
     }

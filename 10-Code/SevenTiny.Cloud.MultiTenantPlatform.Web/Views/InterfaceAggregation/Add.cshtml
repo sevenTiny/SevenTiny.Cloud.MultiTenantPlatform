@@ -1,25 +1,25 @@
-﻿@using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
+﻿@using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities
+@using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Enums;
 @{
     ViewData["Title"] = "Add";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    List<InterfaceField> interfaceFields = ViewData["InterfaceFields"] as List<InterfaceField> ?? new List<InterfaceField>();
+    List<InterfaceSearchCondition> searchConditions = ViewData["SearchConditions"] as List<InterfaceSearchCondition> ?? new List<InterfaceSearchCondition>();
+    ActionResultModel<InterfaceAggregation> result = Model as ActionResultModel<InterfaceAggregation> ?? new ActionResultModel<InterfaceAggregation>(true, string.Empty, new InterfaceAggregation());
 }
-@{
-    ActionResultModel<InterfaceSearchCondition> result = Model as ActionResultModel<InterfaceSearchCondition> ?? new ActionResultModel<InterfaceSearchCondition>(true, string.Empty, new InterfaceSearchCondition());
-}
-
 <nav class="breadcrumb">
     <i class="Hui-iconfont">&#xe67f;</i> 首页
     <span class="c-gray en">&gt;</span>
     标准接口
     <span class="c-gray en">&gt;</span>
-    搜素条件
+    组织接口
     <span class="c-gray en">&gt;</span>
     新建
     <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a>
 </nav>
 
 <article class="page-container">
-    <form class="form form-horizontal" id="form-article-add" method="post" action="/InterfaceSearchCondition/AddLogic">
+    <form class="form form-horizontal" id="form-article-add" method="post" action="/InterfaceAggregation/AddLogic">
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>名称：</label>
             <div class="formControls col-xs-8 col-sm-9">
@@ -54,7 +54,7 @@
         <div class="row cl">
             <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
                 <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
-                <button onClick="javascript:window.location='/InterfaceSearchCondition/List';" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+                <button onClick="javascript:window.location='/InterfaceAggregation/List';" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
                 @if (!result.IsSuccess)
                 {
                     <br /><br /><span class="c-red">@result.Msg</span>
@@ -66,8 +66,10 @@
 
 @Html.Partial("~/Views/Shared/_FooterScripts.cshtml")
 <!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="~/lib/My97DatePicker/4.8/WdatePicker.js"></script>
 <script type="text/javascript" src="~/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
 <script type="text/javascript" src="~/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="~/lib/jquery.validation/1.14.0/messages_zh.js"></script>
 <script type="text/javascript">
     $(function () {
         $('.skin-minimal input').iCheck({

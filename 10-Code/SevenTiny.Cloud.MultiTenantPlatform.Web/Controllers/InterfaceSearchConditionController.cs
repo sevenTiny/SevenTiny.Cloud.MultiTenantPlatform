@@ -5,16 +5,21 @@ using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Enums;
 using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.RepositoryInterface;
 using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
 using System;
+using System.Linq;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 {
     public class InterfaceSearchConditionController : Controller
     {
         private readonly IInterfaceSearchConditionRepository _interfaceSearchConditionRepository;
+        private readonly IConditionAggregationRepository _conditionAggregationRepository;
+        private readonly IMetaFieldRepository _metaFieldRepository;
 
-        public InterfaceSearchConditionController(IInterfaceSearchConditionRepository interfaceSearchConditionRepository)
+        public InterfaceSearchConditionController(IMetaFieldRepository metaFieldRepository,IInterfaceSearchConditionRepository interfaceSearchConditionRepository, IConditionAggregationRepository conditionAggregationRepository)
         {
             this._interfaceSearchConditionRepository = interfaceSearchConditionRepository;
+            this._conditionAggregationRepository = conditionAggregationRepository;
+            this._metaFieldRepository = metaFieldRepository;
         }
 
         private int CurrentMetaObjectId
@@ -123,6 +128,14 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             InterfaceSearchCondition entity = _interfaceSearchConditionRepository.GetEntity(t => t.Id == id);
             _interfaceSearchConditionRepository.Recover(t => t.Id == id, entity);
             return JsonResultModel.Success("恢复成功");
+        }
+
+        public IActionResult AggregationCondition(int id)
+        {            
+            ViewData["AggregationConditions"] = _conditionAggregationRepository.GetList(t=>t.InterfaceSearchConditionId==id);
+            ViewData["MetaFields"] = _metaFieldRepository.GetList(t => t.MetaObjectId == CurrentMetaObjectId);
+            ViewData["InterfaceSearchConditionId"] = id;
+            return View();
         }
     }
 }
