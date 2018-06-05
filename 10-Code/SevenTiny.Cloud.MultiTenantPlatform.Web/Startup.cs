@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SevenTiny.Cloud.MultiTenantPlatform.Web.Filters;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Web
 {
@@ -25,7 +26,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web
             services = ServiceInjector.NetCoreInject(services);
             //end 7tiny ---
 
-            services.AddMvc();
+            services.AddMvc(options =>
+            {
+                options.Filters.Add<HttpGlobalExceptionFilter>();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
