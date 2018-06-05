@@ -1,0 +1,159 @@
+﻿@using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities
+@{
+    ViewData["Title"] = "AggregateField";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<MetaField> metaFields = ViewData["MetaFields"] as List<MetaField> ?? new List<MetaField>();
+    List<MetaField> fieldAggregation = ViewData["AggregateFields"] as List<MetaField> ?? new List<MetaField>();
+    int id = Convert.ToInt32(ViewData["InterfaceFieldId"]);
+}
+<style>
+    .pane-wrapper {
+        width: 100%;
+    }
+
+        .pane-wrapper .opration {
+            margin-top: 20px;
+        }
+
+        .pane-wrapper .row::after {
+            content: '';
+            display: block;
+            clear: both;
+        }
+
+    .panel-define {
+        margin-top: 20px;
+        border: solid 1px #b1b0b0;
+    }
+
+        .panel-define .panel-heading .panel-title {
+            margin: 0;
+            padding: 7px;
+            background: #b1b0b0;
+            color: #ffffff;
+        }
+
+        .panel-define .panel-body {
+            padding: 10px 3px;
+        }
+
+            .panel-define .panel-body .drag-wrapper {
+                min-height: 20px;
+            }
+
+                .panel-define .panel-body .drag-wrapper li {
+                    width: 100%;
+                    padding: 3px 5px;
+                    margin-top: 5px;
+                    -ms-box-sizing: border-box;
+                    -moz-box-sizing: border-box;
+                    box-sizing: border-box;
+                    border: solid 1px #c2bfbf;
+                    background: #e9e9e9;
+                    font-weight: 400;
+                    color: #2094b7;
+                    cursor: pointer;
+                }
+
+                    .panel-define .panel-body .drag-wrapper li:first-child {
+                        margin-top: 0;
+                    }
+
+                .panel-define .panel-body .drag-wrapper .ui-sortable-placeholder {
+                    background: #fef0a0;
+                    border: none;
+                }
+</style>
+<nav class="breadcrumb">
+    <i class="Hui-iconfont">&#xe67f;</i> 首页
+    <span class="c-gray en">&gt;</span>
+    标准接口
+    <span class="c-gray en">&gt;</span>
+    字段配置
+    <span class="c-gray en">&gt;</span>
+    组织字段
+    <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+<div class="container pane-wrapper">
+    <div class="opration">
+        <a class="btn btn-secondary-outline radius" href="javascript:history.back(-1);"><i class="Hui-iconfont">&#xe66b;</i> 返回</a>
+        <a class="btn btn-danger radius" href="javascript:history.back(-1);"><i class="Hui-iconfont">&#xe6a6;</i> 取消</a>
+        <a class="btn btn-primary radius" href="javascript:addFields();"><i class="Hui-iconfont">&#xe632;</i> 保存</a>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="panel panel-define">
+                <div class="panel-heading">
+                    <h5 class="panel-title">列表字段</h5>
+                </div>
+                <div class="panel-body">
+                    <ul class="connectedSortable drag-wrapper" id="fieldList">
+                        @foreach (var item in fieldAggregation)
+                        {
+                            <li data-metafieldid="@item.Id" title="@item.Code">@item.Name</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-define">
+                <div class="panel-heading">
+                    <h5 class="panel-title">可选字段列表</h5>
+                </div>
+                <div class="panel-body">
+                    <ul class="connectedSortable drag-wrapper">
+                        @foreach (var item in metaFields)
+                        {
+                            <li data-metafieldid="@item.Id" title="@item.Code">@item.Name</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@Html.Partial($"~/Views/Shared/_FooterScripts.cshtml")
+<script src="~/lib/jquery-ui/jquery-ui.js"></script>
+<script>
+    $(".connectedSortable").sortable({
+        connectWith: ".connectedSortable",
+        start: function (e, info) {  //拖放后事件,排序开始事件
+            info.item.siblings(".selected").appendTo(info.item);
+        },
+        stop: function (e, info) {  //停止事件
+            info.item.after(info.item.find("li"));
+            $(".connectedSortable li").removeClass("selected");
+        },
+        out: function (event, ui) { }  //移除事件
+    });
+    //保存字段
+    function addFields() {
+        var str = [];
+        var lists = $('#fieldList li');
+        for (var i = 0, len = lists.length; i < len; i++) {
+            str.push(lists.eq(i).data('metafieldid'));
+        }
+        str = str.join(',');
+        $.ajax({
+            type: 'POST',
+            url: '/InterfaceField/AggregateFieldAddDeal/' + @id,
+            dataType: 'json',
+            data: {
+                "metaFieldIds": str
+            },
+            success: function (data) {
+                layer.msg(data.msg, { icon: 1, time: 1000 });
+                
+                if (data.success) {
+                    setTimeout(function () {
+                        window.location = '/InterfaceField/List';
+                     }, 1000);
+                }
+            },
+            error: function (data) {
+                console.log(data.msg);
+            },
+        });
+    }
+</script>

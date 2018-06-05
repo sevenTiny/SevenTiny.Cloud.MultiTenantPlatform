@@ -26,7 +26,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Repository
 
         public void Delete(Expression<Func<FieldAggregation, bool>> filter)
         {
-            throw new NotImplementedException();
+            _context.Delete(filter);
         }
 
         public bool Exist(Expression<Func<FieldAggregation, bool>> filter)
