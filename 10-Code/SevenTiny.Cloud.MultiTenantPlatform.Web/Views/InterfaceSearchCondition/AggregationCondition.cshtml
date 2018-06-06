@@ -4,9 +4,9 @@
 @{
     ViewData["Title"] = "AggregateCondition";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    List<ConditionAggregation> entities = ViewData["AggregateConditions"] as List<ConditionAggregation> ?? new List<ConditionAggregation>();
+    List<ConditionAggregation> entities = ViewData["AggregationConditions"] as List<ConditionAggregation> ?? new List<ConditionAggregation>();
     List<MetaField> metafields = ViewData["MetaFields"] as List<MetaField> ?? new List<MetaField>();
-    int id = Convert.ToInt32(ViewData["InterfaceSearchConditionId"]);}
+    int id = Convert.ToInt32(ViewData["InterfaceSearchConditionId"]);
 }
 
 <nav class="breadcrumb">

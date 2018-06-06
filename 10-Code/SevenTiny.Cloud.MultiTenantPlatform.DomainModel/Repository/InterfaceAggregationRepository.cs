@@ -1,4 +1,5 @@
 ﻿using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
+using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Enums;
 using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.RepositoryInterface;
 using System;
 using System.Collections.Generic;
@@ -26,12 +27,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Repository
 
         public void Delete(Expression<Func<InterfaceAggregation, bool>> filter)
         {
-            throw new NotImplementedException();
+            _context.Delete(filter);
         }
 
         public bool Exist(Expression<Func<InterfaceAggregation, bool>> filter)
         {
-            throw new NotImplementedException();
+            return _context.QueryExist(filter);
         }
 
         public InterfaceAggregation GetEntity(Expression<Func<InterfaceAggregation, bool>> filter)
@@ -46,17 +47,19 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Repository
 
         public void LogicDelete(Expression<Func<InterfaceAggregation, bool>> filter, InterfaceAggregation entity)
         {
-            throw new NotImplementedException();
+            entity.IsDeleted = (int)IsDeleted.Deleted;
+            _context.Update(filter, entity);
         }
 
         public void Recover(Expression<Func<InterfaceAggregation, bool>> filter, InterfaceAggregation entity)
         {
-            throw new NotImplementedException();
+            entity.IsDeleted = (int)IsDeleted.NotDeleted;
+            _context.Update(filter, entity);
         }
 
         public void Update(Expression<Func<InterfaceAggregation, bool>> filter, InterfaceAggregation entity)
         {
-            throw new NotImplementedException();
+            _context.Update(filter, entity);
         }
     }
 }
