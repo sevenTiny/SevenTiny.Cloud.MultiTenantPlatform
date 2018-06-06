@@ -49,7 +49,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 
         public IActionResult Add()
         {
-
             return View();
         }
 
@@ -163,11 +162,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             return View();
         }
         /// <summary>
-        /// 组织字段删除
+        /// 组织字段添加逻辑
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public IActionResult AggregateFieldAddDeal(int id)
+        public IActionResult AggregateFieldAddLogic(int id)
         {
             FieldAggregation fieldAggregation = new FieldAggregation { InterfaceFieldId = id };
             string metaFieldIdsString = Request.Form["metaFieldIds"];

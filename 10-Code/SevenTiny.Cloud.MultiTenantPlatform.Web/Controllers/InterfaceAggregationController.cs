@@ -11,10 +11,14 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
     public class InterfaceAggregationController : Controller
     {
         private readonly IInterfaceAggregationRepository _interfaceAggregationRepository;
+        private readonly IInterfaceFieldRepository _interfaceFieldRepository;
+        private readonly IInterfaceSearchConditionRepository _interfaceSearchConditionRepository;
 
-        public InterfaceAggregationController(IInterfaceAggregationRepository interfaceAggregationRepository)
+        public InterfaceAggregationController(IInterfaceSearchConditionRepository interfaceSearchConditionRepository, IInterfaceFieldRepository interfaceFieldRepository, IInterfaceAggregationRepository interfaceAggregationRepository)
         {
             this._interfaceAggregationRepository = interfaceAggregationRepository;
+            this._interfaceFieldRepository = interfaceFieldRepository;
+            this._interfaceSearchConditionRepository = interfaceSearchConditionRepository;
         }
 
         private int CurrentMetaObjectId
@@ -42,11 +46,16 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 
         public IActionResult Add()
         {
+            ViewData["InterfaceFields"] = _interfaceFieldRepository.GetList(t => t.MetaObjectId == CurrentMetaObjectId && t.IsDeleted == (int)IsDeleted.NotDeleted);
+            ViewData["SearchConditions"] = _interfaceSearchConditionRepository.GetList(t => t.MetaObjectId == CurrentMetaObjectId && t.IsDeleted == (int)IsDeleted.NotDeleted);
             return View();
         }
 
         public IActionResult AddLogic(InterfaceAggregation entity)
         {
+            ViewData["InterfaceFields"] = _interfaceFieldRepository.GetList(t => t.MetaObjectId == CurrentMetaObjectId && t.IsDeleted == (int)IsDeleted.NotDeleted);
+            ViewData["SearchConditions"] = _interfaceSearchConditionRepository.GetList(t => t.MetaObjectId == CurrentMetaObjectId && t.IsDeleted == (int)IsDeleted.NotDeleted);
+
             if (string.IsNullOrEmpty(entity.Name))
             {
                 return View("Add", new ActionResultModel<InterfaceAggregation>(false, "Interface Name Can Not Be Null！", entity));
@@ -67,6 +76,19 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
                     return View("Add", new ActionResultModel<InterfaceAggregation>(false, "Interface Name Has Been Exist！", entity));
                 }
             }
+            if (entity.InterfaceFieldId == default(int))
+            {
+                return View("Add", new ActionResultModel<InterfaceAggregation>(false, "InterfaceField Can Not Be Null！", entity));
+            }
+            if (entity.InterfaceSearchConditionId == default(int))
+            {
+                return View("Add", new ActionResultModel<InterfaceAggregation>(false, "InterfaceField Condition Not Be Null！", entity));
+            }
+            //查询并将名字赋予接口的字段
+            var interfaceField = _interfaceFieldRepository.GetEntity(t => t.MetaObjectId == CurrentMetaObjectId && t.IsDeleted == (int)IsDeleted.NotDeleted && t.Id == entity.InterfaceFieldId);
+            var interfaceSearchCondition = _interfaceSearchConditionRepository.GetEntity(t => t.MetaObjectId == CurrentMetaObjectId && t.IsDeleted == (int)IsDeleted.NotDeleted && t.Id == entity.InterfaceSearchConditionId);
+            entity.InterfaceFieldName = interfaceField.Name;
+            entity.InterfaceSearchConditionName = interfaceSearchCondition.Name;
             entity.MetaObjectId = CurrentMetaObjectId;
             _interfaceAggregationRepository.Add(entity);
             return RedirectToAction("List");
@@ -75,6 +97,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 
         public IActionResult Update(int id)
         {
+            ViewData["InterfaceFields"] = _interfaceFieldRepository.GetList(t => t.MetaObjectId == CurrentMetaObjectId && t.IsDeleted == (int)IsDeleted.NotDeleted);
+            ViewData["SearchConditions"] = _interfaceSearchConditionRepository.GetList(t => t.MetaObjectId == CurrentMetaObjectId && t.IsDeleted == (int)IsDeleted.NotDeleted);
             var metaObject = _interfaceAggregationRepository.GetEntity(t => t.Id == id);
             return View(new ActionResultModel<InterfaceAggregation>(true, string.Empty, metaObject));
 
@@ -82,6 +106,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 
         public IActionResult UpdateLogic(InterfaceAggregation entity)
         {
+            ViewData["InterfaceFields"] = _interfaceFieldRepository.GetList(t => t.MetaObjectId == CurrentMetaObjectId && t.IsDeleted == (int)IsDeleted.NotDeleted);
+            ViewData["SearchConditions"] = _interfaceSearchConditionRepository.GetList(t => t.MetaObjectId == CurrentMetaObjectId && t.IsDeleted == (int)IsDeleted.NotDeleted);
+
             if (entity.Id == 0)
             {
                 return View("Update", new ActionResultModel<InterfaceAggregation>(false, "InterfaceAggregation Id Can Not Be Null！", entity));
@@ -98,17 +125,31 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             {
                 return View("Add", new ActionResultModel<InterfaceAggregation>(false, "InterfaceAggregation Name Has Been Exist！", entity));
             }
-            InterfaceAggregation myfield = _interfaceAggregationRepository.GetEntity(t => t.Id == entity.Id);
-            if (myfield != null)
+            if (entity.InterfaceFieldId == default(int))
             {
-                myfield.Name = entity.Name;
-                myfield.Group = entity.Group;
-                myfield.SortNumber = entity.SortNumber;
-                myfield.Description = entity.Description;
-                myfield.ModifyBy = -1;
-                myfield.ModifyTime = DateTime.Now;
+                return View("Add", new ActionResultModel<InterfaceAggregation>(false, "InterfaceField Can Not Be Null！", entity));
             }
-            _interfaceAggregationRepository.Update(t => t.Id == entity.Id, myfield);
+            if (entity.InterfaceSearchConditionId == default(int))
+            {
+                return View("Add", new ActionResultModel<InterfaceAggregation>(false, "InterfaceField Condition Not Be Null！", entity));
+            }
+
+            InterfaceAggregation myEntity = _interfaceAggregationRepository.GetEntity(t => t.Id == entity.Id);
+            //查询并将名字赋予接口的字段
+            if (myEntity != null)
+            {
+                var interfaceField = _interfaceFieldRepository.GetEntity(t => t.MetaObjectId == CurrentMetaObjectId && t.IsDeleted == (int)IsDeleted.NotDeleted && t.Id == entity.InterfaceFieldId);
+                var interfaceSearchCondition = _interfaceSearchConditionRepository.GetEntity(t => t.MetaObjectId == CurrentMetaObjectId && t.IsDeleted == (int)IsDeleted.NotDeleted && t.Id == entity.InterfaceSearchConditionId);
+                myEntity.InterfaceFieldName = interfaceField.Name;
+                myEntity.InterfaceSearchConditionName = interfaceSearchCondition.Name;
+                myEntity.Name = entity.Name;
+                myEntity.Group = entity.Group;
+                myEntity.SortNumber = entity.SortNumber;
+                myEntity.Description = entity.Description;
+                myEntity.ModifyBy = -1;
+                myEntity.ModifyTime = DateTime.Now;
+            }
+            _interfaceAggregationRepository.Update(t => t.Id == entity.Id, myEntity);
             return RedirectToAction("List");
         }
 
@@ -117,6 +158,14 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             _interfaceAggregationRepository.Delete(t => t.Id == id);
             return JsonResultModel.Success("删除成功");
         }
+
+        public IActionResult LogicDelete(int id)
+        {
+            InterfaceAggregation entity = _interfaceAggregationRepository.GetEntity(t => t.Id == id);
+            _interfaceAggregationRepository.LogicDelete(t => t.Id == id, entity);
+            return JsonResultModel.Success("删除成功");
+        }
+
 
         public IActionResult Recover(int id)
         {

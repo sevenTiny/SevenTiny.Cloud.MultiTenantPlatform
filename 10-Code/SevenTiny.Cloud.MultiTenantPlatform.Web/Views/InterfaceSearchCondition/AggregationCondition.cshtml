@@ -1,0 +1,27 @@
+﻿@using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities
+@using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Enums;
+
+@{
+    ViewData["Title"] = "AggregateCondition";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<ConditionAggregation> entities = ViewData["AggregationConditions"] as List<ConditionAggregation> ?? new List<ConditionAggregation>();
+    List<MetaField> metafields = ViewData["MetaFields"] as List<MetaField> ?? new List<MetaField>();
+    int id = Convert.ToInt32(ViewData["InterfaceSearchConditionId"]);
+}
+
+<nav class="breadcrumb">
+    <i class="Hui-iconfont">&#xe67f;</i> 首页
+    <span class="c-gray en">&gt;</span>
+    标准接口
+    <span class="c-gray en">&gt;</span>
+    搜索条件
+    <span class="c-gray en">&gt;</span>
+    组织条件
+    <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
+
+<div class="Hui-article">
+    
+</div>
+
+@Html.Partial($"~/Views/Shared/_FooterScripts.cshtml")

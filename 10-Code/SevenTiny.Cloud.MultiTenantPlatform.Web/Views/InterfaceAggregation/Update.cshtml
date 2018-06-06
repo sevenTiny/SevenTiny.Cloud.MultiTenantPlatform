@@ -1,10 +1,13 @@
 ﻿@using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
+@using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Enums;
 @{
     ViewData["Title"] = "Update";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @{
-    ActionResultModel<InterfaceField> result = Model as ActionResultModel<InterfaceField> ?? new ActionResultModel<InterfaceField>(true, string.Empty, new InterfaceField());
+    List<InterfaceField> interfaceFields = ViewData["InterfaceFields"] as List<InterfaceField> ?? new List<InterfaceField>();
+    List<InterfaceSearchCondition> searchConditions = ViewData["SearchConditions"] as List<InterfaceSearchCondition> ?? new List<InterfaceSearchCondition>();
+    ActionResultModel<InterfaceAggregation> result = Model as ActionResultModel<InterfaceAggregation> ?? new ActionResultModel<InterfaceAggregation>(true, string.Empty, new InterfaceAggregation());
 }
 
 <nav class="breadcrumb">
@@ -12,14 +15,14 @@
     <span class="c-gray en">&gt;</span>
     标准接口
     <span class="c-gray en">&gt;</span>
-    字段配置
+    组织接口
     <span class="c-gray en">&gt;</span>
     修改
     <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a>
 </nav>
 
 <article class="page-container">
-    <form class="form form-horizontal" id="form-article-add" method="post" action="/InterfaceField/UpdateLogic">
+    <form class="form form-horizontal" id="form-article-add" method="post" action="/InterfaceAggregation/UpdateLogic">
         <input type="text" class="input-text" value="@result.Data.Id" placeholder="" id="" name="id" hidden>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>名称：</label>
@@ -33,6 +36,48 @@
                 <input type="text" class="input-text" style="background-color:#cccccc;" value="@result.Data.Code" placeholder="" id="" name="code" readonly="readonly">
             </div>
         </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>字段类型：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <span class="select-box">
+                    <select name="interfaceType" class="select" value="@result.Data.InterfaceType" onchange="fieldTypeSwitch(this)">
+                        @foreach (var item in Enum.GetValues(typeof(InterfaceType)))
+                        {
+                            var value = (int)item;
+                            <option value="@value">@EnumsTranslater.Tran_InterfaceType(value)</option>
+                        }
+                    </select>
+                </span>
+            </div>
+        </div>
+
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>字段配置：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <span class="select-box">
+                    <select name="interfaceFieldId" class="select" value="@result.Data.InterfaceFieldId" onchange="fieldTypeSwitch(this)">
+                        @foreach (var item in interfaceFields)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </span>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>搜索条件：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <span class="select-box">
+                    <select name="interfaceSearchConditionId" class="select" value="@result.Data.InterfaceSearchConditionId" onchange="fieldTypeSwitch(this)">
+                        @foreach (var item in searchConditions)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </span>
+            </div>
+        </div>
+
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">分组：</label>
             <div class="formControls col-xs-8 col-sm-9">
@@ -55,7 +100,7 @@
         <div class="row cl">
             <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
                 <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
-                <button onClick="javascript:window.location = '/InterfaceField/List';" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+                <button onClick="javascript:window.location = '/InterfaceAggregation/List';" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
                 @if (!result.IsSuccess)
                 {
                     <br /><br /><span class="c-red">@result.Msg</span>

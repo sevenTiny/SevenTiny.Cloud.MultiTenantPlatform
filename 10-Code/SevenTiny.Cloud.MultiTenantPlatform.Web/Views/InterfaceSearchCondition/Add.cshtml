@@ -1,10 +1,10 @@
 ﻿@using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
 @{
-    ViewData["Title"] = "Update";
+    ViewData["Title"] = "Add";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @{
-    ActionResultModel<InterfaceField> result = Model as ActionResultModel<InterfaceField> ?? new ActionResultModel<InterfaceField>(true, string.Empty, new InterfaceField());
+    ActionResultModel<InterfaceSearchCondition> result = Model as ActionResultModel<InterfaceSearchCondition> ?? new ActionResultModel<InterfaceSearchCondition>(true, string.Empty, new InterfaceSearchCondition());
 }
 
 <nav class="breadcrumb">
@@ -12,15 +12,14 @@
     <span class="c-gray en">&gt;</span>
     标准接口
     <span class="c-gray en">&gt;</span>
-    字段配置
+    搜素条件
     <span class="c-gray en">&gt;</span>
-    修改
+    新建
     <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a>
 </nav>
 
 <article class="page-container">
-    <form class="form form-horizontal" id="form-article-add" method="post" action="/InterfaceField/UpdateLogic">
-        <input type="text" class="input-text" value="@result.Data.Id" placeholder="" id="" name="id" hidden>
+    <form class="form form-horizontal" id="form-article-add" method="post" action="/InterfaceSearchCondition/AddLogic">
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>名称：</label>
             <div class="formControls col-xs-8 col-sm-9">
@@ -30,7 +29,7 @@
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>编码：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" style="background-color:#cccccc;" value="@result.Data.Code" placeholder="" id="" name="code" readonly="readonly">
+                <input type="text" class="input-text" value="@result.Data.Code" placeholder="" id="" name="code">
             </div>
         </div>
         <div class="row cl">
@@ -55,7 +54,7 @@
         <div class="row cl">
             <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
                 <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
-                <button onClick="javascript:window.location = '/InterfaceField/List';" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+                <button onClick="javascript:window.location='/InterfaceSearchCondition/List';" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
                 @if (!result.IsSuccess)
                 {
                     <br /><br /><span class="c-red">@result.Msg</span>

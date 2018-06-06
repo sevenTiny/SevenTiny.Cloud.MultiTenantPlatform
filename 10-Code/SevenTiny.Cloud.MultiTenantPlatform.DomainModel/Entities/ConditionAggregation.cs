@@ -20,6 +20,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities
         [Column]
         public int ConditionType { get; set; }
         [Column]
+        //如果参数传递，则按参数走，如果参数不传递，则使用默认值
         public string Value { get; set; }
     }
 }

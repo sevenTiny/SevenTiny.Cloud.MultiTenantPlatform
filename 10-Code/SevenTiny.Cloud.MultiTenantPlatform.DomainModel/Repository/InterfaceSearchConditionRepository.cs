@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
+using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Enums;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Repository
 {
@@ -26,7 +27,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Repository
 
         public void Delete(Expression<Func<InterfaceSearchCondition, bool>> filter)
         {
-            throw new NotImplementedException();
+            _context.Delete(filter);
         }
 
         public bool Exist(Expression<Func<InterfaceSearchCondition, bool>> filter)
@@ -46,17 +47,19 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Repository
 
         public void LogicDelete(Expression<Func<InterfaceSearchCondition, bool>> filter, InterfaceSearchCondition entity)
         {
-            throw new NotImplementedException();
+            entity.IsDeleted = (int) IsDeleted.Deleted;
+            _context.Update(filter, entity);
         }
 
         public void Recover(Expression<Func<InterfaceSearchCondition, bool>> filter, InterfaceSearchCondition entity)
         {
-            throw new NotImplementedException();
+            entity.IsDeleted = (int)IsDeleted.NotDeleted;
+            _context.Update(filter, entity);
         }
 
         public void Update(Expression<Func<InterfaceSearchCondition, bool>> filter, InterfaceSearchCondition entity)
         {
-            throw new NotImplementedException();
+            _context.Update(filter, entity);
         }
     }
 }
