@@ -1,6 +1,8 @@
 ﻿namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Enums
 {
-    //数据源类型
+    /// <summary>
+    /// 数据源类型
+    /// </summary>
     public enum DataSourceType : int
     {
         //常量

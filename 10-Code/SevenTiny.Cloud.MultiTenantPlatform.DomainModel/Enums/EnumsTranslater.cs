@@ -1,5 +1,8 @@
 ﻿namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Enums
 {
+    /// <summary>
+    /// 枚举翻译器
+    /// </summary>
     public class EnumsTranslater
     {
         public static string Tran_TrueFalse(int trueFalse)

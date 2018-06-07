@@ -14,6 +14,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities
         [Column]
         public int InterfaceSearchConditionId { get; set; }
         [Column]
+        public int ParentId { get; set; }
+        [Column]
+        public int FieldId { get; set; }
+        [Column]
         public string FieldCode { get; set; }
         [Column]
         public string FieldName { get; set; }
@@ -22,5 +26,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities
         [Column]
         //如果参数传递，则按参数走，如果参数不传递，则使用默认值
         public string Value { get; set; }
+        [Column]
+        public int ValueType { get; set; }
+        public ConditionAggregation Child { get; set; }
     }
 }
