@@ -2,47 +2,16 @@
 using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Enums;
 using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.RepositoryInterface;
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Repository
 {
-    public class InterfaceAggregationRepository : IInterfaceAggregationRepository
+    public class InterfaceAggregationRepository : CommonRepository<InterfaceAggregation>, IInterfaceAggregationRepository
     {
         private readonly MultiTenantPlatformDbContext _context;
-        public InterfaceAggregationRepository(MultiTenantPlatformDbContext context)
+        public InterfaceAggregationRepository(MultiTenantPlatformDbContext context) : base(context)
         {
             _context = context;
-        }
-        public void Add(InterfaceAggregation entity)
-        {
-            _context.Add(entity);
-        }
-
-        public void Add(IEnumerable<InterfaceAggregation> entities)
-        {
-            _context.Add(entities);
-        }
-
-        public void Delete(Expression<Func<InterfaceAggregation, bool>> filter)
-        {
-            _context.Delete(filter);
-        }
-
-        public bool Exist(Expression<Func<InterfaceAggregation, bool>> filter)
-        {
-            return _context.QueryExist(filter);
-        }
-
-        public InterfaceAggregation GetEntity(Expression<Func<InterfaceAggregation, bool>> filter)
-        {
-            return _context.QueryOne(filter);
-        }
-
-        public List<InterfaceAggregation> GetList(Expression<Func<InterfaceAggregation, bool>> filter)
-        {
-            return _context.QueryList(filter);
         }
 
         public void LogicDelete(Expression<Func<InterfaceAggregation, bool>> filter, InterfaceAggregation entity)
@@ -54,11 +23,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Repository
         public void Recover(Expression<Func<InterfaceAggregation, bool>> filter, InterfaceAggregation entity)
         {
             entity.IsDeleted = (int)IsDeleted.NotDeleted;
-            _context.Update(filter, entity);
-        }
-
-        public void Update(Expression<Func<InterfaceAggregation, bool>> filter, InterfaceAggregation entity)
-        {
             _context.Update(filter, entity);
         }
     }
