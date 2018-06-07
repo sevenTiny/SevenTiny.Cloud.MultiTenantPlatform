@@ -1,5 +1,8 @@
 ﻿namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Enums
 {
+    /// <summary>
+    /// 数据类型
+    /// </summary>
     public enum DataType : int
     {
         Unknown = 0,

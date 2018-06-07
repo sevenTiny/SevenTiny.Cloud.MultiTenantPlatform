@@ -8,41 +8,12 @@ using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Enums;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Repository
 {
-    public class InterfaceSearchConditionRepository : IInterfaceSearchConditionRepository
+    public class InterfaceSearchConditionRepository : CommonRepository<InterfaceSearchCondition>, IInterfaceSearchConditionRepository
     {
         private readonly MultiTenantPlatformDbContext _context;
-        public InterfaceSearchConditionRepository(MultiTenantPlatformDbContext context)
+        public InterfaceSearchConditionRepository(MultiTenantPlatformDbContext context) : base(context)
         {
             _context = context;
-        }
-        public void Add(InterfaceSearchCondition entity)
-        {
-            _context.Add(entity);
-        }
-
-        public void Add(IEnumerable<InterfaceSearchCondition> entities)
-        {
-            _context.Add(entities);
-        }
-
-        public void Delete(Expression<Func<InterfaceSearchCondition, bool>> filter)
-        {
-            _context.Delete(filter);
-        }
-
-        public bool Exist(Expression<Func<InterfaceSearchCondition, bool>> filter)
-        {
-            throw new NotImplementedException();
-        }
-
-        public InterfaceSearchCondition GetEntity(Expression<Func<InterfaceSearchCondition, bool>> filter)
-        {
-            return _context.QueryOne(filter);
-        }
-
-        public List<InterfaceSearchCondition> GetList(Expression<Func<InterfaceSearchCondition, bool>> filter)
-        {
-            return _context.QueryList(filter);
         }
 
         public void LogicDelete(Expression<Func<InterfaceSearchCondition, bool>> filter, InterfaceSearchCondition entity)
@@ -54,11 +25,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Repository
         public void Recover(Expression<Func<InterfaceSearchCondition, bool>> filter, InterfaceSearchCondition entity)
         {
             entity.IsDeleted = (int)IsDeleted.NotDeleted;
-            _context.Update(filter, entity);
-        }
-
-        public void Update(Expression<Func<InterfaceSearchCondition, bool>> filter, InterfaceSearchCondition entity)
-        {
             _context.Update(filter, entity);
         }
     }
