@@ -65,5 +65,49 @@
                     return string.Empty;
             }
         }
+        public static string Tran_ConditionValueType(int type)
+        {
+            switch (type)
+            {
+                case (int)ConditionValueType.Const:
+                    return "固定值";
+                case (int)ConditionValueType.Parameter:
+                    return "参数传递值";
+                default:
+                    return string.Empty;
+            }
+        }
+        public static string Tran_ConditionJoint(int type)
+        {
+            switch (type)
+            {
+                case (int)ConditionJoint.And:
+                    return "And（与）";
+                case (int)ConditionJoint.Or:
+                    return "Or（或）";
+                default:
+                    return string.Empty;
+            }
+        }
+        public static string Tran_ConditionType(int type)
+        {
+            switch (type)
+            {
+                case (int)ConditionType.Equal:
+                    return "==（等于）";
+                case (int)ConditionType.GreaterThan:
+                    return ">（大于）";
+                case (int)ConditionType.GreaterThanEqual:
+                    return ">=（大于等于）";
+                case (int)ConditionType.LessThan:
+                    return "<（小于）";
+                case (int)ConditionType.LessThanEqual:
+                    return "<=（小于等于）";
+                case (int)ConditionType.NotEqual:
+                    return "!=（不等于）";
+                default:
+                    return string.Empty;
+            }
+        }
     }
 }

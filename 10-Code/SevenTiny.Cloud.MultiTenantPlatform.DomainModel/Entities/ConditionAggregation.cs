@@ -1,4 +1,5 @@
 ﻿using SevenTiny.Bantina.Bankinate;
+using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities
 {
@@ -6,8 +7,15 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities
     /// 条件字段
     /// </summary>
     [Table]
-    public class ConditionAggregation : CommonInfo
+    public class ConditionAggregation
     {
+        [Key]
+        [AutoIncrease]
+        public int Id { get; set; }
+        [Column("`Name`")]
+        public string Name { get; set; }
+        [Column("Icon")]
+        public string Icon { get; set; }
         /// <summary>
         /// 标识是属于哪个Condition
         /// </summary>
@@ -28,6 +36,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities
         public string Value { get; set; }
         [Column]
         public int ValueType { get; set; }
-        public ConditionAggregation Child { get; set; }
+        public List<ConditionAggregation> Children { get; set; }
     }
 }
