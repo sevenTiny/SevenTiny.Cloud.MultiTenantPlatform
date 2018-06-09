@@ -9,6 +9,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.RepositoryInterface
         List<TEntity> GetList(Expression<Func<TEntity, bool>> filter);
         TEntity GetEntity(Expression<Func<TEntity, bool>> filter);
         bool Exist(Expression<Func<TEntity, bool>> filter);
+        int Count(Expression<Func<TEntity, bool>> filter);
         void Add(TEntity entity);
         void Add(IEnumerable<TEntity> entities);
         void Update(Expression<Func<TEntity, bool>> filter,TEntity entity);

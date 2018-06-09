@@ -25,10 +25,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Repository
         {
             return _context.QueryOne<TEntity>(filter);
         }
+
         public void Add(TEntity entity)
         {
             _context.Add(entity);
         }
+
         public void Add(IEnumerable<TEntity> entities)
         {
             _context.Add(entities);
@@ -47,6 +49,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Repository
         public bool Exist(Expression<Func<TEntity, bool>> filter)
         {
             return _context.QueryCount(filter) > 0;
+        }
+
+        public int Count(Expression<Func<TEntity, bool>> filter)
+        {
+            return _context.QueryCount(filter);
         }
     }
 }
