@@ -68,8 +68,8 @@
         height: 30px;
     }
 
-    .tree li.parent_li > span:hover, .tree li.parent_li > span:hover + ul li span {
-        background: #eee;
+    .tree li > span:hover, .tree li > span:hover + ul li span {
+        background: #daf7c5;
         border: 1px solid #94a0b4;
         color: #000;
     }
