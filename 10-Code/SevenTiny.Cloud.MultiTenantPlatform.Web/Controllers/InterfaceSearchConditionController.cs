@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SevenTiny.Bantina;
+using SevenTiny.Bantina.Extensions;
 using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
 using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Enums;
 using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.RepositoryInterface;
@@ -8,6 +9,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 {
@@ -79,7 +81,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             return RedirectToAction("List");
         }
 
-
         public IActionResult Update(int id)
         {
             var metaObject = _interfaceSearchConditionRepository.GetEntity(t => t.Id == id);
@@ -140,6 +141,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             return View();
         }
 
+        /// <summary>
+        /// 添加组织条件树
+        /// </summary>
+        /// <param name="id">搜索条件id，指明该条件组织树是属于那个搜索条件的</param>
+        /// <returns></returns>
         public IActionResult AggregateConditionAddLogic(int id)
         {
             int brotherNodeId = int.Parse(Request.Form["brotherNodeId"]);
@@ -219,6 +225,94 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             });
         }
 
+        /// <summary>
+        /// 删除组织条件树
+        /// </summary>
+        /// <param name="id">节点id</param>
+        /// <param name="interfaceSearchConditionId">搜索条件id</param>
+        /// <returns></returns>
+        public IActionResult AggregateConditionDeleteLogic(int id, int interfaceSearchConditionId)
+        {
+            //将要删除的节点id集合
+            List<int> willBeDeleteIds = new List<int>();
+
+            List<ConditionAggregation> allConditions = _conditionAggregationRepository.GetList(t => t.InterfaceSearchConditionId == interfaceSearchConditionId);
+            if (allConditions == null || !allConditions.Any())
+            {
+                return JsonResultModel.Success("删除成功！");
+            }
+            ConditionAggregation conditionAggregation = allConditions.FirstOrDefault(t => t.Id == id);
+            if (conditionAggregation == null)
+            {
+                return JsonResultModel.Success("删除成功！");
+            }
+            //获取父节点id
+            int parentId = conditionAggregation.ParentId;
+            //如果是顶级节点，直接删除
+            if (parentId == -1)
+            {
+                DeleteNodeAndChildrenNodes(allConditions, id);
+                return JsonResultModel.Success("删除成功！");
+            }
+            //如果不是顶级节点，查询所有兄弟节点。
+            //如果所有兄弟节点（包含自己）多余两个，则直接删除此节点;
+            List<ConditionAggregation> conditionList = allConditions.Where(t => t.ParentId == parentId).ToList();
+            if (conditionList.Count > 2)
+            {
+                DeleteNodeAndChildrenNodes(allConditions, id);
+                return JsonResultModel.Success("删除成功！");
+            }
+            //如果兄弟节点为两个，则将父亲节点删除，将另一个兄弟节点作为父节点。
+            else if (conditionList.Count == 2)
+            {
+                //获取到父节点
+                ConditionAggregation parentNode = allConditions.FirstOrDefault(t => t.Id == parentId);
+                //找到兄弟节点（同一个父节点，id!=当前节点）
+                ConditionAggregation brotherNode = allConditions.FirstOrDefault(t => t.ParentId == parentId && t.Id != id);
+                //将兄弟节点的父节点指向父节点的父节点
+                brotherNode.ParentId = parentNode.ParentId;
+                //更新兄弟节点
+                _conditionAggregationRepository.Update(t => t.Id == brotherNode.Id, brotherNode);
+                //将父节点删除
+                _conditionAggregationRepository.Delete(t => t.Id == parentId);
+                //删除要删除的节点以及下级节点
+                DeleteNodeAndChildrenNodes(allConditions, id);
+            }
+            //如果没有兄弟节点，则直接将节点以及父节点都删除（如果数据不出问题，默认不存在此种情况，直接返回结果）
+            else
+            {
+                return JsonResultModel.Success("删除成功！");
+            }
+
+            return JsonResultModel.Success("删除成功！");
+
+            //删除节点级所有下级节点
+            void DeleteNodeAndChildrenNodes(List<ConditionAggregation> sourceConditions, int nodeId)
+            {
+                FindDeleteNodeAndChildrenNodes(sourceConditions, nodeId);
+                Expression<Func<ConditionAggregation, bool>> func = t => t.Id == id;
+                foreach (var item in willBeDeleteIds)
+                {
+                    func = func.Or(tt => tt.Id == item);
+                }
+                _conditionAggregationRepository.Delete(func);
+            }
+
+            //遍历整棵树，找到要删除的节点以及下级节点
+            void FindDeleteNodeAndChildrenNodes(List<ConditionAggregation> sourceConditions, int nodeId)
+            {
+                var children = sourceConditions.Where(t => t.ParentId == nodeId).ToList();
+                if (children != null && children.Any())
+                {
+                    foreach (var item in children)
+                    {
+                        willBeDeleteIds.Add(item.Id);
+                        FindDeleteNodeAndChildrenNodes(children, item.Id);
+                    }
+                }
+            }
+        }
+
         [HttpGet]
         public IActionResult AggregateConditionTreeView(int id)
         {
@@ -244,6 +338,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
                 }
                 return childs;
             }
+
             if (condition != null)
             {
                 return JsonResultModel.Success("构造树成功！", new List<ConditionAggregation> { condition });
