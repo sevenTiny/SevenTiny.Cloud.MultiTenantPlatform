@@ -1,15 +1,16 @@
-﻿using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
+using Newtonsoft.Json;
+using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
 using System;
 using System.Linq.Expressions;
-using Newtonsoft.Json;
+using Xunit;
 
-namespace Test.ConsoleApp
+namespace Test.SevenTiny.Cloud.MultiTenantPlatform.UnitTest
 {
-    class Program
+    public class UnitTest1
     {
-        static void Main(string[] args)
+        [Fact]
+        public void Test1()
         {
-
             Expression<Func<ConditionAggregation, bool>> func = t => t.Id == 1 && t.Name.Equals("3");
 
             Console.WriteLine(func.ToString());
@@ -18,11 +19,6 @@ namespace Test.ConsoleApp
 
             var exp = JsonConvert.DeserializeObject<Expression<Func<ConditionAggregation, bool>>>(test);
 
-            Console.WriteLine(JsonConvert.SerializeObject(func));
-
-
-            //---------------
-            Console.ReadKey();
         }
     }
 }
