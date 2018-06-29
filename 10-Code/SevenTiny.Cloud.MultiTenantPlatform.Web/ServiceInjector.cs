@@ -1,8 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using SevenTiny.Cloud.MultiTenantPlatform.Application;
+using SevenTiny.Cloud.MultiTenantPlatform.Application.Service;
+using SevenTiny.Cloud.MultiTenantPlatform.Application.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
 using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Repository;
-using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.RepositoryInterface;
+using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.RepositoryContract;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Web
 {

@@ -5,8 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Aggregate\**" />
+    <EmbeddedResource Remove="Aggregate\**" />
+    <None Remove="Aggregate\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Arguments\" />
-    <Folder Include="Aggregate\" />
     <Folder Include="Const\" />
     <Folder Include="Service\" />
   </ItemGroup>
