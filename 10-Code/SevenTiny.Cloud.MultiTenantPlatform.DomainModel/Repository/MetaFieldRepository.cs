@@ -1,6 +1,6 @@
 ﻿using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
 using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Enums;
-using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.RepositoryInterface;
+using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.RepositoryContract;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;

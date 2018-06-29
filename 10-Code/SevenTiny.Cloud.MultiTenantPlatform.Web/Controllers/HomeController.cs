@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Enums;
-using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.RepositoryInterface;
+using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.RepositoryContract;
 using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
 using System.Diagnostics;
 

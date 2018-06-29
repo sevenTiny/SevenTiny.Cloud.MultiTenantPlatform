@@ -1,4 +1,4 @@
-﻿namespace SevenTiny.Cloud.MultiTenantPlatform.Application
+﻿namespace SevenTiny.Cloud.MultiTenantPlatform.Application.ServiceContract
 {
     public interface IMetaFieldService
     {
