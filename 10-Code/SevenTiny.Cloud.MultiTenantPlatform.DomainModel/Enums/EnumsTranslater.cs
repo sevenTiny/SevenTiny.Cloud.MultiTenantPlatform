@@ -56,11 +56,13 @@
             switch (datatype)
             {
                 case (int)InterfaceType.CloudSingleObject:
-                    return "单对象"; ;
+                    return "单对象";
                 case (int)InterfaceType.CloudTableList:
-                    return "数据集合"; ;
+                    return "数据集合";
+                case (int)InterfaceType.CloudCount:
+                    return "数据量";
                 case (int)InterfaceType.EnumeDataSource:
-                    return "枚举数据源"; ;
+                    return "枚举数据源";
                 default:
                     return string.Empty;
             }
