@@ -1,7 +1,6 @@
-﻿using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
-using System;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Application.ServiceContract
 {
@@ -12,6 +11,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Application.ServiceContract
         /// </summary>
         /// <param name="interfaceSearchConditionId"></param>
         /// <returns></returns>
-        Expression<Func<ConditionAggregation, bool>> AnalysisConditionToLambda(int interfaceSearchConditionId, Dictionary<string, object> conditionValueDic);
+        FilterDefinition<BsonDocument> AnalysisConditionToFilterDefinition(int interfaceSearchConditionId, Dictionary<string, object> conditionValueDic);
     }
 }
