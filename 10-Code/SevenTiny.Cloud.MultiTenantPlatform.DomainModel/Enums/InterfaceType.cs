@@ -14,8 +14,12 @@
         /// </summary>
         CloudTableList = 1,
         /// <summary>
+        /// 数量
+        /// </summary>
+        CloudCount = 2,
+        /// <summary>
         /// 枚举数据源
         /// </summary>
-        EnumeDataSource = 2
+        EnumeDataSource = 3
     }
 }
