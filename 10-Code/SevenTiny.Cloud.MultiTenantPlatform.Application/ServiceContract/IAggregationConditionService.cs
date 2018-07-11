@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace SevenTiny.Cloud.MultiTenantPlatform.Application
+namespace SevenTiny.Cloud.MultiTenantPlatform.Application.ServiceContract
 {
     public interface IAggregationConditionService
     {

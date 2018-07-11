@@ -1,13 +1,14 @@
 ﻿using SevenTiny.Bantina.Extensions;
 using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
 using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Enums;
-using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.RepositoryInterface;
+using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.RepositoryContract;
+using SevenTiny.Cloud.MultiTenantPlatform.Application.ServiceContract;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace SevenTiny.Cloud.MultiTenantPlatform.Application
+namespace SevenTiny.Cloud.MultiTenantPlatform.Application.Service
 {
     public class AggregationConditionService : IAggregationConditionService
     {
