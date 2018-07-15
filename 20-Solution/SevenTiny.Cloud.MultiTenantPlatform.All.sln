@@ -21,7 +21,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenant
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenantPlatform.Application", "..\10-Code\SevenTiny.Cloud.MultiTenantPlatform.Application\SevenTiny.Cloud.MultiTenantPlatform.Application.csproj", "{0F5C21C4-E4DC-4C8F-BC26-C85254C472F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.SevenTiny.Cloud.MultiTenantPlatform.UnitTest", "..\10-Code\Test.SevenTiny.Cloud.MultiTenantPlatform.UnitTest\Test.SevenTiny.Cloud.MultiTenantPlatform.UnitTest.csproj", "{BFEEDFFD-E155-4ACB-B2C2-F13903D6AB41}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.SevenTiny.Cloud.MultiTenantPlatform.UnitTest", "..\10-Code\Test.SevenTiny.Cloud.MultiTenantPlatform.UnitTest\Test.SevenTiny.Cloud.MultiTenantPlatform.UnitTest.csproj", "{BFEEDFFD-E155-4ACB-B2C2-F13903D6AB41}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenTiny.Cloud.MultiTenantPlatform.CloudModel", "..\10-Code\SevenTiny.Cloud.MultiTenantPlatform.CloudModel\SevenTiny.Cloud.MultiTenantPlatform.CloudModel.csproj", "{FAA24972-502A-4A5F-AEB5-550F6DF421E0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +59,10 @@ Global
 		{BFEEDFFD-E155-4ACB-B2C2-F13903D6AB41}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BFEEDFFD-E155-4ACB-B2C2-F13903D6AB41}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BFEEDFFD-E155-4ACB-B2C2-F13903D6AB41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FAA24972-502A-4A5F-AEB5-550F6DF421E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FAA24972-502A-4A5F-AEB5-550F6DF421E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FAA24972-502A-4A5F-AEB5-550F6DF421E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FAA24972-502A-4A5F-AEB5-550F6DF421E0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

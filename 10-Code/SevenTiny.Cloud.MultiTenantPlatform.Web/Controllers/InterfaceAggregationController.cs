@@ -94,7 +94,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             return RedirectToAction("List");
         }
 
-
         public IActionResult Update(int id)
         {
             ViewData["InterfaceFields"] = _interfaceFieldRepository.GetList(t => t.MetaObjectId == CurrentMetaObjectId && t.IsDeleted == (int)IsDeleted.NotDeleted);
@@ -165,7 +164,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             _interfaceAggregationRepository.LogicDelete(t => t.Id == id, entity);
             return JsonResultModel.Success("删除成功");
         }
-
 
         public IActionResult Recover(int id)
         {

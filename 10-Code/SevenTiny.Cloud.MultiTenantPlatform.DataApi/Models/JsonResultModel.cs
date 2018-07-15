@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Models
+namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Models
 {
     public class JsonResultModel
     {
