@@ -1,5 +1,5 @@
 ﻿using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
-using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.RepositoryInterface;
+using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.RepositoryContract;
 using System;
 using System.Linq.Expressions;
 
@@ -12,6 +12,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Repository
         {
             _context = context;
         }
+
+        public ConditionAggregation GetConditionAggregationById(int id)
+        {
+            return GetEntity(t => t.Id == id);
+        }
+
         public void LogicDelete(Expression<Func<ConditionAggregation, bool>> filter, ConditionAggregation entity)
         {
             throw new NotImplementedException();

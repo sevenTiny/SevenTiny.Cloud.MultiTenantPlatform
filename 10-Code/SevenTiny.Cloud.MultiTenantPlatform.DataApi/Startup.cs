@@ -23,6 +23,14 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //start 7tiny ---
+            //session support
+            services.AddDistributedMemoryCache();
+            services.AddSession();
+            //DI,可以选择使用哪种方式进行注入
+            services = ServiceInjector.NetCoreInject(services);
+            //end 7tiny ---
+
             services.AddMvc();
         }
 

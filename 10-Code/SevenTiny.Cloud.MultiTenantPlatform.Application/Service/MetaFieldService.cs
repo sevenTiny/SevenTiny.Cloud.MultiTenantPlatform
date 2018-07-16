@@ -1,9 +1,10 @@
-﻿using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
+﻿using SevenTiny.Cloud.MultiTenantPlatform.Application.ServiceContract;
+using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
 using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Enums;
-using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.RepositoryInterface;
+using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.RepositoryContract;
 using System.Collections.Generic;
 
-namespace SevenTiny.Cloud.MultiTenantPlatform.Application
+namespace SevenTiny.Cloud.MultiTenantPlatform.Application.Service
 {
     public class MetaFieldService : IMetaFieldService
     {

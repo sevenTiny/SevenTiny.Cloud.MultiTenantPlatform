@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SevenTiny.Bantina;
-using SevenTiny.Cloud.MultiTenantPlatform.Application;
+using SevenTiny.Cloud.MultiTenantPlatform.Application.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
 using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Enums;
-using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.RepositoryInterface;
+using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.RepositoryContract;
 using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
 using System;
 
@@ -87,6 +87,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
                 return View("Add", new ActionResultModel<MetaObject>(false, "Application Id Can Not Be Null！", metaObject));
             }
             metaObject.ApplicationId = CurrentApplicationId;
+            //get application
+            var application = _applicationRepository.GetEntity(t => t.Id == CurrentApplicationId);
+            metaObject.Code = $"{application.Code}.{metaObject.Code}";
             _metaObjectRepository.Add(metaObject);
             obj = _metaObjectRepository.GetEntity(t => t.ApplicationId == metaObject.ApplicationId && t.Code.Equals(metaObject.Code));
             if (obj == null)

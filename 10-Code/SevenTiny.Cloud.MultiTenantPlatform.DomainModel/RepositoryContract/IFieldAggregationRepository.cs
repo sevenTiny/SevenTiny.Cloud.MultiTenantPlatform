@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.RepositoryInterface
+namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.RepositoryContract
 {
     public interface IFieldAggregationRepository : IRepository<FieldAggregation>
     {

@@ -3,7 +3,6 @@
 
 @{
     ViewData["Title"] = "AggregateCondition";
-    //Layout = "~/Views/Shared/_Layout.cshtml";
     List<ConditionAggregation> entities = ViewData["AggregationConditions"] as List<ConditionAggregation> ?? new List<ConditionAggregation>();
     List<MetaField> metafields = ViewData["MetaFields"] as List<MetaField> ?? new List<MetaField>();
     int interfaceSearchConditionId = Convert.ToInt32(ViewData["InterfaceSearchConditionId"]);
@@ -25,7 +24,7 @@
     <div class="opration">
         <a class="btn btn-secondary-outline radius" href="javascript:history.back(-1);"><i class="Hui-iconfont">&#xe66b;</i> 返回</a>
         <a class="btn btn-danger radius" href="javascript:history.back(-1);"><i class="Hui-iconfont">&#xe6a6;</i> 取消</a>
-        <a class="btn btn-primary radius" href="javascript:addCondition();"><i class="Hui-iconfont">&#xe632;</i> 添加</a>
+        <a class="btn btn-primary radius" href="javascript:addCondition(this);"><i class="Hui-iconfont">&#xe632;</i> 添加</a>
     </div>
     <div class="row cl" style="margin-top:10px;">
         <div class="col-xs-6 col-sm-6">
@@ -193,7 +192,7 @@
 
 
 
-        if ($("#conditionValueType").val() == 0) {
+        if ($("#conditionValueTypeId").val() == 0) {
             $("#conditionValue").prop('disabled', 'disabled');
         }
     });
@@ -224,43 +223,80 @@
         $("#sp_result_error").html("");//清空result msg span
     }
 
-    /**删除节点 */
-    function delNode() {
-        alert('del');
-    }
+    var lock = false;
 
     /* 添加条件 */
-    function addCondition() {
+    function addCondition(obj) {
         cleanSpan();
         //check parameters
         if ($('#brotherNodeId').val() == '' || $('#brotherNodeId').val() == null) {
             $("#sp_result_error").html("兄弟节点不能为空，请点击选择树形图中的兄弟节点！"); return;
         }
-        //add
-        $.ajax({
-            type: 'POST',
-            url: '/InterfaceSearchCondition/AggregateConditionAddLogic/' + @interfaceSearchConditionId,
-            dataType: 'json',
-            data: {
-                "brotherNodeId": $('#brotherNodeId').val(),
-                "conditionJointTypeId": $('#conditionJointTypeId').val(),
-                "fieldId": $('#fieldId').val(),
-                "conditionTypeId": $('#conditionTypeId').val(),
-                "conditionValueTypeId": $('#conditionValueTypeId').val(),
-                "conditionValue": $('#conditionValue').val(),
-            },
-            success: function (data) {
-                layer.msg(data.msg, { icon: 1, time: 1000 });
+        if (!lock) {
+            lock = true;
+            //add
+            $.ajax({
+                type: 'POST',
+                url: '/InterfaceSearchCondition/AggregateConditionAddLogic/' + @interfaceSearchConditionId,
+                dataType: 'json',
+                data: {
+                    "brotherNodeId": $('#brotherNodeId').val(),
+                    "conditionJointTypeId": $('#conditionJointTypeId').val(),
+                    "fieldId": $('#fieldId').val(),
+                    "conditionTypeId": $('#conditionTypeId').val(),
+                    "conditionValueTypeId": $('#conditionValueTypeId').val(),
+                    "conditionValue": $('#conditionValue').val(),
+                },
+                success: function (data) {
+                    layer.msg(data.msg, { icon: 1, time: 1000 });
+                    if (data.success) {
+                        setTimeout(function () {
+                            window.location = '/InterfaceSearchCondition/AggregationCondition/'+@interfaceSearchConditionId;
+                         }, 1000);
+                    }
+                    lock = false;
+                },
+                error: function (data) {
+                    $("#sp_result_error").html(data.msg);
+                    lock = false;
+                },
+            });
+        } else {
+            layer.msg('您的点击太频繁了！', { icon: 2, time: 1000 });
+        }
+    }
 
-                if (data.success) {
-                    setTimeout(function () {
-                        window.location = '/InterfaceSearchCondition/AggregationCondition/'+@interfaceSearchConditionId;
-                     }, 1000);
-                }
-            },
-            error: function (data) {
-                $("#sp_result_error").html(data.msg);
-            },
+    /**删除节点 */
+    function delNode() {
+        layer.confirm('删除操作将清空结点下所有子节点！', function (index) {
+            var nodeId = $('#brotherNodeId').val();
+            if (nodeId == null || nodeId=='') {
+                layer.msg('请在树形图中选择要删除的节点！', { icon: 2, time: 1000 });
+                return;
+            }
+            if (!lock) {
+                lock = true;
+                $.ajax({
+                    type: 'POST',
+                    url: '/InterfaceSearchCondition/AggregateConditionDeleteLogic/' + nodeId + '?interfaceSearchConditionId=' +@interfaceSearchConditionId,
+                    dataType: 'json',
+                    success: function (data) {
+                        layer.msg(data.msg, { icon: 1, time: 1000 });
+                        if (data.success) {
+                            setTimeout(function () {
+                                window.location = '/InterfaceSearchCondition/AggregationCondition/' +@interfaceSearchConditionId;
+                            }, 1000);
+                        }
+                        lock = false;
+                    },
+                    error: function (data) {
+                        console.log(data.msg);
+                        lock = false;
+                    }
+                });
+            } else {
+                layer.msg('您的点击太频繁了！', { icon: 2, time: 1000 });
+            }
         });
     }
 </script>

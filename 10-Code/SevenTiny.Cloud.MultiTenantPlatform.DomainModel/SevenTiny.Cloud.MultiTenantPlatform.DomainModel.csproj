@@ -5,14 +5,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Arguments\" />
-    <Folder Include="Aggregate\" />
-    <Folder Include="Const\" />
-    <Folder Include="Service\" />
+    <Compile Remove="Aggregate\**" />
+    <EmbeddedResource Remove="Aggregate\**" />
+    <None Remove="Aggregate\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="SevenTiny.Bantina.Bankinate" Version="1.0.34" />
+    <Folder Include="Arguments\" />
+    <Folder Include="Const\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SevenTiny.Bantina.Bankinate" Version="1.0.37" />
   </ItemGroup>
 
   <ItemGroup>

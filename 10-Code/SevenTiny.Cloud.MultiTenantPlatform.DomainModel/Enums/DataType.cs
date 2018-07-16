@@ -13,7 +13,7 @@
         Boolean = 5,
         Int = 6,
         Long = 7,
-        Float = 8,
+        //Float = 8,
         Double = 9,
         DataSource = 10,
         StandradDate = 11,

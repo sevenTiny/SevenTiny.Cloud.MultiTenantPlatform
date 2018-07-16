@@ -1,11 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SevenTiny.Cloud.MultiTenantPlatform.Application.Service;
 using SevenTiny.Cloud.MultiTenantPlatform.Application.ServiceContract;
-using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
 using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.RepositoryContract;
 
-namespace SevenTiny.Cloud.MultiTenantPlatform.Web
+namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi
 {
     /// <summary>
     /// 依赖注入器
@@ -16,20 +15,16 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web
         public static IServiceCollection NetCoreInject(IServiceCollection services)
         {
             //repository
-            services.AddScoped<MultiTenantPlatformDbContext>();
-            services.AddScoped<IApplicationRepository, ApplicationRepository>();
             services.AddScoped<IMetaObjectRepository, MetaObjectRepository>();
             services.AddScoped<IMetaFieldRepository, MetaFieldRepository>();
-            services.AddScoped<IConditionAggregationRepository, ConditionAggregationRepository>();
-            services.AddScoped<IFieldAggregationRepository, FieldAggregationRepository>();
             services.AddScoped<IInterfaceAggregationRepository, InterfaceAggregationRepository>();
-            services.AddScoped<IInterfaceFieldRepository, InterfaceFieldRepository>();
-            services.AddScoped<IInterfaceSearchConditionRepository, InterfaceSearchConditionRepository>();
-
+            services.AddScoped<IConditionAggregationRepository, ConditionAggregationRepository>();
+            
             //service
-            services.AddScoped<IMetaFieldService, MetaFieldService>();
-
-
+            services.AddScoped<IAggregationConditionService, AggregationConditionService>();
+            services.AddScoped<IInterfaceAggregationService, InterfaceAggregationService>();
+            services.AddScoped<IMultitenantDataService, MultitenantDataService>();
+            
             return services;
         }
 
