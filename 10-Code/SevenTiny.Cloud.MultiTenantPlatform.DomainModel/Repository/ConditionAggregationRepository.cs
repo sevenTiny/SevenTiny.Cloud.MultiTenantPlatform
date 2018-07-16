@@ -12,6 +12,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Repository
         {
             _context = context;
         }
+
+        public ConditionAggregation GetConditionAggregationById(int id)
+        {
+            return GetEntity(t => t.Id == id);
+        }
+
         public void LogicDelete(Expression<Func<ConditionAggregation, bool>> filter, ConditionAggregation entity)
         {
             throw new NotImplementedException();

@@ -10,6 +10,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Models
         public string metaObjectName { get; set; }
         public string interfaceCode { get; set; }
 
+        #region paging
+        public int pageIndex { get; set; }
+        public int pageSize { get; set; }
+        #endregion
+
         public void QueryArgsCheck()
         {
             if (string.IsNullOrEmpty(interfaceCode))

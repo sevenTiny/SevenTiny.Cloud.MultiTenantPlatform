@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using Newtonsoft.Json;
+using SevenTiny.Cloud.MultiTenantPlatform.Application.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.DataApi.Models;
+using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Checker;
+using System;
+using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
 {
@@ -13,12 +13,14 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
     [Route("api/CloudData")]
     public class CloudDataController : Controller
     {
-        // GET api/values/5
-        [HttpGet]
-        [HttpGet("{tenantId:int}/{api:int}")]
-        public string Get(int tenantId, int api)
+        private readonly IAggregationConditionService _aggregationConditionService;
+        private readonly IInterfaceAggregationService _interfaceAggregationService;
+        private readonly IMultitenantDataService _multitenantDataService;
+        public CloudDataController(IAggregationConditionService aggregationConditionService, IInterfaceAggregationService interfaceAggregationService, IMultitenantDataService multitenantDataService)
         {
-            return $"tenantId:{tenantId},api:{api}";
+            _aggregationConditionService = aggregationConditionService;
+            _interfaceAggregationService = interfaceAggregationService;
+            _multitenantDataService = multitenantDataService;
         }
 
         public IActionResult Get(int tenantId, QueryArgs queryArgs)
@@ -32,11 +34,31 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                 }
                 queryArgs.QueryArgsCheck();
 
+                //2.argumentsDic generate
+                Dictionary<string, object> argumentsDic = new Dictionary<string, object>();
+                foreach (var item in Request.Form)
+                {
+                    if (!argumentsDic.ContainsKey(item.Key))
+                    {
+                        argumentsDic.Add(item.Key, item.Value);
+                    }
+                }
+                foreach (var item in Request.Query)
+                {
+                    if (!argumentsDic.ContainsKey(item.Key))
+                    {
+                        argumentsDic.Add(item.Key, item.Value);
+                    }
+                }
 
-                //todo:query and result
+                //3.get filter
+                int conditionId = _interfaceAggregationService.GetConditionAggregationByInterfaceAggregationCode(queryArgs.interfaceCode)?.Id ?? 0;
+                var filter = _aggregationConditionService.AnalysisConditionToFilterDefinition(conditionId, argumentsDic);
 
-                return JsonResultModel.Success("");
-                
+                //4.query result
+                object data = _multitenantDataService.GetObjectDatasByCondition(tenantId, filter, queryArgs.pageIndex, queryArgs.pageSize);
+
+                return JsonResultModel.Success("get data success", data);
             }
             catch (ArgumentException argEx)
             {
@@ -48,15 +70,19 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
             }
         }
 
-        public IActionResult Post()
+        public IActionResult Post(int tenantId, BsonDocument bsons)
         {
-            return null;
+            ArgumentsChecker.CheckTenantId(tenantId);
+            ArgumentsChecker.CheckNull("bsons", bsons);
+            _multitenantDataService.Add(tenantId, bsons);
+            return JsonResultModel.Success("add success");
         }
 
         public IActionResult Update()
         {
             return null;
         }
+
         public IActionResult Delete()
         {
             return null;

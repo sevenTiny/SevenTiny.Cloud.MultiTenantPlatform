@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using SevenTiny.Cloud.MultiTenantPlatform.Application.Service;
+using SevenTiny.Cloud.MultiTenantPlatform.Application.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.RepositoryContract;
 
@@ -15,9 +17,14 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi
             //repository
             services.AddScoped<IMetaObjectRepository, MetaObjectRepository>();
             services.AddScoped<IMetaFieldRepository, MetaFieldRepository>();
-
+            services.AddScoped<IInterfaceAggregationRepository, InterfaceAggregationRepository>();
+            services.AddScoped<IConditionAggregationRepository, ConditionAggregationRepository>();
+            
             //service
-
+            services.AddScoped<IAggregationConditionService, AggregationConditionService>();
+            services.AddScoped<IInterfaceAggregationService, InterfaceAggregationService>();
+            services.AddScoped<IMultitenantDataService, MultitenantDataService>();
+            
             return services;
         }
 

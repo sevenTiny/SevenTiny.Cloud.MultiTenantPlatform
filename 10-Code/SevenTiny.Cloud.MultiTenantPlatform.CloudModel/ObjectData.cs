@@ -1,5 +1,4 @@
-﻿using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,31 +11,14 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.CloudModel
     {
         public ObjectData(string metaObjectCode)
         {
-            if (string.IsNullOrEmpty(metaObjectCode))
-            {
-                throw new ArgumentNullException("metaObjectCode can not be null!");
-            }
-            var metaFields = GetMetaFieldsByMetaObjectCode(metaObjectCode);
-            List<Data> dataList = new List<Data>();
-            foreach (var item in metaFields)
-            {
-                dataList.Add(new Data(item.Code, EnumConvert.ToDataType(item.FieldType), null));
-            }
+            this.MetaObjectData = new MetaObjectData(metaObjectCode);
         }
 
-        private List<MetaField> GetMetaFieldsByMetaObjectCode(string metaObjectCode)
+        public ObjectData(MetaObjectData metaObjectData)
         {
-            //tode:there should be cache!!!
-            using (var db = new MultiTenantPlatformDbContext())
-            {
-                var metaObject = db.QueryOne<MetaObject>(t => t.Code.Equals(metaObjectCode));
-                this.MetaObjectId = metaObject.Id;
-                this.MetaObjectCode = metaObject.Code;
-                this.MetaObjectName = metaObject.Name;
-                var metaFields = db.QueryList<MetaField>(t => t.MetaObjectId == metaObject.Id);
-                return metaFields;
-            }
+            this.MetaObjectData = metaObjectData;
         }
+
         /// <summary>
         /// tenant id,means the data belong to the tenant
         /// </summary>
@@ -45,14 +27,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.CloudModel
         /// user id,means the data belong to the user
         /// </summary>
         public int UserId { get; set; }
-        /// <summary>
-        /// meta object data(key,type,value)
-        /// </summary>
-        public Data[] DataArray { get; set; }
 
-        public int MetaObjectId { get; set; }
-        public string MetaObjectCode { get; set; }
-        public string MetaObjectName { get; set; }
+        public MetaObjectData MetaObjectData { get; private set; }
         /// <summary>
         /// get MetaObject by propertyName which same as DataKey
         /// </summary>
@@ -190,12 +166,14 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.CloudModel
             {
                 if (this._MetaFields == null)
                 {
-                    this._MetaFields = this.DataArray?.ToDictionary(t => t.DataKey, v => v);
+                    if (MetaObjectData == null)
+                    {
+                        throw new NullReferenceException("MetaObject of ObjectData can not be null!");
+                    }
+                    this._MetaFields = this.MetaObjectData.MetaFields.ToDictionary(t => t.Code, v => new Data(v.Code, EnumConvert.ToDataType(v.FieldType), null));
                 }
                 return this._MetaFields;
             }
         }
-
-        public int FieldsCount => DataArray.Count();
     }
 }
