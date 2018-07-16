@@ -13,7 +13,6 @@
   <ItemGroup>
     <Folder Include="Arguments\" />
     <Folder Include="Const\" />
-    <Folder Include="Service\" />
   </ItemGroup>
 
   <ItemGroup>
