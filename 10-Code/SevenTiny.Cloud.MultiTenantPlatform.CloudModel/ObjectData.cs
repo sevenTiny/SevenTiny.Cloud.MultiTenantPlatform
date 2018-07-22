@@ -22,6 +22,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.CloudModel
             {
                 dataList.Add(new Data(item.Code, EnumConvert.ToDataType(item.FieldType), null));
             }
+            this.DataArray = dataList.ToArray();
         }
 
         private List<MetaField> GetMetaFieldsByMetaObjectCode(string metaObjectCode)
@@ -37,6 +38,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.CloudModel
                 return metaFields;
             }
         }
+        /// <summary>
+        /// same as _id
+        /// </summary>
+        public Guid Id { get => _id; set => _id = value; }
         /// <summary>
         /// tenant id,means the data belong to the tenant
         /// </summary>

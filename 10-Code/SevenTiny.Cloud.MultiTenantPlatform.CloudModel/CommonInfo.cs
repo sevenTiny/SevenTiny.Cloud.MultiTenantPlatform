@@ -7,12 +7,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.CloudModel
     /// </summary>
     public class CommonInfo
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Code { get; set; }
-        public string Description { get; set; } = string.Empty;
-        public string Group { get; set; } = string.Empty;
-        public int SortNumber { get; set; } = 0;
+        protected Guid _id { get; set; } = Guid.NewGuid();
         public int IsDeleted { get; set; } = 0;
         public int CreateBy { get; set; } = -1;
         public DateTime CreateTime { get; set; } = DateTime.Now;
