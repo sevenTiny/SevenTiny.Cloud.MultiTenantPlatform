@@ -6,14 +6,16 @@
 
   <ItemGroup>
     <Compile Remove="Aggregate\**" />
+    <Compile Remove="Service\**" />
     <EmbeddedResource Remove="Aggregate\**" />
+    <EmbeddedResource Remove="Service\**" />
     <None Remove="Aggregate\**" />
+    <None Remove="Service\**" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Arguments\" />
     <Folder Include="Const\" />
-    <Folder Include="Service\" />
   </ItemGroup>
 
   <ItemGroup>

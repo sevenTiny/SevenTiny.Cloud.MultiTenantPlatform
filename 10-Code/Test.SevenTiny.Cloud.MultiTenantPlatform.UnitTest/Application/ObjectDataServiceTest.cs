@@ -16,10 +16,9 @@ namespace Test.SevenTiny.Cloud.MultiTenantPlatform.UnitTest.Application
             IObjectDataService s = new ObjectDataService();
 
             ObjectData obj = new ObjectData("wangdong3");
-
-            obj["Name"] = 111;
-            obj["Age"] = 11;
-            obj["Sex"] = 1;
+            obj["Name"] = 3;
+            obj["Age"] = 3;
+            obj["Sex"] = 3;
 
             s.Insert(obj);
         }

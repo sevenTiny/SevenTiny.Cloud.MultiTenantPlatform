@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using System;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.CloudModel
 {
@@ -7,7 +8,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.CloudModel
     /// </summary>
     public class CommonInfo
     {
-        protected Guid _id { get; set; } = Guid.NewGuid();
+        public Guid _id { get; set; } = Guid.NewGuid();
         public int IsDeleted { get; set; } = 0;
         public int CreateBy { get; set; } = -1;
         public DateTime CreateTime { get; set; } = DateTime.Now;

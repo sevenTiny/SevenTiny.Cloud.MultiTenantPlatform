@@ -16,8 +16,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Application.Service
             using (var fact = new MultiTenantDataDbContext())
             {
                 //todu : 强类型对象转bson 的方法
-                string json = Newtonsoft.Json.JsonConvert.SerializeObject(objectData);
-                BsonDocument bson = JsonConvert.DeserializeObject<BsonDocument>(json);
+                string json = JsonConvert.SerializeObject(objectData);
+                BsonDocument bson = BsonDocument.Parse(json);
+                //bson["_id"] = objectData.Id;
                 fact.Add<ObjectData>(bson);
             }
         }
