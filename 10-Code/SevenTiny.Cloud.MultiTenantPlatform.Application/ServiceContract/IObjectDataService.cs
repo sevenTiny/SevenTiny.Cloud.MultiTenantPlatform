@@ -8,6 +8,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Application.ServiceContract
     {
         void Insert(ObjectData objectData);
         void Update(ObjectData objectData);
-        string QueryJsonByFilter(FilterDefinition<BsonDocument> filter)
+        string QueryJsonByFilter(FilterDefinition<BsonDocument> filter);
     }
 }
