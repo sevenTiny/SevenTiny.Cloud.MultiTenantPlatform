@@ -89,10 +89,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
 
                 //get filter by condition id and query string.
                 var filter = _aggregationConditionService.AnalysisConditionToFilterDefinition(conditionId, conditionValueDic);
+                //get data by filter
+                var result = _objectDataService.QueryJsonByFilter(filter);
 
-                // todo:xxx query
-
-                return JsonResultModel.Success("");
+                return JsonResultModel.Success("get succeed",result);
             }
             catch (ArgumentException argEx)
             {
