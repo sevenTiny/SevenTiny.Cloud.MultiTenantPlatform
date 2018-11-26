@@ -1,4 +1,5 @@
-﻿using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
+﻿using Newtonsoft.Json;
+using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +23,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.CloudModel
             {
                 dataList.Add(new Data(item.Code, EnumConvert.ToDataType(item.FieldType), null));
             }
+            this.DataArray = dataList.ToArray();
         }
 
         private List<MetaField> GetMetaFieldsByMetaObjectCode(string metaObjectCode)
@@ -40,11 +42,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.CloudModel
         /// <summary>
         /// tenant id,means the data belong to the tenant
         /// </summary>
-        public int TenantId { get; set; }
+        public int TenantId { get; set; } = -1;
         /// <summary>
         /// user id,means the data belong to the user
         /// </summary>
-        public int UserId { get; set; }
+        public int UserId { get; set; } = -1;
         /// <summary>
         /// meta object data(key,type,value)
         /// </summary>
@@ -184,6 +186,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.CloudModel
         /// <summary>
         /// MetaObjects Dictionary type
         /// </summary>
+        [JsonIgnore]
         public Dictionary<string, Data> MetaFields
         {
             get

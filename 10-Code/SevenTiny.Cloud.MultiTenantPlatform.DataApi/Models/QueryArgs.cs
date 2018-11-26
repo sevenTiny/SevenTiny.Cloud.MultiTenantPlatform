@@ -4,17 +4,23 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Models
 {
     public class QueryArgs
     {
-        public int ApplicationId { get; set; }
-        public string ApplicationName { get; set; }
-        public int metaObjectId { get; set; }
-        public string metaObjectName { get; set; }
-        public string interfaceCode { get; set; }
+        public string ApplicationCode { get; set; }
+        public string MetaObjectCode { get; set; }
+        public string InterfaceCode { get; set; }
 
         public void QueryArgsCheck()
         {
-            if (string.IsNullOrEmpty(interfaceCode))
+            if (string.IsNullOrEmpty(InterfaceCode))
             {
-                throw new ArgumentException("interfaceCode can not be null!");
+                throw new ArgumentException("InterfaceCode can not be null!");
+            }
+            if (string.IsNullOrEmpty(ApplicationCode))
+            {
+                throw new ArgumentException("ApplicationCode can not be null!");
+            }
+            if (string.IsNullOrEmpty(MetaObjectCode))
+            {
+                throw new ArgumentException("MetaObjectCode can not be null!");
             }
         }
     }
