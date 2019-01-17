@@ -9,6 +9,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity
     public class CommonInfo
     {
         [Key]
+        [Column]
         [AutoIncrease]
         public int Id { get; set; }
         [Column("`Name`")]
