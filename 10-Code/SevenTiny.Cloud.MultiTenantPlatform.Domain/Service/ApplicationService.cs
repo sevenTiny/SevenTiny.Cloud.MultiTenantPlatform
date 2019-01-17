@@ -14,7 +14,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
 
         MultiTenantPlatformDbContext dbContext;
 
-
         public bool ExistForSameName(string name)
             => dbContext.QueryExist<Application>(t => t.Name.Equals(name));
 

@@ -1,6 +1,5 @@
 ﻿using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Enum;
-using System;
 using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository
@@ -18,7 +17,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository
             => dbContext.Add(entity);
 
         public void Update(TEntity entity)
-            => dbContext.Update(t => t.Id == entity.Id, entity);
+            => dbContext.Update(entity);
 
         public void Delete(int id)
             => dbContext.Delete<TEntity>(t => t.Id.Equals(id));
@@ -29,7 +28,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository
             if (entity != null)
             {
                 entity.IsDeleted = (int)IsDeleted.Deleted;
-                dbContext.Update(t => t.Id == id, entity);
+                dbContext.Update(entity);
             }
         }
 
@@ -39,7 +38,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository
             if (entity != null)
             {
                 entity.IsDeleted = (int)IsDeleted.UnDeleted;
-                dbContext.Update(t => t.Id == id, entity);
+                dbContext.Update(entity);
             }
         }
 
