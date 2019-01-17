@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Enums;
-using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.RepositoryContract;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
 using System.Diagnostics;
 
@@ -9,14 +8,14 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IMetaObjectRepository _metaObjectRepository;
-        private readonly IApplicationRepository _applicationRepository;
-
-        public HomeController(IMetaObjectRepository metaObjectRepository, IApplicationRepository applicationRepository)
+        public HomeController(IApplicationService _applicationService, IMetaObjectService _metaObjectService)
         {
-            this._metaObjectRepository = metaObjectRepository;
-            this._applicationRepository = applicationRepository;
+            applicationService = _applicationService;
+            metaObjectService = _metaObjectService;
         }
+
+        IApplicationService applicationService;
+        IMetaObjectService metaObjectService;
 
         public IActionResult Index()
         {
@@ -30,20 +29,21 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             {
                 return Redirect("/Application/Select");
             }
-            DomainModel.Entities.Application application = _applicationRepository.GetEntity(t => t.Code.Equals(app));
+            var application = applicationService.GetByCode(app);
+
             HttpContext.Session.SetInt32("ApplicationId", application.Id);
+            HttpContext.Session.SetString("ApplicationCode", application.Code);
+
             ViewData["Application"] = app;
-            ViewData["MetaObjects"] = _metaObjectRepository.GetList(t => t.ApplicationId == application.Id && t.IsDeleted == (int)IsDeleted.NotDeleted);
+            ViewData["MetaObjects"] = metaObjectService.GetMetaObjectsUnDeletedByApplicationId(application.Id);
+
             return View();
         }
-
-
 
         public IActionResult Welcome()
         {
             return View();
         }
-
 
         public IActionResult About()
         {

@@ -1,15 +1,15 @@
-﻿@using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
-@using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Enums;
+﻿@using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
+@using SevenTiny.Cloud.MultiTenantPlatform.Domain.Enum;
 @using System.Linq;
 @{
     ViewData["Title"] = "Add";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @{
-    ActionResultModel<MetaField> result = Model as ActionResultModel<MetaField> ?? new ActionResultModel<MetaField>(true, string.Empty, new MetaField() { FieldType=(int)DataType.Number});
+    ActionResultModel<MetaField> result = Model as ActionResultModel<MetaField> ?? new ActionResultModel<MetaField>(true, string.Empty, new MetaField() { FieldType = (int)DataType.Number });
     Array dataTypes = Enum.GetValues(typeof(DataType));
     //不显示的数据类型
-    DataType[] dataTypesExclude = new[] { DataType.Unknown,DataType.StandradDate,DataType.StandradDateTime };
+    DataType[] dataTypesExclude = new[] { DataType.Unknown, DataType.StandradDate, DataType.StandradDateTime };
 }
 
 <nav class="breadcrumb">

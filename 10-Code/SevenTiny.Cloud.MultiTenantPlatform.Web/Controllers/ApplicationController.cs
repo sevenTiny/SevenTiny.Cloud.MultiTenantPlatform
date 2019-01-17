@@ -1,117 +1,100 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Enums;
-using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.RepositoryContract;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
-using System;
-using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 {
     public class ApplicationController : Controller
     {
-        private readonly IApplicationRepository _applicationRepository;
+        IApplicationService applicationService;
 
-        public ApplicationController(IApplicationRepository applicationRepository)
+        public ApplicationController(IApplicationService _applicationService)
         {
-            this._applicationRepository = applicationRepository;
+            applicationService = _applicationService;
         }
 
         public IActionResult Select()
         {
-            List<DomainModel.Entities.Application> list = _applicationRepository.GetList(t => t.IsDeleted == (int)IsDeleted.NotDeleted);
+            var list = applicationService.GetEntitiesUnDeleted();
             return View(list);
         }
 
         public IActionResult List()
         {
-            List<DomainModel.Entities.Application> list = _applicationRepository.GetList(t => t.IsDeleted == (int)IsDeleted.NotDeleted);
+            var list = applicationService.GetEntitiesUnDeleted();
             return View(list);
         }
 
         public IActionResult DeleteList()
         {
-            List<DomainModel.Entities.Application> list = _applicationRepository.GetList(t => t.IsDeleted == (int)IsDeleted.Deleted);
+            var list = applicationService.GetEntitiesDeleted();
             return View(list);
         }
 
         public IActionResult Add()
         {
-            DomainModel.Entities.Application application = new DomainModel.Entities.Application();
+            var application = new Domain.Entity.Application();
             application.Icon = "cloud";
-            return View(new ActionResultModel<DomainModel.Entities.Application>(true, string.Empty, application));
+            return View(ResponseModel.Success(application));
         }
 
-        public IActionResult AddLogic(DomainModel.Entities.Application application)
+        public IActionResult AddLogic(Domain.Entity.Application application)
         {
             if (string.IsNullOrEmpty(application.Name))
             {
-                return View("Add", new ActionResultModel<DomainModel.Entities.Application>(false, "Application Name Can Not Be Null！", application));
+                return View("Add", ResponseModel.Error("Application Name Can Not Be Null！", application));
             }
             if (string.IsNullOrEmpty(application.Code))
             {
-                return View("Add", new ActionResultModel<DomainModel.Entities.Application>(false, "Application Code Can Not Be Null！", application));
+                return View("Add", ResponseModel.Error("Application Code Can Not Be Null！", application));
             }
-            if (_applicationRepository.Exist(t => t.Name.Equals(application.Name)))
+            if (applicationService.ExistForSameName(application.Name))
             {
-                return View("Add", new ActionResultModel<DomainModel.Entities.Application>(false, "Application Name Has Been Exist！", application));
+                return View("Add", ResponseModel.Error("Application Name Has Been Exist！", application));
             }
 
-            _applicationRepository.Add(application);
+            applicationService.Add(application);
             return RedirectToAction("List");
         }
 
         public IActionResult Update(int id)
         {
-            var application = _applicationRepository.GetEntity(t => t.Id == id);
-            return View(new ActionResultModel<DomainModel.Entities.Application>(true, string.Empty, application));
-
+            var application = applicationService.GetById(id);
+            return View(ResponseModel.Success(application));
         }
 
-        public IActionResult UpdateLogic(DomainModel.Entities.Application application)
+        public IActionResult UpdateLogic(Domain.Entity.Application application)
         {
             if (application.Id == 0)
             {
-                return View("Update", new ActionResultModel<DomainModel.Entities.Application>(false, "Application Id Can Not Be Null！", application));
+                return View("Update", ResponseModel.Error("Application Id Can Not Be Null！", application));
             }
             if (string.IsNullOrEmpty(application.Name))
             {
-                return View("Update", new ActionResultModel<DomainModel.Entities.Application>(false, "Application Name Can Not Be Null！", application));
+                return View("Update", ResponseModel.Error("Application Name Can Not Be Null！", application));
             }
             if (string.IsNullOrEmpty(application.Code))
             {
-                return View("Update", new ActionResultModel<DomainModel.Entities.Application>(false, "Application Code Can Not Be Null！", application));
+                return View("Update", ResponseModel.Error("Application Code Can Not Be Null！", application));
             }
-            if (_applicationRepository.Exist(t => t.Name.Equals(application.Name) && t.Id != application.Id))
+            if (applicationService.ExistForSameNameAndNotSameId(application.Name, application.Id))
             {
-                return View("Add", new ActionResultModel<DomainModel.Entities.Application>(false, "Application Name Has Been Exist！", application));
+                return View("Add", ResponseModel.Error("Application Name Has Been Exist！", application));
             }
 
-            DomainModel.Entities.Application app = _applicationRepository.GetEntity(t => t.Id == application.Id);
-            if (app != null)
-            {
-                app.Name = application.Name;
-                app.Icon = application.Icon;
-                app.Group = application.Group;
-                app.SortNumber = application.SortNumber;
-                app.Description = application.Description;
-                app.ModifyBy = -1;
-                app.ModifyTime = DateTime.Now;
-            }
-            _applicationRepository.Update(t => t.Id == application.Id, app);
+            applicationService.Update(application);
             return RedirectToAction("List");
         }
 
         public IActionResult LogicDelete(int id)
         {
-            DomainModel.Entities.Application application = _applicationRepository.GetEntity(t => t.Id == id);
-            _applicationRepository.LogicDelete(t => t.Id == id, application);
+            applicationService.LogicDelete(id);
             return JsonResultModel.Success("删除成功");
         }
 
         public IActionResult Recover(int id)
         {
-            DomainModel.Entities.Application application = _applicationRepository.GetEntity(t => t.Id == id);
-            _applicationRepository.Recover(t => t.Id == id, application);
+            applicationService.Recover(id);
             return JsonResultModel.Success("恢复成功");
         }
     }

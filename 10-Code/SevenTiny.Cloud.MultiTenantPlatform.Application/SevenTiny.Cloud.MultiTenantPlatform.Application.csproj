@@ -9,9 +9,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SevenTiny.Cloud.MultiTenantPlatform.CloudModel\SevenTiny.Cloud.MultiTenantPlatform.CloudModel.csproj" />
-    <ProjectReference Include="..\SevenTiny.Cloud.MultiTenantPlatform.DomainModel\SevenTiny.Cloud.MultiTenantPlatform.DomainModel.csproj" />
+    <ProjectReference Include="..\SevenTiny.Cloud.MultiTenantPlatform.Domain\SevenTiny.Cloud.MultiTenantPlatform.Domain.csproj" />
     <ProjectReference Include="..\SevenTiny.Cloud.MultiTenantPlatform.Infrastructure\SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Assembler\" />
   </ItemGroup>
 
 </Project>

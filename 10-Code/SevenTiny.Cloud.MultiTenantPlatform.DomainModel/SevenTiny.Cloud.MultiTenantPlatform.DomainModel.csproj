@@ -6,8 +6,11 @@
 
   <ItemGroup>
     <Compile Remove="Aggregate\**" />
+    <Compile Remove="Service\**" />
     <EmbeddedResource Remove="Aggregate\**" />
+    <EmbeddedResource Remove="Service\**" />
     <None Remove="Aggregate\**" />
+    <None Remove="Service\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -16,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="SevenTiny.Bantina.Bankinate" Version="1.0.37" />
+    <PackageReference Include="SevenTiny.Bantina.Bankinate" Version="1.0.38" />
   </ItemGroup>
 
   <ItemGroup>

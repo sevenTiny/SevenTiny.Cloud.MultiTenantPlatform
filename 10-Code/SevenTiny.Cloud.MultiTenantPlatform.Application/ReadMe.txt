@@ -1,0 +1,2 @@
+﻿Assembler层用于将领域对象转换成Dto
+Service层理论上用的是Dto对象

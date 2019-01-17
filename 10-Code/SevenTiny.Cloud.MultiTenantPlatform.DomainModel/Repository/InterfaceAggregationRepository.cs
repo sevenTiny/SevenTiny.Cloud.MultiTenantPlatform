@@ -14,16 +14,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Repository
             _context = context;
         }
 
-        public InterfaceAggregation GetInterfaceAggregationByCode(string code)
-        {
-            return GetEntity(t => t.Code.Equals(code));
-        }
-
-        public InterfaceAggregation GetInterfaceAggregationById(int id)
-        {
-            return GetEntity(t => t.Id == id);
-        }
-
         public void LogicDelete(Expression<Func<InterfaceAggregation, bool>> filter, InterfaceAggregation entity)
         {
             entity.IsDeleted = (int)IsDeleted.Deleted;

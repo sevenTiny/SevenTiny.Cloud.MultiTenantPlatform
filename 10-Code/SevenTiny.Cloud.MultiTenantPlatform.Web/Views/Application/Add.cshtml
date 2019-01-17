@@ -1,10 +1,11 @@
-﻿@using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
+﻿@using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
 @{
     ViewData["Title"] = "Add";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @{
-    ActionResultModel<Application> result = Model as ActionResultModel<Application> ?? new ActionResultModel<Application>(true, string.Empty, new Application());
+    var result = Model as ResponseModel ?? new ResponseModel();
+    var application = result?.Data as Application ?? new Application();
 }
 
 <nav class="breadcrumb">
@@ -21,19 +22,19 @@
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>名称：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="@result.Data.Name" placeholder="" id="" name="name">
+                <input type="text" class="input-text" value="@application.Name" placeholder="" id="" name="name">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>编码：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="@result.Data.Code" placeholder="" id="" name="code">
+                <input type="text" class="input-text" value="@application.Code" placeholder="" id="" name="code">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">图标：</label>
             <div class="formControls col-xs-7 col-sm-8">
-                <input type="text" class="input-text" value="@result.Data.Icon" placeholder="" id="" name="icon">
+                <input type="text" class="input-text" value="@application.Icon" placeholder="" id="" name="icon">
             </div>
             <div class="formControls col-xs-1 col-sm-1">
                 <a href="http://fontawesome.dashgame.com/" target="_blank" style="color:#0abb68">图标库</a>
@@ -42,19 +43,19 @@
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">分组：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="@result.Data.Group" placeholder="" id="" name="group">
+                <input type="text" class="input-text" value="@application.Group" placeholder="" id="" name="group">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">排序值：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="@result.Data.SortNumber" placeholder="" id="" name="sortNumber">
+                <input type="text" class="input-text" value="@application.SortNumber" placeholder="" id="" name="sortNumber">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">描述：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <textarea name="description" class="textarea" placeholder="说点什么...最多输入1000个字符" datatype="*0-1000" dragonfly="true" nullmsg="无备注" onKeyUp="textarealength(this,1000)">@result.Data.Description</textarea>
+                <textarea name="description" class="textarea" placeholder="说点什么...最多输入1000个字符" datatype="*0-1000" dragonfly="true" nullmsg="无备注" onKeyUp="textarealength(this,1000)">@application.Description</textarea>
                 <p class="textarea-numberbar"><em class="textarea-length">0</em>/1000</p>
             </div>
         </div>
@@ -64,7 +65,7 @@
                 <button onClick="javascript:window.location='/Application/List';" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
                 @if (!result.IsSuccess)
                 {
-                    <br /><br /><span class="c-red">@result.Msg</span>
+                    <br /><br /><span class="c-red">@result.Message</span>
                 }
             </div>
         </div>

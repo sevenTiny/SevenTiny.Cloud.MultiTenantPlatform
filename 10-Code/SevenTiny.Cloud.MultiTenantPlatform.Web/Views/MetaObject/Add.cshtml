@@ -1,10 +1,11 @@
-﻿@using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
+﻿@using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
 @{
     ViewData["Title"] = "Add";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @{
-    ActionResultModel<MetaObject> result = Model as ActionResultModel<MetaObject> ?? new ActionResultModel<MetaObject>(true, string.Empty, new MetaObject());
+    var result = Model as ResponseModel ?? new ResponseModel();
+    var metaObject = result?.Data as MetaObject ?? new MetaObject();
 }
 
 <nav class="breadcrumb">
@@ -21,31 +22,31 @@
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>名称：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="@result.Data.Name" placeholder="" id="" name="name">
+                <input type="text" class="input-text" value="@metaObject.Name" placeholder="" id="" name="name">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>编码：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="@result.Data.Code" placeholder="" id="" name="code">
+                <input type="text" class="input-text" value="@metaObject.Code" placeholder="" id="" name="code">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">分组：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="@result.Data.Group" placeholder="" id="" name="group">
+                <input type="text" class="input-text" value="@metaObject.Group" placeholder="" id="" name="group">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">排序值：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="@result.Data.SortNumber" placeholder="" id="" name="sortNumber">
+                <input type="text" class="input-text" value="@metaObject.SortNumber" placeholder="" id="" name="sortNumber">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">描述：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <textarea name="description" class="textarea" placeholder="说点什么...最多输入1000个字符" datatype="*0-1000" dragonfly="true" nullmsg="无备注" onKeyUp="textarealength(this,1000)">@result.Data.Description</textarea>
+                <textarea name="description" class="textarea" placeholder="说点什么...最多输入1000个字符" datatype="*0-1000" dragonfly="true" nullmsg="无备注" onKeyUp="textarealength(this,1000)">@metaObject.Description</textarea>
                 <p class="textarea-numberbar"><em class="textarea-length">0</em>/1000</p>
             </div>
         </div>
@@ -55,7 +56,7 @@
                 <button onClick="javascript:window.location='/MetaObject/List';" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
                 @if (!result.IsSuccess)
                 {
-                    <br /><br /><span class="c-red">@result.Msg</span>
+                    <br /><br /><span class="c-red">@result.Message</span>
                 }
             </div>
         </div>

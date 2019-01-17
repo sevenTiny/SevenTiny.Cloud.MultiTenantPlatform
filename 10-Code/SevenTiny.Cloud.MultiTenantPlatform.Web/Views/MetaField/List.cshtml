@@ -1,5 +1,5 @@
-﻿@using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities
-@using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Enums;
+﻿@using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
+@using SevenTiny.Cloud.MultiTenantPlatform.Domain.Enum;
 
 @{
     ViewData["Title"] = "List";
@@ -59,18 +59,18 @@
                             <td>@EnumsTranslater.Tran_DataType(item.FieldType)</td>
                             @if (item.IsMust == (int)TrueFalse.True)
                             {
-                            <td style="color:#00CC33">@EnumsTranslater.Tran_TrueFalse(item.IsMust)</td>
+                                <td style="color:#00CC33">@EnumsTranslater.Tran_TrueFalse(item.IsMust)</td>
                             }
                             else
                             {
-                            <td>@EnumsTranslater.Tran_TrueFalse(item.IsMust)</td>
+                                <td>@EnumsTranslater.Tran_TrueFalse(item.IsMust)</td>
                             }@if (item.IsSystem == (int)TrueFalse.True)
                             {
-                            <td style="color:#00CC33">@EnumsTranslater.Tran_TrueFalse(item.IsSystem)</td>
+                                <td style="color:#00CC33">@EnumsTranslater.Tran_TrueFalse(item.IsSystem)</td>
                             }
                             else
                             {
-                            <td>@EnumsTranslater.Tran_TrueFalse(item.IsSystem)</td>
+                                <td>@EnumsTranslater.Tran_TrueFalse(item.IsSystem)</td>
                             }
                             <td>@item.SortNumber</td>
                             <td>@item.Group</td>
