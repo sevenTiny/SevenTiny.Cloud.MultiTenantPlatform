@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
 
@@ -7,10 +8,14 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
     public class ApplicationController : Controller
     {
         IApplicationService applicationService;
+        IMetaObjectService metaObjectService;
 
-        public ApplicationController(IApplicationService _applicationService)
+        public ApplicationController(
+            IApplicationService _applicationService,
+            IMetaObjectService _metaObjectService)
         {
             applicationService = _applicationService;
+            metaObjectService = _metaObjectService;
         }
 
         public IActionResult Select()
@@ -96,6 +101,23 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
         {
             applicationService.Recover(id);
             return JsonResultModel.Success("恢复成功");
+        }
+
+        public IActionResult Detail(string app)
+        {
+            if (string.IsNullOrEmpty(app))
+            {
+                return Redirect("/Application/Select");
+            }
+            var application = applicationService.GetByCode(app);
+
+            HttpContext.Session.SetInt32("ApplicationId", application.Id);
+            HttpContext.Session.SetString("ApplicationCode", application.Code);
+
+            ViewData["Application"] = app;
+            ViewData["MetaObjects"] = metaObjectService.GetMetaObjectsUnDeletedByApplicationId(application.Id);
+
+            return View();
         }
     }
 }

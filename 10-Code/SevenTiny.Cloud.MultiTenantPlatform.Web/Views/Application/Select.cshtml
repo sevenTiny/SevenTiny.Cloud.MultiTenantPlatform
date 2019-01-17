@@ -21,7 +21,7 @@
         @foreach (var item in applications)
         {
             string icon = string.IsNullOrEmpty(item.Icon) ? "cloud" : item.Icon;
-            <a href="/Home/Application?App=@item.Code" title="选择应用">
+            <a href="/Application/Detail?App=@item.Code" title="选择应用">
                 <div class="row" style="padding: 0 10px;color:#0099CC">
                     <h3 class="col-md-2">
                         <span class="fa fa-@icon" style="margin: 20px; float: right;"></span>

@@ -1,4 +1,5 @@
-﻿using SevenTiny.Bantina.Configuration;
+﻿using SevenTiny.Bantina.Bankinate.Attributes;
+using SevenTiny.Bantina.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,7 +8,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Configs
     [ConfigName("ConnectionStrings")]
     public class ConnectionStringsConfig : ConfigBase<ConnectionStringsConfig>
     {
+        [Column]
         public string Key { get; set; }
+        [Column]
         public string Value { get; set; }
 
         private static Dictionary<string, string> _configs;
