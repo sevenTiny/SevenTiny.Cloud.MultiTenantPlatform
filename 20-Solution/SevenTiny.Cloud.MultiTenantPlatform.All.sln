@@ -11,8 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenant
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "External", "External", "{B9991632-8907-4071-B5AD-E4F5FEE80504}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenantPlatform.DevOps", "..\10-Code\SevenTiny.Cloud.MultiTenantPlatform.DevOps\SevenTiny.Cloud.MultiTenantPlatform.DevOps.csproj", "{B27D16AB-3364-4B3D-BD18-1619C0D388A2}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{C2B695A9-F5A6-4B33-A156-1EE934683EC7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenantPlatform.Infrastructure", "..\10-Code\SevenTiny.Cloud.MultiTenantPlatform.Infrastructure\SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.csproj", "{087F46A9-1D6C-42E1-99ED-5BB5BAD18FEB}"
@@ -23,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenant
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.SevenTiny.Cloud.MultiTenantPlatform.UnitTest", "..\10-Code\Test.SevenTiny.Cloud.MultiTenantPlatform.UnitTest\Test.SevenTiny.Cloud.MultiTenantPlatform.UnitTest.csproj", "{BFEEDFFD-E155-4ACB-B2C2-F13903D6AB41}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenTiny.Cloud.MultiTenantPlatform.CloudModel", "..\10-Code\SevenTiny.Cloud.MultiTenantPlatform.CloudModel\SevenTiny.Cloud.MultiTenantPlatform.CloudModel.csproj", "{FAA24972-502A-4A5F-AEB5-550F6DF421E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenantPlatform.CloudModel", "..\10-Code\SevenTiny.Cloud.MultiTenantPlatform.CloudModel\SevenTiny.Cloud.MultiTenantPlatform.CloudModel.csproj", "{FAA24972-502A-4A5F-AEB5-550F6DF421E0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,10 +37,6 @@ Global
 		{95AC3ADD-FF94-4753-930B-B925A3F3F325}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95AC3ADD-FF94-4753-930B-B925A3F3F325}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95AC3ADD-FF94-4753-930B-B925A3F3F325}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B27D16AB-3364-4B3D-BD18-1619C0D388A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B27D16AB-3364-4B3D-BD18-1619C0D388A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B27D16AB-3364-4B3D-BD18-1619C0D388A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B27D16AB-3364-4B3D-BD18-1619C0D388A2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{087F46A9-1D6C-42E1-99ED-5BB5BAD18FEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{087F46A9-1D6C-42E1-99ED-5BB5BAD18FEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{087F46A9-1D6C-42E1-99ED-5BB5BAD18FEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -70,7 +64,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{39B607C9-A7CB-46FB-9832-E4ED649149BB} = {C2B695A9-F5A6-4B33-A156-1EE934683EC7}
 		{95AC3ADD-FF94-4753-930B-B925A3F3F325} = {C2B695A9-F5A6-4B33-A156-1EE934683EC7}
-		{B27D16AB-3364-4B3D-BD18-1619C0D388A2} = {C2B695A9-F5A6-4B33-A156-1EE934683EC7}
 		{BFEEDFFD-E155-4ACB-B2C2-F13903D6AB41} = {96B1B369-C366-4046-95BD-478CB3145B74}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
