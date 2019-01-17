@@ -31,7 +31,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
 
         public void PresetFields(int metaObjectId)
         {
-            dbContext.Add(new List<MetaField> {
+            dbContext.Add<MetaField>(new List<MetaField> {
                 new MetaField{
                     MetaObjectId=metaObjectId,
                     Code ="IsDeleted",

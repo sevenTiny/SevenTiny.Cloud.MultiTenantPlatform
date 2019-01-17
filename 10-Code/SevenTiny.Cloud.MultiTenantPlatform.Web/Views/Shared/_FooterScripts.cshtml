@@ -1,15 +1,36 @@
 ﻿<!--_footer 作为公共模版分离出去-->
 <script type="text/javascript" src="~/lib/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript" src="~/lib/layer/2.4/layer.js"></script>
+<script type="text/javascript" src="~/lib/laypage/1.2/laypage.js"></script>
 <script type="text/javascript" src="~/lib/h-ui/js/H-ui.js"></script>
 <script type="text/javascript" src="~/lib/h-ui.admin/js/H-ui.admin.page.js"></script>
 <!--/_footer /作为公共模版分离出去-->
 <script>
-    function textarealength(obj, len)
-    {
+    //这里写公共的方法
+
+    function textarealength(obj, len) {
         $(obj).next('.textarea-numberbar').children('.textarea-length').text($(obj).val().length);
         if ($(obj).val().length > len) {
-            $(obj).val( $(obj).val().substring(0, len));
+            $(obj).val($(obj).val().substring(0, len));
         }
-     }
+    }
+
+    //ajax删除datatable中数据
+    function ajax_delete_table(obj, url) {
+        layer.confirm('确认要删除吗？', function (index) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                dataType: 'json',
+                success: function (data) {
+                    $(obj).parents("tr").remove();
+                    layer.msg('已删除!', { icon: 1, time: 1000 });
+                },
+                error: function (data) {
+                    console.log(data.msg);
+                },
+            });
+        });
+    }
+
 </script>
