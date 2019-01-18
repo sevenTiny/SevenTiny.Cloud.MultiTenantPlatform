@@ -1,0 +1,83 @@
+﻿@{
+    ViewData["Title"] = "Setting";
+    Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
+}
+<link href="~/lib/bootstrap-select/bootstrap-customOfSelect.css" rel="stylesheet" />
+<link href="~/lib/bootstrap-select/bootstrap-select.css" rel="stylesheet" />
+
+<!--对象选择-->
+<article class="mt-40 pd-20 container">
+    <div class="row cl pd-5 bg-1 bk-gray">
+        <label class="form-label col-1 col-xs-1"><span class="" style="line-height:35px;"><b>选择对象：</b></span></label>
+        <div class="formControls col-4 col-xs-4 customOfSelect">
+            <select class="selectpicker show-tick form-control" data-live-search="true" data-style="btn-default">
+                <option value="">请选择</option>
+                <option value="1">请选择1</option>
+                <option value="2">请选择2</option>
+            </select>
+        </div>
+    </div>
+</article>
+
+<!--_menu 作为公共模版分离出去-->
+<aside class="Hui-aside mt-40">
+    <div class="menu_dropdown bk_2">
+    </div>
+    <div class="menu_dropdown bk_2">
+        <dl id="menu-objsetting">
+            <dt><i class="Hui-iconfont">&#xe616;</i> 对象设置<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+            <dd>
+                <ul>
+                    <li><a data-title="字段" href="javascript:mainFrameOpen('/MetaField/List');">字段</a></li>
+                    <li><a data-title="表单" href="javascript:void(0)">表单</a></li>
+                    <li><a data-title="列表" href="javascript:void(0)">列表</a></li>
+                    <li><a data-title="搜索表单" href="javascript:void(0)">搜索表单</a></li>
+                    <li><a data-title="详情页" href="javascript:void(0)">详情页</a></li>
+                    <li><a data-title="视图" href="javascript:void(0)">视图</a></li>
+                    <li><a data-title="功能" href="javascript:void(0)">功能</a></li>
+                </ul>
+            </dd>
+        </dl>
+        <dl id="menu-objsetting">
+            <dt><i class="Hui-iconfont">&#xe616;</i> 基础设置<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+            <dd>
+                <ul>
+                    <li><a data-title="数据源" href="javascript:void(0)">数据源</a></li>
+                </ul>
+            </dd>
+        </dl>
+        <dl id="menu-objsetting">
+            <dt><i class="Hui-iconfont">&#xe616;</i> 标准接口<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+            <dd>
+                <ul>
+                    <li><a data-title="字段配置" href="javascript:mainFrameOpen('/InterfaceField/List');">字段配置</a></li>
+                    <li><a data-title="搜索条件" href="javascript:mainFrameOpen('/InterfaceSearchCondition/List');">搜索条件</a></li>
+                    <li><a data-title="组织接口" href="javascript:mainFrameOpen('/InterfaceAggregation/List');">组织接口</a></li>
+                </ul>
+            </dd>
+        </dl>
+    </div>
+</aside>
+<div class="dislpayArrow hidden-xs mt-40"><a class="pngfix" href="javascript:void(0);" onClick="displaynavbar(this)"></a></div>
+<!--/_menu 作为公共模版分离出去-->
+
+<section class="Hui-article-box mt-40">
+    <div class="show_iframe">
+        <div style="display:none" class="loading"></div>
+        <iframe id="main_iframe" scrolling="yes" frameborder="0" src="/MetaObject/List"></iframe>
+    </div>
+</section>
+
+<script src="~/js/jquery-1.11.3.min.js"></script>
+<script src="~/lib/bootstrap-select/bootstrap.js"></script>
+<script src="~/lib/bootstrap-select/bootstrap-select.js"></script>
+@await Html.PartialAsync($"~/Views/Shared/_FooterScriptsNoJq.cshtml")
+@await Html.PartialAsync($"~/Views/Shared/_CommonScript.cshtml")
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript">
+    //在frame中打开页面
+    function mainFrameOpen(url) {
+        $("#main_iframe").prop("src", url);
+    }
+</script>

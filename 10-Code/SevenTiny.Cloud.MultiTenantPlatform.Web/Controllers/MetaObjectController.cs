@@ -8,7 +8,7 @@ using System;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 {
-    public class MetaObjectController : Controller
+    public class MetaObjectController : ControllerBase
     {
         IMetaObjectService metaObjectService;
         IMetaObjectAppService metaObjectAppService;
@@ -19,8 +19,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             metaObjectAppService = _metaObjectAppService;
         }
 
-        private int CurrentApplicationId => HttpContext.Session.GetInt32("ApplicationId") ?? throw new ArgumentNullException("ApplicationId is null,please select application first!");
-        private string CurrentApplicationCode => HttpContext.Session.GetString("ApplicationCode") ?? throw new ArgumentNullException("ApplicationCode is null,please select application first!");
+        public IActionResult Setting()
+        {
+            ViewData["MetaObjects"] = metaObjectService.GetMetaObjectsUnDeletedByApplicationId(CurrentApplicationId);
+
+            return View();
+        }
 
         public IActionResult List()
         {
@@ -57,7 +61,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 
             return RedirectToAction("List");
         }
-
 
         public IActionResult Update(int id)
         {
