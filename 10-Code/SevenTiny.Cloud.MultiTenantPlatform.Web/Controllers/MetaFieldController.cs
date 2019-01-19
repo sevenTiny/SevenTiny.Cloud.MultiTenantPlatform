@@ -4,7 +4,6 @@ using SevenTiny.Bantina.Validation;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
-using System;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 {
@@ -76,7 +75,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
         {
             var metaObject = _metaFieldService.GetById(id);
             return View(ResponseModel.Success(metaObject));
-
         }
 
         public IActionResult UpdateLogic(MetaField metaField)

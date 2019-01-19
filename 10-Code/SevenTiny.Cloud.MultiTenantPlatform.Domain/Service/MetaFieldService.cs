@@ -62,11 +62,13 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             MetaField myfield = GetById(metaField.Id);
             if (myfield != null)
             {
+                //编码不允许修改
                 myfield.Name = metaField.Name;
                 myfield.Group = metaField.Group;
                 myfield.SortNumber = metaField.SortNumber;
                 myfield.Description = metaField.Description;
-                myfield.FieldType = metaField.FieldType;
+                //myfield.FieldType = metaField.FieldType;//字段类型不允许修改
+                myfield.IsMust = metaField.IsMust;
                 myfield.DataSourceId = metaField.DataSourceId;
                 myfield.ModifyBy = -1;
                 myfield.ModifyTime = DateTime.Now;
