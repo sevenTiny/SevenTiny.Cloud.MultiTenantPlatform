@@ -18,10 +18,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
 
         MultiTenantPlatformDbContext dbContext;
 
-        public List<MetaField> GetMetaFeildsUnDeletedByMetaObjectId(int metaObjectId)
+        public List<MetaField> GetMetaFieldsUnDeletedByMetaObjectId(int metaObjectId)
             => dbContext.QueryList<MetaField>(t => t.MetaObjectId == metaObjectId && t.IsDeleted == (int)IsDeleted.UnDeleted);
 
-        public List<MetaField> GetMetaFeildsDeletedByMetaObjectId(int metaObjectId)
+        public List<MetaField> GetMetaFieldsDeletedByMetaObjectId(int metaObjectId)
         => dbContext.QueryList<MetaField>(t => t.MetaObjectId == metaObjectId && t.IsDeleted == (int)IsDeleted.Deleted);
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         /// <returns></returns>
         public ResultModel CheckSameCodeOrName(int metaObjectId, MetaField metaField)
         {
-            var obj = dbContext.QueryOne<MetaField>(t => t.MetaObjectId == metaObjectId && (t.Code.Equals(metaField.Code) || t.Name.Equals(metaField.Name)));
+            var obj = dbContext.QueryOne<MetaField>(t => t.MetaObjectId == metaObjectId && t.Id != metaField.Id && (t.Code.Equals(metaField.Code) || t.Name.Equals(metaField.Name)));
             if (obj != null)
             {
                 if (obj.Code.Equals(metaField.Code))
@@ -51,6 +51,27 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                     return ResultModel.Error($"名称[{obj.Name}]已存", metaField);
             }
             return ResultModel.Success();
+        }
+
+        /// <summary>
+        /// 更新对象
+        /// </summary>
+        /// <param name="metaField"></param>
+        public new void Update(MetaField metaField)
+        {
+            MetaField myfield = GetById(metaField.Id);
+            if (myfield != null)
+            {
+                myfield.Name = metaField.Name;
+                myfield.Group = metaField.Group;
+                myfield.SortNumber = metaField.SortNumber;
+                myfield.Description = metaField.Description;
+                myfield.FieldType = metaField.FieldType;
+                myfield.DataSourceId = metaField.DataSourceId;
+                myfield.ModifyBy = -1;
+                myfield.ModifyTime = DateTime.Now;
+            }
+            base.Update(myfield);
         }
     }
 }

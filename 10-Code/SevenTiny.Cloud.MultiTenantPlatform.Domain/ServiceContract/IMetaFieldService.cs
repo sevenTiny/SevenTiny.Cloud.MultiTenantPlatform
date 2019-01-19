@@ -8,8 +8,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract
     public interface IMetaFieldService : IRepository<MetaField>
     {
         void DeleteByMetaObjectId(int metaObjectId);
-        List<MetaField> GetMetaFeildsUnDeletedByMetaObjectId(int metaObjectId);
-        List<MetaField> GetMetaFeildsDeletedByMetaObjectId(int metaObjectId);
+        List<MetaField> GetMetaFieldsUnDeletedByMetaObjectId(int metaObjectId);
+        List<MetaField> GetMetaFieldsDeletedByMetaObjectId(int metaObjectId);
         ResultModel CheckSameCodeOrName(int metaObjectId, MetaField metaField);
     }
 }

@@ -4,9 +4,7 @@
 @{
     ViewData["Title"] = "Add";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewData["Level_1"] = "对象管理";
-    ViewData["Level_2"] = "添加字段";
-
+    
     ResponseModel result = Model as ResponseModel ?? new ResponseModel();
     MetaField metaField = result.Data as MetaField ?? new MetaField() { FieldType = (int)DataType.Number };
     Array dataTypes = Enum.GetValues(typeof(DataType));
@@ -15,6 +13,10 @@
     DataType[] dataTypesExclude = new[] { DataType.Unknown, DataType.StandradDate, DataType.StandradDateTime };
 }
 
+@{ 
+    ViewData["Level_1"] = "对象管理";
+    ViewData["Level_2"] = "添加字段";
+}
 @await Html.PartialAsync("~/Views/Shared/PartialNav.cshtml")
 
 <article class="page-container">
