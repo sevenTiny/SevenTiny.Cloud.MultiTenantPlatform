@@ -1,8 +1,8 @@
 ﻿using SevenTiny.Bantina;
 using SevenTiny.Cloud.MultiTenantPlatform.Application.ServiceContract;
-using SevenTiny.Cloud.MultiTenantPlatform.Application.ValueObject;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
 using System;
 using System.Collections.Generic;
 using System.Text;

@@ -25,4 +25,22 @@
             });
         });
     }
+
+    //ajax操作列表数据，可以提供confirm信息
+    function ajax_operate_table_confirm(obj, url, confirmMsg) {
+        layer.confirm(confirmMsg, function (index) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                dataType: 'json',
+                success: function (data) {
+                    $(obj).parents("tr").remove();
+                    layer.msg('操作成功!', { icon: 1, time: 1000 });
+                },
+                error: function (data) {
+                    console.log(data.msg);
+                },
+            });
+        });
+    }
 </script>

@@ -97,7 +97,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                 app.ModifyBy = -1;
                 app.ModifyTime = DateTime.Now;
             }
-            dbContext.Update(t => t.Id == metaObject.Id, app);
+            dbContext.Update(app);
         }
 
         public bool ExistSameNameWithOtherIdByApplicationId(int applicationId, int id, string name)

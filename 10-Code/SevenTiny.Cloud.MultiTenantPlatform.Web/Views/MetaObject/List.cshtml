@@ -3,8 +3,6 @@
 @{
     Layout = "_LayoutHeaderStyle";
     ViewData["Title"] = "List";
-}
-@{
     List<MetaObject> metaObjects = Model as List<MetaObject> ?? new List<MetaObject>();
 }
 
@@ -34,7 +32,7 @@
                 {
                     <tr class="text-c">
                         <td>@item.Id</td>
-                        <td><a href="/MetaObject/Switch/@item.Id" class="text-primary" title="切换对象">@item.Name</a></td>
+                        <td>@item.Name</td>
                         <td>@item.Code</td>
                         <td>@item.Description</td>
                         <td>@item.SortNumber</td>

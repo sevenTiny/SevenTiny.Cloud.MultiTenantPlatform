@@ -1,4 +1,4 @@
-﻿using SevenTiny.Cloud.MultiTenantPlatform.Application.ValueObject;
+﻿using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Models
 {

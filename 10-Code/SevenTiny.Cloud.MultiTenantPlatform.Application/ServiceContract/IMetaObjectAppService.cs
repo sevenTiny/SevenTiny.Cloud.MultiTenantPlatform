@@ -1,4 +1,4 @@
-﻿using SevenTiny.Cloud.MultiTenantPlatform.Application.ValueObject;
+﻿using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Application.ServiceContract

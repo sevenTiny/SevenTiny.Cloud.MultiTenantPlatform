@@ -1,4 +1,4 @@
-﻿namespace SevenTiny.Cloud.MultiTenantPlatform.Application.ValueObject
+﻿namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject
 {
     public class ResultModel
     {

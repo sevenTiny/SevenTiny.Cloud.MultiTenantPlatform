@@ -1,10 +1,15 @@
 ﻿using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
+using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract
 {
     public interface IMetaFieldService : IRepository<MetaField>
     {
         void DeleteByMetaObjectId(int metaObjectId);
+        List<MetaField> GetMetaFeildsUnDeletedByMetaObjectId(int metaObjectId);
+        List<MetaField> GetMetaFeildsDeletedByMetaObjectId(int metaObjectId);
+        ResultModel CheckSameCodeOrName(int metaObjectId, MetaField metaField);
     }
 }
