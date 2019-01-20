@@ -146,10 +146,15 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             var metaFields = metaFieldService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
             //过滤出已配置过的字段
             var aggregateFields = metaFields.Where(t => aggregateMetaFields.Any(n => n == t.Id)).ToList();//get aggregateFields which metafield.id in aggregateMetaFields
-            //剩下的是未配置的
-            aggregateMetaFields.ForEach(t => metaFields.RemoveAll(n => n.Id == t));//remove metafield aggregateField exist.
+            //剩下的是未配置的待选字段
+            var waitingForSelection = metaFields.Where(t => !aggregateMetaFields.Contains(t.Id)).ToList();
+
+            //【BUG】下面这种从查询到的内存数据中排除的写法是错误的，会导致内存做的缓存中的数据根据引用地址跟着修改，导致缓存数据被改动，下次查询出错
+            //如果使用序列化做的缓存应该不会有如下语句出现的缓存问题
+            //aggregateMetaFields.ForEach(t => metaFields.RemoveAll(n => n.Id == t));//remove metafield aggregateField exist.
+
             ViewData["AggregateFields"] = aggregateFields;
-            ViewData["MetaFields"] = metaFields;
+            ViewData["MetaFields"] = waitingForSelection;
             ViewData["InterfaceFieldId"] = id;
             return View();
         }
