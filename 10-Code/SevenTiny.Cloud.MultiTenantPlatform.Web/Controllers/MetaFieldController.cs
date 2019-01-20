@@ -29,12 +29,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             //这里是选择对象的入口，预先设置Session
             HttpContext.Session.SetInt32("MetaObjectId", metaObjectId);
 
-            return View(_metaFieldService.GetMetaFieldsUnDeletedByMetaObjectId(metaObjectId));
+            return View(_metaFieldService.GetEntitiesUnDeletedByMetaObjectId(metaObjectId));
         }
 
         public IActionResult DeleteList()
         {
-            return View(_metaFieldService.GetMetaFieldsDeletedByMetaObjectId(CurrentMetaObjectId));
+            return View(_metaFieldService.GetEntitiesDeletedByMetaObjectId(CurrentMetaObjectId));
         }
 
         public IActionResult Add()

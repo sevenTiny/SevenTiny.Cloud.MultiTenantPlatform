@@ -12,6 +12,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity
     {
         [Key]
         [AutoIncrease]
+        [Column]
         public int Id { get; set; }
         [Column("`Name`")]
         public string Name { get; set; }

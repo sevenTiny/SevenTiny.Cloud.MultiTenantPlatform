@@ -12,6 +12,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="Views\InterfaceAggregation\Add.cshtml" />
+    <Content Remove="Views\InterfaceAggregation\DeleteList.cshtml" />
+    <Content Remove="Views\InterfaceAggregation\List.cshtml" />
+    <Content Remove="Views\InterfaceAggregation\Update.cshtml" />
+    <Content Remove="Views\InterfaceSearchCondition\Add.cshtml" />
+    <Content Remove="Views\InterfaceSearchCondition\AggregationCondition.cshtml" />
+    <Content Remove="Views\InterfaceSearchCondition\DeleteList.cshtml" />
+    <Content Remove="Views\InterfaceSearchCondition\List.cshtml" />
+    <Content Remove="Views\InterfaceSearchCondition\Update.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.1" />
     <PackageReference Include="SevenTiny.Bantina" Version="1.0.12" />
@@ -35,6 +47,11 @@
     <None Update="Dockerfile">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Views\InterfaceAggregation\" />
+    <Folder Include="Views\InterfaceSearchCondition\" />
   </ItemGroup>
 
 </Project>

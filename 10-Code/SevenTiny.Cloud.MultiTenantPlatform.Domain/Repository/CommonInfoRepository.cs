@@ -4,20 +4,14 @@ using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository
 {
-    public class CommonInfoRepository<TEntity> : IRepository<TEntity> where TEntity : CommonInfo
+    public class CommonInfoRepository<TEntity> : Repository<TEntity>, ICommonInfoRepository<TEntity> where TEntity : CommonInfo
     {
-        public CommonInfoRepository(MultiTenantPlatformDbContext multiTenantPlatformDbContext)
+        public CommonInfoRepository(MultiTenantPlatformDbContext multiTenantPlatformDbContext) : base(multiTenantPlatformDbContext)
         {
             dbContext = multiTenantPlatformDbContext;
         }
 
         MultiTenantPlatformDbContext dbContext;
-
-        public void Add(TEntity entity)
-            => dbContext.Add(entity);
-
-        public void Update(TEntity entity)
-            => dbContext.Update(entity);
 
         public void Delete(int id)
             => dbContext.Delete<TEntity>(t => t.Id.Equals(id));

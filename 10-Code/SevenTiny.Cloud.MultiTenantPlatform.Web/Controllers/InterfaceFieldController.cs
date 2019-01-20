@@ -1,189 +1,186 @@
-﻿//using Microsoft.AspNetCore.Http;
-//using Microsoft.AspNetCore.Mvc;
-//using SevenTiny.Bantina;
-//using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
-//using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Enums;
-//using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.RepositoryContract;
-//using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using SevenTiny.Bantina;
+using SevenTiny.Bantina.Validation;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.Enum;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
+using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
-//namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
-//{
-//    public class InterfaceFieldController : Controller
-//    {
-//        private readonly IInterfaceFieldRepository _interfaceFieldRepository;
-//        private readonly IFieldAggregationRepository _fieldAggregationRepository;
-//        private readonly IMetaFieldRepository _metaFieldRepository;
+namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
+{
+    public class InterfaceFieldController : ControllerBase
+    {
+        readonly IInterfaceFieldService interfaceFieldService;
+        readonly IMetaFieldService metaFieldService;
+        readonly IInterfaceAggregationService interfaceAggregationService;
+        readonly IFieldAggregationService fieldAggregationService;
 
-//        public InterfaceFieldController(IInterfaceFieldRepository interfaceFieldRepository, IFieldAggregationRepository fieldAggregationRepository, IMetaFieldRepository metaFieldRepository)
-//        {
-//            this._interfaceFieldRepository = interfaceFieldRepository;
-//            this._fieldAggregationRepository = fieldAggregationRepository;
-//            this._metaFieldRepository = metaFieldRepository;
-//        }
+        public InterfaceFieldController(
+            IInterfaceFieldService _interfaceFieldService,
+            IMetaFieldService _metaFieldService,
+            IInterfaceAggregationService _interfaceAggregationService,
+            IFieldAggregationService _fieldAggregationService
+            )
+        {
+            interfaceFieldService = _interfaceFieldService;
+            metaFieldService = _metaFieldService;
+            interfaceAggregationService = _interfaceAggregationService;
+            fieldAggregationService = _fieldAggregationService;
+        }
 
-//        private int CurrentMetaObjectId
-//        {
-//            get
-//            {
-//                int metaObjectId = HttpContext.Session.GetInt32("MetaObjectId") ?? default(int);
-//                if (metaObjectId == default(int))
-//                {
-//                    throw new ArgumentNullException("MetaObjectId is null,please select MetaObject first!");
-//                }
-//                return metaObjectId;
-//            }
-//        }
+        public IActionResult List()
+        {
+            return View(interfaceFieldService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId));
+        }
 
-//        public IActionResult List()
-//        {
-//            return View(_interfaceFieldRepository.GetList(t => t.MetaObjectId == CurrentMetaObjectId && t.IsDeleted == (int)IsDeleted.NotDeleted));
-//        }
+        public IActionResult DeleteList()
+        {
+            return View(interfaceFieldService.GetEntitiesDeletedByMetaObjectId(CurrentMetaObjectId));
+        }
 
-//        public IActionResult DeleteList()
-//        {
-//            return View(_interfaceFieldRepository.GetList(t => t.MetaObjectId == CurrentMetaObjectId && t.IsDeleted == (int)IsDeleted.Deleted));
-//        }
+        public IActionResult Add()
+        {
+            return View();
+        }
 
-//        public IActionResult Add()
-//        {
-//            return View();
-//        }
+        public IActionResult AddLogic(InterfaceField entity)
+        {
+            if (string.IsNullOrEmpty(entity.Name))
+            {
+                return View("Add", ResponseModel.Error("名称不能为空", entity));
+            }
+            if (string.IsNullOrEmpty(entity.Code))
+            {
+                return View("Add", ResponseModel.Error("编码不能为空", entity));
+            }
+            //校验code格式
+            if (!entity.Code.IsAlnum(4, 50))
+            {
+                return View("Add", ResponseModel.Error("编码不合法，4-50位且只能包含字母和数字（字母开头）", entity));
+            }
 
-//        public IActionResult AddLogic(InterfaceField entity)
-//        {
-//            if (string.IsNullOrEmpty(entity.Name))
-//            {
-//                return View("Add", new ActionResultModel<InterfaceField>(false, "Interface Name Can Not Be Null！", entity));
-//            }
-//            if (string.IsNullOrEmpty(entity.Code))
-//            {
-//                return View("Add", new ActionResultModel<InterfaceField>(false, "Interface Code Can Not Be Null！", entity));
-//            }
-//            InterfaceField obj = _interfaceFieldRepository.GetEntity(t => (t.MetaObjectId == CurrentMetaObjectId && t.Name.Equals(entity.Name)) || (t.MetaObjectId == CurrentMetaObjectId && t.Code.Equals(entity.Code)));
-//            if (obj != null)
-//            {
-//                if (obj.Code.Equals(entity.Code))
-//                {
-//                    return View("Add", new ActionResultModel<InterfaceField>(false, "Interface Code Has Been Exist！", entity));
-//                }
-//                if (obj.Name.Equals(entity.Name))
-//                {
-//                    return View("Add", new ActionResultModel<InterfaceField>(false, "Interface Name Has Been Exist！", entity));
-//                }
-//            }
-//            entity.MetaObjectId = CurrentMetaObjectId;
-//            _interfaceFieldRepository.Add(entity);
-//            return RedirectToAction("List");
-//        }
+            //检查编码或名称重复
+            var checkResult = interfaceFieldService.CheckSameCodeOrName(CurrentMetaObjectId, entity);
+            if (!checkResult.IsSuccess)
+            {
+                return View("Add", checkResult.ToResponseModel());
+            }
 
-//        public IActionResult Update(int id)
-//        {
-//            var interfaceField = _interfaceFieldRepository.GetEntity(t => t.Id == id);
-//            return View(new ActionResultModel<InterfaceField>(true, string.Empty, interfaceField));
+            entity.MetaObjectId = CurrentMetaObjectId;
+            interfaceFieldService.Add(entity);
+            return RedirectToAction("List");
+        }
 
-//        }
+        public IActionResult Update(int id)
+        {
+            var interfaceField = interfaceFieldService.GetById(id);
+            return View(ResponseModel.Success(interfaceField));
 
-//        public IActionResult UpdateLogic(InterfaceField entity)
-//        {
-//            if (entity.Id == 0)
-//            {
-//                return View("Update", new ActionResultModel<InterfaceField>(false, "InterfaceField Id Can Not Be Null！", entity));
-//            }
-//            if (string.IsNullOrEmpty(entity.Name))
-//            {
-//                return View("Update", new ActionResultModel<InterfaceField>(false, "InterfaceField Name Can Not Be Null！", entity));
-//            }
-//            if (string.IsNullOrEmpty(entity.Code))
-//            {
-//                return View("Update", new ActionResultModel<InterfaceField>(false, "InterfaceField Code Can Not Be Null！", entity));
-//            }
-//            if (_interfaceFieldRepository.Exist(t => t.MetaObjectId == CurrentMetaObjectId && t.Name.Equals(entity.Name) && t.Id != entity.Id))
-//            {
-//                return View("Add", new ActionResultModel<InterfaceField>(false, "InterfaceField Name Has Been Exist！", entity));
-//            }
-//            InterfaceField myfield = _interfaceFieldRepository.GetEntity(t => t.Id == entity.Id);
-//            if (myfield != null)
-//            {
-//                myfield.Name = entity.Name;
-//                myfield.Group = entity.Group;
-//                myfield.SortNumber = entity.SortNumber;
-//                myfield.Description = entity.Description;
-//                myfield.ModifyBy = -1;
-//                myfield.ModifyTime = DateTime.Now;
-//            }
-//            _interfaceFieldRepository.Update(t => t.Id == entity.Id, myfield);
-//            return RedirectToAction("List");
-//        }
+        }
 
-//        public IActionResult Delete(int id)
-//        {
-//            TransactionHelper.Transaction(() =>
-//            {
-//                //clear fields first
-//                _fieldAggregationRepository.Delete(t => t.InterfaceFieldId == id);
-//                //delete field config
-//                _interfaceFieldRepository.Delete(t => t.Id == id);
-//            });
-//            return JsonResultModel.Success("删除成功");
-//        }
+        public IActionResult UpdateLogic(InterfaceField entity)
+        {
+            if (entity.Id == 0)
+            {
+                return View("Update", ResponseModel.Error("MetaField Id 不能为空", entity));
+            }
+            if (string.IsNullOrEmpty(entity.Name))
+            {
+                return View("Update", ResponseModel.Error("MetaField Name 不能为空", entity));
+            }
+            if (string.IsNullOrEmpty(entity.Code))
+            {
+                return View("Update", ResponseModel.Error("MetaField Code 不能为空", entity));
+            }
+            //校验code格式
+            if (!entity.Code.IsAlnum(4, 50))
+            {
+                return View("Update", ResponseModel.Error("编码不合法，4-50位且只能包含字母和数字（字母开头）", entity));
+            }
 
-//        public IActionResult LogicDelete(int id)
-//        {
-//            InterfaceField entity = _interfaceFieldRepository.GetEntity(t => t.Id == id);
-//            _interfaceFieldRepository.LogicDelete(t => t.Id == id, entity);
-//            return JsonResultModel.Success("删除成功");
-//        }
+            //检查编码或名称重复
+            var checkResult = interfaceFieldService.CheckSameCodeOrName(CurrentMetaObjectId, entity);
+            if (!checkResult.IsSuccess)
+            {
+                return View("Update", checkResult.ToResponseModel());
+            }
 
-//        public IActionResult Recover(int id)
-//        {
-//            InterfaceField entity = _interfaceFieldRepository.GetEntity(t => t.Id == id);
-//            _interfaceFieldRepository.Recover(t => t.Id == id, entity);
-//            return JsonResultModel.Success("恢复成功");
-//        }
+            //更新操作
+            interfaceFieldService.Update(entity);
 
-//        /// <summary>
-//        /// 组织字段
-//        /// </summary>
-//        /// <param name="id">字段配置对象id</param>
-//        /// <returns></returns>
-//        public IActionResult AggregateField(int id)
-//        {
-//            //get metafield ids
-//            var aggregateMetaFields = _fieldAggregationRepository.GetList(t => t.InterfaceFieldId == id)?.Select(t => t.MetaFieldId)?.ToList();
-//            var metaFields = _metaFieldRepository.GetList(t => t.MetaObjectId == CurrentMetaObjectId);
-//            var aggregateFields = metaFields.Where(t => aggregateMetaFields.Any(n => n == t.Id)).ToList();//get aggregateFields which metafield.id in aggregateMetaFields
-//            aggregateMetaFields.ForEach(t => metaFields.RemoveAll(n => n.Id == t));//remove metafield aggregateField exist.
-//            ViewData["AggregateFields"] = aggregateFields;
-//            ViewData["MetaFields"] = metaFields;
-//            ViewData["InterfaceFieldId"] = id;
-//            return View();
-//        }
-//        /// <summary>
-//        /// 组织字段添加逻辑
-//        /// </summary>
-//        /// <param name="id"></param>
-//        /// <returns></returns>
-//        public IActionResult AggregateFieldAddLogic(int id)
-//        {
-//            FieldAggregation fieldAggregation = new FieldAggregation { InterfaceFieldId = id };
-//            string metaFieldIdsString = Request.Form["metaFieldIds"];
-//            //get metafield ids
-//            int[] metaFieldIds = metaFieldIdsString.Split(',').Select(t => Convert.ToInt32(t)).ToArray();
-//            int[] fieldAggregationIds = _fieldAggregationRepository.GetList(t => t.InterfaceFieldId == id).Select(t => t.MetaFieldId).ToArray();
-//            IEnumerable<int> addIds = metaFieldIds.Except(fieldAggregationIds); //ids will add
-//            IEnumerable<int> deleteIds = fieldAggregationIds.Except(metaFieldIds);  //ids will delete
-//            foreach (var item in addIds)
-//            {
-//                _fieldAggregationRepository.Add(new FieldAggregation { InterfaceFieldId = id, MetaFieldId = item });
-//            }
-//            foreach (var item in deleteIds)
-//            {
-//                _fieldAggregationRepository.Delete(t => t.MetaFieldId == item);
-//            }
-//            return JsonResultModel.Success("保存成功！");
-//        }
-//    }
-//}
+            return RedirectToAction("List");
+        }
+
+        public IActionResult Delete(int id)
+        {
+            interfaceFieldService.Delete(id);
+            return JsonResultModel.Success("删除成功");
+        }
+
+        public IActionResult LogicDelete(int id)
+        {
+            interfaceFieldService.LogicDelete(id);
+            return JsonResultModel.Success("删除成功");
+        }
+
+        public IActionResult Recover(int id)
+        {
+            interfaceFieldService.Recover(id);
+            return JsonResultModel.Success("恢复成功");
+        }
+
+        /// <summary>
+        /// 组织字段
+        /// </summary>
+        /// <param name="id">字段配置对象id</param>
+        /// <returns></returns>
+        public IActionResult AggregateField(int id)
+        {
+            //获取组织字段里面本字段配置下的所有字段
+            var aggregateMetaFields = fieldAggregationService.GetByInterfaceFieldId(id)?.Select(t => t.MetaFieldId)?.ToList() ?? new List<int>();
+            //获取到本对象的所有字段
+            var metaFields = metaFieldService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
+            //过滤出已配置过的字段
+            var aggregateFields = metaFields.Where(t => aggregateMetaFields.Any(n => n == t.Id)).ToList();//get aggregateFields which metafield.id in aggregateMetaFields
+            //剩下的是未配置的
+            aggregateMetaFields.ForEach(t => metaFields.RemoveAll(n => n.Id == t));//remove metafield aggregateField exist.
+            ViewData["AggregateFields"] = aggregateFields;
+            ViewData["MetaFields"] = metaFields;
+            ViewData["InterfaceFieldId"] = id;
+            return View();
+        }
+
+        /// <summary>
+        /// 组织字段添加逻辑
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public IActionResult AggregateFieldAddLogic(int id)
+        {
+            FieldAggregation fieldAggregation = new FieldAggregation { InterfaceFieldId = id };
+            string metaFieldIdsString = Request.Form["metaFieldIds"];
+            //get metafield ids
+            int[] metaFieldIds = metaFieldIdsString.Split(',').Select(t => Convert.ToInt32(t)).ToArray();
+            int[] fieldAggregationIds = fieldAggregationService.GetByInterfaceFieldId(id)?.Select(t => t.MetaFieldId)?.ToArray() ?? new int[0];
+            IEnumerable<int> addIds = metaFieldIds.Except(fieldAggregationIds); //ids will add
+            IEnumerable<int> deleteIds = fieldAggregationIds.Except(metaFieldIds);  //ids will delete
+
+            IList<FieldAggregation> fieldAggregations = new List<FieldAggregation>();
+            foreach (var item in addIds)
+            {
+                fieldAggregations.Add(new FieldAggregation { InterfaceFieldId = id, MetaFieldId = item });
+            }
+            fieldAggregationService.Add(fieldAggregations);
+
+            foreach (var item in deleteIds)
+            {
+                fieldAggregationService.DeleteByMetaFieldId(item);
+            }
+            return JsonResultModel.Success("保存成功！");
+        }
+    }
+}

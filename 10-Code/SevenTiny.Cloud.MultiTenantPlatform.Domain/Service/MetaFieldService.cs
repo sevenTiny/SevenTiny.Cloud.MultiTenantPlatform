@@ -9,7 +9,7 @@ using System.Text;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
 {
-    public class MetaFieldService : CommonInfoRepository<MetaField>, IMetaFieldService
+    public class MetaFieldService : MetaObjectManageRepository<MetaField>, IMetaFieldService
     {
         public MetaFieldService(MultiTenantPlatformDbContext multiTenantPlatformDbContext) : base(multiTenantPlatformDbContext)
         {
@@ -17,21 +17,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         }
 
         MultiTenantPlatformDbContext dbContext;
-
-        public List<MetaField> GetMetaFieldsUnDeletedByMetaObjectId(int metaObjectId)
-            => dbContext.QueryList<MetaField>(t => t.MetaObjectId == metaObjectId && t.IsDeleted == (int)IsDeleted.UnDeleted);
-
-        public List<MetaField> GetMetaFieldsDeletedByMetaObjectId(int metaObjectId)
-        => dbContext.QueryList<MetaField>(t => t.MetaObjectId == metaObjectId && t.IsDeleted == (int)IsDeleted.Deleted);
-
-        /// <summary>
-        /// 清空对象下的全部字段
-        /// </summary>
-        /// <param name="metaObjectId"></param>
-        public void DeleteByMetaObjectId(int metaObjectId)
-        {
-            dbContext.Delete<MetaField>(t => t.MetaObjectId == metaObjectId);
-        }
 
         /// <summary>
         /// 检查是否有相同名称的编码或名称
@@ -74,6 +59,66 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                 myfield.ModifyTime = DateTime.Now;
             }
             base.Update(myfield);
+        }
+
+        /// <summary>
+        /// 预置字段
+        /// </summary>
+        /// <param name="metaObjectId"></param>
+        public void PresetFields(int metaObjectId)
+        {
+            dbContext.Add<MetaField>(new List<MetaField> {
+                new MetaField{
+                    MetaObjectId=metaObjectId,
+                    Code ="IsDeleted",
+                    Name ="是否删除",
+                    Description="系统字段",
+                    IsSystem =(int)TrueFalse.True,
+                    IsMust=(int)TrueFalse.True,
+                    FieldType=(int)DataType.Int,
+                    SortNumber=-1
+                },
+                new MetaField{
+                    MetaObjectId=metaObjectId,
+                    Code ="CreateBy",
+                    Name ="创建人",
+                    Description="系统字段",
+                    IsSystem =(int) TrueFalse.True,
+                    IsMust= (int)TrueFalse.True,
+                    FieldType= (int)DataType.Int,
+                    SortNumber=-1
+                },
+                new MetaField{
+                    MetaObjectId=metaObjectId,
+                    Code ="CreateTime",
+                    Name ="创建时间",
+                    Description="系统字段",
+                    IsSystem =(int) TrueFalse.True,
+                    IsMust= (int)TrueFalse.True,
+                    FieldType= (int)DataType.DateTime,
+                    SortNumber=-1
+                },
+                new MetaField{
+                    MetaObjectId=metaObjectId,
+                    Code ="ModifyBy",
+                    Name ="修改人",
+                    Description="系统字段",
+                    IsSystem =(int) TrueFalse.True,
+                    IsMust= (int)TrueFalse.True,
+                    FieldType= (int)DataType.Int,
+                    SortNumber=-1
+                },
+                new MetaField{
+                    MetaObjectId=metaObjectId,
+                    Code ="ModifyTime",
+                    Name ="修改时间",
+                    Description="系统字段",
+                    IsSystem =(int) TrueFalse.True,
+                    IsMust= (int)TrueFalse.True,
+                    FieldType= (int)DataType.DateTime,
+                    SortNumber=-1
+                }
+            });
         }
     }
 }

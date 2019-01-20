@@ -1,15 +1,16 @@
 ﻿using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
-using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract
 {
-    public interface IMetaFieldService : IRepository<MetaField>
+    public interface IMetaFieldService : IMetaObjectManageRepository<MetaField>
     {
-        void DeleteByMetaObjectId(int metaObjectId);
-        List<MetaField> GetMetaFieldsUnDeletedByMetaObjectId(int metaObjectId);
-        List<MetaField> GetMetaFieldsDeletedByMetaObjectId(int metaObjectId);
         ResultModel CheckSameCodeOrName(int metaObjectId, MetaField metaField);
+        /// <summary>
+        /// 预置系统字段
+        /// </summary>
+        /// <param name="metaObjectId"></param>
+        void PresetFields(int metaObjectId);
     }
 }

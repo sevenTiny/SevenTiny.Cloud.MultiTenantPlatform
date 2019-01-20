@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SevenTiny.Cloud.MultiTenantPlatform.Application.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
@@ -11,12 +10,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
     public class MetaObjectController : ControllerBase
     {
         IMetaObjectService metaObjectService;
-        IMetaObjectAppService metaObjectAppService;
 
-        public MetaObjectController(IMetaObjectService _metaObjectService,IMetaObjectAppService _metaObjectAppService)
+        public MetaObjectController(IMetaObjectService _metaObjectService)
         {
             metaObjectService = _metaObjectService;
-            metaObjectAppService = _metaObjectAppService;
         }
 
         public IActionResult Setting()
@@ -53,7 +50,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
                 return View("Add", ResponseModel.Error("MetaObject Code Can Not Be Null！", metaObject));
             }
 
-            var addResult = metaObjectAppService.AddMetaObject(CurrentApplicationId, CurrentApplicationCode, metaObject);
+            var addResult = metaObjectService.AddMetaObject(CurrentApplicationId, CurrentApplicationCode, metaObject);
             if (!addResult.IsSuccess)
             {
                 return View("Add", addResult.ToResponseModel());
@@ -94,7 +91,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 
         public IActionResult Delete(int id)
         {
-            metaObjectAppService.Delete(id);
+            metaObjectService.Delete(id);
             return JsonResultModel.Success("删除成功");
         }
 

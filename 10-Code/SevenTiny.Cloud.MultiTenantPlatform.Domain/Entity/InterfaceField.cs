@@ -1,6 +1,5 @@
-﻿using SevenTiny.Bantina.Bankinate;
+﻿using SevenTiny.Bantina.Bankinate.Attributes;
 using System.Collections.Generic;
-using SevenTiny.Bantina.Bankinate.Attributes;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity
 {
@@ -8,10 +7,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity
     /// 接口字段
     /// </summary>
     [Table]
-    public class InterfaceField : CommonInfo
+    public class InterfaceField : MetaObjectManageInfo
     {
-        [Column]
-        public int MetaObjectId { get; set; }
         public List<MetaField> MetaFields { get; set; }
     }
 }

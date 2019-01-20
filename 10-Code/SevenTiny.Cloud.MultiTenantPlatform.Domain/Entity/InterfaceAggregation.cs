@@ -7,10 +7,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity
     /// 组织接口
     /// </summary>
     [Table]
-    public class InterfaceAggregation : CommonInfo
+    public class InterfaceAggregation : MetaObjectManageInfo
     {
-        [Column]
-        public int MetaObjectId { get; set; }
         [Column]
         public int InterfaceSearchConditionId { get; set; }
         [Column]
