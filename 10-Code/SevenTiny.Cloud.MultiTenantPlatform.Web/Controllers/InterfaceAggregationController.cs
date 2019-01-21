@@ -79,11 +79,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
                 return View("Add", ResponseModel.Error("条件不能为空", entity));
             }
 
-            //查询并将名字赋予接口的字段
-            var interfaceField = interfaceFieldService.GetById(entity.InterfaceFieldId);
-            var interfaceSearchCondition = interfaceSearchConditionService.GetById(entity.InterfaceSearchConditionId);
-            entity.InterfaceFieldName = interfaceField.Name;
-            entity.InterfaceSearchConditionName = interfaceSearchCondition.Name;
             entity.MetaObjectId = CurrentMetaObjectId;
             interfaceAggregationService.Add(entity);
 

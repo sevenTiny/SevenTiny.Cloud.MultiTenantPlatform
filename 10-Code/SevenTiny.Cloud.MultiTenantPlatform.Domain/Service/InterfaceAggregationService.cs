@@ -25,6 +25,19 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         readonly IInterfaceFieldService interfaceFieldService;
         readonly IInterfaceSearchConditionService interfaceSearchConditionService;
 
+        //新增组织接口
+        public new ResultModel Add(InterfaceAggregation entity)
+        {
+            //查询并将名字赋予接口的字段
+            var interfaceField = interfaceFieldService.GetById(entity.InterfaceFieldId);
+            var interfaceSearchCondition = interfaceSearchConditionService.GetById(entity.InterfaceSearchConditionId);
+            entity.InterfaceFieldName = interfaceField.Name;
+            entity.InterfaceSearchConditionName = interfaceSearchCondition.Name;
+
+            base.Add(entity);
+            return ResultModel.Success();
+        }
+
         /// <summary>
         /// 更新对象
         /// </summary>
