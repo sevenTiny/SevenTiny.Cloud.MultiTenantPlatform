@@ -91,6 +91,7 @@
     $('.table-sort').dataTable({
         "aLengthMenu": [[30, 50, 100, -1], ["30", "50", "100", "All"]],//二组数组，第一组数量，
         "aaSorting": [[6, "asc"], [7, "asc"]],//默认第几个排序
+        "bAutoWidth": false,
         "bStateSave": true,//状态保存
         "aoColumnDefs": [
             { "orderable": false, "aTargets": [2, 9] }// 不参与排序的列
