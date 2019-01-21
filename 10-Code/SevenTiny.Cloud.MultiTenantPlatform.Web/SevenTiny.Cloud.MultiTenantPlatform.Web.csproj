@@ -16,11 +16,7 @@
     <Content Remove="Views\InterfaceAggregation\DeleteList.cshtml" />
     <Content Remove="Views\InterfaceAggregation\List.cshtml" />
     <Content Remove="Views\InterfaceAggregation\Update.cshtml" />
-    <Content Remove="Views\InterfaceSearchCondition\Add.cshtml" />
-    <Content Remove="Views\InterfaceSearchCondition\AggregationCondition.cshtml" />
     <Content Remove="Views\InterfaceSearchCondition\DeleteList.cshtml" />
-    <Content Remove="Views\InterfaceSearchCondition\List.cshtml" />
-    <Content Remove="Views\InterfaceSearchCondition\Update.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -51,7 +47,6 @@
 
   <ItemGroup>
     <Folder Include="Views\InterfaceAggregation\" />
-    <Folder Include="Views\InterfaceSearchCondition\" />
   </ItemGroup>
 
 </Project>

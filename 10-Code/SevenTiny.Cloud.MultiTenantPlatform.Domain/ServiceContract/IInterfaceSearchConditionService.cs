@@ -1,12 +1,10 @@
 ﻿using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract
 {
-    public interface IInterfaceSearchConditionService : ICommonInfoRepository<InterfaceSearchCondition>
+    public interface IInterfaceSearchConditionService : IMetaObjectManageRepository<InterfaceSearchCondition>
     {
     }
 }

@@ -20,30 +20,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         readonly MultiTenantPlatformDbContext dbContext;
 
         /// <summary>
-        /// 检查是否有相同名称的编码或名称
-        /// </summary>
-        /// <param name="metaObjectId"></param>
-        /// <param name="code"></param>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public ResultModel CheckSameCodeOrName(int metaObjectId, InterfaceField interfaceField)
-        {
-            var obj = dbContext.QueryOne<InterfaceField>(t => t.MetaObjectId == metaObjectId && t.Id != interfaceField.Id && (t.Code.Equals(interfaceField.Code) || t.Name.Equals(interfaceField.Name)));
-            if (obj != null)
-            {
-                if (obj.Code.Equals(interfaceField.Code))
-                    return ResultModel.Error($"编码[{obj.Code}]已存在", interfaceField);
-                else if (obj.Name.Equals(interfaceField.Name))
-                    return ResultModel.Error($"名称[{obj.Name}]已存", interfaceField);
-            }
-            return ResultModel.Success();
-        }
-
-        /// <summary>
         /// 更新对象
         /// </summary>
         /// <param name="metaField"></param>
-        public new void Update(InterfaceField interfaceField)
+        public new ResultModel Update(InterfaceField interfaceField)
         {
             InterfaceField myfield = GetById(interfaceField.Id);
             if (myfield != null)
@@ -57,22 +37,25 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                 myfield.ModifyTime = DateTime.Now;
             }
             base.Update(myfield);
+            return ResultModel.Success();
         }
 
         /// <summary>
-        /// 根据id删除配置字段
-        /// 同时删除相关的对象
+        /// 根据id删除配置字段，校验是否被引用
         /// </summary>
         /// <param name="id"></param>
-        public new void Delete(int id)
+        public new ResultModel Delete(int id)
         {
-            TransactionHelper.Transaction(() =>
+            if (dbContext.QueryExist<InterfaceAggregation>(t => t.InterfaceFieldId == id))
             {
-                //clear fields first
-                dbContext.Delete<InterfaceAggregation>(t => t.InterfaceFieldId == id);
-                //delete field config
-                Delete(id);
-            });
+                //存在引用关系，先删除引用该数据的数据
+                return ResultModel.Error("存在引用关系，先删除引用该数据的数据");
+            }   
+            else
+            {
+                base.Delete(id);
+                return ResultModel.Success();
+            }
         }
     }
 }

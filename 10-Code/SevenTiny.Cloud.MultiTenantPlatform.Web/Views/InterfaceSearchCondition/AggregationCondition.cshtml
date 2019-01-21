@@ -9,17 +9,6 @@
 }
 <link href="~/css/jqueryTree.css" rel="stylesheet" />
 
-<nav class="breadcrumb">
-    <i class="Hui-iconfont">&#xe67f;</i> 首页
-    <span class="c-gray en">&gt;</span>
-    标准接口
-    <span class="c-gray en">&gt;</span>
-    搜索条件
-    <span class="c-gray en">&gt;</span>
-    组织条件
-    <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a>
-</nav>
-
 <article class="page-container">
     <div class="opration">
         <a class="btn btn-secondary-outline radius" href="javascript:history.back(-1);"><i class="Hui-iconfont">&#xe66b;</i> 返回</a>
@@ -116,7 +105,9 @@
     </div>
 </article>
 
-@Html.Partial($"~/Views/Shared/_FooterScripts.cshtml")
+@await Html.PartialAsync("~/Views/Shared/_FooterScripts.cshtml")
+@await Html.PartialAsync("~/Views/Shared/_CommonScript.cshtml")
+<!--请在下方写此页面业务相关的脚本-->
 <script>
     $(function () {
 

@@ -1,5 +1,6 @@
 ﻿using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Enum;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
 using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository
@@ -13,10 +14,13 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository
 
         MultiTenantPlatformDbContext dbContext;
 
-        public void Delete(int id)
-            => dbContext.Delete<TEntity>(t => t.Id.Equals(id));
+        public ResultModel Delete(int id)
+        {
+            dbContext.Delete<TEntity>(t => t.Id.Equals(id));
+            return ResultModel.Success();
+        }
 
-        public void LogicDelete(int id)
+        public ResultModel LogicDelete(int id)
         {
             var entity = GetById(id);
             if (entity != null)
@@ -24,9 +28,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository
                 entity.IsDeleted = (int)IsDeleted.Deleted;
                 dbContext.Update(entity);
             }
+            return ResultModel.Success();
         }
 
-        public void Recover(int id)
+        public ResultModel Recover(int id)
         {
             var entity = GetById(id);
             if (entity != null)
@@ -34,6 +39,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository
                 entity.IsDeleted = (int)IsDeleted.UnDeleted;
                 dbContext.Update(entity);
             }
+            return ResultModel.Success();
         }
 
         public TEntity GetById(int id)

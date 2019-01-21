@@ -19,30 +19,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         MultiTenantPlatformDbContext dbContext;
 
         /// <summary>
-        /// 检查是否有相同名称的编码或名称
-        /// </summary>
-        /// <param name="metaObjectId"></param>
-        /// <param name="code"></param>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public ResultModel CheckSameCodeOrName(int metaObjectId, MetaField metaField)
-        {
-            var obj = dbContext.QueryOne<MetaField>(t => t.MetaObjectId == metaObjectId && t.Id != metaField.Id && (t.Code.Equals(metaField.Code) || t.Name.Equals(metaField.Name)));
-            if (obj != null)
-            {
-                if (obj.Code.Equals(metaField.Code))
-                    return ResultModel.Error($"编码[{obj.Code}]已存在", metaField);
-                else if (obj.Name.Equals(metaField.Name))
-                    return ResultModel.Error($"名称[{obj.Name}]已存", metaField);
-            }
-            return ResultModel.Success();
-        }
-
-        /// <summary>
         /// 更新对象
         /// </summary>
         /// <param name="metaField"></param>
-        public new void Update(MetaField metaField)
+        public new ResultModel Update(MetaField metaField)
         {
             MetaField myfield = GetById(metaField.Id);
             if (myfield != null)
@@ -59,6 +39,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                 myfield.ModifyTime = DateTime.Now;
             }
             base.Update(myfield);
+            return ResultModel.Success();
         }
 
         /// <summary>

@@ -6,6 +6,5 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract
 {
     public interface IInterfaceFieldService : IMetaObjectManageRepository<InterfaceField>
     {
-        ResultModel CheckSameCodeOrName(int metaObjectId, InterfaceField interfaceField);
     }
 }

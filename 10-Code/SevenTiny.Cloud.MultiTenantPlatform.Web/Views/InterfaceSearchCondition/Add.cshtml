@@ -1,80 +1,68 @@
-﻿@using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;;
+﻿@using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
 @{
     ViewData["Title"] = "Add";
     Layout = "~/Views/Shared/_Layout.cshtml";
-}
-@{
-    ActionResultModel<InterfaceSearchCondition> result = Model as ActionResultModel<InterfaceSearchCondition> ?? new ActionResultModel<InterfaceSearchCondition>(true, string.Empty, new InterfaceSearchCondition());
+
+    ResponseModel result = Model as ResponseModel ?? new ResponseModel();
+    InterfaceSearchCondition interfaceSearchCondition = result.Data as InterfaceSearchCondition ?? new InterfaceSearchCondition();
 }
 
-<nav class="breadcrumb">
-    <i class="Hui-iconfont">&#xe67f;</i> 首页
-    <span class="c-gray en">&gt;</span>
-    标准接口
-    <span class="c-gray en">&gt;</span>
-    搜素条件
-    <span class="c-gray en">&gt;</span>
-    新建
-    <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a>
-</nav>
+@{
+    ViewData["Level_1"] = "标准接口";
+    ViewData["Level_2"] = "添加搜素条件";
+}
+@await Html.PartialAsync("~/Views/Shared/PartialNav.cshtml")
 
 <article class="page-container">
-    <form class="form form-horizontal" id="form-article-add" method="post" action="/InterfaceSearchCondition/AddLogic">
+    <form class="form form-horizontal validate" id="form-article-add" method="post" action="/InterfaceSearchCondition/AddLogic">
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>名称：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="@result.Data.Name" placeholder="" id="" name="name">
+                <input type="text" class="input-text" value="@interfaceSearchCondition.Name" placeholder="" id="" name="name" required minLength="2" maxlength="50">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>编码：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="@result.Data.Code" placeholder="" id="" name="code">
+                <input type="text" class="input-text" value="@interfaceSearchCondition.Code" placeholder="" id="" name="code" required minLength="2" maxlength="50">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">分组：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="@result.Data.Group" placeholder="" id="" name="group">
+                <input type="text" class="input-text" value="@interfaceSearchCondition.Group" placeholder="" id="" name="group">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">排序值：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="@result.Data.SortNumber" placeholder="" id="" name="sortNumber">
+                <input type="text" class="input-text" value="@interfaceSearchCondition.SortNumber" placeholder="" id="" name="sortNumber">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">描述：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <textarea name="description" class="textarea" placeholder="说点什么...最多输入1000个字符" datatype="*0-1000" dragonfly="true" nullmsg="无备注" onKeyUp="textarealength(this,1000)">@result.Data.Description</textarea>
-                <p class="textarea-numberbar"><em class="textarea-length">0</em>/1000</p>
+                <textarea name="description" class="textarea ignore" placeholder="说点什么...">@interfaceSearchCondition.Description</textarea>
             </div>
         </div>
         <div class="row cl">
             <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
                 <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
-                <button onClick="javascript:window.location='/InterfaceSearchCondition/List';" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+                <button onClick="javascript:history.back(-1);" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
                 @if (!result.IsSuccess)
                 {
-                    <br /><br /><span class="c-red">@result.Msg</span>
+                    <br /><br /><span class="c-red">@result.Message</span>
                 }
             </div>
         </div>
     </form>
 </article>
 
-@Html.Partial("~/Views/Shared/_FooterScripts.cshtml")
+@await Html.PartialAsync("~/Views/Shared/_FooterScripts.cshtml")
+@await Html.PartialAsync("~/Views/Shared/_CommonScript.cshtml")
+@await Html.PartialAsync("~/Views/Shared/_FormValidate.cshtml")
 <!--请在下方写此页面业务相关的脚本-->
-<script type="text/javascript" src="~/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
-<script type="text/javascript" src="~/lib/jquery.validation/1.14.0/validate-methods.js"></script>
 <script type="text/javascript">
-    $(function () {
-        $('.skin-minimal input').iCheck({
-            checkboxClass: 'icheckbox-blue',
-            radioClass: 'iradio-blue',
-            increaseArea: '20%'
-        });
-    });
+
 </script>
 <!--/请在上方写此页面业务相关的脚本-->

@@ -1,4 +1,5 @@
 ﻿using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
 using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository
@@ -8,5 +9,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository
         void DeleteByMetaObjectId(int metaObjectId);
         List<TEntity> GetEntitiesDeletedByMetaObjectId(int metaObjectId);
         List<TEntity> GetEntitiesUnDeletedByMetaObjectId(int metaObjectId);
+        ResultModel CheckSameCodeOrName(int metaObjectId, TEntity entity);
     }
 }

@@ -32,7 +32,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         public MetaObject GetMetaObjectByCodeAndApplicationId(int applicationId, string code)
             => dbContext.QueryOne<MetaObject>(t => t.ApplicationId == applicationId && t.Code.Equals(code));
 
-        public new void Update(MetaObject metaObject)
+        public new ResultModel Update(MetaObject metaObject)
         {
             MetaObject app = GetById(metaObject.Id);
             if (app != null)
@@ -44,7 +44,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                 app.ModifyBy = -1;
                 app.ModifyTime = DateTime.Now;
             }
-            dbContext.Update(app);
+            base.Update(app);
+            return ResultModel.Success();
         }
 
         public bool ExistSameNameWithOtherIdByApplicationId(int applicationId, int id, string name)
@@ -95,7 +96,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         /// 删除
         /// </summary>
         /// <param name="id"></param>
-        public new void Delete(int id)
+        public new ResultModel Delete(int id)
         {
             var metaObject = GetById(id);
             TransactionHelper.Transaction(() =>
@@ -104,8 +105,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                 metaFieldService.DeleteByMetaObjectId(id);
                 //删除相关接口配置字段
                 //...
-                Delete(id);
+                base.Delete(id);
             });
+            return ResultModel.Success();
         }
     }
 }
