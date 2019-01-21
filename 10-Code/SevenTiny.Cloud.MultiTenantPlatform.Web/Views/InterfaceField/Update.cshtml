@@ -1,7 +1,7 @@
 ﻿@using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
 @{
     ViewData["Title"] = "Update";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
 
     ResponseModel result = Model as ResponseModel ?? new ResponseModel();
     InterfaceField interfaceField = result.Data as InterfaceField ?? new InterfaceField();

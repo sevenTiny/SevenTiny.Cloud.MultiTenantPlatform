@@ -3,13 +3,14 @@
 
 @{
     ViewData["Title"] = "List";
-    Layout = $"~/Views/Shared/_Layout.cshtml";
+    Layout = $"~/Views/Shared/_LayoutHeaderStyle.cshtml";
     List<InterfaceAggregation> entities = (Model as List<InterfaceAggregation>) ?? new List<InterfaceAggregation>();
 }
 
 <article class="cl pd-20">
     <div class="cl pd-5 bg-1 bk-gray">
         <span class="l">
+            <a class="btn btn-secondary-outline radius" href="/InterfaceAggregation/InterfaceList"><i class="Hui-iconfont">&#xe66b;</i> 切换接口视图</a>
             <a class="btn btn-primary radius" href="/InterfaceAggregation/Add"><i class="Hui-iconfont">&#xe600;</i> 添加接口</a>
             <a class="btn btn-danger-outline radius" href="/InterfaceAggregation/DeleteList"><i class="Hui-iconfont">&#xe609;</i> 查看已删除接口</a>
         </span>

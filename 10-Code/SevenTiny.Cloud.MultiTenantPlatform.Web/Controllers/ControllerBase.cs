@@ -41,9 +41,18 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
         {
             get
             {
-                var metaObjectId = HttpContext.Session.GetInt32("MetaObjectId") ?? throw new ArgumentNullException("MetaObjectId is null,please select MetaObject first!"); ;
-                ViewData["MetaObjectId"] = metaObjectId;
-                return metaObjectId;
+               return HttpContext.Session.GetInt32("MetaObjectId") ?? throw new ArgumentNullException("MetaObjectId is null,please select MetaObject first!"); ;
+            }
+        }
+
+        /// <summary>
+        /// 当前对象编码
+        /// </summary>
+        protected string CurrentMetaObjectCode
+        {
+            get
+            {
+                return HttpContext.Session.GetString("MetaObjectCode") ?? throw new ArgumentNullException("MetaObjectCode is null,please select MetaObject first!"); ;
             }
         }
     }

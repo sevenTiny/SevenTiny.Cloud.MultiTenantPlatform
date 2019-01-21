@@ -9,11 +9,16 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 {
     public class MetaFieldController : ControllerBase
     {
-        private readonly IMetaFieldService _metaFieldService;
+        readonly IMetaFieldService metaFieldService;
+        readonly IMetaObjectService metaObjectService;
 
-        public MetaFieldController(IMetaFieldService metaFieldService)
+        public MetaFieldController(
+            IMetaFieldService _metaFieldService,
+            IMetaObjectService _metaObjectService
+            )
         {
-            this._metaFieldService = metaFieldService;
+            metaFieldService = _metaFieldService;
+            metaObjectService = _metaObjectService;
         }
 
         public IActionResult List(int metaObjectId)
@@ -28,13 +33,15 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 
             //这里是选择对象的入口，预先设置Session
             HttpContext.Session.SetInt32("MetaObjectId", metaObjectId);
+            var obj = metaObjectService.GetById(metaObjectId);
+            HttpContext.Session.SetString("MetaObjectCode", obj.Code);
 
-            return View(_metaFieldService.GetEntitiesUnDeletedByMetaObjectId(metaObjectId));
+            return View(metaFieldService.GetEntitiesUnDeletedByMetaObjectId(metaObjectId));
         }
 
         public IActionResult DeleteList()
         {
-            return View(_metaFieldService.GetEntitiesDeletedByMetaObjectId(CurrentMetaObjectId));
+            return View(metaFieldService.GetEntitiesDeletedByMetaObjectId(CurrentMetaObjectId));
         }
 
         public IActionResult Add()
@@ -59,21 +66,21 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             }
 
             //检查编码或名称重复
-            var checkResult = _metaFieldService.CheckSameCodeOrName(CurrentMetaObjectId, metaField);
+            var checkResult = metaFieldService.CheckSameCodeOrName(CurrentMetaObjectId, metaField);
             if (!checkResult.IsSuccess)
             {
                 return View("Add", checkResult.ToResponseModel());
             }
 
             metaField.MetaObjectId = CurrentMetaObjectId;
-            _metaFieldService.Add(metaField);
+            metaFieldService.Add(metaField);
 
             return Redirect("/MetaField/List?metaObjectId=" + CurrentMetaObjectId);
         }
 
         public IActionResult Update(int id)
         {
-            var metaObject = _metaFieldService.GetById(id);
+            var metaObject = metaFieldService.GetById(id);
             return View(ResponseModel.Success(metaObject));
         }
 
@@ -98,27 +105,27 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             }
 
             //检查编码或名称重复
-            var checkResult = _metaFieldService.CheckSameCodeOrName(CurrentMetaObjectId, metaField);
+            var checkResult = metaFieldService.CheckSameCodeOrName(CurrentMetaObjectId, metaField);
             if (!checkResult.IsSuccess)
             {
                 return View("Update", checkResult.ToResponseModel());
             }
 
             //更新操作
-            _metaFieldService.Update(metaField);
+            metaFieldService.Update(metaField);
 
             return Redirect("/MetaField/List?metaObjectId=" + CurrentMetaObjectId);
         }
 
         public IActionResult Delete(int id)
         {
-            _metaFieldService.Delete(id);
+            metaFieldService.Delete(id);
             return JsonResultModel.Success("删除成功");
         }
 
         public IActionResult Recover(int id)
         {
-            _metaFieldService.Recover(id);
+            metaFieldService.Recover(id);
             return JsonResultModel.Success("恢复成功");
         }
     }

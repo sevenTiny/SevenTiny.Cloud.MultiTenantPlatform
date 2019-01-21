@@ -3,6 +3,7 @@
 
 @{
     ViewData["Title"] = "AggregateCondition";
+    Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
     List<ConditionAggregation> entities = ViewData["AggregationConditions"] as List<ConditionAggregation> ?? new List<ConditionAggregation>();
     List<MetaField> metafields = ViewData["MetaFields"] as List<MetaField> ?? new List<MetaField>();
     int interfaceSearchConditionId = Convert.ToInt32(ViewData["InterfaceSearchConditionId"]);

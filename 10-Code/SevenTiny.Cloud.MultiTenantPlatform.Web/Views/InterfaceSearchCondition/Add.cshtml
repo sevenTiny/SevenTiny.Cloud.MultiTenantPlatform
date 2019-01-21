@@ -1,7 +1,7 @@
 ﻿@using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
 @{
     ViewData["Title"] = "Add";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
 
     ResponseModel result = Model as ResponseModel ?? new ResponseModel();
     InterfaceSearchCondition interfaceSearchCondition = result.Data as InterfaceSearchCondition ?? new InterfaceSearchCondition();

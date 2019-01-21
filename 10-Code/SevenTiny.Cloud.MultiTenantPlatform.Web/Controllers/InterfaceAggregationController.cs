@@ -31,6 +31,15 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             return View(interfaceAggregationService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId));
         }
 
+        public IActionResult InterfaceList()
+        {
+            ViewData["InterfaceAggregationList"] = interfaceAggregationService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
+            ViewData["ApplicationCode"] = CurrentApplicationCode;
+            ViewData["MetaObjectCode"] = CurrentMetaObjectCode;
+
+            return View();
+        }
+
         public IActionResult DeleteList()
         {
             return View(interfaceAggregationService.GetEntitiesDeletedByMetaObjectId(CurrentMetaObjectId));

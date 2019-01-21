@@ -110,6 +110,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
         public IActionResult Switch(int id)
         {
             HttpContext.Session.SetInt32("MetaObjectId", id);
+            var obj = metaObjectService.GetById(id);
+            HttpContext.Session.SetString("MetaObjectCode", obj.Code);
+
             //这里换成当前MetaObject的MetaFields列表
             return Redirect("/MetaField/List");
         }
