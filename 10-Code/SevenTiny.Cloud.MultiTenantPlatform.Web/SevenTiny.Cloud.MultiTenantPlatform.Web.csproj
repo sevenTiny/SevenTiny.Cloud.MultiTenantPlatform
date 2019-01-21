@@ -12,10 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="Views\InterfaceAggregation\Add.cshtml" />
-    <Content Remove="Views\InterfaceAggregation\DeleteList.cshtml" />
-    <Content Remove="Views\InterfaceAggregation\List.cshtml" />
-    <Content Remove="Views\InterfaceAggregation\Update.cshtml" />
     <Content Remove="Views\InterfaceSearchCondition\DeleteList.cshtml" />
   </ItemGroup>
 
@@ -43,10 +39,6 @@
     <None Update="Dockerfile">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Views\InterfaceAggregation\" />
   </ItemGroup>
 
 </Project>

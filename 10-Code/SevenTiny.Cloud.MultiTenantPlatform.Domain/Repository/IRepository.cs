@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
+using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository
 {
     public interface IRepository<TEntity> where TEntity : class
     {
-        void Add(TEntity entity);
-        void Add(IList<TEntity> entities);
-        void Update(TEntity entity);
-        void Delete(TEntity entity);
+        ResultModel Add(TEntity entity);
+        ResultModel Add(IList<TEntity> entities);
+        ResultModel Update(TEntity entity);
+        ResultModel Delete(TEntity entity);
     }
 }

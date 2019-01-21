@@ -28,7 +28,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         /// <summary>
         /// 更新对象
         /// </summary>
-        /// <param name="metaField"></param>
+        /// <param name="interfaceAggregation"></param>
         public new ResultModel Update(InterfaceAggregation interfaceAggregation)
         {
             InterfaceAggregation myEntity = GetById(interfaceAggregation.Id);

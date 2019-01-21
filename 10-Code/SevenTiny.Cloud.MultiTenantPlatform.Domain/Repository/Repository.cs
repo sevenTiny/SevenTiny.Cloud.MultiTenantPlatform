@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository
 {
@@ -12,16 +13,28 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository
 
         MultiTenantPlatformDbContext dbContext;
 
-        public void Add(TEntity entity)
-            => dbContext.Add(entity);
+        public ResultModel Add(TEntity entity)
+        {
+            dbContext.Add(entity);
+            return ResultModel.Success();
+        }
 
-        public void Add(IList<TEntity> entities)
-            => dbContext.Add<TEntity>(entities);
+        public ResultModel Add(IList<TEntity> entities)
+        {
+            dbContext.Add<TEntity>(entities);
+            return ResultModel.Success();
+        }
 
-        public void Update(TEntity entity)
-            => dbContext.Update(entity);
+        public ResultModel Update(TEntity entity)
+        {
+            dbContext.Update(entity);
+            return ResultModel.Success();
+        }
 
-        public void Delete(TEntity entity)
-            => dbContext.Delete<TEntity>(entity);
+        public ResultModel Delete(TEntity entity)
+        {
+            dbContext.Delete<TEntity>(entity);
+            return ResultModel.Success();
+        }
     }
 }
