@@ -9,9 +9,10 @@ using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
 {
-    [Produces("application/json")]
+    //[Produces("application/json")]
     [Route("api/CloudData")]
-    public class CloudDataController : Controller
+    [ApiController]
+    public class CloudDataController : ControllerBase
     {
         public CloudDataController(
             IDataAccessService _dataAccessService,
@@ -28,6 +29,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
         readonly IInterfaceAggregationService interfaceAggregationService;
         readonly IConditionAggregationService conditionAggregationService;
 
+        [HttpGet]
         public IActionResult Get(int tenantId, QueryArgs queryArgs)
         {
             try
@@ -75,22 +77,33 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
             }
         }
 
-        public IActionResult Post(int tenantId, BsonDocument bsons)
+        /**
+         Content-Type: application/json
+         * */
+        [HttpPost]
+        public IActionResult Post(int tenantId, [FromBody]string namess)
         {
             if (tenantId <= 0)
                 throw new ArgumentException($"Parameter invalid: tenantId={tenantId}");
 
-            ArgumentsChecker.CheckNull("bsons", bsons);
+            ArgumentsChecker.CheckNull("bsons", namess);
+
+            var bsons = BsonDocument.Parse(namess);
 
             dataAccessService.Add(tenantId, bsons);
             return JsonResultModel.Success("add success");
         }
 
+        [HttpPut]
         public IActionResult Update()
         {
-            return null;
+            BsonDocument bson = new BsonDocument();
+            bson.Add(new BsonElement("name", "zhangsan"));
+            bson.Add(new BsonElement("age", "21"));
+            return new JsonResult(bson);
         }
 
+        [HttpDelete]
         public IActionResult Delete()
         {
             return null;

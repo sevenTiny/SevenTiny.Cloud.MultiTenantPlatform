@@ -22,7 +22,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi
             //session support
             services.AddDistributedMemoryCache();
             services.AddSession();
-            //DI,可以选择使用哪种方式进行注入
+            //DI
             services.InjectDomain();
             //end 7tiny ---
 
