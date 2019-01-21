@@ -30,7 +30,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SevenTiny.Cloud.MultiTenantPlatform.Application\SevenTiny.Cloud.MultiTenantPlatform.Application.csproj" />
     <ProjectReference Include="..\SevenTiny.Cloud.MultiTenantPlatform.Domain\SevenTiny.Cloud.MultiTenantPlatform.Domain.csproj" />
     <ProjectReference Include="..\SevenTiny.Cloud.MultiTenantPlatform.Infrastructure\SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.csproj" />
   </ItemGroup>

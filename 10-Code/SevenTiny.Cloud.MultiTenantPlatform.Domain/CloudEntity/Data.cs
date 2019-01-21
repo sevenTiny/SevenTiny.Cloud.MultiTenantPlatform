@@ -1,4 +1,6 @@
-﻿namespace SevenTiny.Cloud.MultiTenantPlatform.CloudModel
+﻿using SevenTiny.Cloud.MultiTenantPlatform.Domain.Enum;
+
+namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity
 {
     /// <summary>
     /// MetaData

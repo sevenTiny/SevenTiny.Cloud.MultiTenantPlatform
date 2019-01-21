@@ -1,44 +1,46 @@
 ﻿using Newtonsoft.Json;
-using SevenTiny.Cloud.MultiTenantPlatform.DomainModel.Entities;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.Enum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SevenTiny.Cloud.MultiTenantPlatform.CloudModel
+namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity
 {
     /// <summary>
     /// query object data
     /// </summary>
     public class ObjectData : CommonInfo
     {
-        public ObjectData(string metaObjectCode)
-        {
-            if (string.IsNullOrEmpty(metaObjectCode))
-            {
-                throw new ArgumentNullException("metaObjectCode can not be null!");
-            }
-            var metaFields = GetMetaFieldsByMetaObjectCode(metaObjectCode);
-            List<Data> dataList = new List<Data>();
-            foreach (var item in metaFields)
-            {
-                dataList.Add(new Data(item.Code, EnumConvert.ToDataType(item.FieldType), null));
-            }
-            this.DataArray = dataList.ToArray();
-        }
+        //public ObjectData(string metaObjectCode)
+        //{
+        //    if (string.IsNullOrEmpty(metaObjectCode))
+        //    {
+        //        throw new ArgumentNullException("metaObjectCode can not be null!");
+        //    }
+        //    var metaFields = GetMetaFieldsByMetaObjectCode(metaObjectCode);
+        //    List<Data> dataList = new List<Data>();
+        //    foreach (var item in metaFields)
+        //    {
+        //        dataList.Add(new Data(item.Code, EnumsTranslaterUseInProgram.ToDataType(item.FieldType), null));
+        //    }
+        //    this.DataArray = dataList.ToArray();
+        //}
 
-        private List<MetaField> GetMetaFieldsByMetaObjectCode(string metaObjectCode)
-        {
-            //tode:there should be cache!!!
-            using (var db = new MultiTenantPlatformDbContext())
-            {
-                var metaObject = db.QueryOne<MetaObject>(t => t.Code.Equals(metaObjectCode));
-                this.MetaObjectId = metaObject.Id;
-                this.MetaObjectCode = metaObject.Code;
-                this.MetaObjectName = metaObject.Name;
-                var metaFields = db.QueryList<MetaField>(t => t.MetaObjectId == metaObject.Id);
-                return metaFields;
-            }
-        }
+        //private List<MetaField> GetMetaFieldsByMetaObjectCode(string metaObjectCode)
+        //{
+        //    //tode:there should be cache!!!
+        //    using (var db = new MultiTenantPlatformDbContext())
+        //    {
+        //        var metaObject = db.QueryOne<MetaObject>(t => t.Code.Equals(metaObjectCode));
+        //        this.MetaObjectId = metaObject.Id;
+        //        this.MetaObjectCode = metaObject.Code;
+        //        this.MetaObjectName = metaObject.Name;
+        //        var metaFields = db.QueryList<MetaField>(t => t.MetaObjectId == metaObject.Id);
+        //        return metaFields;
+        //    }
+        //}
+
+
         /// <summary>
         /// tenant id,means the data belong to the tenant
         /// </summary>
@@ -67,7 +69,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.CloudModel
             {
                 if (MetaFields.ContainsKey(fieldKey))
                 {
-                    DataType type = EnumConvert.ToDataType(MetaFields[fieldKey].DataType);
+                    DataType type = EnumsTranslaterUseInProgram.ToDataType(MetaFields[fieldKey].DataType);
                     //check type
                     switch (type)
                     {

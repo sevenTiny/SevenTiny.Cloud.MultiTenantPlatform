@@ -1,91 +1,99 @@
-﻿//using Microsoft.AspNetCore.Mvc;
-//using MongoDB.Bson;
-//using Newtonsoft.Json;
-//using SevenTiny.Cloud.MultiTenantPlatform.Application.ServiceContract;
-//using SevenTiny.Cloud.MultiTenantPlatform.DataApi.Models;
-//using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Checker;
-//using System;
-//using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
+using Newtonsoft.Json;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
+using SevenTiny.Cloud.MultiTenantPlatform.DataApi.Models;
+using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Checker;
+using System;
+using System.Collections.Generic;
 
-//namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
-//{
-//    [Produces("application/json")]
-//    [Route("api/CloudData")]
-//    public class CloudDataController : Controller
-//    {
-//        private readonly IAggregationConditionService _aggregationConditionService;
-//        private readonly IInterfaceAggregationService _interfaceAggregationService;
-//        private readonly IMultitenantDataService _multitenantDataService;
-//        public CloudDataController(IAggregationConditionService aggregationConditionService, IInterfaceAggregationService interfaceAggregationService, IMultitenantDataService multitenantDataService)
-//        {
-//            _aggregationConditionService = aggregationConditionService;
-//            _interfaceAggregationService = interfaceAggregationService;
-//            _multitenantDataService = multitenantDataService;
-//        }
+namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
+{
+    [Produces("application/json")]
+    [Route("api/CloudData")]
+    public class CloudDataController : Controller
+    {
+        public CloudDataController(
+            IDataAccessService _dataAccessService,
+            IConditionAggregationService _conditionAggregationService,
+            IInterfaceAggregationService _interfaceAggregationService
+            )
+        {
+            dataAccessService = _dataAccessService;
+            conditionAggregationService = _conditionAggregationService;
+            interfaceAggregationService = _interfaceAggregationService;
+        }
 
-//        public IActionResult Get(int tenantId, QueryArgs queryArgs)
-//        {
-//            try
-//            {
-//                //1.args check
-//                if (queryArgs == null)
-//                {
-//                    throw new ArgumentNullException("queryArgs can not be null!");
-//                }
-//                queryArgs.QueryArgsCheck();
+        readonly IDataAccessService dataAccessService;
+        readonly IInterfaceAggregationService interfaceAggregationService;
+        readonly IConditionAggregationService conditionAggregationService;
 
-//                //2.argumentsDic generate
-//                Dictionary<string, object> argumentsDic = new Dictionary<string, object>();
-//                foreach (var item in Request.Form)
-//                {
-//                    if (!argumentsDic.ContainsKey(item.Key))
-//                    {
-//                        argumentsDic.Add(item.Key, item.Value);
-//                    }
-//                }
-//                foreach (var item in Request.Query)
-//                {
-//                    if (!argumentsDic.ContainsKey(item.Key))
-//                    {
-//                        argumentsDic.Add(item.Key, item.Value);
-//                    }
-//                }
+        public IActionResult Get(int tenantId, QueryArgs queryArgs)
+        {
+            try
+            {
+                //1.args check
+                if (queryArgs == null)
+                {
+                    throw new ArgumentNullException("queryArgs can not be null!");
+                }
+                queryArgs.QueryArgsCheck();
 
-//                //3.get filter
-//                int conditionId = _interfaceAggregationService.GetConditionAggregationByInterfaceAggregationCode(queryArgs.interfaceCode)?.Id ?? 0;
-//                var filter = _aggregationConditionService.AnalysisConditionToFilterDefinition(conditionId, argumentsDic);
+                //2.argumentsDic generate
+                Dictionary<string, object> argumentsDic = new Dictionary<string, object>();
+                foreach (var item in Request.Form)
+                {
+                    if (!argumentsDic.ContainsKey(item.Key))
+                    {
+                        argumentsDic.Add(item.Key, item.Value);
+                    }
+                }
+                foreach (var item in Request.Query)
+                {
+                    if (!argumentsDic.ContainsKey(item.Key))
+                    {
+                        argumentsDic.Add(item.Key, item.Value);
+                    }
+                }
 
-//                //4.query result
-//                object data = _multitenantDataService.GetObjectDatasByCondition(tenantId, filter, queryArgs.pageIndex, queryArgs.pageSize);
+                //3.get filter
+                var interfaceAggregation = interfaceAggregationService.GetByMetaObjectCodeAndInterfaceAggregationCode(queryArgs.metaObjectCode, queryArgs.interfaceCode);
+                var filter = conditionAggregationService.AnalysisConditionToFilterDefinition(interfaceAggregation.InterfaceSearchConditionId, argumentsDic);
 
-//                return JsonResultModel.Success("get data success", data);
-//            }
-//            catch (ArgumentException argEx)
-//            {
-//                return JsonResultModel.Error(argEx.Message);
-//            }
-//            catch (Exception ex)
-//            {
-//                return JsonResultModel.Error(JsonConvert.SerializeObject(ex));
-//            }
-//        }
+                //4.query result
+                object data = dataAccessService.GetObjectDatasByCondition(tenantId, filter, queryArgs.pageIndex, queryArgs.pageSize);
 
-//        public IActionResult Post(int tenantId, BsonDocument bsons)
-//        {
-//            ArgumentsChecker.CheckTenantId(tenantId);
-//            ArgumentsChecker.CheckNull("bsons", bsons);
-//            _multitenantDataService.Add(tenantId, bsons);
-//            return JsonResultModel.Success("add success");
-//        }
+                return JsonResultModel.Success("get data success", data);
+            }
+            catch (ArgumentException argEx)
+            {
+                return JsonResultModel.Error(argEx.Message);
+            }
+            catch (Exception ex)
+            {
+                return JsonResultModel.Error(JsonConvert.SerializeObject(ex));
+            }
+        }
 
-//        public IActionResult Update()
-//        {
-//            return null;
-//        }
+        public IActionResult Post(int tenantId, BsonDocument bsons)
+        {
+            if (tenantId <= 0)
+                throw new ArgumentException($"Parameter invalid: tenantId={tenantId}");
 
-//        public IActionResult Delete()
-//        {
-//            return null;
-//        }
-//    }
-//}
+            ArgumentsChecker.CheckNull("bsons", bsons);
+
+            dataAccessService.Add(tenantId, bsons);
+            return JsonResultModel.Success("add success");
+        }
+
+        public IActionResult Update()
+        {
+            return null;
+        }
+
+        public IActionResult Delete()
+        {
+            return null;
+        }
+    }
+}

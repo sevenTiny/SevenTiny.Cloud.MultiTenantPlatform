@@ -13,17 +13,20 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         public InterfaceAggregationService(
             MultiTenantPlatformDbContext multiTenantPlatformDbContext,
             IInterfaceFieldService _interfaceFieldService,
-            IInterfaceSearchConditionService _interfaceSearchConditionService
+            IInterfaceSearchConditionService _interfaceSearchConditionService,
+            IMetaObjectService _metaObjectService
             ) : base(multiTenantPlatformDbContext)
         {
             dbContext = multiTenantPlatformDbContext;
             this.interfaceFieldService = _interfaceFieldService;
             this.interfaceSearchConditionService = _interfaceSearchConditionService;
+            metaObjectService = _metaObjectService;
         }
 
         readonly MultiTenantPlatformDbContext dbContext;
         readonly IInterfaceFieldService interfaceFieldService;
         readonly IInterfaceSearchConditionService interfaceSearchConditionService;
+        readonly IMetaObjectService metaObjectService;
 
         //新增组织接口
         public new ResultModel Add(InterfaceAggregation entity)
@@ -62,6 +65,21 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             }
             base.Update(myEntity);
             return ResultModel.Success();
+        }
+
+        public InterfaceAggregation GetByMetaObjectCodeAndInterfaceAggregationCode(string metaObjectCode, string interfaceAggregationCode)
+        {
+            var metaObject = metaObjectService.GetByCode(metaObjectCode);
+            if (metaObject == null)
+            {
+                throw new KeyNotFoundException("该对象编码对应的对象未找到");
+            }
+            var interfaceAggregation = dbContext.QueryOne<InterfaceAggregation>(t => t.MetaObjectId == metaObject.Id && t.Code.Equals(interfaceAggregationCode));
+            if (interfaceAggregation == null)
+            {
+                throw new KeyNotFoundException("该编码对应的接口未找到");
+            }
+            return interfaceAggregation;
         }
     }
 }

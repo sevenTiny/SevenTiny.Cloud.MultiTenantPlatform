@@ -10,12 +10,17 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
 {
     public class InterfaceSearchConditionService : MetaObjectManageRepository<InterfaceSearchCondition>, IInterfaceSearchConditionService
     {
-        public InterfaceSearchConditionService(MultiTenantPlatformDbContext multiTenantPlatformDbContext) : base(multiTenantPlatformDbContext)
+        public InterfaceSearchConditionService(
+            MultiTenantPlatformDbContext multiTenantPlatformDbContext,
+            IInterfaceAggregationService _interfaceAggregationService
+            ) : base(multiTenantPlatformDbContext)
         {
             dbContext = multiTenantPlatformDbContext;
+            interfaceAggregationService = _interfaceAggregationService;
         }
 
         readonly MultiTenantPlatformDbContext dbContext;
+        readonly IInterfaceAggregationService interfaceAggregationService;
 
         /// <summary>
         /// 更新对象
@@ -54,6 +59,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                 base.Delete(id);
                 return ResultModel.Success();
             }
+        }
+
+        public InterfaceSearchCondition GetConditionAggregationByMetaObjectCodeAndInterfaceCode(string metaObjectCode, string interfaceAggregationCode)
+        {
+            var interfaceAggregation = interfaceAggregationService.GetByMetaObjectCodeAndInterfaceAggregationCode(metaObjectCode, interfaceAggregationCode);
+            return GetById(interfaceAggregation.InterfaceSearchConditionId);
         }
     }
 }

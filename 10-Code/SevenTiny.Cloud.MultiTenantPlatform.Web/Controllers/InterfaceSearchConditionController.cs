@@ -109,7 +109,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 
         public IActionResult AggregationCondition(int id)
         {
-            ViewData["AggregationConditions"] = conditionAggregationService.GetByInterfaceConditionId(id);
+            ViewData["AggregationConditions"] = conditionAggregationService.GetListByInterfaceConditionId(id);
             ViewData["MetaFields"] = metaFieldService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
             ViewData["InterfaceSearchConditionId"] = id;
             return View();
@@ -148,7 +148,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
         [HttpGet]
         public IActionResult AggregateConditionTreeView(int id)
         {
-            List<ConditionAggregation> conditions = conditionAggregationService.GetByInterfaceConditionId(id);
+            List<ConditionAggregation> conditions = conditionAggregationService.GetListByInterfaceConditionId(id);
 
             ConditionAggregation condition = conditions?.FirstOrDefault(t => t.ParentId == -1);
             if (condition != null)

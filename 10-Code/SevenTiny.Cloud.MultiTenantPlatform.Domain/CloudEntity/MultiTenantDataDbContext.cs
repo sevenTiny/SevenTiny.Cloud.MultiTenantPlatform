@@ -1,7 +1,7 @@
 ﻿using SevenTiny.Bantina.Bankinate;
 using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Configs;
 
-namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity
+namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity
 {
     public class MultiTenantDataDbContext : MongoDbContext<MultiTenantDataDbContext>
     {
