@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using Newtonsoft.Json;
+using MongoDB.Bson.Serialization;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.DataApi.Models;
 using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Checker;
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
 {
@@ -81,17 +83,26 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
          Content-Type: application/json
          * */
         [HttpPost]
-        public IActionResult Post(int tenantId, [FromBody]string namess)
+        public IActionResult Post(int tenantId, [FromBody]JObject jObj)
         {
-            if (tenantId <= 0)
-                throw new ArgumentException($"Parameter invalid: tenantId={tenantId}");
+            try
+            {
+                if (tenantId <= 0)
+                    return JsonResultModel.Error($"Parameter invalid:tenantId = {tenantId}");
+                if (jObj == null)
+                    return JsonResultModel.Error($"Parameter invalid:data = null");
 
-            ArgumentsChecker.CheckNull("bsons", namess);
+                var json = jObj.ToString();
+                var bson = BsonDocument.Parse(json);
 
-            var bsons = BsonDocument.Parse(namess);
+                dataAccessService.Add(tenantId, bson);
 
-            dataAccessService.Add(tenantId, bsons);
-            return JsonResultModel.Success("add success");
+                return JsonResultModel.Success("add success");
+            }
+            catch (Exception ex)
+            {
+                return JsonResultModel.Error(ex.ToString());
+            }
         }
 
         [HttpPut]

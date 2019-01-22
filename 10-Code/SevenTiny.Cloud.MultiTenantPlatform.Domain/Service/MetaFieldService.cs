@@ -101,5 +101,21 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                 }
             });
         }
+
+        /// <summary>
+        /// 预置字段和数据的字典形式
+        /// </summary>
+        /// <returns></returns>
+        public Dictionary<string, object> GetPresetFieldDic()
+        {
+            return new Dictionary<string, object>
+            {
+                { "IsDeleted",(int)IsDeleted.UnDeleted },
+                { "CreateBy", -1 },
+                { "CreateTime", DateTime.Now },
+                { "ModifyBy", -1},
+                { "ModifyTime", DateTime.Now }
+            };
+        }
     }
 }

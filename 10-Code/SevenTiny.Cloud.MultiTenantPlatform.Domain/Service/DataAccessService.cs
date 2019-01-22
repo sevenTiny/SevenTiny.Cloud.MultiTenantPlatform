@@ -2,6 +2,7 @@
 using MongoDB.Driver;
 using Newtonsoft.Json;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
 using System;
 using System.Collections.Generic;
@@ -12,15 +13,27 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
     public class DataAccessService : IDataAccessService
     {
         readonly MultiTenantDataDbContext db;
-        public DataAccessService(MultiTenantDataDbContext _db)
+        readonly IMetaFieldService metaFieldService;
+        public DataAccessService(
+            MultiTenantDataDbContext _db,
+            IMetaFieldService _metaFieldService
+            )
         {
             db = _db;
+            metaFieldService = _metaFieldService;
         }
 
         public void Add(int tenantId, BsonDocument bsons)
         {
-            bsons.Add(new BsonElement("tenantId", tenantId));
-            db.Add<BsonDocument>(bsons);
+            BsonDocument doc = new BsonDocument();
+            //补充字段及其默认值
+            bsons.AddRange(metaFieldService.GetPresetFieldDic());
+            //存入字段
+            doc.Add(new BsonElement("MetaFields", bsons));
+            //补充字段
+            doc.Add(new BsonElement("_id", Guid.NewGuid().ToString()));
+            doc.Add(new BsonElement("TenantId", tenantId));
+            db.Add<BsonDocument>(doc);
         }
 
         public List<ObjectData> GetObjectDatasByCondition(int tenantId, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize)
