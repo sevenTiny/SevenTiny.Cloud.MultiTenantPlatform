@@ -1,10 +1,12 @@
-﻿using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
+﻿using MongoDB.Bson;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
@@ -17,6 +19,18 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         }
 
         MultiTenantPlatformDbContext dbContext;
+
+        public Dictionary<string, MetaField> GetMetaFieldDicUnDeleted(int metaObjectId)
+        {
+            var metaFields = GetEntitiesUnDeletedByMetaObjectId(metaObjectId);
+            return metaFields.ToDictionary(t => t.Code, t => t);
+        }
+
+        public Dictionary<string, MetaField> GetMetaFieldUpperKeyDicUnDeleted(int metaObjectId)
+        {
+            var metaFields = GetEntitiesUnDeletedByMetaObjectId(metaObjectId);
+            return metaFields.ToDictionary(t => t.Code.ToUpperInvariant(), t => t);
+        }
 
         /// <summary>
         /// 更新对象
@@ -106,9 +120,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         /// 预置字段和数据的字典形式
         /// </summary>
         /// <returns></returns>
-        public Dictionary<string, object> GetPresetFieldDic()
+        public BsonDocument GetPresetFieldBsonElements()
         {
-            return new Dictionary<string, object>
+            return new BsonDocument
             {
                 { "IsDeleted",(int)IsDeleted.UnDeleted },
                 { "CreateBy", -1 },

@@ -58,9 +58,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
                 return View("Add", ResponseModel.Error("编码不能为空", entity));
             }
             //校验code格式
-            if (!entity.Code.IsAlnum(4, 50))
+            if (!entity.Code.IsAlnum(2, 50))
             {
-                return View("Add", ResponseModel.Error("编码不合法，4-50位且只能包含字母和数字（字母开头）", entity));
+                return View("Add", ResponseModel.Error("编码不合法，2-50位且只能包含字母和数字（字母开头）", entity));
             }
 
             //检查编码或名称重复
@@ -97,9 +97,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
                 return View("Update", ResponseModel.Error("MetaField Code 不能为空", entity));
             }
             //校验code格式
-            if (!entity.Code.IsAlnum(4, 50))
+            if (!entity.Code.IsAlnum(2, 50))
             {
-                return View("Update", ResponseModel.Error("编码不合法，4-50位且只能包含字母和数字（字母开头）", entity));
+                return View("Update", ResponseModel.Error("编码不合法，2-50位且只能包含字母和数字（字母开头）", entity));
             }
 
             //检查编码或名称重复

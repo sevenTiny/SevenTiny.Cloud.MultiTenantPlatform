@@ -26,7 +26,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository
         {
             return dbContext.QueryList<TEntity>(t => t.IsDeleted == (int)IsDeleted.UnDeleted && t.MetaObjectId == metaObjectId);
         }
-
+        
         /// <summary>
         /// 检查是否有相同名称的编码或名称
         /// </summary>

@@ -95,7 +95,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                 var json = jObj.ToString();
                 var bson = BsonDocument.Parse(json);
 
-                dataAccessService.Add(0, bson);
+                //add data
+                var addResult = dataAccessService.Add(metaObjectCode, bson);
+                if (!addResult.IsSuccess)
+                    return addResult.ToJsonResultModel();
 
                 return JsonResultModel.Success("add success");
             }

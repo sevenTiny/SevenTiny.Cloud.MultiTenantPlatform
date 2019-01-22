@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SevenTiny.Bantina.Validation;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
@@ -49,6 +50,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             {
                 return View("Add", ResponseModel.Error("MetaObject Code Can Not Be Null！", metaObject));
             }
+            //校验code格式
+            if (!metaObject.Code.IsAlnum(2, 50))
+            {
+                return View("Add", ResponseModel.Error("编码不合法，2-50位且只能包含字母和数字（字母开头）", metaObject));
+            }
 
             var addResult = metaObjectService.AddMetaObject(CurrentApplicationId, CurrentApplicationCode, metaObject);
             if (!addResult.IsSuccess)
@@ -80,6 +86,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             {
                 return View("Update", ResponseModel.Error("MetaObject Code Can Not Be Null！", metaObject));
             }
+            //校验code格式
+            if (!metaObject.Code.IsAlnum(2, 50))
+            {
+                return View("Add", ResponseModel.Error("编码不合法，2-50位且只能包含字母和数字（字母开头）", metaObject));
+            }
+
             if (metaObjectService.ExistSameNameWithOtherIdByApplicationId(CurrentApplicationId, metaObject.Id, metaObject.Name))
             {
                 return View("Update", ResponseModel.Error("MetaObject Name Has Been Exist！", metaObject));
