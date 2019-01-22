@@ -83,19 +83,19 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
          Content-Type: application/json
          * */
         [HttpPost]
-        public IActionResult Post(int tenantId, [FromBody]JObject jObj)
+        public IActionResult Post(string metaObjectCode, [FromBody]JObject jObj)
         {
             try
             {
-                if (tenantId <= 0)
-                    return JsonResultModel.Error($"Parameter invalid:tenantId = {tenantId}");
+                if (string.IsNullOrEmpty(metaObjectCode))
+                    return JsonResultModel.Error($"Parameter invalid:metaObjectCode = null");
                 if (jObj == null)
                     return JsonResultModel.Error($"Parameter invalid:data = null");
 
                 var json = jObj.ToString();
                 var bson = BsonDocument.Parse(json);
 
-                dataAccessService.Add(tenantId, bson);
+                dataAccessService.Add(0, bson);
 
                 return JsonResultModel.Success("add success");
             }

@@ -29,10 +29,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             //补充字段及其默认值
             bsons.AddRange(metaFieldService.GetPresetFieldDic());
             //存入字段
-            doc.Add(new BsonElement("MetaFields", bsons));
+            //doc.Add(new BsonElement("MetaFields", bsons));
+            doc.AddRange(bsons);
             //补充字段
             doc.Add(new BsonElement("_id", Guid.NewGuid().ToString()));
-            doc.Add(new BsonElement("TenantId", tenantId));
+            //doc.Add(new BsonElement("TenantId", tenantId));
             db.Add<BsonDocument>(doc);
         }
 
