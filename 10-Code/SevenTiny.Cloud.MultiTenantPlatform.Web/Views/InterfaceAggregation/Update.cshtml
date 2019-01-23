@@ -34,10 +34,10 @@
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>字段类型：</label>
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>返回值类型：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <span class="select-box">
-                    <select name="interfaceType" class="select" value="@interfaceAggregation.InterfaceType" onchange="fieldTypeSwitch(this)" required>
+                    <select id="interfaceType" name="interfaceType" class="select" value="@interfaceAggregation.InterfaceType" required>
                         @foreach (var item in Enum.GetValues(typeof(InterfaceType)))
                         {
                             var value = (int)item;
@@ -52,7 +52,7 @@
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>字段配置：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <span class="select-box">
-                    <select name="interfaceFieldId" class="select" value="@interfaceAggregation.InterfaceFieldId" onchange="fieldTypeSwitch(this)" required>
+                    <select id="interfaceFieldId" name="interfaceFieldId" class="select" value="@interfaceAggregation.InterfaceFieldId" required>
                         @foreach (var item in interfaceFields)
                         {
                             <option value="@item.Id">@item.Name</option>
@@ -65,7 +65,7 @@
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>搜索条件：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <span class="select-box">
-                    <select name="interfaceSearchConditionId" class="select" value="@interfaceAggregation.InterfaceSearchConditionId" onchange="fieldTypeSwitch(this)" required>
+                    <select id="interfaceSearchConditionId" name="interfaceSearchConditionId" class="select" value="@interfaceAggregation.InterfaceSearchConditionId" required>
                         @foreach (var item in searchConditions)
                         {
                             <option value="@item.Id">@item.Name</option>
@@ -111,6 +111,8 @@
 @await Html.PartialAsync("~/Views/Shared/_FormValidate.cshtml")
 <!--请在下方写此页面业务相关的脚本-->
 <script type="text/javascript">
-
+    $("#interfaceType").val(@interfaceAggregation.InterfaceType);
+    $("#interfaceFieldId").val(@interfaceAggregation.InterfaceFieldId);
+    $("#interfaceSearchConditionId").val(@interfaceAggregation.InterfaceSearchConditionId);
 </script>
 <!--/请在上方写此页面业务相关的脚本-->

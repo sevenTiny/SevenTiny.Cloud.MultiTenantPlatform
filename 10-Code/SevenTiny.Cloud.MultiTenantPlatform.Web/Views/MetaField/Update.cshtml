@@ -53,7 +53,7 @@
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>数据源：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <span class="select-box">
-                    <select name="fieldType" class="select" value="@metaField.FieldType" required>
+                    <select id="dataSourceId" name="dataSourceId" class="select" value="@metaField.DataSourceId" required>
                         <option value="0">一级分类</option>
                         <option value="11">├二级分类</option>
                         <option value="12">├二级分类</option>
@@ -66,7 +66,7 @@
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>是否必填：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <span class="select-box">
-                    <select name="isMust" class="select" value="@metaField.IsMust" required>
+                    <select id="isMust" name="isMust" class="select" value="@metaField.IsMust" required>
                         @foreach (var item in trueFalse)
                         {
                             var value = (int)item;
@@ -112,6 +112,10 @@
 @await Html.PartialAsync("~/Views/Shared/_FormValidate.cshtml")
 <!--请在下方写此页面业务相关的脚本-->
 <script type="text/javascript">
+
+    $("#dataSourceId").val(@metaField.DataSourceId);
+    $("#isMust").val(@metaField.IsMust);
+
     //切换类型
     function fieldTypeSwitch(obj) {
         if ($(obj).val() == 10) {
