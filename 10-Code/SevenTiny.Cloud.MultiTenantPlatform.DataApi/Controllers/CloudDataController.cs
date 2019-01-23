@@ -8,6 +8,9 @@ using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Checker;
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.Enum;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
 {
@@ -19,39 +22,44 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
         public CloudDataController(
             IDataAccessService _dataAccessService,
             IConditionAggregationService _conditionAggregationService,
-            IInterfaceAggregationService _interfaceAggregationService
+            IInterfaceAggregationService _interfaceAggregationService,
+            IMetaObjectService _metaObjectService,
+            IFieldBizDataService _fieldBizDataService
             )
         {
             dataAccessService = _dataAccessService;
             conditionAggregationService = _conditionAggregationService;
             interfaceAggregationService = _interfaceAggregationService;
+            metaObjectService = _metaObjectService;
+            fieldBizDataService = _fieldBizDataService;
         }
 
         readonly IDataAccessService dataAccessService;
         readonly IInterfaceAggregationService interfaceAggregationService;
         readonly IConditionAggregationService conditionAggregationService;
+        readonly IMetaObjectService metaObjectService;
+        readonly IFieldBizDataService fieldBizDataService;
 
         [HttpGet]
-        public IActionResult Get(int tenantId, QueryArgs queryArgs)
+        public IActionResult Get([FromQuery]QueryArgs queryArgs)
         {
             try
             {
-                //1.args check
+                //args check
                 if (queryArgs == null)
                 {
-                    throw new ArgumentNullException("queryArgs can not be null!");
+                    return JsonResultModel.Error($"Parameter invalid:queryArgs = null");
                 }
-                queryArgs.QueryArgsCheck();
 
-                //2.argumentsDic generate
-                Dictionary<string, object> argumentsDic = new Dictionary<string, object>();
-                foreach (var item in Request.Form)
+                var checkResult = queryArgs.QueryArgsCheck();
+
+                if (!checkResult.IsSuccess)
                 {
-                    if (!argumentsDic.ContainsKey(item.Key))
-                    {
-                        argumentsDic.Add(item.Key, item.Value);
-                    }
+                    return checkResult.ToJsonResultModel();
                 }
+
+                //argumentsDic generate
+                Dictionary<string, object> argumentsDic = new Dictionary<string, object>();
                 foreach (var item in Request.Query)
                 {
                     if (!argumentsDic.ContainsKey(item.Key))
@@ -60,14 +68,38 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                     }
                 }
 
-                //3.get filter
-                var interfaceAggregation = interfaceAggregationService.GetByMetaObjectCodeAndInterfaceAggregationCode(queryArgs.metaObjectCode, queryArgs.interfaceCode);
+                //get metaObjectInfo
+                MetaObject metaObject = metaObjectService.GetByCode(queryArgs.metaObjectCode);
+                if (metaObject == null)
+                {
+                    return JsonResultModel.Error($"未能找到对象编码[{queryArgs.metaObjectCode}]对应的对象信息");
+                }
+
+                //get filter
+                var interfaceAggregation = interfaceAggregationService.GetByMetaObjectIdAndInterfaceAggregationCode(metaObject.Id, queryArgs.interfaceCode);
                 var filter = conditionAggregationService.AnalysisConditionToFilterDefinition(interfaceAggregation.InterfaceSearchConditionId, argumentsDic);
 
-                //4.query result
-                object data = dataAccessService.GetObjectDatasByCondition(tenantId, filter, queryArgs.pageIndex, queryArgs.pageSize);
+                switch (EnumsTranslaterUseInProgram.ToInterfaceType(interfaceAggregation.InterfaceType))
+                {
+                    case InterfaceType.CloudSingleObject:
+                        var document = dataAccessService.GetBsonDocumentByCondition(filter);
+                        return JsonResultModel.Success("Get Single Data Success", document);
+                    case InterfaceType.CloudTableList:
+                        var documents = dataAccessService.GetBsonDocumentsByCondition(filter, queryArgs.pageIndex, queryArgs.pageSize);
+                        //转成前端易处理的Table组件
+                        TableListComponent tableListComponent = new TableListComponent();
+                        tableListComponent.BizData = fieldBizDataService.ConvertToDictionaryList(interfaceAggregation.InterfaceFieldId, documents);
+                        return JsonResultModel.Success("Get Data List Success", tableListComponent);
+                    case InterfaceType.CloudCount:
+                        var count = dataAccessService.GetBsonDocumentCountByCondition(filter);
+                        return JsonResultModel.Success("Get Data Count Success", count);
+                    case InterfaceType.EnumeDataSource:
+                        break;
+                    default:
+                        break;
+                }
 
-                return JsonResultModel.Success("get data success", data);
+                return JsonResultModel.Success("Success,No Data");
             }
             catch (ArgumentException argEx)
             {

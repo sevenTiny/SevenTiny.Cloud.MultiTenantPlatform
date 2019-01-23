@@ -56,5 +56,17 @@
                 default: return DataType.Unknown;
             }
         }
+
+        public static InterfaceType ToInterfaceType(int interfaceType)
+        {
+            switch (interfaceType)
+            {
+                case 0: return InterfaceType.CloudSingleObject;
+                case 1: return InterfaceType.CloudTableList;
+                case 2: return InterfaceType.CloudCount;
+                case 3: return InterfaceType.EnumeDataSource;
+                default: return InterfaceType.CloudCount;
+            }
+        }
     }
 }

@@ -320,24 +320,30 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                 //如果来自配置，则直接从配置里面获取到值
                 else
                 {
+                    //校验字段以及转换字段值为目标类型
+                    var convertResult = metaFieldService.CheckAndGetFieldValueByFieldType(routeCondition.FieldId, routeCondition.Value);
+                    if (!convertResult.IsSuccess)
+                    {
+                        throw new ArgumentException("配置的字段值不符合字段的类型");
+                    }
+
                     switch (routeCondition.ConditionType)
                     {
                         case (int)ConditionType.Equal:
-                            return bf.Eq(routeCondition.FieldCode, routeCondition.Value);
+                            return bf.Eq(routeCondition.FieldCode, convertResult.Data);
                         case (int)ConditionType.GreaterThan:
-                            return bf.Gt(routeCondition.FieldCode, routeCondition.Value);
+                            return bf.Gt(routeCondition.FieldCode, convertResult.Data);
                         case (int)ConditionType.GreaterThanEqual:
-                            return bf.Gte(routeCondition.FieldCode, routeCondition.Value);
+                            return bf.Gte(routeCondition.FieldCode, convertResult.Data);
                         case (int)ConditionType.LessThan:
-                            return bf.Lt(routeCondition.FieldCode, routeCondition.Value);
+                            return bf.Lt(routeCondition.FieldCode, convertResult.Data);
                         case (int)ConditionType.LessThanEqual:
-                            return bf.Lte(routeCondition.FieldCode, routeCondition.Value);
+                            return bf.Lte(routeCondition.FieldCode, convertResult.Data);
                         case (int)ConditionType.NotEqual:
-                            return bf.Ne(routeCondition.FieldCode, routeCondition.Value);
+                            return bf.Ne(routeCondition.FieldCode, convertResult.Data);
                         default:
                             return null;
                     }
-
                 }
             }
         }

@@ -79,7 +79,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
         {
             var interfaceField = interfaceFieldService.GetById(id);
             return View(ResponseModel.Success(interfaceField));
-
         }
 
         public IActionResult UpdateLogic(InterfaceField entity)

@@ -67,14 +67,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             return ResultModel.Success();
         }
 
-        public InterfaceAggregation GetByMetaObjectCodeAndInterfaceAggregationCode(string metaObjectCode, string interfaceAggregationCode)
+        public InterfaceAggregation GetByMetaObjectIdAndInterfaceAggregationCode(int metaObjectId, string interfaceAggregationCode)
         {
-            var metaObject = metaObjectService.GetByCode(metaObjectCode);
-            if (metaObject == null)
-            {
-                throw new KeyNotFoundException("该对象编码对应的对象未找到");
-            }
-            var interfaceAggregation = dbContext.QueryOne<InterfaceAggregation>(t => t.MetaObjectId == metaObject.Id && t.Code.Equals(interfaceAggregationCode));
+            var interfaceAggregation = dbContext.QueryOne<InterfaceAggregation>(t => t.MetaObjectId == metaObjectId && t.Code.Equals(interfaceAggregationCode));
             if (interfaceAggregation == null)
             {
                 throw new KeyNotFoundException("该编码对应的接口未找到");

@@ -7,6 +7,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
@@ -87,6 +88,25 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
 
             var bson = db.QueryListBson<BsonDocument>(condition);
             return null;
+        }
+
+        public List<BsonDocument> GetBsonDocumentsByCondition(FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize)
+        {
+            //var bf = Builders<BsonDocument>.Filter;
+            //condition = bf.And(bf.Eq("tenantId", tenantId), condition);
+
+            var bson = db.QueryListBson<BsonDocument>(condition);
+            return bson;
+        }
+
+        public BsonDocument GetBsonDocumentByCondition(FilterDefinition<BsonDocument> condition)
+        {
+            return GetBsonDocumentsByCondition(condition, 1, 1).FirstOrDefault();
+        }
+
+        public int GetBsonDocumentCountByCondition(FilterDefinition<BsonDocument> condition)
+        {
+            return db.QueryCount<BsonDocument>(condition);
         }
 
         public void Insert(ObjectData objectData)

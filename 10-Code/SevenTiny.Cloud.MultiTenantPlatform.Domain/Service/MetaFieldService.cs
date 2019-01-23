@@ -131,5 +131,85 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                 { "ModifyTime", DateTime.Now }
             };
         }
+
+        public ResultModel CheckAndGetFieldValueByFieldType(int fieldId, object value)
+        {
+            MetaField metaField = GetById(fieldId);
+            ResultModel result = new ResultModel();
+            switch (EnumsTranslaterUseInProgram.ToDataType(metaField.FieldType))
+            {
+                case DataType.Boolean:
+                    result.IsSuccess = bool.TryParse(Convert.ToString(value), out bool boolVal);
+                    result.Data = boolVal;
+                    break;
+                case DataType.Number:
+                    result.IsSuccess = int.TryParse(Convert.ToString(value), out int number);
+                    if (number < 0)
+                        result.IsSuccess = false;
+                    result.Data = number;
+                    break;
+                case DataType.Unknown:
+                case DataType.Text:
+                default:
+                    result.IsSuccess = true;
+                    result.Data = Convert.ToString(value);
+                    break;
+                case DataType.StandradDateTime:
+                case DataType.DateTime:
+                    result.IsSuccess = DateTimeOffset.TryParse(Convert.ToString(value), out DateTimeOffset dateTimeOffsetVal);
+                    result.Data = dateTimeOffsetVal;
+                    break;
+                case DataType.StandradDate:
+                case DataType.Date:
+                    result.IsSuccess = DateTime.TryParse(Convert.ToString(value), out DateTime dateTimeVal);
+                    result.Data = dateTimeVal;
+                    break;
+                case DataType.Int:
+                    result.IsSuccess = int.TryParse(Convert.ToString(value), out int intVal);
+                    result.Data = intVal;
+                    break;
+                case DataType.Long:
+                    result.IsSuccess = long.TryParse(Convert.ToString(value), out long longVal);
+                    result.Data = longVal;
+                    break;
+                case DataType.Double:
+                    result.IsSuccess = double.TryParse(Convert.ToString(value), out double doubleVal);
+                    result.Data = doubleVal;
+                    break;
+                case DataType.DataSource:
+                    result.IsSuccess = false;
+                    break;
+            }
+            return result;
+        }
+
+        public List<MetaField> GetByIds(int[] ids)
+        {
+            //Sql直接查询是没有缓存的
+            //StringBuilder builder = new StringBuilder();
+            //builder.Append("SELECT * FROM ");
+            //builder.Append(dbContext.GetTableName<MetaField>());
+            //builder.Append(" WHERE ");
+            //for (int i = 0; i < ids.Length; i++)
+            //{
+            //    if (i == 0)
+            //        builder.Append(" Id=" + ids[i]);
+            //    else
+            //        builder.Append(" OR Id=" + ids[i]);
+            //}
+            //return dbContext.ExecuteQueryListSql<MetaField>(builder.ToString());
+
+            //直接通过id查询的方案，配合二级缓存性能高
+            List<MetaField> metaFields = new List<MetaField>();
+            foreach (var item in ids)
+            {
+                var metaField = GetById(item);
+                if (metaField != null)
+                {
+                    metaFields.Add(metaField);
+                }
+            }
+            return metaFields;
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
+using System;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Models
 {
@@ -9,16 +10,17 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Models
         public int pageIndex { get; set; }
         public int pageSize { get; set; }
 
-        public void QueryArgsCheck()
+        public ResultModel QueryArgsCheck()
         {
             if (string.IsNullOrEmpty(metaObjectCode))
             {
-                throw new ArgumentException("metaObjectName can not be null!");
+                return ResultModel.Error("metaObjectName can not be null!");
             }
             if (string.IsNullOrEmpty(interfaceCode))
             {
-                throw new ArgumentException("interfaceCode can not be null!");
+                return ResultModel.Error("interfaceCode can not be null!");
             }
+            return ResultModel.Success();
         }
     }
 }

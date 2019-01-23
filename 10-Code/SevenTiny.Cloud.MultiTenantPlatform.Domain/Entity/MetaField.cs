@@ -4,6 +4,7 @@ using SevenTiny.Bantina.Bankinate.Attributes;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity
 {
+    [TableCaching]
     public class MetaField : MetaObjectManageInfo
     {
         //=DataType
