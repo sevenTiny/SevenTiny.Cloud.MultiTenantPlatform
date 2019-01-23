@@ -43,6 +43,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         //组织接口搜索条件
         public ResultModel AggregateCondition(int interfaceConditionId, int brotherNodeId, int conditionJointTypeId, int fieldId, int conditionTypeId, string conditionValue, int conditionValueTypeId)
         {
+            //根据传入的字段校验数据
+            if (!metaFieldService.CheckAndGetFieldValueByFieldType(fieldId, conditionValue).IsSuccess)
+                return ResultModel.Error("字段值和字段定义的类型不匹配");
+
             return TransactionHelper.Transaction(() =>
             {
                 int parentId = brotherNodeId;

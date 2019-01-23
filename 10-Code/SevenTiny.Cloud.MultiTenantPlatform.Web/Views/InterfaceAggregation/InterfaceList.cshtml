@@ -13,39 +13,20 @@
         </span>
         <span class="r">共有数据：<strong>@entities?.Count</strong> 条</span>
     </div>
-    <div class="mt-20">
-        <table class="table table-border table-bordered table-bg table-hover table-sort table-responsive">
-            <thead>
-                <tr class="text-c">
-                    <th width="60">名称</th>
-                    <th width="60">编码</th>
-                    <th width="100">接口地址</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in entities)
-                {
-                    <tr class="text-c">
-                        <td><a class="ml-5" href="javascript:alert('弹窗显示配置详情页');" title="@item.Description" style="font-weight:bold;color:dodgerblue" data-toggle="tooltip" data-placement="top">@item.Name</a></td>
-                        <td style="color:#d72323;font-weight:bold">@item.Code</td>
-                        <td style="font-weight:bold">/@metaObjectCode/@item.Code</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+    @foreach (var item in entities.OrderBy(t => t.SortNumber).ToList())
+    {
+        <div class="panel panel-default mt-10">
+            <div class="panel-header" style="background-color:#cbe7fc">@item.Code @item.Name</div>
+            <div class="panel-body pd-20">
+                <div><span>查询接口地址：</span><span>/api/CloudData?metaObjectCode=@metaObjectCode&interfaceCode=@item.Code</span></div>
+            </div>
+        </div>
+    }
 </article>
 
 @await Html.PartialAsync($"~/Views/Shared/_FooterScripts.cshtml")
 @await Html.PartialAsync("~/Views/Shared/_CommonScript.cshtml")
-<script type="text/javascript" src="~/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
-    $('.table-sort').dataTable({
-        "aLengthMenu": [[30, 50, 100, -1], ["30", "50", "100", "All"]],//二组数组，第一组数量，
-        "aaSorting": [],//默认第几个排序
-        "bStateSave": true,//状态保存
-        "aoColumnDefs": [
-        ]
-    });
+
 </script>
 <!--/请在上方写此页面业务相关的脚本-->
