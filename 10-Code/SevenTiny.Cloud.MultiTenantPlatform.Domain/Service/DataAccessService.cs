@@ -38,6 +38,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             if (metaObject == null)
                 return ResultModel.Error("没有找到该实体编码对应的实体信息");
 
+            //错误信息返回值
+            HashSet<string> ErrorInfo = new HashSet<string>();
+
             //获取到字段列表
             var metaFields = metaFieldService.GetMetaFieldUpperKeyDicUnDeleted(metaObject.Id);
             for (int i = bsons.ElementCount - 1; i >= 0; i--)
@@ -51,15 +54,25 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                     //如果大小写不匹配，则都转化成配置的字段Code形式
                     if (!item.Name.Equals(metaFields[upperKey].Code))
                     {
-                        var element = new BsonElement(metaFields[upperKey].Code, item.Value);
                         bsons.RemoveElement(item);
-                        bsons.Add(element);
+                        //检查字段的值是否符合字段类型
+                        var checkResult = metaFieldService.CheckAndGetFieldValueByFieldType(metaFields[upperKey], item.Value);
+                        if (checkResult.IsSuccess)
+                        {
+                            var element = new BsonElement(metaFields[upperKey].Code, BsonValue.Create(checkResult.Data));
+                            bsons.Add(element);
+                        }
+                        else
+                        {
+                            ErrorInfo.Add($"字段[{item.Name}]传递的值[{item.Value}]不符合字段定义的类型");
+                        }
                     }
                 }
                 else
                 {
                     //如果字段不在配置字段中，则不进行添加
                     bsons.RemoveElement(item);
+                    ErrorInfo.Add($"字段[{item.Name}]不属于对象[{metaObject.Code}({metaObject.Name})]定义的字段");
                 }
             }
 
@@ -78,7 +91,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
 
             db.Add(bsons);
 
-            return ResultModel.Success();
+            return ResultModel.Success($"插入成功，日志：{string.Join(",", ErrorInfo)}");
         }
 
         public List<ObjectData> GetObjectDatasByCondition(int tenantId, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize)

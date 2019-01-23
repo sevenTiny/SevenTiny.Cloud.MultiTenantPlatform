@@ -43,9 +43,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         //组织接口搜索条件
         public ResultModel AggregateCondition(int interfaceConditionId, int brotherNodeId, int conditionJointTypeId, int fieldId, int conditionTypeId, string conditionValue, int conditionValueTypeId)
         {
-            //根据传入的字段校验数据
-            if (!metaFieldService.CheckAndGetFieldValueByFieldType(fieldId, conditionValue).IsSuccess)
-                return ResultModel.Error("字段值和字段定义的类型不匹配");
+            //如果不是参数传递值，则根据传入的字段校验数据
+            if (conditionValueTypeId != (int)ConditionValueType.Parameter)
+            {
+                if (!metaFieldService.CheckAndGetFieldValueByFieldType(fieldId, conditionValue).IsSuccess)
+                    return ResultModel.Error("字段值和字段定义的类型不匹配");
+            }
 
             return TransactionHelper.Transaction(() =>
             {
@@ -303,20 +306,25 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                 //如果条件值来自参数,则从参数列表里面获取
                 if (routeCondition.Value.Equals("?"))
                 {
+                    //从参数获取到值
+                    string key = routeCondition.FieldCode;
+                    object argumentValue = conditionValueDic.SafeGet(key.ToUpperInvariant());
+                    //将值转化为字段同类型的类型值
+                    object value = metaFieldService.CheckAndGetFieldValueByFieldType(routeCondition.FieldId, argumentValue).Data;
                     switch (routeCondition.ConditionType)
                     {
                         case (int)ConditionType.Equal:
-                            return bf.Eq(routeCondition.FieldCode, conditionValueDic.SafeGet(routeCondition.FieldCode));
+                            return bf.Eq(key, value);
                         case (int)ConditionType.GreaterThan:
-                            return bf.Gt(routeCondition.FieldCode, conditionValueDic.SafeGet(routeCondition.FieldCode));
+                            return bf.Gt(key, value);
                         case (int)ConditionType.GreaterThanEqual:
-                            return bf.Gte(routeCondition.FieldCode, conditionValueDic.SafeGet(routeCondition.FieldCode));
+                            return bf.Gte(key, value);
                         case (int)ConditionType.LessThan:
-                            return bf.Lt(routeCondition.FieldCode, conditionValueDic.SafeGet(routeCondition.FieldCode));
+                            return bf.Lt(key, value);
                         case (int)ConditionType.LessThanEqual:
-                            return bf.Lte(routeCondition.FieldCode, conditionValueDic.SafeGet(routeCondition.FieldCode));
+                            return bf.Lte(key, value);
                         case (int)ConditionType.NotEqual:
-                            return bf.Ne(routeCondition.FieldCode, conditionValueDic.SafeGet(routeCondition.FieldCode));
+                            return bf.Ne(key, value);
                         default:
                             return null;
                     }
