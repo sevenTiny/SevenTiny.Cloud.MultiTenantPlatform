@@ -15,9 +15,9 @@ using System.Text;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
 {
-    public class ConditionAggregationService : Repository<ConditionAggregation>, IConditionAggregationService
+    public class SearchConditionAggregationService : Repository<SearchConditionAggregation>, ISearchConditionAggregationService
     {
-        public ConditionAggregationService(
+        public SearchConditionAggregationService(
             MultiTenantPlatformDbContext multiTenantPlatformDbContext,
             IMetaFieldService _metaFieldService
             ) : base(multiTenantPlatformDbContext)
@@ -29,14 +29,14 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         readonly MultiTenantPlatformDbContext dbContext;
         readonly IMetaFieldService metaFieldService;
 
-        public List<ConditionAggregation> GetListByInterfaceConditionId(int interfaceSearchConditionId)
+        public List<SearchConditionAggregation> GetListByInterfaceConditionId(int searchConditionId)
         {
-            return dbContext.QueryList<ConditionAggregation>(t => t.InterfaceSearchConditionId == interfaceSearchConditionId);
+            return dbContext.QueryList<SearchConditionAggregation>(t => t.SearchConditionId == searchConditionId);
         }
 
         public ResultModel Delete(int id)
         {
-            dbContext.Delete<ConditionAggregation>(t => t.Id == id);
+            dbContext.Delete<SearchConditionAggregation>(t => t.Id == id);
             return ResultModel.Success();
         }
 
@@ -54,20 +54,20 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                 if (parentId != -1)
                 {
                     //判断是否有树存在
-                    List<ConditionAggregation> conditionListExist = GetListByInterfaceConditionId(interfaceConditionId);
+                    List<SearchConditionAggregation> conditionListExist = GetListByInterfaceConditionId(interfaceConditionId);
                     //查看当前兄弟节点的父节点id
-                    ConditionAggregation brotherCondition = conditionListExist.FirstOrDefault(t => t.Id == brotherNodeId);
+                    SearchConditionAggregation brotherCondition = conditionListExist.FirstOrDefault(t => t.Id == brotherNodeId);
                     parentId = brotherCondition.ParentId;
                     //拿到父节点的信息
-                    ConditionAggregation parentCondition = conditionListExist.FirstOrDefault(t => t.Id == brotherCondition.ParentId);
+                    SearchConditionAggregation parentCondition = conditionListExist.FirstOrDefault(t => t.Id == brotherCondition.ParentId);
                     //如果父节点的连接条件和当前新建的条件一致，则不需要新建条件节点，直接附加在已有的条件下面
                     if (parentCondition == null || parentCondition.ConditionType != conditionJointTypeId)
                     {
                         //先添加一个父节点，然后把兄弟节点的父节点指向新建的父节点
                         string tempKey = DateTime.Now.ToString("yyyyMMddhhmmss");
-                        ConditionAggregation newParentCondition = new ConditionAggregation
+                        SearchConditionAggregation newParentCondition = new SearchConditionAggregation
                         {
-                            InterfaceSearchConditionId = interfaceConditionId,
+                            SearchConditionId = interfaceConditionId,
                             ParentId = conditionListExist.Count > 0 ? parentId : -1,//如果有树，则插入节点的父节点为刚才的兄弟节点的父节点，否则，插入-1作为根节点
                             FieldId = -1,//连接节点没有field
                             FieldCode = "-1",
@@ -79,7 +79,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                         };
                         base.Add(newParentCondition);
                         //查询刚才插入的节点
-                        newParentCondition = dbContext.QueryOne<ConditionAggregation>(t => t.FieldName.Contains(tempKey));
+                        newParentCondition = dbContext.QueryOne<SearchConditionAggregation>(t => t.FieldName.Contains(tempKey));
 
                         //将兄弟节点的父节点指向新插入的节点
                         brotherCondition.ParentId = newParentCondition.Id;
@@ -92,16 +92,16 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                 //检验是否没有条件节点
                 if (parentId == -1)
                 {
-                    if (dbContext.QueryExist<ConditionAggregation>(t => t.Id == parentId))
+                    if (dbContext.QueryExist<SearchConditionAggregation>(t => t.Id == parentId))
                     {
                         return ResultModel.Error("已经存在条件节点，请查证后操作！");
                     }
                 }
                 //新增节点
                 MetaField metaField = metaFieldService.GetById(fieldId);
-                ConditionAggregation newCondition = new ConditionAggregation
+                SearchConditionAggregation newCondition = new SearchConditionAggregation
                 {
-                    InterfaceSearchConditionId = interfaceConditionId,
+                    SearchConditionId = interfaceConditionId,
                     ParentId = parentId,
                     FieldId = fieldId,
                     FieldName = metaField.Name,
@@ -118,17 +118,17 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         }
 
         //删除某个节点
-        public ResultModel DeleteAggregateCondition(int nodeId, int interfaceSearchConditionId)
+        public ResultModel DeleteAggregateCondition(int nodeId, int searchConditionId)
         {
             //将要删除的节点id集合
             List<int> willBeDeleteIds = new List<int>();
 
-            List<ConditionAggregation> allConditions = GetListByInterfaceConditionId(interfaceSearchConditionId);
+            List<SearchConditionAggregation> allConditions = GetListByInterfaceConditionId(searchConditionId);
             if (allConditions == null || !allConditions.Any())
             {
                 return ResultModel.Success("删除成功！");
             }
-            ConditionAggregation conditionAggregation = allConditions.FirstOrDefault(t => t.Id == nodeId);
+            SearchConditionAggregation conditionAggregation = allConditions.FirstOrDefault(t => t.Id == nodeId);
             if (conditionAggregation == null)
             {
                 return ResultModel.Success("删除成功！");
@@ -143,7 +143,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             }
             //如果不是顶级节点，查询所有兄弟节点。
             //如果所有兄弟节点（包含自己）多余两个，则直接删除此节点;
-            List<ConditionAggregation> conditionList = allConditions.Where(t => t.ParentId == parentId).ToList();
+            List<SearchConditionAggregation> conditionList = allConditions.Where(t => t.ParentId == parentId).ToList();
             if (conditionList.Count > 2)
             {
                 DeleteNodeAndChildrenNodes(allConditions, nodeId);
@@ -153,9 +153,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             else if (conditionList.Count == 2)
             {
                 //获取到父节点
-                ConditionAggregation parentNode = allConditions.FirstOrDefault(t => t.Id == parentId);
+                SearchConditionAggregation parentNode = allConditions.FirstOrDefault(t => t.Id == parentId);
                 //找到兄弟节点（同一个父节点，id!=当前节点）
-                ConditionAggregation brotherNode = allConditions.FirstOrDefault(t => t.ParentId == parentId && t.Id != nodeId);
+                SearchConditionAggregation brotherNode = allConditions.FirstOrDefault(t => t.ParentId == parentId && t.Id != nodeId);
                 //将兄弟节点的父节点指向父节点的父节点
                 brotherNode.ParentId = parentNode.ParentId;
                 //更新兄弟节点
@@ -174,10 +174,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             return ResultModel.Success("删除成功！");
 
             //删除节点级所有下级节点
-            void DeleteNodeAndChildrenNodes(List<ConditionAggregation> sourceConditions, int currentNodeId)
+            void DeleteNodeAndChildrenNodes(List<SearchConditionAggregation> sourceConditions, int currentNodeId)
             {
                 FindDeleteNodeAndChildrenNodes(sourceConditions, currentNodeId);
-                Expression<Func<ConditionAggregation, bool>> func = t => t.Id == nodeId;
+                Expression<Func<SearchConditionAggregation, bool>> func = t => t.Id == nodeId;
                 foreach (var item in willBeDeleteIds)
                 {
                     func = func.Or(tt => tt.Id == item);
@@ -186,7 +186,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             }
 
             //遍历整棵树，找到要删除的节点以及下级节点
-            void FindDeleteNodeAndChildrenNodes(List<ConditionAggregation> sourceConditions, int currentNodeId)
+            void FindDeleteNodeAndChildrenNodes(List<SearchConditionAggregation> sourceConditions, int currentNodeId)
             {
                 var children = sourceConditions.Where(t => t.ParentId == currentNodeId).ToList();
                 if (children != null && children.Any())
@@ -203,20 +203,20 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         /// <summary>
         /// 将条件配置解析成mongodb可以执行的条件
         /// </summary>
-        /// <param name="interfaceSearchConditionId">条件id</param>
+        /// <param name="searchConditionId">条件id</param>
         /// <param name="conditionValueDic">从http请求中传递过来的参数值集合</param>
         /// <returns></returns>
-        public FilterDefinition<BsonDocument> AnalysisConditionToFilterDefinition(int interfaceSearchConditionId, Dictionary<string, object> conditionValueDic)
+        public FilterDefinition<BsonDocument> AnalysisConditionToFilterDefinition(int searchConditionId, Dictionary<string, object> conditionValueDic)
         {
             var bf = Builders<BsonDocument>.Filter;
 
             //获取全部条件表达式
-            List<ConditionAggregation> conditions = GetListByInterfaceConditionId(interfaceSearchConditionId);
+            List<SearchConditionAggregation> conditions = GetListByInterfaceConditionId(searchConditionId);
             if (conditions == null || !conditions.Any())
             {
                 return null;
             }
-            ConditionAggregation condition = conditions.FirstOrDefault(t => t.ParentId == -1);
+            SearchConditionAggregation condition = conditions.FirstOrDefault(t => t.ParentId == -1);
             if (condition == null)
             {
                 return null;
@@ -236,7 +236,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             }
 
             //连接条件解析器。如果是连接条件， 则执行下面逻辑将左...右子条件解析
-            FilterDefinition<BsonDocument> ConditionRouter(ConditionAggregation routeCondition)
+            FilterDefinition<BsonDocument> ConditionRouter(SearchConditionAggregation routeCondition)
             {
                 FilterDefinition<BsonDocument> filterDefinition = null;
                 //将子节点全部取出
@@ -298,7 +298,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             }
 
             //条件值解析器
-            FilterDefinition<BsonDocument> ConditionValue(ConditionAggregation routeCondition)
+            FilterDefinition<BsonDocument> ConditionValue(SearchConditionAggregation routeCondition)
             {
                 //如果条件值来自参数,则从参数列表里面获取
                 if (routeCondition.Value.Equals("?"))

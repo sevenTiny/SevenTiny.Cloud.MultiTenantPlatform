@@ -8,26 +8,26 @@ using System.Linq;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 {
-    public class InterfaceSearchConditionController : ControllerBase
+    public class SearchConditionController : ControllerBase
     {
-        private readonly IInterfaceSearchConditionService interfaceSearchConditionService;
+        private readonly ISearchConditionService searchConditionService;
         private readonly IMetaFieldService metaFieldService;
-        readonly IConditionAggregationService conditionAggregationService;
+        readonly ISearchConditionAggregationService conditionAggregationService;
 
-        public InterfaceSearchConditionController(
-            IInterfaceSearchConditionService _interfaceSearchConditionService,
+        public SearchConditionController(
+            ISearchConditionService _searchConditionService,
             IMetaFieldService _metaFieldService,
-            IConditionAggregationService _conditionAggregationService
+            ISearchConditionAggregationService _conditionAggregationService
             )
         {
-            interfaceSearchConditionService = _interfaceSearchConditionService;
+            searchConditionService = _searchConditionService;
             metaFieldService = _metaFieldService;
             conditionAggregationService = _conditionAggregationService;
         }
 
         public IActionResult List()
         {
-            return View(interfaceSearchConditionService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId));
+            return View(searchConditionService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId));
         }
 
         public IActionResult Add()
@@ -35,7 +35,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             return View();
         }
 
-        public IActionResult AddLogic(InterfaceSearchCondition entity)
+        public IActionResult AddLogic(SearchCondition entity)
         {
             if (string.IsNullOrEmpty(entity.Name))
             {
@@ -52,24 +52,24 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             }
 
             //检查编码或名称重复
-            var checkResult = interfaceSearchConditionService.CheckSameCodeOrName(CurrentMetaObjectId, entity);
+            var checkResult = searchConditionService.CheckSameCodeOrName(CurrentMetaObjectId, entity);
             if (!checkResult.IsSuccess)
             {
                 return View("Add", checkResult.ToResponseModel());
             }
 
             entity.MetaObjectId = CurrentMetaObjectId;
-            interfaceSearchConditionService.Add(entity);
+            searchConditionService.Add(entity);
             return RedirectToAction("List");
         }
 
         public IActionResult Update(int id)
         {
-            var entity = interfaceSearchConditionService.GetById(id);
+            var entity = searchConditionService.GetById(id);
             return View(ResponseModel.Success(entity));
         }
 
-        public IActionResult UpdateLogic(InterfaceSearchCondition entity)
+        public IActionResult UpdateLogic(SearchCondition entity)
         {
             if (entity.Id == 0)
             {
@@ -90,28 +90,28 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             }
 
             //检查编码或名称重复
-            var checkResult = interfaceSearchConditionService.CheckSameCodeOrName(CurrentMetaObjectId, entity);
+            var checkResult = searchConditionService.CheckSameCodeOrName(CurrentMetaObjectId, entity);
             if (!checkResult.IsSuccess)
             {
                 return View("Update", checkResult.ToResponseModel());
             }
 
             //更新操作
-            interfaceSearchConditionService.Update(entity);
+            searchConditionService.Update(entity);
 
             return RedirectToAction("List");
         }
 
         public IActionResult Delete(int id)
         {
-            return interfaceSearchConditionService.Delete(id).ToJsonResultModel();
+            return searchConditionService.Delete(id).ToJsonResultModel();
         }
 
         public IActionResult AggregationCondition(int id)
         {
             ViewData["AggregationConditions"] = conditionAggregationService.GetListByInterfaceConditionId(id);
             ViewData["MetaFields"] = metaFieldService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
-            ViewData["InterfaceSearchConditionId"] = id;
+            ViewData["searchConditionId"] = id;
             return View();
         }
 
@@ -137,32 +137,32 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
         /// 删除组织条件树
         /// </summary>
         /// <param name="id">节点id</param>
-        /// <param name="interfaceSearchConditionId">搜索条件id</param>
+        /// <param name="searchConditionId">搜索条件id</param>
         /// <returns></returns>
-        public IActionResult AggregateConditionDeleteLogic(int id, int interfaceSearchConditionId)
+        public IActionResult AggregateConditionDeleteLogic(int id, int searchConditionId)
         {
             //将要删除的节点id集合
-            return conditionAggregationService.DeleteAggregateCondition(id, interfaceSearchConditionId).ToJsonResultModel();
+            return conditionAggregationService.DeleteAggregateCondition(id, searchConditionId).ToJsonResultModel();
         }
 
         [HttpGet]
         public IActionResult AggregateConditionTreeView(int id)
         {
-            List<ConditionAggregation> conditions = conditionAggregationService.GetListByInterfaceConditionId(id);
+            List<SearchConditionAggregation> conditions = conditionAggregationService.GetListByInterfaceConditionId(id);
 
-            ConditionAggregation condition = conditions?.FirstOrDefault(t => t.ParentId == -1);
+            SearchConditionAggregation condition = conditions?.FirstOrDefault(t => t.ParentId == -1);
             if (condition != null)
             {
                 condition.Children = GetTree(conditions, condition.Id);
             }
 
             //Tree Search
-            List<ConditionAggregation> GetTree(List<ConditionAggregation> source, int parentId)
+            List<SearchConditionAggregation> GetTree(List<SearchConditionAggregation> source, int parentId)
             {
                 var childs = source.Where(t => t.ParentId == parentId).ToList();
                 if (childs == null)
                 {
-                    return new List<ConditionAggregation>();
+                    return new List<SearchConditionAggregation>();
                 }
                 else
                 {
@@ -173,11 +173,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 
             if (condition != null)
             {
-                return JsonResultModel.Success("构造树成功！", new List<ConditionAggregation> { condition });
+                return JsonResultModel.Success("构造树成功！", new List<SearchConditionAggregation> { condition });
             }
             else
             {
-                return JsonResultModel.Success("构造树成功！", new List<ConditionAggregation>());
+                return JsonResultModel.Success("构造树成功！", new List<SearchConditionAggregation>());
             }
         }
     }

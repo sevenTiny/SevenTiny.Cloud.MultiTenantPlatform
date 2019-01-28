@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
 
     List<InterfaceField> interfaceFields = ViewData["InterfaceFields"] as List<InterfaceField> ?? new List<InterfaceField>();
-    List<InterfaceSearchCondition> searchConditions = ViewData["SearchConditions"] as List<InterfaceSearchCondition> ?? new List<InterfaceSearchCondition>();
+    List<SearchCondition> searchConditions = ViewData["SearchConditions"] as List<SearchCondition> ?? new List<SearchCondition>();
 
     ResponseModel result = Model as ResponseModel ?? new ResponseModel();
     InterfaceAggregation interfaceAggregation = result.Data as InterfaceAggregation ?? new InterfaceAggregation();
@@ -62,7 +62,7 @@
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>搜索条件：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <span class="select-box">
-                    <select name="interfaceSearchConditionId" class="select" value="@interfaceAggregation.InterfaceSearchConditionId" onchange="fieldTypeSwitch(this)" required>
+                    <select name="searchConditionId" class="select" value="@interfaceAggregation.SearchConditionId" onchange="fieldTypeSwitch(this)" required>
                         @foreach (var item in searchConditions)
                         {
                             <option value="@item.Id">@item.Name</option>

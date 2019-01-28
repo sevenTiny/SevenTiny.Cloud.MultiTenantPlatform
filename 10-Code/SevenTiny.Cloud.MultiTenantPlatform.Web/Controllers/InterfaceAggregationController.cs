@@ -13,17 +13,17 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
     {
         private readonly IInterfaceAggregationService interfaceAggregationService;
         private readonly IInterfaceFieldService interfaceFieldService;
-        private readonly IInterfaceSearchConditionService interfaceSearchConditionService;
+        private readonly ISearchConditionService searchConditionService;
 
         public InterfaceAggregationController(
             IInterfaceAggregationService _interfaceAggregationService,
             IInterfaceFieldService _interfaceFieldService,
-            IInterfaceSearchConditionService _interfaceSearchConditionService
+            ISearchConditionService _searchConditionService
             )
         {
             this.interfaceAggregationService = _interfaceAggregationService;
             this.interfaceFieldService = _interfaceFieldService;
-            this.interfaceSearchConditionService = _interfaceSearchConditionService;
+            this.searchConditionService = _searchConditionService;
         }
 
         public IActionResult List()
@@ -48,14 +48,14 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
         public IActionResult Add()
         {
             ViewData["InterfaceFields"] = interfaceFieldService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
-            ViewData["SearchConditions"] = interfaceSearchConditionService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
+            ViewData["SearchConditions"] = searchConditionService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
             return View();
         }
 
         public IActionResult AddLogic(InterfaceAggregation entity)
         {
             ViewData["InterfaceFields"] = interfaceFieldService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
-            ViewData["SearchConditions"] = interfaceSearchConditionService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
+            ViewData["SearchConditions"] = searchConditionService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
 
             if (string.IsNullOrEmpty(entity.Name))
             {
@@ -83,7 +83,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             {
                 return View("Add", ResponseModel.Error("接口字段不能为空", entity));
             }
-            if (entity.InterfaceSearchConditionId == default(int))
+            if (entity.SearchConditionId == default(int))
             {
                 return View("Add", ResponseModel.Error("条件不能为空", entity));
             }
@@ -97,7 +97,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
         public IActionResult Update(int id)
         {
             ViewData["InterfaceFields"] = interfaceFieldService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
-            ViewData["SearchConditions"] = interfaceSearchConditionService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
+            ViewData["SearchConditions"] = searchConditionService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
 
             var metaObject = interfaceAggregationService.GetById(id);
             return View(ResponseModel.Success(metaObject));
@@ -106,7 +106,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
         public IActionResult UpdateLogic(InterfaceAggregation entity)
         {
             ViewData["InterfaceFields"] = interfaceFieldService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
-            ViewData["SearchConditions"] = interfaceSearchConditionService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
+            ViewData["SearchConditions"] = searchConditionService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
 
             if (entity.Id == 0)
             {
@@ -138,7 +138,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             {
                 return View("Add", ResponseModel.Error("接口字段不能为空", entity));
             }
-            if (entity.InterfaceSearchConditionId == default(int))
+            if (entity.SearchConditionId == default(int))
             {
                 return View("Add", ResponseModel.Error("条件不能为空", entity));
             }

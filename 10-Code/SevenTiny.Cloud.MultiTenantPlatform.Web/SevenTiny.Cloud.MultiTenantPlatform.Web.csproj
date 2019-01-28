@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="Views\InterfaceSearchCondition\DeleteList.cshtml" />
+    <Content Remove="Views\SearchCondition\DeleteList.cshtml" />
   </ItemGroup>
 
   <ItemGroup>

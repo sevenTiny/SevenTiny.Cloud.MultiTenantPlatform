@@ -4,9 +4,9 @@
 @{
     ViewData["Title"] = "AggregateCondition";
     Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
-    List<ConditionAggregation> entities = ViewData["AggregationConditions"] as List<ConditionAggregation> ?? new List<ConditionAggregation>();
+    List<SearchConditionAggregation> entities = ViewData["AggregationConditions"] as List<SearchConditionAggregation> ?? new List<SearchConditionAggregation>();
     List<MetaField> metafields = ViewData["MetaFields"] as List<MetaField> ?? new List<MetaField>();
-    int interfaceSearchConditionId = Convert.ToInt32(ViewData["InterfaceSearchConditionId"]);
+    int searchConditionId = Convert.ToInt32(ViewData["SearchConditionId"]);
 }
 <link href="~/css/jqueryTree.css" rel="stylesheet" />
 
@@ -162,7 +162,7 @@
         //获取树
         $.ajax({
             type: 'GET',
-            url: '/InterfaceSearchCondition/AggregateConditionTreeView/' + @interfaceSearchConditionId,
+            url: '/SearchCondition/AggregateConditionTreeView/' + @searchConditionId,
             dataType: 'json',
             data: {},
             success: function (data) {
@@ -229,7 +229,7 @@
             //add
             $.ajax({
                 type: 'POST',
-                url: '/InterfaceSearchCondition/AggregateConditionAddLogic/' + @interfaceSearchConditionId,
+                url: '/SearchCondition/AggregateConditionAddLogic/' + @searchConditionId,
                 dataType: 'json',
                 data: {
                     "brotherNodeId": $('#brotherNodeId').val(),
@@ -243,7 +243,7 @@
                     layer.msg(data.msg, { icon: 1, time: 1000 });
                     if (data.success) {
                         setTimeout(function () {
-                            window.location = '/InterfaceSearchCondition/AggregationCondition/'+@interfaceSearchConditionId;
+                            window.location = '/SearchCondition/AggregationCondition/'+@searchConditionId;
                          }, 1000);
                     }
                     lock = false;
@@ -270,13 +270,13 @@
                 lock = true;
                 $.ajax({
                     type: 'POST',
-                    url: '/InterfaceSearchCondition/AggregateConditionDeleteLogic/' + nodeId + '?interfaceSearchConditionId=' +@interfaceSearchConditionId,
+                    url: '/SearchCondition/AggregateConditionDeleteLogic/' + nodeId + '?searchConditionId=' +@searchConditionId,
                     dataType: 'json',
                     success: function (data) {
                         layer.msg(data.msg, { icon: 1, time: 1000 });
                         if (data.success) {
                             setTimeout(function () {
-                                window.location = '/InterfaceSearchCondition/AggregationCondition/' +@interfaceSearchConditionId;
+                                window.location = '/SearchCondition/AggregationCondition/' +@searchConditionId;
                             }, 1000);
                         }
                         lock = false;

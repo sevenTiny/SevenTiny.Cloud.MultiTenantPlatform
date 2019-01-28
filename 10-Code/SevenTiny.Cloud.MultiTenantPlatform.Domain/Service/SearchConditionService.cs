@@ -8,9 +8,9 @@ using System.Text;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
 {
-    public class InterfaceSearchConditionService : MetaObjectManageRepository<InterfaceSearchCondition>, IInterfaceSearchConditionService
+    public class SearchConditionService : MetaObjectManageRepository<SearchCondition>, ISearchConditionService
     {
-        public InterfaceSearchConditionService(
+        public SearchConditionService(
             MultiTenantPlatformDbContext multiTenantPlatformDbContext
             ) : base(multiTenantPlatformDbContext)
         {
@@ -23,16 +23,16 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         /// 更新对象
         /// </summary>
         /// <param name="metaField"></param>
-        public new ResultModel Update(InterfaceSearchCondition interfaceSearchCondition)
+        public new ResultModel Update(SearchCondition searchCondition)
         {
-            InterfaceSearchCondition myfield = GetById(interfaceSearchCondition.Id);
+            SearchCondition myfield = GetById(searchCondition.Id);
             if (myfield != null)
             {
                 //编码不允许修改
-                myfield.Name = interfaceSearchCondition.Name;
-                myfield.Group = interfaceSearchCondition.Group;
-                myfield.SortNumber = interfaceSearchCondition.SortNumber;
-                myfield.Description = interfaceSearchCondition.Description;
+                myfield.Name = searchCondition.Name;
+                myfield.Group = searchCondition.Group;
+                myfield.SortNumber = searchCondition.SortNumber;
+                myfield.Description = searchCondition.Description;
                 myfield.ModifyBy = -1;
                 myfield.ModifyTime = DateTime.Now;
             }

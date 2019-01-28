@@ -7,19 +7,19 @@ using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract
 {
-    public interface IConditionAggregationService : IRepository<ConditionAggregation>
+    public interface ISearchConditionAggregationService : IRepository<SearchConditionAggregation>
     {
         ResultModel Delete(int id);
-        List<ConditionAggregation> GetListByInterfaceConditionId(int interfaceSearchConditionId);
+        List<SearchConditionAggregation> GetListByInterfaceConditionId(int searchConditionId);
         ResultModel AggregateCondition(int interfaceConditionId, int brotherNodeId, int conditionJointTypeId, int fieldId, int conditionTypeId, string conditionValue, int conditionValueTypeId);
 
-        ResultModel DeleteAggregateCondition(int nodeId, int interfaceSearchConditionId);
+        ResultModel DeleteAggregateCondition(int nodeId, int searchConditionId);
         /// <summary>
         /// 将条件配置解析成mongodb可以执行的条件
         /// </summary>
-        /// <param name="interfaceSearchConditionId">条件id</param>
+        /// <param name="searchConditionId">条件id</param>
         /// <param name="conditionValueDic">从http请求中传递过来的参数值集合</param>
         /// <returns></returns>
-        FilterDefinition<BsonDocument> AnalysisConditionToFilterDefinition(int interfaceSearchConditionId, Dictionary<string, object> conditionValueDic);
+        FilterDefinition<BsonDocument> AnalysisConditionToFilterDefinition(int searchConditionId, Dictionary<string, object> conditionValueDic);
     }
 }

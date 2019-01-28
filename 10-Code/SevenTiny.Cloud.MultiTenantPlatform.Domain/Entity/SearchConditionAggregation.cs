@@ -1,6 +1,5 @@
-﻿using SevenTiny.Bantina.Bankinate;
+﻿using SevenTiny.Bantina.Bankinate.Attributes;
 using System.Collections.Generic;
-using SevenTiny.Bantina.Bankinate.Attributes;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity
 {
@@ -8,7 +7,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity
     /// 条件字段
     /// </summary>
     [Table]
-    public class ConditionAggregation
+    public class SearchConditionAggregation
     {
         [Key]
         [AutoIncrease]
@@ -22,7 +21,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity
         /// 标识是属于哪个Condition
         /// </summary>
         [Column]
-        public int InterfaceSearchConditionId { get; set; }
+        public int SearchConditionId { get; set; }
         [Column]
         public int ParentId { get; set; }
         [Column]
@@ -38,6 +37,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity
         public string Value { get; set; }
         [Column]
         public int ValueType { get; set; }
-        public List<ConditionAggregation> Children { get; set; }
+        public List<SearchConditionAggregation> Children { get; set; }
     }
 }

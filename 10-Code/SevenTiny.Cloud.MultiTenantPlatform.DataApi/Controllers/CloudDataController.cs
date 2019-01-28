@@ -21,7 +21,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
     {
         public CloudDataController(
             IDataAccessService _dataAccessService,
-            IConditionAggregationService _conditionAggregationService,
+            ISearchConditionAggregationService _conditionAggregationService,
             IInterfaceAggregationService _interfaceAggregationService,
             IMetaObjectService _metaObjectService,
             IFieldBizDataService _fieldBizDataService
@@ -36,7 +36,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
 
         readonly IDataAccessService dataAccessService;
         readonly IInterfaceAggregationService interfaceAggregationService;
-        readonly IConditionAggregationService conditionAggregationService;
+        readonly ISearchConditionAggregationService conditionAggregationService;
         readonly IMetaObjectService metaObjectService;
         readonly IFieldBizDataService fieldBizDataService;
 
@@ -77,7 +77,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
 
                 //get filter
                 var interfaceAggregation = interfaceAggregationService.GetByMetaObjectIdAndInterfaceAggregationCode(metaObject.Id, queryArgs.interfaceCode);
-                var filter = conditionAggregationService.AnalysisConditionToFilterDefinition(interfaceAggregation.InterfaceSearchConditionId, argumentsDic);
+                var filter = conditionAggregationService.AnalysisConditionToFilterDefinition(interfaceAggregation.SearchConditionId, argumentsDic);
 
                 switch (EnumsTranslaterUseInProgram.ToInterfaceType(interfaceAggregation.InterfaceType))
                 {

@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
 
     ResponseModel result = Model as ResponseModel ?? new ResponseModel();
-    InterfaceSearchCondition interfaceSearchCondition = result.Data as InterfaceSearchCondition ?? new InterfaceSearchCondition();
+    SearchCondition searchCondition = result.Data as SearchCondition ?? new SearchCondition();
 }
 
 @{
@@ -14,36 +14,36 @@
 @await Html.PartialAsync("~/Views/Shared/PartialNav.cshtml")
 
 <article class="page-container">
-    <form class="form form-horizontal validate" id="form-article-add" method="post" action="/InterfaceSearchCondition/UpdateLogic">
-        <input type="text" class="input-text" value="@interfaceSearchCondition.Id" name="id" hidden>
+    <form class="form form-horizontal validate" id="form-article-add" method="post" action="/SearchCondition/UpdateLogic">
+        <input type="text" class="input-text" value="@searchCondition.Id" name="id" hidden>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>名称：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="@interfaceSearchCondition.Name" name="name" required minLength="2" maxlength="50">
+                <input type="text" class="input-text" value="@searchCondition.Name" name="name" required minLength="2" maxlength="50">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>编码：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" style="background-color:#e8e8e8;" value="@interfaceSearchCondition.Code" name="code" readonly="readonly" required minLength="2" maxlength="50">
+                <input type="text" class="input-text" style="background-color:#e8e8e8;" value="@searchCondition.Code" name="code" readonly="readonly" required minLength="2" maxlength="50">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">分组：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="@interfaceSearchCondition.Group" name="group">
+                <input type="text" class="input-text" value="@searchCondition.Group" name="group">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">排序值：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="@interfaceSearchCondition.SortNumber" name="sortNumber">
+                <input type="text" class="input-text" value="@searchCondition.SortNumber" name="sortNumber">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">描述：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <textarea name="description" class="textarea ignore" placeholder="说点什么...">@interfaceSearchCondition.Description</textarea>
+                <textarea name="description" class="textarea ignore" placeholder="说点什么...">@searchCondition.Description</textarea>
             </div>
         </div>
         <div class="row cl">
