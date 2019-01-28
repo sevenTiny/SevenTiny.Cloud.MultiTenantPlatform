@@ -64,7 +64,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                 {
                     if (!argumentsDic.ContainsKey(item.Key))
                     {
-                        argumentsDic.Add(item.Key, item.Value);
+                        argumentsDic.Add(item.Key.ToUpperInvariant(), item.Value);
                     }
                 }
 
@@ -129,10 +129,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
 
                 //add data
                 var addResult = dataAccessService.Add(metaObjectCode, bson);
-                if (!addResult.IsSuccess)
-                    return addResult.ToJsonResultModel();
 
-                return JsonResultModel.Success("add success");
+                return addResult.ToJsonResultModel();
             }
             catch (Exception ex)
             {

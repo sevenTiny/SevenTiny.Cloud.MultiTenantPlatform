@@ -135,6 +135,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         public ResultModel CheckAndGetFieldValueByFieldType(int fieldId, object value)
         {
             MetaField metaField = GetById(fieldId);
+            return CheckAndGetFieldValueByFieldType(metaField, value);
+        }
+
+        public ResultModel CheckAndGetFieldValueByFieldType(MetaField metaField, object value)
+        {
             ResultModel result = new ResultModel();
             switch (EnumsTranslaterUseInProgram.ToDataType(metaField.FieldType))
             {

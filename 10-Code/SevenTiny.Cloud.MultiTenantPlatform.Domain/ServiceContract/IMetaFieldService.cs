@@ -40,6 +40,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract
         /// <param name="value"></param>
         /// <returns></returns>
         ResultModel CheckAndGetFieldValueByFieldType(int fieldId, object value);
+        ResultModel CheckAndGetFieldValueByFieldType(MetaField metaField, object value);
         /// <summary>
         /// 获取字段列表集合通过字段id集合
         /// </summary>

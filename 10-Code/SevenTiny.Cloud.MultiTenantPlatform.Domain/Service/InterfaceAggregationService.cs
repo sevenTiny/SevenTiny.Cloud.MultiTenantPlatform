@@ -53,8 +53,14 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                 var interfaceField = interfaceFieldService.GetById(interfaceAggregation.InterfaceFieldId);
                 var searchCondition = searchConditionService.GetById(interfaceAggregation.SearchConditionId);
 
+                myEntity.InterfaceFieldId = interfaceAggregation.InterfaceFieldId;
                 myEntity.InterfaceFieldName = interfaceField.Name;
-                myEntity.SearchConditionName = searchCondition.Name;
+
+                myEntity.InterfaceSearchConditionId = interfaceAggregation.InterfaceSearchConditionId;
+                myEntity.InterfaceSearchConditionName = searchCondition.Name;
+
+                myEntity.InterfaceType = interfaceAggregation.InterfaceType;
+
                 //编码不允许修改
                 myEntity.Name = interfaceAggregation.Name;
                 myEntity.Group = interfaceAggregation.Group;
