@@ -56,8 +56,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                 myEntity.InterfaceFieldId = interfaceAggregation.InterfaceFieldId;
                 myEntity.InterfaceFieldName = interfaceField.Name;
 
-                myEntity.InterfaceSearchConditionId = interfaceAggregation.InterfaceSearchConditionId;
-                myEntity.InterfaceSearchConditionName = searchCondition.Name;
+                myEntity.SearchConditionId = interfaceAggregation.SearchConditionId;
+                myEntity.SearchConditionName = searchCondition.Name;
 
                 myEntity.InterfaceType = interfaceAggregation.InterfaceType;
 
