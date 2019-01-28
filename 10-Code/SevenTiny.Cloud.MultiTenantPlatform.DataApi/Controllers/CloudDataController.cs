@@ -1,16 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using Newtonsoft.Json;
-using MongoDB.Bson.Serialization;
-using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
+using Newtonsoft.Json.Linq;
 using SevenTiny.Cloud.MultiTenantPlatform.DataApi.Models;
-using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Checker;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.Enum;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
-using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
-using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
-using SevenTiny.Cloud.MultiTenantPlatform.Domain.Enum;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
 {
@@ -23,21 +20,18 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
             IDataAccessService _dataAccessService,
             ISearchConditionAggregationService _conditionAggregationService,
             IInterfaceAggregationService _interfaceAggregationService,
-            IMetaObjectService _metaObjectService,
             IFieldBizDataService _fieldBizDataService
             )
         {
             dataAccessService = _dataAccessService;
             conditionAggregationService = _conditionAggregationService;
             interfaceAggregationService = _interfaceAggregationService;
-            metaObjectService = _metaObjectService;
             fieldBizDataService = _fieldBizDataService;
         }
 
         readonly IDataAccessService dataAccessService;
         readonly IInterfaceAggregationService interfaceAggregationService;
         readonly ISearchConditionAggregationService conditionAggregationService;
-        readonly IMetaObjectService metaObjectService;
         readonly IFieldBizDataService fieldBizDataService;
 
         [HttpGet]
@@ -68,15 +62,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                     }
                 }
 
-                //get metaObjectInfo
-                MetaObject metaObject = metaObjectService.GetByCode(queryArgs.metaObjectCode);
-                if (metaObject == null)
-                {
-                    return JsonResultModel.Error($"未能找到对象编码[{queryArgs.metaObjectCode}]对应的对象信息");
-                }
-
                 //get filter
-                var interfaceAggregation = interfaceAggregationService.GetByMetaObjectIdAndInterfaceAggregationCode(metaObject.Id, queryArgs.interfaceCode);
+                var interfaceAggregation = interfaceAggregationService.GetByMetaObjectIdAndInterfaceAggregationCode(queryArgs.interfaceCode);
+                if (interfaceAggregation == null)
+                {
+                    return JsonResultModel.Error($"未能找到接口编码为[{queryArgs.interfaceCode}]对应的接口信息");
+                }
                 var filter = conditionAggregationService.AnalysisConditionToFilterDefinition(interfaceAggregation.SearchConditionId, argumentsDic);
 
                 switch (EnumsTranslaterUseInProgram.ToInterfaceType(interfaceAggregation.InterfaceType))

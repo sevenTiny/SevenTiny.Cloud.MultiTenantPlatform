@@ -14,7 +14,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 {
     public class FieldListController : ControllerBase
     {
-        readonly IFieldListService interfaceFieldService;
+        readonly IFieldListService fieldListService;
         readonly IMetaFieldService metaFieldService;
         readonly IInterfaceAggregationService interfaceAggregationService;
         readonly IFieldListAggregationService fieldAggregationService;
@@ -26,7 +26,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             IFieldListAggregationService _fieldAggregationService
             )
         {
-            interfaceFieldService = _interfaceFieldService;
+            fieldListService = _interfaceFieldService;
             metaFieldService = _metaFieldService;
             interfaceAggregationService = _interfaceAggregationService;
             fieldAggregationService = _fieldAggregationService;
@@ -34,12 +34,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 
         public IActionResult List()
         {
-            return View(interfaceFieldService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId));
+            return View(fieldListService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId));
         }
 
         public IActionResult DeleteList()
         {
-            return View(interfaceFieldService.GetEntitiesDeletedByMetaObjectId(CurrentMetaObjectId));
+            return View(fieldListService.GetEntitiesDeletedByMetaObjectId(CurrentMetaObjectId));
         }
 
         public IActionResult Add()
@@ -64,20 +64,22 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             }
 
             //检查编码或名称重复
-            var checkResult = interfaceFieldService.CheckSameCodeOrName(CurrentMetaObjectId, entity);
+            var checkResult = fieldListService.CheckSameCodeOrName(CurrentMetaObjectId, entity);
             if (!checkResult.IsSuccess)
             {
                 return View("Add", checkResult.ToResponseModel());
             }
 
             entity.MetaObjectId = CurrentMetaObjectId;
-            interfaceFieldService.Add(entity);
+            //组合编码
+            entity.Code = $"{CurrentMetaObjectCode}.FieldList.{entity.Code}";
+            fieldListService.Add(entity);
             return RedirectToAction("List");
         }
 
         public IActionResult Update(int id)
         {
-            var interfaceField = interfaceFieldService.GetById(id);
+            var interfaceField = fieldListService.GetById(id);
             return View(ResponseModel.Success(interfaceField));
         }
 
@@ -102,33 +104,33 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             }
 
             //检查编码或名称重复
-            var checkResult = interfaceFieldService.CheckSameCodeOrName(CurrentMetaObjectId, entity);
+            var checkResult = fieldListService.CheckSameCodeOrName(CurrentMetaObjectId, entity);
             if (!checkResult.IsSuccess)
             {
                 return View("Update", checkResult.ToResponseModel());
             }
 
             //更新操作
-            interfaceFieldService.Update(entity);
+            fieldListService.Update(entity);
 
             return RedirectToAction("List");
         }
 
         public IActionResult Delete(int id)
         {
-            interfaceFieldService.Delete(id);
+            fieldListService.Delete(id);
             return JsonResultModel.Success("删除成功");
         }
 
         public IActionResult LogicDelete(int id)
         {
-            interfaceFieldService.LogicDelete(id);
+            fieldListService.LogicDelete(id);
             return JsonResultModel.Success("删除成功");
         }
 
         public IActionResult Recover(int id)
         {
-            interfaceFieldService.Recover(id);
+            fieldListService.Recover(id);
             return JsonResultModel.Success("恢复成功");
         }
 

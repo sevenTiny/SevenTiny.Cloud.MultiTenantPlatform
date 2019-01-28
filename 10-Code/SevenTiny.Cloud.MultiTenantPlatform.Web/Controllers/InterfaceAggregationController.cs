@@ -89,6 +89,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             }
 
             entity.MetaObjectId = CurrentMetaObjectId;
+            //组合编码
+            entity.Code = $"{CurrentMetaObjectCode}.Interface.{entity.Code}";
             interfaceAggregationService.Add(entity);
 
             return RedirectToAction("List");
