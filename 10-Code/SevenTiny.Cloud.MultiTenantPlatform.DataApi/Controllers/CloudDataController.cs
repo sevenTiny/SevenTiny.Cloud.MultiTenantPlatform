@@ -88,7 +88,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                         var documents = dataAccessService.GetBsonDocumentsByCondition(filter, queryArgs.pageIndex, queryArgs.pageSize);
                         //转成前端易处理的Table组件
                         TableListComponent tableListComponent = new TableListComponent();
-                        tableListComponent.BizData = fieldBizDataService.ConvertToDictionaryList(interfaceAggregation.InterfaceFieldId, documents);
+                        tableListComponent.BizData = fieldBizDataService.ConvertToDictionaryList(interfaceAggregation.FieldListId, documents);
                         return JsonResultModel.Success("Get Data List Success", tableListComponent);
                     case InterfaceType.CloudCount:
                         var count = dataAccessService.GetBsonDocumentCountByCondition(filter);

@@ -12,18 +12,18 @@ using System.Linq;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 {
-    public class InterfaceFieldController : ControllerBase
+    public class FieldListController : ControllerBase
     {
-        readonly IInterfaceFieldService interfaceFieldService;
+        readonly IFieldListService interfaceFieldService;
         readonly IMetaFieldService metaFieldService;
         readonly IInterfaceAggregationService interfaceAggregationService;
-        readonly IFieldAggregationService fieldAggregationService;
+        readonly IFieldListAggregationService fieldAggregationService;
 
-        public InterfaceFieldController(
-            IInterfaceFieldService _interfaceFieldService,
+        public FieldListController(
+            IFieldListService _interfaceFieldService,
             IMetaFieldService _metaFieldService,
             IInterfaceAggregationService _interfaceAggregationService,
-            IFieldAggregationService _fieldAggregationService
+            IFieldListAggregationService _fieldAggregationService
             )
         {
             interfaceFieldService = _interfaceFieldService;
@@ -47,7 +47,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             return View();
         }
 
-        public IActionResult AddLogic(InterfaceField entity)
+        public IActionResult AddLogic(FieldList entity)
         {
             if (string.IsNullOrEmpty(entity.Name))
             {
@@ -81,7 +81,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             return View(ResponseModel.Success(interfaceField));
         }
 
-        public IActionResult UpdateLogic(InterfaceField entity)
+        public IActionResult UpdateLogic(FieldList entity)
         {
             if (entity.Id == 0)
             {
@@ -140,7 +140,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
         public IActionResult AggregateField(int id)
         {
             //获取组织字段里面本字段配置下的所有字段
-            var aggregateMetaFields = fieldAggregationService.GetByInterfaceFieldId(id)?.Select(t => t.MetaFieldId)?.ToList() ?? new List<int>();
+            var aggregateMetaFields = fieldAggregationService.GetByFieldListId(id)?.Select(t => t.MetaFieldId)?.ToList() ?? new List<int>();
             //获取到本对象的所有字段
             var metaFields = metaFieldService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
             //过滤出已配置过的字段
@@ -154,7 +154,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 
             ViewData["AggregateFields"] = aggregateFields;
             ViewData["MetaFields"] = waitingForSelection;
-            ViewData["InterfaceFieldId"] = id;
+            ViewData["FieldListId"] = id;
             return View();
         }
 
@@ -165,18 +165,18 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
         /// <returns></returns>
         public IActionResult AggregateFieldAddLogic(int id)
         {
-            FieldAggregation fieldAggregation = new FieldAggregation { InterfaceFieldId = id };
+            FieldListAggregation fieldAggregation = new FieldListAggregation { FieldListId = id };
             string metaFieldIdsString = Request.Form["metaFieldIds"];
             //get metafield ids
             int[] metaFieldIds = metaFieldIdsString.Split(',').Select(t => Convert.ToInt32(t)).ToArray();
-            int[] fieldAggregationIds = fieldAggregationService.GetByInterfaceFieldId(id)?.Select(t => t.MetaFieldId)?.ToArray() ?? new int[0];
+            int[] fieldAggregationIds = fieldAggregationService.GetByFieldListId(id)?.Select(t => t.MetaFieldId)?.ToArray() ?? new int[0];
             IEnumerable<int> addIds = metaFieldIds.Except(fieldAggregationIds); //ids will add
             IEnumerable<int> deleteIds = fieldAggregationIds.Except(metaFieldIds);  //ids will delete
 
-            IList<FieldAggregation> fieldAggregations = new List<FieldAggregation>();
+            IList<FieldListAggregation> fieldAggregations = new List<FieldListAggregation>();
             foreach (var item in addIds)
             {
-                fieldAggregations.Add(new FieldAggregation { InterfaceFieldId = id, MetaFieldId = item });
+                fieldAggregations.Add(new FieldListAggregation { FieldListId = id, MetaFieldId = item });
             }
             fieldAggregationService.Add(fieldAggregations);
 

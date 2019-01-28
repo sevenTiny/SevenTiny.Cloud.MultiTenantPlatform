@@ -46,7 +46,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         /// <param name="id"></param>
         public new ResultModel Delete(int id)
         {
-            if (dbContext.QueryExist<InterfaceAggregation>(t => t.InterfaceFieldId == id))
+            if (dbContext.QueryExist<InterfaceAggregation>(t => t.FieldListId == id))
             {
                 //存在引用关系，先删除引用该数据的数据
                 return ResultModel.Error("存在引用关系，先删除引用该数据的数据");

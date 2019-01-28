@@ -1,18 +1,14 @@
 ﻿using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
-using SevenTiny.Cloud.MultiTenantPlatform.Domain.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
-using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
 {
-    public class FieldAggregationService : Repository<FieldAggregation>, IFieldAggregationService
+    public class FieldListAggregationService : Repository<FieldListAggregation>, IFieldListAggregationService
     {
-        public FieldAggregationService(
+        public FieldListAggregationService(
             MultiTenantPlatformDbContext multiTenantPlatformDbContext,
             IMetaFieldService _metaFieldService
             ) : base(multiTenantPlatformDbContext)
@@ -24,19 +20,19 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         readonly MultiTenantPlatformDbContext dbContext;
         readonly IMetaFieldService metaFieldService;
 
-        public List<FieldAggregation> GetByInterfaceFieldId(int interfaceFieldId)
+        public List<FieldListAggregation> GetByFieldListId(int fieldListId)
         {
-            return dbContext.QueryList<FieldAggregation>(t => t.InterfaceFieldId == interfaceFieldId);
+            return dbContext.QueryList<FieldListAggregation>(t => t.FieldListId == fieldListId);
         }
 
         public void DeleteByMetaFieldId(int metaFieldId)
         {
-            dbContext.Delete<FieldAggregation>(t => t.MetaFieldId == metaFieldId);
+            dbContext.Delete<FieldListAggregation>(t => t.MetaFieldId == metaFieldId);
         }
 
-        public List<MetaField> GetMetaFieldsByInterfaceFieldId(int interfaceFieldId)
+        public List<MetaField> GetMetaFieldsByFieldListId(int fieldListId)
         {
-            var fieldAggregationList = GetByInterfaceFieldId(interfaceFieldId);
+            var fieldAggregationList = GetByFieldListId(fieldListId);
             if (fieldAggregationList != null && fieldAggregationList.Any())
             {
                 var fieldIds = fieldAggregationList.Select(t => t.MetaFieldId).ToArray();
@@ -45,9 +41,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             return null;
         }
 
-        public Dictionary<string, MetaField> GetMetaFieldsDicByInterfaceFieldId(int interfaceFieldId)
+        public Dictionary<string, MetaField> GetMetaFieldsDicByFieldListId(int fieldListId)
         {
-            return GetMetaFieldsByInterfaceFieldId(interfaceFieldId)?.ToDictionary(t => t.Code, t => t);
+            return GetMetaFieldsByFieldListId(fieldListId)?.ToDictionary(t => t.Code, t => t);
         }
     }
 }

@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
 
     ResponseModel result = Model as ResponseModel ?? new ResponseModel();
-    InterfaceField interfaceField = result.Data as InterfaceField ?? new InterfaceField();
+    FieldList fieldList = result.Data as FieldList ?? new FieldList();
 }
 @{
     ViewData["Level_1"] = "标准接口";
@@ -13,35 +13,35 @@
 @await Html.PartialAsync("~/Views/Shared/PartialNav.cshtml")
 
 <article class="page-container">
-    <form class="form form-horizontal validate" id="form-article-add" method="post" action="/InterfaceField/AddLogic">
+    <form class="form form-horizontal validate" id="form-article-add" method="post" action="/FieldList/AddLogic">
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>名称：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="@interfaceField.Name" name="name" required minLength="2" maxlength="50">
+                <input type="text" class="input-text" value="@fieldList.Name" name="name" required minLength="2" maxlength="50">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>编码：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="@interfaceField.Code" name="code" required minLength="2" maxlength="50">
+                <input type="text" class="input-text" value="@fieldList.Code" name="code" required minLength="2" maxlength="50">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">分组：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="@interfaceField.Group" name="group">
+                <input type="text" class="input-text" value="@fieldList.Group" name="group">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">排序值：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="@interfaceField.SortNumber" name="sortNumber">
+                <input type="text" class="input-text" value="@fieldList.SortNumber" name="sortNumber">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">描述：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <textarea name="description" class="textarea ignore" placeholder="说点什么...">@interfaceField.Description</textarea>
+                <textarea name="description" class="textarea ignore" placeholder="说点什么...">@fieldList.Description</textarea>
             </div>
         </div>
         <div class="row cl">

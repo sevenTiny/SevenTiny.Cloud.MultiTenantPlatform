@@ -7,7 +7,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity
     /// 接口字段
     /// </summary>
     [Table]
-    public class InterfaceField : MetaObjectManageInfo
+    public class FieldList : MetaObjectManageInfo
     {
         public List<MetaField> MetaFields { get; set; }
     }

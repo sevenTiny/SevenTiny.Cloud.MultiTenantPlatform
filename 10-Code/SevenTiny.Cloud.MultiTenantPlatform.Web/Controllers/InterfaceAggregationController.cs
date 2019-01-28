@@ -12,12 +12,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
     public class InterfaceAggregationController : ControllerBase
     {
         private readonly IInterfaceAggregationService interfaceAggregationService;
-        private readonly IInterfaceFieldService interfaceFieldService;
+        private readonly IFieldListService interfaceFieldService;
         private readonly ISearchConditionService searchConditionService;
 
         public InterfaceAggregationController(
             IInterfaceAggregationService _interfaceAggregationService,
-            IInterfaceFieldService _interfaceFieldService,
+            IFieldListService _interfaceFieldService,
             ISearchConditionService _searchConditionService
             )
         {
@@ -79,7 +79,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
                 return View("Add", checkResult.ToResponseModel());
             }
 
-            if (entity.InterfaceFieldId == default(int))
+            if (entity.FieldListId == default(int))
             {
                 return View("Add", ResponseModel.Error("接口字段不能为空", entity));
             }
@@ -134,7 +134,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
                 return View("Add", checkResult.ToResponseModel());
             }
 
-            if (entity.InterfaceFieldId == default(int))
+            if (entity.FieldListId == default(int))
             {
                 return View("Add", ResponseModel.Error("接口字段不能为空", entity));
             }

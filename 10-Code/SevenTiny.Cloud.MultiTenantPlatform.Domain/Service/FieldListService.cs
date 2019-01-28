@@ -10,9 +10,9 @@ using System.Text;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
 {
-    public class InterfaceFieldService : MetaObjectManageRepository<InterfaceField>, IInterfaceFieldService
+    public class FieldListService : MetaObjectManageRepository<FieldList>, IFieldListService
     {
-        public InterfaceFieldService(MultiTenantPlatformDbContext multiTenantPlatformDbContext) : base(multiTenantPlatformDbContext)
+        public FieldListService(MultiTenantPlatformDbContext multiTenantPlatformDbContext) : base(multiTenantPlatformDbContext)
         {
             dbContext = multiTenantPlatformDbContext;
         }
@@ -23,9 +23,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         /// 更新对象
         /// </summary>
         /// <param name="metaField"></param>
-        public new ResultModel Update(InterfaceField interfaceField)
+        public new ResultModel Update(FieldList interfaceField)
         {
-            InterfaceField myfield = GetById(interfaceField.Id);
+            FieldList myfield = GetById(interfaceField.Id);
             if (myfield != null)
             {
                 //编码不允许修改
@@ -46,7 +46,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         /// <param name="id"></param>
         public new ResultModel Delete(int id)
         {
-            if (dbContext.QueryExist<InterfaceAggregation>(t => t.InterfaceFieldId == id))
+            if (dbContext.QueryExist<InterfaceAggregation>(t => t.FieldListId == id))
             {
                 //存在引用关系，先删除引用该数据的数据
                 return ResultModel.Error("存在引用关系，先删除引用该数据的数据");

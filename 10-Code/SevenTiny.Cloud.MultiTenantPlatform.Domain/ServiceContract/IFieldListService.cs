@@ -4,7 +4,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract
 {
-    public interface IInterfaceFieldService : IMetaObjectManageRepository<InterfaceField>
+    public interface IFieldListService : IMetaObjectManageRepository<FieldList>
     {
     }
 }

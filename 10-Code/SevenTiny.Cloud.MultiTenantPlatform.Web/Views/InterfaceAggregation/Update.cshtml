@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
 }
 @{
-    List<InterfaceField> interfaceFields = ViewData["InterfaceFields"] as List<InterfaceField> ?? new List<InterfaceField>();
+    List<FieldList> interfaceFields = ViewData["InterfaceFields"] as List<FieldList> ?? new List<FieldList>();
     List<SearchCondition> searchConditions = ViewData["SearchConditions"] as List<SearchCondition> ?? new List<SearchCondition>();
 
     ResponseModel result = Model as ResponseModel ?? new ResponseModel();
@@ -52,7 +52,7 @@
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>字段配置：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <span class="select-box">
-                    <select id="interfaceFieldId" name="interfaceFieldId" class="select" value="@interfaceAggregation.InterfaceFieldId" required>
+                    <select id="interfaceFieldId" name="interfaceFieldId" class="select" value="@interfaceAggregation.FieldListId" required>
                         @foreach (var item in interfaceFields)
                         {
                             <option value="@item.Id">@item.Name</option>
@@ -112,7 +112,7 @@
 <!--请在下方写此页面业务相关的脚本-->
 <script type="text/javascript">
     $("#interfaceType").val(@interfaceAggregation.InterfaceType);
-    $("#interfaceFieldId").val(@interfaceAggregation.InterfaceFieldId);
+    $("#interfaceFieldId").val(@interfaceAggregation.FieldListId);
     $("#searchConditionId").val(@interfaceAggregation.SearchConditionId);
 </script>
 <!--/请在上方写此页面业务相关的脚本-->

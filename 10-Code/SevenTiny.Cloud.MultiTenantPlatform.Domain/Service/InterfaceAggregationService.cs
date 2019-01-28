@@ -12,7 +12,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
     {
         public InterfaceAggregationService(
             MultiTenantPlatformDbContext multiTenantPlatformDbContext,
-            IInterfaceFieldService _interfaceFieldService,
+            IFieldListService _interfaceFieldService,
             ISearchConditionService _searchConditionService,
             IMetaObjectService _metaObjectService
             ) : base(multiTenantPlatformDbContext)
@@ -24,7 +24,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         }
 
         readonly MultiTenantPlatformDbContext dbContext;
-        readonly IInterfaceFieldService interfaceFieldService;
+        readonly IFieldListService interfaceFieldService;
         readonly ISearchConditionService searchConditionService;
         readonly IMetaObjectService metaObjectService;
 
@@ -32,9 +32,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         public new ResultModel Add(InterfaceAggregation entity)
         {
             //查询并将名字赋予接口的字段
-            var interfaceField = interfaceFieldService.GetById(entity.InterfaceFieldId);
+            var interfaceField = interfaceFieldService.GetById(entity.FieldListId);
             var searchCondition = searchConditionService.GetById(entity.SearchConditionId);
-            entity.InterfaceFieldName = interfaceField.Name;
+            entity.FieldListName = interfaceField.Name;
             entity.SearchConditionName = searchCondition.Name;
 
             base.Add(entity);
@@ -50,11 +50,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             InterfaceAggregation myEntity = GetById(interfaceAggregation.Id);
             if (myEntity != null)
             {
-                var interfaceField = interfaceFieldService.GetById(interfaceAggregation.InterfaceFieldId);
+                var interfaceField = interfaceFieldService.GetById(interfaceAggregation.FieldListId);
                 var searchCondition = searchConditionService.GetById(interfaceAggregation.SearchConditionId);
 
-                myEntity.InterfaceFieldId = interfaceAggregation.InterfaceFieldId;
-                myEntity.InterfaceFieldName = interfaceField.Name;
+                myEntity.FieldListId = interfaceAggregation.FieldListId;
+                myEntity.FieldListName = interfaceField.Name;
 
                 myEntity.SearchConditionId = interfaceAggregation.SearchConditionId;
                 myEntity.SearchConditionName = searchCondition.Name;

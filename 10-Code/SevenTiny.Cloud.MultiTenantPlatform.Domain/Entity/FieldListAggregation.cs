@@ -1,13 +1,12 @@
-﻿using SevenTiny.Bantina.Bankinate;
-using SevenTiny.Bantina.Bankinate.Attributes;
+﻿using SevenTiny.Bantina.Bankinate.Attributes;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity
 {
     [Table]
-    public class FieldAggregation
+    public class FieldListAggregation
     {
         [Column]
-        public int InterfaceFieldId { get; set; }
+        public int FieldListId { get; set; }
         [Column]
         public int MetaFieldId { get; set; }
     }

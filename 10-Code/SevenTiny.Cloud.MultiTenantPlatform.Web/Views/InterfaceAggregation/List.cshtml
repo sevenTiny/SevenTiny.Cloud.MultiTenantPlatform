@@ -25,7 +25,6 @@
                     <th>搜索条件</th>
                     <th>接口字段</th>
                     <th>接口类型</th>
-                    <th>排序</th>
                     <th>分组</th>
                     <th>操作</th>
                 </tr>
@@ -37,7 +36,7 @@
                         <td><a class="ml-5" href="javascript:alert('弹窗显示配置详情页');" title="@item.Description" style="font-weight:bold;color:dodgerblue" data-toggle="tooltip" data-placement="top">@item.Name</a></td>
                         <td style="color:#d72323;font-weight:bold">@item.Code</td>
                         <td><a class="ml-5" href="/SearchCondition/AggregationCondition/@item.SearchConditionId" title="搜索条件" style="font-weight:bold;color:dodgerblue" data-toggle="tooltip" data-placement="top">@item.SearchConditionName</a></td>
-                        <td><a class="ml-5" href="/InterfaceField/AggregateField/@item.InterfaceFieldId" title="字段配置" style="font-weight:bold;color:dodgerblue" data-toggle="tooltip" data-placement="top">@item.InterfaceFieldName</a></td>
+                        <td><a class="ml-5" href="/FieldList/AggregateField/@item.FieldListId" title="字段配置" style="font-weight:bold;color:dodgerblue" data-toggle="tooltip" data-placement="top">@item.FieldListName</a></td>
                         <th style="color:#00CC33">@EnumsTranslater.Tran_InterfaceType(item.InterfaceType)</th>
                         <td>@item.Group</td>
                         <td class="f-14 td-manage">
@@ -61,7 +60,7 @@
         "bStateSave": true,//状态保存
         "aoColumnDefs": [
             //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
-            { "orderable": false, "aTargets": [2, 7] }// 不参与排序的列
+            { "orderable": false, "aTargets": [2, 6] }// 不参与排序的列
         ]
     });
 </script>

@@ -9,14 +9,14 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity
     public class InterfaceAggregation : MetaObjectManageInfo
     {
         [Column]
+        public int InterfaceType { get; set; }
+        [Column]
         public int SearchConditionId { get; set; }
         [Column]
         public string SearchConditionName { get; set; }
         [Column]
-        public int InterfaceFieldId { get; set; }
+        public int FieldListId { get; set; }
         [Column]
-        public int InterfaceType { get; set; }
-        [Column]
-        public string InterfaceFieldName { get; set; }
+        public string FieldListName { get; set; }
     }
 }

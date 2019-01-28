@@ -9,9 +9,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
 {
     public class FieldBizDataService : IFieldBizDataService
     {
-        readonly IFieldAggregationService fieldAggregationService;
+        readonly IFieldListAggregationService fieldAggregationService;
         public FieldBizDataService(
-            IFieldAggregationService _fieldAggregationService
+            IFieldListAggregationService _fieldAggregationService
             )
         {
             fieldAggregationService = _fieldAggregationService;
@@ -20,7 +20,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         public Dictionary<string, FieldBizData> ConvertToDictionary(int InterfaceFieldId, BsonDocument bsonElement)
         {
             //接口配置的字段字典
-            var interfaceMetaFieldsDic = fieldAggregationService.GetMetaFieldsDicByInterfaceFieldId(InterfaceFieldId);
+            var interfaceMetaFieldsDic = fieldAggregationService.GetMetaFieldsDicByFieldListId(InterfaceFieldId);
             Dictionary<string, FieldBizData> keyValuePairs = new Dictionary<string, FieldBizData>();
             foreach (var field in interfaceMetaFieldsDic)
             {
@@ -41,7 +41,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         public List<Dictionary<string, FieldBizData>> ConvertToDictionaryList(int InterfaceFieldId, List<BsonDocument> bsonElements)
         {
             //接口配置的字段字典
-            var interfaceMetaFieldsDic = fieldAggregationService.GetMetaFieldsDicByInterfaceFieldId(InterfaceFieldId);
+            var interfaceMetaFieldsDic = fieldAggregationService.GetMetaFieldsDicByFieldListId(InterfaceFieldId);
             List<Dictionary<string, FieldBizData>> resultList = new List<Dictionary<string, FieldBizData>>();
             foreach (var elements in bsonElements)
             {
