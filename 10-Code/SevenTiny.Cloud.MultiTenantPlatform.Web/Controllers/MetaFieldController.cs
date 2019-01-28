@@ -98,11 +98,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             {
                 return View("Update", ResponseModel.Error("MetaField Code 不能为空", metaField));
             }
-            //校验code格式
-            if (!metaField.Code.IsAlnum(2, 50))
-            {
-                return View("Update", ResponseModel.Error("编码不合法，2-50位且只能包含字母和数字（字母开头）", metaField));
-            }
+            //校验code格式，编码不允许修改，这里无需判断
+            //if (!metaField.Code.IsAlnum(2, 50))
+            //{
+            //    return View("Update", ResponseModel.Error("编码不合法，2-50位且只能包含字母和数字（字母开头）", metaField));
+            //}
 
             //检查编码或名称重复
             var checkResult = metaFieldService.CheckSameCodeOrName(CurrentMetaObjectId, metaField);

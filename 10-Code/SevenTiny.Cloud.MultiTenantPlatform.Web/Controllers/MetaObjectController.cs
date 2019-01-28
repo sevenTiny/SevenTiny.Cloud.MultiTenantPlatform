@@ -86,11 +86,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             {
                 return View("Update", ResponseModel.Error("MetaObject Code Can Not Be Null！", metaObject));
             }
-            //校验code格式
-            if (!metaObject.Code.IsAlnum(2, 50))
-            {
-                return View("Add", ResponseModel.Error("编码不合法，2-50位且只能包含字母和数字（字母开头）", metaObject));
-            }
+            //校验code格式，编辑时界面会将'.'传递到后台，不能用下面正则校验，且编辑操作并不会更新编码，无需在此校验
+            //if (!metaObject.Code.IsAlnum(2, 50))
+            //{
+            //    return View("Update", ResponseModel.Error("编码不合法，2-50位且只能包含字母和数字（字母开头）", metaObject));
+            //}
 
             if (metaObjectService.ExistSameNameWithOtherIdByApplicationId(CurrentApplicationId, metaObject.Id, metaObject.Name))
             {
