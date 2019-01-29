@@ -1,0 +1,32 @@
+﻿
+@{
+    ViewData["Title"] = "Add";
+    Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
+}
+@{
+    ViewData["Level_1"] = "对象设置";
+    ViewData["Level_2"] = "新增触发器脚本";
+}
+@await Html.PartialAsync("~/Views/Shared/PartialNav.cshtml")
+
+<link href="~/lib/codemirror-5.43.0/codemirror.css" rel="stylesheet" />
+
+<div class="form-control pd-20">
+    <textarea id="codeTextArea" name="code" class="textarea"></textarea>
+</div>
+
+@await Html.PartialAsync("~/Views/Shared/_FooterScripts.cshtml")
+@await Html.PartialAsync("~/Views/Shared/_CommonScript.cshtml")
+<script src="~/lib/codemirror-5.43.0/codemirror.js"></script>
+<script src="~/lib/codemirror-5.43.0/mode/javascript/javascript.js"></script>
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript">
+    var editor = CodeMirror.fromTextArea($("#codeTextArea")[0], {
+        mode: 'javascript',//编辑器语言
+        theme: 'monokai', //编辑器主题
+        extraKeys: { "Ctrl": "autocomplete" },//ctrl可以弹出选择项
+        lineNumbers: true//显示行号
+    });
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
