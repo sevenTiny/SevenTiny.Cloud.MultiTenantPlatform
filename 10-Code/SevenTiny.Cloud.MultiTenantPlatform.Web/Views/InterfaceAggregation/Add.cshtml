@@ -35,7 +35,7 @@
             <div class="formControls col-xs-8 col-sm-9">
                 <span class="select-box">
                     <select name="interfaceType" class="select" value="@interfaceAggregation.InterfaceType" onchange="fieldTypeSwitch(this)" required>
-                        <option value="0">--请选择--</option>
+                        <option value="">--请选择--</option>
                         @foreach (var item in Enum.GetValues(typeof(InterfaceType)))
                         {
                             var value = (int)item;
@@ -50,8 +50,8 @@
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>字段配置：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <span class="select-box">
-                    <select name="interfaceFieldId" class="select" value="@interfaceAggregation.FieldListId" onchange="fieldTypeSwitch(this)" required>
-                        <option value="0">--请选择--</option>
+                    <select name="fieldListId" class="select" value="@interfaceAggregation.FieldListId" onchange="fieldTypeSwitch(this)" required>
+                        <option value="">--请选择--</option>
                         @foreach (var item in interfaceFields)
                         {
                             <option value="@item.Id">@item.Name</option>
@@ -65,7 +65,7 @@
             <div class="formControls col-xs-8 col-sm-9">
                 <span class="select-box">
                     <select name="searchConditionId" class="select" value="@interfaceAggregation.SearchConditionId" onchange="fieldTypeSwitch(this)" required>
-                        <option value="0">--请选择--</option>
+                        <option value="">--请选择--</option>
                         @foreach (var item in searchConditions)
                         {
                             <option value="@item.Id">@item.Name</option>

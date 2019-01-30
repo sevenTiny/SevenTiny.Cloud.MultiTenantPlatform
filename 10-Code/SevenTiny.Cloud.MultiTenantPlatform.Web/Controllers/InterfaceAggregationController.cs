@@ -34,9 +34,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
         public IActionResult InterfaceList()
         {
             ViewData["InterfaceAggregationList"] = interfaceAggregationService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
-            ViewData["ApplicationCode"] = CurrentApplicationCode;
             ViewData["MetaObjectCode"] = CurrentMetaObjectCode;
-
             return View();
         }
 
@@ -123,11 +121,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
                 return View("Add", ResponseModel.Error("编码不能为空", entity));
             }
 
-            //校验code格式
-            if (!entity.Code.IsAlnum(2, 50))
-            {
-                return View("Add", ResponseModel.Error("编码不合法，2-50位且只能包含字母和数字（字母开头）", entity));
-            }
+            ////校验code格式
+            //if (!entity.Code.IsAlnum(2, 50))
+            //{
+            //    return View("Add", ResponseModel.Error("编码不合法，2-50位且只能包含字母和数字（字母开头）", entity));
+            //}
 
             //检查编码或名称重复
             var checkResult = interfaceAggregationService.CheckSameCodeOrName(CurrentMetaObjectId, entity);

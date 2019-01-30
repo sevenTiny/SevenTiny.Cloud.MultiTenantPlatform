@@ -61,10 +61,10 @@
         {
             switch (interfaceType)
             {
-                case 0: return InterfaceType.CloudSingleObject;
-                case 1: return InterfaceType.CloudTableList;
-                case 2: return InterfaceType.CloudCount;
-                case 3: return InterfaceType.EnumeDataSource;
+                case 1: return InterfaceType.CloudSingleObject;
+                case 2: return InterfaceType.CloudTableList;
+                case 3: return InterfaceType.CloudCount;
+                case 4: return InterfaceType.EnumeDataSource;
                 default: return InterfaceType.CloudCount;
             }
         }

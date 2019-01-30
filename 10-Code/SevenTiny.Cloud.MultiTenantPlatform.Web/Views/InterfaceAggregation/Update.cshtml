@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
 }
 @{
-    List<FieldList> interfaceFields = ViewData["InterfaceFields"] as List<FieldList> ?? new List<FieldList>();
+    List<FieldList> fieldList = ViewData["InterfaceFields"] as List<FieldList> ?? new List<FieldList>();
     List<SearchCondition> searchConditions = ViewData["SearchConditions"] as List<SearchCondition> ?? new List<SearchCondition>();
 
     ResponseModel result = Model as ResponseModel ?? new ResponseModel();
@@ -38,6 +38,7 @@
             <div class="formControls col-xs-8 col-sm-9">
                 <span class="select-box">
                     <select id="interfaceType" name="interfaceType" class="select" value="@interfaceAggregation.InterfaceType" required>
+                        <option value="">--请选择--</option>
                         @foreach (var item in Enum.GetValues(typeof(InterfaceType)))
                         {
                             var value = (int)item;
@@ -52,8 +53,9 @@
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>字段配置：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <span class="select-box">
-                    <select id="interfaceFieldId" name="interfaceFieldId" class="select" value="@interfaceAggregation.FieldListId" required>
-                        @foreach (var item in interfaceFields)
+                    <select id="fieldListId" name="fieldListId" class="select" value="@interfaceAggregation.FieldListId" required>
+                        <option value="">--请选择--</option>
+                        @foreach (var item in fieldList)
                         {
                             <option value="@item.Id">@item.Name</option>
                         }
@@ -66,6 +68,7 @@
             <div class="formControls col-xs-8 col-sm-9">
                 <span class="select-box">
                     <select id="searchConditionId" name="searchConditionId" class="select" value="@interfaceAggregation.SearchConditionId" required>
+                        <option value="">--请选择--</option>
                         @foreach (var item in searchConditions)
                         {
                             <option value="@item.Id">@item.Name</option>
@@ -112,7 +115,7 @@
 <!--请在下方写此页面业务相关的脚本-->
 <script type="text/javascript">
     $("#interfaceType").val(@interfaceAggregation.InterfaceType);
-    $("#interfaceFieldId").val(@interfaceAggregation.FieldListId);
+    $("#fieldListId").val(@interfaceAggregation.FieldListId);
     $("#searchConditionId").val(@interfaceAggregation.SearchConditionId);
 </script>
 <!--/请在上方写此页面业务相关的脚本-->
