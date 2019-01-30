@@ -107,10 +107,15 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
 
         public List<BsonDocument> GetBsonDocumentsByCondition(FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize)
         {
-            //var bf = Builders<BsonDocument>.Filter;
-            //condition = bf.And(bf.Eq("tenantId", tenantId), condition);
-
-            var bson = db.QueryListBson<BsonDocument>(condition);
+            List<BsonDocument> bson = new List<BsonDocument>();
+            if (pageSize == 0)
+            {
+                bson = db.QueryListBson<BsonDocument>(condition);
+            }
+            else
+            {
+                //分页
+            }
             return bson;
         }
 

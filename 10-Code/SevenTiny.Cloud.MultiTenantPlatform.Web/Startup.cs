@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SevenTiny.Cloud.MultiTenantPlatform.Web.Filters;
+using System;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Web
 {
@@ -21,7 +22,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web
             //start 7tiny ---
             //session support
             services.AddDistributedMemoryCache();
-            services.AddSession();
+            services.AddSession(o =>
+            {
+                o.IdleTimeout = TimeSpan.FromDays(1);
+            });
             //DI
             services.InjectWeb();
             //end 7tiny ---
@@ -61,6 +65,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web
             });
         }
 
-        
+
     }
 }

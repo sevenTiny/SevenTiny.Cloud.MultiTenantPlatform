@@ -92,6 +92,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
 
                 return JsonResultModel.Success("Success,No Data");
             }
+            catch (ArgumentNullException argNullEx)
+            {
+                return JsonResultModel.Error(argNullEx.Message);
+            }
             catch (ArgumentException argEx)
             {
                 return JsonResultModel.Error(argEx.Message);

@@ -308,7 +308,13 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                 {
                     //从参数获取到值
                     string key = routeCondition.FieldCode;
-                    object argumentValue = conditionValueDic.SafeGet(key.ToUpperInvariant());
+                    var keyUpper = key.ToUpperInvariant();
+                    //如果没有传递参数值，则抛出异常
+                    if (!conditionValueDic.ContainsKey(keyUpper))
+                    {
+                        throw new ArgumentNullException(key, $"Conditions define field parameters [{key}] but do not provide values.");
+                    }
+                    object argumentValue = conditionValueDic.SafeGet(keyUpper);
                     //将值转化为字段同类型的类型值
                     object value = metaFieldService.CheckAndGetFieldValueByFieldType(routeCondition.FieldId, argumentValue).Data;
                     switch (routeCondition.ConditionType)
