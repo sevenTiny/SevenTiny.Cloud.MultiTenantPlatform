@@ -15,12 +15,18 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract
         /// <returns></returns>
         Dictionary<string, MetaField> GetMetaFieldDicUnDeleted(int metaObjectId);
         /// <summary>
-        /// 获取字段的字典形式，key是小写的
+        /// 获取字段的字典形式，key是大写的
         /// ToUpperInvariant方法是微软优化过的，性能要高很多
         /// </summary>
         /// <param name="metaObjectId"></param>
         /// <returns></returns>
         Dictionary<string, MetaField> GetMetaFieldUpperKeyDicUnDeleted(int metaObjectId);
+        /// <summary>
+        /// 获取字段的字典形式，key是Id
+        /// </summary>
+        /// <param name="metaObjectId"></param>
+        /// <returns></returns>
+        Dictionary<int, MetaField> GetMetaFieldDicIdObjUnDeleted(int metaObjectId);
         /// <summary>
         /// 预置系统字段
         /// </summary>

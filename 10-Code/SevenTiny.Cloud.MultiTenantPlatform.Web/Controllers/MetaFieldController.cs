@@ -119,8 +119,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 
         public IActionResult Delete(int id)
         {
-            metaFieldService.Delete(id);
-            return JsonResultModel.Success("删除成功");
+            return metaFieldService.Delete(id).ToJsonResultModel();
         }
 
         public IActionResult Recover(int id)

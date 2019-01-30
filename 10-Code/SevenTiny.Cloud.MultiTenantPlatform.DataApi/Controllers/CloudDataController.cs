@@ -68,18 +68,29 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                 {
                     return JsonResultModel.Error($"未能找到接口编码为[{queryArgs.interfaceCode}]对应的接口信息");
                 }
-                var filter = conditionAggregationService.AnalysisConditionToFilterDefinition(interfaceAggregation.SearchConditionId, argumentsDic);
+                var filter = conditionAggregationService.AnalysisConditionToFilterDefinition(interfaceAggregation.MetaObjectId, interfaceAggregation.SearchConditionId, argumentsDic);
+
+                //get result
+                TableListComponent tableListComponent;
+                int totalCount;
 
                 switch (EnumsTranslaterUseInProgram.ToInterfaceType(interfaceAggregation.InterfaceType))
                 {
                     case InterfaceType.CloudSingleObject:
-                        var document = dataAccessService.GetBsonDocumentByCondition(filter);
-                        return JsonResultModel.Success("Get Single Data Success", document);
+                        var document = dataAccessService.GetBsonDocumentsByCondition(filter, 1, 1, out totalCount);
+                        tableListComponent = new TableListComponent
+                        {
+                            BizData = fieldBizDataService.ConvertToDictionaryList(interfaceAggregation.FieldListId, document),
+                            BizDataTotalCount = totalCount
+                        };
+                        return JsonResultModel.Success("Get Single Data Success", tableListComponent);
                     case InterfaceType.CloudTableList:
-                        var documents = dataAccessService.GetBsonDocumentsByCondition(filter, queryArgs.pageIndex, queryArgs.pageSize);
-                        //转成前端易处理的Table组件
-                        TableListComponent tableListComponent = new TableListComponent();
-                        tableListComponent.BizData = fieldBizDataService.ConvertToDictionaryList(interfaceAggregation.FieldListId, documents);
+                        var documents = dataAccessService.GetBsonDocumentsByCondition(filter, queryArgs.pageIndex, queryArgs.pageSize, out totalCount);
+                        tableListComponent = new TableListComponent
+                        {
+                            BizData = fieldBizDataService.ConvertToDictionaryList(interfaceAggregation.FieldListId, documents),
+                            BizDataTotalCount = totalCount
+                        };
                         return JsonResultModel.Success("Get Data List Success", tableListComponent);
                     case InterfaceType.CloudCount:
                         var count = dataAccessService.GetBsonDocumentCountByCondition(filter);

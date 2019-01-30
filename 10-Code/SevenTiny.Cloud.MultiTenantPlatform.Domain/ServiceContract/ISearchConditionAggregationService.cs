@@ -20,6 +20,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract
         /// <param name="searchConditionId">条件id</param>
         /// <param name="conditionValueDic">从http请求中传递过来的参数值集合</param>
         /// <returns></returns>
-        FilterDefinition<BsonDocument> AnalysisConditionToFilterDefinition(int searchConditionId, Dictionary<string, object> conditionValueDic);
+        FilterDefinition<BsonDocument> AnalysisConditionToFilterDefinition(int metaObjectId, int searchConditionId, Dictionary<string, object> conditionValueDic);
     }
 }

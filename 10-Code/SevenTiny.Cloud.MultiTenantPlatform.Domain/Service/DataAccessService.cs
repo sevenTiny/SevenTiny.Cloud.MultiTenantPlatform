@@ -105,23 +105,20 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             return null;
         }
 
-        public List<BsonDocument> GetBsonDocumentsByCondition(FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize)
+        public List<BsonDocument> GetBsonDocumentsByCondition(FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, out int count)
         {
             List<BsonDocument> bson = new List<BsonDocument>();
             if (pageSize == 0)
             {
                 bson = db.QueryListBson<BsonDocument>(condition);
+                count = bson.Count;
             }
             else
             {
-                //分页
+                bson = db.QueryListBson<BsonDocument>(condition, pageIndex, pageSize);
+                count = db.QueryCount<BsonDocument>(condition);
             }
             return bson;
-        }
-
-        public BsonDocument GetBsonDocumentByCondition(FilterDefinition<BsonDocument> condition)
-        {
-            return GetBsonDocumentsByCondition(condition, 1, 1).FirstOrDefault();
         }
 
         public int GetBsonDocumentCountByCondition(FilterDefinition<BsonDocument> condition)
@@ -144,20 +141,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         public void Update(ObjectData objectData)
         {
             throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// 通过filter查询数据并转成Json字符串
-        /// </summary>
-        /// <param name="filter"></param>
-        /// <returns></returns>
-        public string QueryJsonByFilter(FilterDefinition<BsonDocument> filter)
-        {
-            using (var fact = new MultiTenantDataDbContext())
-            {
-                List<BsonDocument> documents = fact.QueryListBson<ObjectData>(filter);
-                return documents?.ToJson();
-            }
         }
     }
 }

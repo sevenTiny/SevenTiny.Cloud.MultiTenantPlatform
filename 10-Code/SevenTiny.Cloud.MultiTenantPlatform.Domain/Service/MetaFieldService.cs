@@ -32,6 +32,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             return metaFields.ToDictionary(t => t.Code.ToUpperInvariant(), t => t);
         }
 
+        public Dictionary<int, MetaField> GetMetaFieldDicIdObjUnDeleted(int metaObjectId)
+        {
+            var metaFields = GetEntitiesUnDeletedByMetaObjectId(metaObjectId);
+            return metaFields.ToDictionary(t => t.Id, t => t);
+        }
+
         /// <summary>
         /// 更新对象
         /// </summary>
@@ -132,6 +138,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             };
         }
 
+        /// <summary>
+        /// 同方法内多次调用该方法尽量不要直接用这个查询数据库，性能较差，应该通过对象查出所有对象用下面的重载方法
+        /// </summary>
+        /// <param name="fieldId"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public ResultModel CheckAndGetFieldValueByFieldType(int fieldId, object value)
         {
             MetaField metaField = GetById(fieldId);
@@ -212,6 +224,30 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                 }
             }
             return metaFields;
+        }
+
+        /// <summary>
+        /// 删除,需要先解除引用关系
+        /// </summary>
+        /// <param name="id"></param>
+        public new ResultModel Delete(int id)
+        {
+            //先检查引用关系
+            if (dbContext.QueryExist<FieldListAggregation>(t => t.MetaFieldId == id))
+            {
+                return ResultModel.Error("字段列表存在相关字段的引用关系，请先解除引用关系");
+            }
+
+            if (dbContext.QueryExist<SearchConditionAggregation>(t => t.FieldId == id))
+            {
+                return ResultModel.Error("搜索条件存在相关字段的引用关系，请先解除引用关系");
+            }
+
+            // ... 如果有其他引用字段的地方需要补充引用关系检查
+
+            base.Delete(id);
+
+            return ResultModel.Success("删除成功");
         }
     }
 }

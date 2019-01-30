@@ -1,7 +1,5 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity
 {
@@ -9,5 +7,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity
     {
         [JsonProperty("biz_data", NullValueHandling = NullValueHandling.Ignore, Order = 3)]
         public List<Dictionary<string, FieldBizData>> BizData { get; set; }
+        /// <summary>
+        /// 业务行总数
+        /// </summary>
+        [JsonProperty("biz_data_total_count", NullValueHandling = NullValueHandling.Ignore, Order = 3)]
+        public int BizDataTotalCount { get; set; }
     }
 }

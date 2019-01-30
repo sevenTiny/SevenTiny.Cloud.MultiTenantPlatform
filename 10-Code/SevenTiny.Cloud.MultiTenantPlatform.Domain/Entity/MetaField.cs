@@ -1,10 +1,8 @@
-﻿using SevenTiny.Bantina.Bankinate;
+﻿using SevenTiny.Bantina.Bankinate.Attributes;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Enum;
-using SevenTiny.Bantina.Bankinate.Attributes;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity
 {
-    [TableCaching]
     public class MetaField : MetaObjectManageInfo
     {
         //=DataType

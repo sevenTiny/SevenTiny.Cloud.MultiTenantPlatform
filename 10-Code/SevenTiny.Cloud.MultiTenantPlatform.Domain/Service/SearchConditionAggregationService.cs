@@ -209,9 +209,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         /// <param name="searchConditionId">条件id</param>
         /// <param name="conditionValueDic">从http请求中传递过来的参数值集合</param>
         /// <returns></returns>
-        public FilterDefinition<BsonDocument> AnalysisConditionToFilterDefinition(int searchConditionId, Dictionary<string, object> conditionValueDic)
+        public FilterDefinition<BsonDocument> AnalysisConditionToFilterDefinition(int metaObjectId, int searchConditionId, Dictionary<string, object> conditionValueDic)
         {
             var bf = Builders<BsonDocument>.Filter;
+            //全部字段字典缓存
+            Dictionary<int, MetaField> metaFieldIdDic = metaFieldService.GetMetaFieldDicIdObjUnDeleted(metaObjectId);
 
             //获取全部条件表达式
             List<SearchConditionAggregation> conditions = GetListByInterfaceConditionId(searchConditionId);
@@ -316,7 +318,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                     }
                     object argumentValue = conditionValueDic.SafeGet(keyUpper);
                     //将值转化为字段同类型的类型值
-                    object value = metaFieldService.CheckAndGetFieldValueByFieldType(routeCondition.FieldId, argumentValue).Data;
+                    object value = metaFieldService.CheckAndGetFieldValueByFieldType(metaFieldIdDic[routeCondition.FieldId], argumentValue).Data;
                     switch (routeCondition.ConditionType)
                     {
                         case (int)ConditionType.Equal:
@@ -339,7 +341,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                 else
                 {
                     //校验字段以及转换字段值为目标类型
-                    var convertResult = metaFieldService.CheckAndGetFieldValueByFieldType(routeCondition.FieldId, routeCondition.Value);
+                    var convertResult = metaFieldService.CheckAndGetFieldValueByFieldType(metaFieldIdDic[routeCondition.FieldId], routeCondition.Value);
                     if (!convertResult.IsSuccess)
                     {
                         throw new ArgumentException("配置的字段值不符合字段的类型");

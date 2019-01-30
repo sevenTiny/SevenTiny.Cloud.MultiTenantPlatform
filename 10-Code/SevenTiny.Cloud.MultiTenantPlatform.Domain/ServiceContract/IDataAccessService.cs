@@ -11,8 +11,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract
     {
         ResultModel Add(string metaObjectCode, BsonDocument bsons);
         List<ObjectData> GetObjectDatasByCondition(int tenantId, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize);
-        List<BsonDocument> GetBsonDocumentsByCondition(FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize);
-        BsonDocument GetBsonDocumentByCondition(FilterDefinition<BsonDocument> condition);
+        List<BsonDocument> GetBsonDocumentsByCondition(FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, out int count);
         int GetBsonDocumentCountByCondition(FilterDefinition<BsonDocument> condition);
     }
 }
