@@ -41,6 +41,21 @@
             </div>
         </div>
         <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>触发点：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <span class="select-box">
+                    <select name="triggerPoint" class="select" required>
+                        <option value="">--请选择--</option>
+                        @foreach (var item in Enum.GetValues(typeof(TriggerPoint)))
+                        {
+                            var value = (int)item;
+                            <option value="@value">@TriggerPointTranslator.ToCode(value)</option>
+                        }
+                    </select>
+                </span>
+            </div>
+        </div>
+        <div class="row cl">
             <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>触发器脚本：</label>
             <div class="formControls col-xs-9 col-sm-9">
                 <textarea id="codeTextArea" name="script" class="ignore"></textarea>

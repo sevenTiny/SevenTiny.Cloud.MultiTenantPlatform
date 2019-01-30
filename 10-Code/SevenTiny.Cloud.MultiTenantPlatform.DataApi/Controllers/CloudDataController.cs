@@ -20,19 +20,22 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
             IDataAccessService _dataAccessService,
             ISearchConditionAggregationService _conditionAggregationService,
             IInterfaceAggregationService _interfaceAggregationService,
-            IFieldBizDataService _fieldBizDataService
+            IFieldBizDataService _fieldBizDataService,
+            ITriggerScriptService _triggerScriptService
             )
         {
             dataAccessService = _dataAccessService;
             conditionAggregationService = _conditionAggregationService;
             interfaceAggregationService = _interfaceAggregationService;
             fieldBizDataService = _fieldBizDataService;
+            triggerScriptService = _triggerScriptService;
         }
 
         readonly IDataAccessService dataAccessService;
         readonly IInterfaceAggregationService interfaceAggregationService;
         readonly ISearchConditionAggregationService conditionAggregationService;
         readonly IFieldBizDataService fieldBizDataService;
+        readonly ITriggerScriptService triggerScriptService;
 
         [HttpGet]
         public IActionResult Get([FromQuery]QueryArgs queryArgs)
@@ -91,6 +94,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                             BizData = fieldBizDataService.ConvertToDictionaryList(interfaceAggregation.FieldListId, documents),
                             BizDataTotalCount = totalCount
                         };
+                        tableListComponent = triggerScriptService.TableListAfter(tableListComponent, 1);
                         return JsonResultModel.Success("Get Data List Success", tableListComponent);
                     case InterfaceType.CloudCount:
                         var count = dataAccessService.GetBsonDocumentCountByCondition(filter);
