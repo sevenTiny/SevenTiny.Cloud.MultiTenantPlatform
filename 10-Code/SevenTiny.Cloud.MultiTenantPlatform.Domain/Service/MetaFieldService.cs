@@ -70,7 +70,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                     Description="系统字段",
                     IsSystem =(int)TrueFalse.True,
                     IsMust=(int)TrueFalse.True,
-                    FieldType=(int)DataType.Int,
+                    FieldType=(int)DataType.Boolean,
                     SortNumber=-1
                 },
                 new MetaField{
@@ -124,7 +124,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         {
             return new BsonDocument
             {
-                { "IsDeleted",(int)IsDeleted.UnDeleted },
+                { "IsDeleted",false },
                 { "CreateBy", -1 },
                 { "CreateTime", DateTime.Now },
                 { "ModifyBy", -1},
@@ -161,9 +161,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                     break;
                 case DataType.StandradDateTime:
                 case DataType.DateTime:
-                    result.IsSuccess = DateTimeOffset.TryParse(Convert.ToString(value), out DateTimeOffset dateTimeOffsetVal);
-                    result.Data = dateTimeOffsetVal;
-                    break;
                 case DataType.StandradDate:
                 case DataType.Date:
                     result.IsSuccess = DateTime.TryParse(Convert.ToString(value), out DateTime dateTimeVal);

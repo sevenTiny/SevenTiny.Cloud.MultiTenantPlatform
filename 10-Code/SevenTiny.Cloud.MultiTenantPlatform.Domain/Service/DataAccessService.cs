@@ -2,13 +2,11 @@
 using MongoDB.Driver;
 using Newtonsoft.Json;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
-using SevenTiny.Cloud.MultiTenantPlatform.Domain.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
 {
@@ -49,23 +47,26 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                 string upperKey = item.Name.ToUpperInvariant();
                 if (metaFields.ContainsKey(upperKey))
                 {
-                    //todo:对传入的数据进行校验
-                    //...
-                    //如果大小写不匹配，则都转化成配置的字段Code形式
-                    if (!item.Name.Equals(metaFields[upperKey].Code))
+                    //检查字段的值是否符合字段类型
+                    var checkResult = metaFieldService.CheckAndGetFieldValueByFieldType(metaFields[upperKey], item.Value);
+                    if (checkResult.IsSuccess)
                     {
-                        bsons.RemoveElement(item);
-                        //检查字段的值是否符合字段类型
-                        var checkResult = metaFieldService.CheckAndGetFieldValueByFieldType(metaFields[upperKey], item.Value);
-                        if (checkResult.IsSuccess)
+                        //如果大小写不匹配，则都转化成配置的字段Code形式
+                        if (!item.Name.Equals(metaFields[upperKey].Code))
                         {
-                            var element = new BsonElement(metaFields[upperKey].Code, BsonValue.Create(checkResult.Data));
-                            bsons.Add(element);
+                            bsons.RemoveElement(item);
+                            bsons.Add(new BsonElement(metaFields[upperKey].Code, BsonValue.Create(checkResult.Data)));
                         }
                         else
                         {
-                            ErrorInfo.Add($"字段[{item.Name}]传递的值[{item.Value}]不符合字段定义的类型");
+                            //重置字段的真实类型的值
+                            bsons.SetElement(new BsonElement(metaFields[upperKey].Code, BsonValue.Create(checkResult.Data)));
                         }
+                    }
+                    else
+                    {
+                        bsons.RemoveElement(item);
+                        ErrorInfo.Add($"字段[{item.Name}]传递的值[{item.Value}]不符合字段定义的类型");
                     }
                 }
                 else
@@ -88,6 +89,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
 
             //补充字段
             bsons.SetElement(new BsonElement("_id", Guid.NewGuid().ToString()));
+            bsons.SetElement(new BsonElement("MetaObjectCode", metaObjectCode));
 
             db.Add(bsons);
 

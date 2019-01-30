@@ -32,7 +32,7 @@
                 case (int)DataType.Date:
                     return "日期";
                 case (int)DataType.Boolean:
-                    return "布尔（是=1/true，否=0/false）";
+                    return "布尔（true/false）";
                 case (int)DataType.Int:
                     return "整数";
                 case (int)DataType.Long:
