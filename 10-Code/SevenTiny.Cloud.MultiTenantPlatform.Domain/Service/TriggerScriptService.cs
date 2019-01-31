@@ -1,12 +1,9 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Scripting;
-using Microsoft.CodeAnalysis.Scripting;
-using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
-using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
+﻿using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
 using System;
-using System.Text;
+using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
 {
@@ -17,7 +14,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             dbContext = multiTenantPlatformDbContext;
         }
 
-        MultiTenantPlatformDbContext dbContext;
+        readonly MultiTenantPlatformDbContext dbContext;
 
         /// <summary>
         /// 更新对象
@@ -42,42 +39,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             return ResultModel.Success();
         }
 
-        public TableListComponent TableListAfter(TableListComponent tableListComponent, int triggerScriptId)
+        public List<TriggerScript> GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(int metaObjectId, int scriptType, int triggerPoint)
         {
-            var triggerScript = base.GetById(triggerScriptId);
-            //如果没有找到脚本，则跳过
-            if (triggerScript == null)
-            {
-                return tableListComponent;
-            }
-            //正常采用拼接的方式
-
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.Append(@"
-            using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
-            
-            public class TriggerScript_TableListComponent");
-            stringBuilder.Append("{");
-            stringBuilder.Append(triggerScript.Script);
-            stringBuilder.Append("}");
-
-            stringBuilder.Append("return new TriggerScript_TableListComponent().TableListAfter(tableListComponent);");
-
-            var script = CSharpScript.Create<TableListComponent>(stringBuilder.ToString(),
-                ScriptOptions.Default.AddReferences("SevenTiny.Cloud.MultiTenantPlatform.Domain"),//引用dll
-                globalsType: typeof(TableListArg)
-                );
-
-            script.Compile();
-
-            var result = script.RunAsync(globals: new TableListArg { tableListComponent = tableListComponent }).Result.ReturnValue;
-
-            return result;
+            return dbContext.QueryList<TriggerScript>(t => t.MetaObjectId == metaObjectId && t.ScriptType == scriptType && t.TriggerPoint == triggerPoint);
         }
-    }
-
-    public class TableListArg
-    {
-        public TableListComponent tableListComponent { get; set; }
     }
 }

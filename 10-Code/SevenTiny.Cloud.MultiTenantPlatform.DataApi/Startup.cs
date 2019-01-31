@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain;
+using SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi
 {
@@ -24,6 +25,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi
             services.AddSession();
             //DI
             services.InjectDomain();
+            services.InjectTriggerScriptEngine();
             //end 7tiny ---
 
             services.AddMvc();

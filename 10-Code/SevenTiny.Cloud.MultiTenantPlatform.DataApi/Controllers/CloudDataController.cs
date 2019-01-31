@@ -6,6 +6,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.DataApi.Models;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
+using SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.ServiceContract;
 using System;
 using System.Collections.Generic;
 
@@ -21,21 +22,21 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
             ISearchConditionAggregationService _conditionAggregationService,
             IInterfaceAggregationService _interfaceAggregationService,
             IFieldBizDataService _fieldBizDataService,
-            ITriggerScriptService _triggerScriptService
+            ITriggerScriptEngineService _triggerScriptEngineService
             )
         {
             dataAccessService = _dataAccessService;
             conditionAggregationService = _conditionAggregationService;
             interfaceAggregationService = _interfaceAggregationService;
             fieldBizDataService = _fieldBizDataService;
-            triggerScriptService = _triggerScriptService;
+            triggerScriptEngineService = _triggerScriptEngineService;
         }
 
         readonly IDataAccessService dataAccessService;
         readonly IInterfaceAggregationService interfaceAggregationService;
         readonly ISearchConditionAggregationService conditionAggregationService;
         readonly IFieldBizDataService fieldBizDataService;
-        readonly ITriggerScriptService triggerScriptService;
+        readonly ITriggerScriptEngineService triggerScriptEngineService;
 
         [HttpGet]
         public IActionResult Get([FromQuery]QueryArgs queryArgs)
@@ -94,7 +95,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                             BizData = fieldBizDataService.ConvertToDictionaryList(interfaceAggregation.FieldListId, documents),
                             BizDataTotalCount = totalCount
                         };
-                        tableListComponent = triggerScriptService.TableListAfter(tableListComponent, 1);
+                        tableListComponent = triggerScriptEngineService.TableListAfter(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, tableListComponent);
                         return JsonResultModel.Success("Get Data List Success", tableListComponent);
                     case InterfaceType.CloudCount:
                         var count = dataAccessService.GetBsonDocumentCountByCondition(filter);
@@ -117,7 +118,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
             }
             catch (Exception ex)
             {
-                return JsonResultModel.Error(JsonConvert.SerializeObject(ex));
+                return JsonResultModel.Error(ex.Message);
             }
         }
 
