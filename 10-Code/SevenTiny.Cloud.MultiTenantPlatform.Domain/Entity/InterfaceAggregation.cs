@@ -18,5 +18,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity
         public int FieldListId { get; set; }
         [Column]
         public string FieldListName { get; set; }
+        [Column]
+        public string Script { get; set; }
     }
 }

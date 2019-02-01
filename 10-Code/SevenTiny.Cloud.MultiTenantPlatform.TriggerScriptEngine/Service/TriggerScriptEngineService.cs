@@ -1,5 +1,7 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
+using MongoDB.Bson;
+using MongoDB.Driver;
 using SevenTiny.Bantina.Caching;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Enum;
@@ -29,7 +31,105 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Service
         /// </summary>
         private readonly string USING_SEPARATOR = "//end using";
 
-        #region TableList
+        /// <summary>
+        /// 引入公共的命名控件
+        /// </summary>
+        private string GeneralUsing
+            => @"
+            using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
+                ";
+        /// <summary>
+        /// 公共导入程序集
+        /// </summary>
+        private string[] GeneralRefrences
+            => new string[] {
+                "System",
+                "System.Text",
+                "System.Linq",
+                "System.Collections.Generic",
+                "SevenTiny.Cloud.MultiTenantPlatform.Domain",
+                "Newtonsoft.Json"
+            };
+
+        /// <summary>
+        /// 通用的执行脚本的方法
+        /// </summary>
+        /// <typeparam name="TResult">返回值类型</typeparam>
+        /// <typeparam name="TArg">参数类型</typeparam>
+        /// <param name="operateCode">操作码</param>
+        /// <param name="triggerScript">触发器脚本</param>
+        /// <param name="executeMethod">执行方法名</param>
+        /// <param name="arg">参数</param>
+        /// <returns></returns>
+        private TResult CommonExecute<TResult, TArg>(string operateCode, string triggerScript, string executeMethod, TArg arg)
+        {
+            //校验脚本正确性
+            if (string.IsNullOrEmpty(triggerScript))
+                throw new ArgumentNullException("triggerScript", "triggerScript not fount");
+
+            var hashKey = $"{operateCode}_{triggerScript.GetHashCode()}".GetHashCode();
+            var triggerScriptInCache = TriggerScriptCache.GetSet(hashKey, () =>
+            {
+                //检查标识是否存在
+                if (!triggerScript.Contains(USING_SEPARATOR))
+                    throw new KeyNotFoundException($"{USING_SEPARATOR} not found in trigger script");
+
+                string[] scriptArray = Regex.Split(triggerScript, USING_SEPARATOR, RegexOptions.IgnoreCase);
+
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.Append(GeneralUsing);
+
+                //append using
+                stringBuilder.Append(scriptArray[0]);
+
+                stringBuilder.Append("public class TriggerScript_Class");
+                stringBuilder.Append("{");
+                stringBuilder.Append(scriptArray[1]);
+                stringBuilder.Append("}");
+
+                stringBuilder.Append($"return new TriggerScript_Class().{executeMethod};");
+
+                var script = CSharpScript.Create<TResult>(stringBuilder.ToString(),
+                    ScriptOptions.Default
+                    .AddReferences(GeneralRefrences),
+                    globalsType: typeof(TArg)
+                    );
+
+                script.Compile();
+
+                return script;
+            });
+
+            var result = triggerScriptInCache.RunAsync(globals: arg).Result.ReturnValue;
+
+            return result;
+        }
+
+        /// <summary>
+        /// 通用的执行前条件触发器脚本
+        /// </summary>
+        /// <param name="operateCode"></param>
+        /// <param name="condition"></param>
+        /// <param name="triggerScript"></param>
+        /// <returns></returns>
+        private FilterDefinition<BsonDocument> ExecuteQueryBefore(string operateCode, FilterDefinition<BsonDocument> condition, string triggerScript)
+        {
+            return CommonExecute<FilterDefinition<BsonDocument>, QueryBeforeArg>(operateCode, triggerScript, "QueryBefore(operateCode,condition)", new QueryBeforeArg { operateCode = operateCode, condition = condition });
+        }
+
+        //TableList触发器
+        public FilterDefinition<BsonDocument> TableListBefore(int metaObjectId, string operateCode, FilterDefinition<BsonDocument> condition)
+        {
+            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.TableList, (int)TriggerPoint.Before);
+            if (triggerScripts != null && triggerScripts.Any())
+            {
+                foreach (var item in triggerScripts)
+                {
+                    condition = ExecuteQueryBefore(operateCode, condition, item.Script);
+                }
+            }
+            return condition;
+        }
         public TableListComponent TableListAfter(int metaObjectId, string operateCode, TableListComponent tableListComponent)
         {
             var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.TableList, (int)TriggerPoint.After);
@@ -37,55 +137,25 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Service
             {
                 foreach (var item in triggerScripts)
                 {
-                    tableListComponent = ExecuteTableListAfter(operateCode, tableListComponent, item.Script);
+                    tableListComponent = CommonExecute<TableListComponent, TableListArg>(operateCode, item.Script, "TableListAfter(operateCode,tableListComponent)", new TableListArg { operateCode = operateCode, tableListComponent = tableListComponent });
                 }
             }
             return tableListComponent;
         }
 
-        private TableListComponent ExecuteTableListAfter(string operateCode, TableListComponent tableListComponent, string triggerScript)
+        //SingleObject触发器
+        public FilterDefinition<BsonDocument> SingleObjectBefore(int metaObjectId, string operateCode, FilterDefinition<BsonDocument> condition)
         {
-            var hashKey = $"{operateCode}_{triggerScript.GetHashCode()}".GetHashCode();
-            var triggerScriptInCache = TriggerScriptCache.GetSet(hashKey, () =>
+            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.SingleObject, (int)TriggerPoint.Before);
+            if (triggerScripts != null && triggerScripts.Any())
             {
-                //检查标识是否存在
-                if (!triggerScript.Contains(USING_SEPARATOR))
-                    throw new KeyNotFoundException($"{USING_SEPARATOR} not found in trigger script");
-
-                string[] scriptArray = Regex.Split(triggerScript, USING_SEPARATOR, RegexOptions.IgnoreCase);
-
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.Append("using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;");
-
-                //append using
-                stringBuilder.Append(scriptArray[0]);
-
-                stringBuilder.Append("public class TriggerScript_Class");
-                stringBuilder.Append("{");
-                stringBuilder.Append(scriptArray[1]);
-                stringBuilder.Append("}");
-
-                stringBuilder.Append("return new TriggerScript_Class().TableListAfter(operateCode,tableListComponent);");
-
-                var script = CSharpScript.Create<TableListComponent>(stringBuilder.ToString(),
-                    ScriptOptions.Default
-                    //引用dll
-                    .AddReferencesGeneral(),
-                    globalsType: typeof(TableListArg)
-                    );
-
-                script.Compile();
-
-                return script;
-            });
-
-            var result = triggerScriptInCache.RunAsync(globals: new TableListArg { operateCode = operateCode, tableListComponent = tableListComponent }).Result.ReturnValue;
-
-            return result;
+                foreach (var item in triggerScripts)
+                {
+                    condition = ExecuteQueryBefore(operateCode, condition, item.Script);
+                }
+            }
+            return condition;
         }
-        #endregion
-
-        #region SingleObject
         public SingleObjectComponent SingleObjectAfter(int metaObjectId, string operateCode, SingleObjectComponent singleObjectComponent)
         {
             var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.SingleObject, (int)TriggerPoint.After);
@@ -93,65 +163,43 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Service
             {
                 foreach (var item in triggerScripts)
                 {
-                    singleObjectComponent = ExecuteSingleObjectAfter(operateCode, singleObjectComponent, item.Script);
+                    singleObjectComponent = CommonExecute<SingleObjectComponent, SingleObjectArg>(operateCode, item.Script, "SingleObjectAfter(operateCode,singleObjectComponent)", new SingleObjectArg { operateCode = operateCode, singleObjectComponent = singleObjectComponent });
                 }
             }
             return singleObjectComponent;
         }
 
-        private SingleObjectComponent ExecuteSingleObjectAfter(string operateCode, SingleObjectComponent singleObjectComponent, string triggerScript)
+        //Count触发器
+        public FilterDefinition<BsonDocument> CountBefore(int metaObjectId, string operateCode, FilterDefinition<BsonDocument> condition)
         {
-            var hashKey = $"{operateCode}_{triggerScript.GetHashCode()}".GetHashCode();
-            var triggerScriptInCache = TriggerScriptCache.GetSet(hashKey, () =>
+            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.Count, (int)TriggerPoint.Before);
+            if (triggerScripts != null && triggerScripts.Any())
             {
-                //检查标识是否存在
-                if (!triggerScript.Contains(USING_SEPARATOR))
-                    throw new KeyNotFoundException($"{USING_SEPARATOR} not found in trigger script");
-
-                string[] scriptArray = Regex.Split(triggerScript, USING_SEPARATOR, RegexOptions.IgnoreCase);
-
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.Append("using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;");
-
-                //append using
-                stringBuilder.Append(scriptArray[0]);
-
-                stringBuilder.Append("public class TriggerScript_Class");
-                stringBuilder.Append("{");
-                stringBuilder.Append(scriptArray[1]);
-                stringBuilder.Append("}");
-
-                stringBuilder.Append("return new TriggerScript_Class().SingleObjectAfter(operateCode,singleObjectComponent);");
-
-                var script = CSharpScript.Create<SingleObjectComponent>(stringBuilder.ToString(),
-                    ScriptOptions.Default
-                    //引用dll
-                    .AddReferencesGeneral(),
-                    globalsType: typeof(SingleObjectArg)
-                    );
-
-                script.Compile();
-
-                return script;
-            });
-
-            var result = triggerScriptInCache.RunAsync(globals: new SingleObjectArg { operateCode = operateCode, singleObjectComponent = singleObjectComponent }).Result.ReturnValue;
-
-            return result;
+                foreach (var item in triggerScripts)
+                {
+                    condition = ExecuteQueryBefore(operateCode, condition, item.Script);
+                }
+            }
+            return condition;
         }
-        #endregion
-    }
-
-    public static class ScriptOptionsExtension
-    {
-        public static ScriptOptions AddReferencesGeneral(this ScriptOptions scriptOptions)
+        public int CountAfter(int metaObjectId, string operateCode, int count)
         {
-            return scriptOptions
-                .AddReferences("System")
-                .AddReferences("System.Collections.Generic")
-                .AddReferences("System.Linq")
-                .AddReferences("System.Text")
-                .AddReferences("SevenTiny.Cloud.MultiTenantPlatform.Domain");
+            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.Count, (int)TriggerPoint.After);
+            if (triggerScripts != null && triggerScripts.Any())
+            {
+                foreach (var item in triggerScripts)
+                {
+                    count = CommonExecute<int, CountArg>(operateCode, item.Script, "CountAfter(operateCode,count)", new CountArg { operateCode = operateCode, count = count });
+                }
+            }
+            return count;
+
+        }
+
+        //触发器数据源
+        public object TriggerScriptDataSource(string operateCode, Dictionary<string, object> argumentsDic, string script)
+        {
+            return CommonExecute<object, TriggerScriptDataSourceArg>(operateCode, script, "TriggerScriptDataSource(operateCode,argumentsDic)", new TriggerScriptDataSourceArg { operateCode = operateCode, argumentsDic = argumentsDic });
         }
     }
 }

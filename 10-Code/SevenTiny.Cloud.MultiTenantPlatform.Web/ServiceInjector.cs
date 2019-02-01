@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain;
-using SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Web
 {
@@ -13,7 +12,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web
         public static void InjectWeb(this IServiceCollection services)
         {
             services.InjectDomain();
-            services.InjectTriggerScriptEngine();
         }
     }
 }

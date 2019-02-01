@@ -1,12 +1,11 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
-using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Models
 {
-    public class TableListArg
+    public class QueryBeforeArg
     {
         public string operateCode { get; set; }
-        public TableListComponent tableListComponent { get; set; }
+        public FilterDefinition<BsonDocument> condition { get; set; }
     }
 }

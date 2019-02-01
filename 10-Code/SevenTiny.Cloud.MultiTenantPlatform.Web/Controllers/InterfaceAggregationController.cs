@@ -11,19 +11,22 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 {
     public class InterfaceAggregationController : ControllerBase
     {
-        private readonly IInterfaceAggregationService interfaceAggregationService;
-        private readonly IFieldListService interfaceFieldService;
-        private readonly ISearchConditionService searchConditionService;
+        readonly IInterfaceAggregationService interfaceAggregationService;
+        readonly IFieldListService interfaceFieldService;
+        readonly ISearchConditionService searchConditionService;
+        readonly ITriggerScriptService triggerScriptService;
 
         public InterfaceAggregationController(
             IInterfaceAggregationService _interfaceAggregationService,
             IFieldListService _interfaceFieldService,
-            ISearchConditionService _searchConditionService
+            ISearchConditionService _searchConditionService,
+            ITriggerScriptService _triggerScriptService
             )
         {
             this.interfaceAggregationService = _interfaceAggregationService;
             this.interfaceFieldService = _interfaceFieldService;
             this.searchConditionService = _searchConditionService;
+            triggerScriptService = _triggerScriptService;
         }
 
         public IActionResult List()
@@ -47,7 +50,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
         {
             ViewData["InterfaceFields"] = interfaceFieldService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
             ViewData["SearchConditions"] = searchConditionService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
-            return View();
+            return View(ResponseModel.Success(new InterfaceAggregation { Script = triggerScriptService.GetDefaultTriggerScriptDataSourceScript() }));
         }
 
         public IActionResult AddLogic(InterfaceAggregation entity)
@@ -77,13 +80,23 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
                 return View("Add", checkResult.ToResponseModel());
             }
 
-            if (entity.FieldListId == default(int))
+            if (entity.InterfaceType == (int)InterfaceType.TriggerScriptDataSource)
             {
-                return View("Add", ResponseModel.Error("接口字段不能为空", entity));
+                if (string.IsNullOrEmpty(entity.Script))
+                {
+                    return View("Add", ResponseModel.Error("触发器脚本不能为空", entity));
+                }
             }
-            if (entity.SearchConditionId == default(int))
+            else
             {
-                return View("Add", ResponseModel.Error("条件不能为空", entity));
+                if (entity.FieldListId == default(int))
+                {
+                    return View("Add", ResponseModel.Error("接口字段不能为空", entity));
+                }
+                if (entity.SearchConditionId == default(int))
+                {
+                    return View("Add", ResponseModel.Error("条件不能为空", entity));
+                }
             }
 
             entity.MetaObjectId = CurrentMetaObjectId;
@@ -114,11 +127,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             }
             if (string.IsNullOrEmpty(entity.Name))
             {
-                return View("Add", ResponseModel.Error("名称不能为空", entity));
+                return View("Update", ResponseModel.Error("名称不能为空", entity));
             }
             if (string.IsNullOrEmpty(entity.Code))
             {
-                return View("Add", ResponseModel.Error("编码不能为空", entity));
+                return View("Update", ResponseModel.Error("编码不能为空", entity));
             }
 
             ////校验code格式
@@ -131,16 +144,26 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             var checkResult = interfaceAggregationService.CheckSameCodeOrName(CurrentMetaObjectId, entity);
             if (!checkResult.IsSuccess)
             {
-                return View("Add", checkResult.ToResponseModel());
+                return View("Update", checkResult.ToResponseModel());
             }
 
-            if (entity.FieldListId == default(int))
+            if (entity.InterfaceType == (int)InterfaceType.TriggerScriptDataSource)
             {
-                return View("Add", ResponseModel.Error("接口字段不能为空", entity));
+                if (string.IsNullOrEmpty(entity.Script))
+                {
+                    return View("Add", ResponseModel.Error("触发器脚本不能为空", entity));
+                }
             }
-            if (entity.SearchConditionId == default(int))
+            else
             {
-                return View("Add", ResponseModel.Error("条件不能为空", entity));
+                if (entity.FieldListId == default(int))
+                {
+                    return View("Add", ResponseModel.Error("接口字段不能为空", entity));
+                }
+                if (entity.SearchConditionId == default(int))
+                {
+                    return View("Add", ResponseModel.Error("条件不能为空", entity));
+                }
             }
 
             interfaceAggregationService.Update(entity);

@@ -76,17 +76,19 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                 var filter = conditionAggregationService.AnalysisConditionToFilterDefinition(interfaceAggregation.MetaObjectId, interfaceAggregation.SearchConditionId, argumentsDic);
 
                 //get result
-                switch (EnumsTranslaterUseInProgram.ToInterfaceType(interfaceAggregation.InterfaceType))
+                switch ((InterfaceType)interfaceAggregation.InterfaceType)
                 {
                     case InterfaceType.CloudSingleObject:
+                        filter = triggerScriptEngineService.SingleObjectBefore(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, filter);
                         var document = dataAccessService.GetBsonDocumentsByCondition(filter, 1, 1, out int singleCount)?.FirstOrDefault();
                         SingleObjectComponent singleObjectComponent = new SingleObjectComponent
                         {
                             BizData = fieldBizDataService.ConvertToDictionary(interfaceAggregation.FieldListId, document),
                         };
                         singleObjectComponent = triggerScriptEngineService.SingleObjectAfter(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, singleObjectComponent);
-                        return JsonResultModel.Success("Get Single Data Success", singleObjectComponent);
+                        return JsonResultModel.Success("get single data success", singleObjectComponent);
                     case InterfaceType.CloudTableList:
+                        filter = triggerScriptEngineService.TableListBefore(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, filter);
                         var documents = dataAccessService.GetBsonDocumentsByCondition(filter, queryArgs.pageIndex, queryArgs.pageSize, out int totalCount);
                         TableListComponent tableListComponent = new TableListComponent
                         {
@@ -94,17 +96,22 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                             BizDataTotalCount = totalCount
                         };
                         tableListComponent = triggerScriptEngineService.TableListAfter(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, tableListComponent);
-                        return JsonResultModel.Success("Get Data List Success", tableListComponent);
+                        return JsonResultModel.Success("get data list success", tableListComponent);
                     case InterfaceType.CloudCount:
+                        filter = triggerScriptEngineService.SingleObjectBefore(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, filter);
                         var count = dataAccessService.GetBsonDocumentCountByCondition(filter);
-                        return JsonResultModel.Success("Get Data Count Success", count);
+                        count = triggerScriptEngineService.CountAfter(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, count);
+                        return JsonResultModel.Success("get data count success", count);
                     case InterfaceType.EnumeDataSource:
                         break;
+                    case InterfaceType.TriggerScriptDataSource:
+                        object triggerScriptDataSourceResult = triggerScriptEngineService.TriggerScriptDataSource(interfaceAggregation.Code, argumentsDic, interfaceAggregation.Script);
+                        return JsonResultModel.Success("get trigger script result success", triggerScriptDataSourceResult);
                     default:
                         break;
                 }
 
-                return JsonResultModel.Success("Success,No Data");
+                return JsonResultModel.Success("success,no data");
             }
             catch (ArgumentNullException argNullEx)
             {

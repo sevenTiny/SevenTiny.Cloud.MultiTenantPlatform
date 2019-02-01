@@ -52,30 +52,30 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                 case TriggerPoint.Before:
                     switch ((ScriptType)scriptType)
                     {
-                        case ScriptType.TableList:
-                            break;
                         case ScriptType.Add:
                             break;
                         case ScriptType.Update:
                             break;
                         case ScriptType.Delete:
                             break;
-                        case ScriptType.SingleObject:
-                            break;
+                        case ScriptType.TableList: return DefaultQueryBeforeTriggerScript;
+                        case ScriptType.SingleObject: return DefaultQueryBeforeTriggerScript;
+                        case ScriptType.Count: return DefaultCountAfterTriggerScript;
                         default: return null;
                     }
                     break;
                 case TriggerPoint.After:
                     switch ((ScriptType)scriptType)
                     {
-                        case ScriptType.TableList: return DefaultTableListAfterTriggerScript;
                         case ScriptType.Add:
                             break;
                         case ScriptType.Update:
                             break;
                         case ScriptType.Delete:
                             break;
+                        case ScriptType.TableList: return DefaultTableListAfterTriggerScript;
                         case ScriptType.SingleObject: return DefaultSingleObjectAfterTriggerScript;
+                        case ScriptType.Count: return DefaultCountAfterTriggerScript;
                         default: return null;
                     }
                     break;
@@ -85,8 +85,29 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             return null;
         }
 
+        public string GetDefaultTriggerScriptDataSourceScript() => DefaultDataSourceTriggerScript;
+
+        private string DefaultQueryBeforeTriggerScript
+            => @"
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
+using MongoDB.Bson;
+using MongoDB.Driver;
+//end using
+//注释：上面的end using注释为using分隔符，请不要删除；
+//注释：输出日志请使用 logger.Error(),logger.Debug(),logger.Info()
+public FilterDefinition<BsonDocument> QueryBefore(string operateCode,FilterDefinition<BsonDocument> condition)
+{
+	//这里写业务逻辑
+	//...
+	return condition;
+}
+";
         private string DefaultTableListAfterTriggerScript
-        => @"
+            => @"
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -102,7 +123,6 @@ public TableListComponent TableListAfter(string operateCode,TableListComponent t
 	return tableListComponent;
 }
 ";
-
         private string DefaultSingleObjectAfterTriggerScript
             => @"
 using System;
@@ -118,6 +138,35 @@ public SingleObjectComponent SingleObjectAfter(string operateCode,SingleObjectCo
 	//这里写业务逻辑
 	//...
 	return singleObjectComponent;
+}
+";
+        private string DefaultCountAfterTriggerScript
+            => @"
+using System;
+//end using
+//注释：上面的end using注释为using分隔符，请不要删除；
+//注释：输出日志请使用 logger.Error(),logger.Debug(),logger.Info()
+public int CountAfter(string operateCode,int count)
+{
+	//这里写业务逻辑
+	//...
+	return count;
+}
+";
+        private string DefaultDataSourceTriggerScript
+    => @"
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+//end using
+//注释：上面的end using注释为using分隔符，请不要删除；
+//注释：输出日志请使用 logger.Error(),logger.Debug(),logger.Info()
+public object TriggerScriptDataSource(string operateCode, Dictionary<string, object> argumentsDic)
+{
+	//这里写业务逻辑
+	//...
+	return null;
 }
 ";
     }
