@@ -60,20 +60,22 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                             break;
                         case ScriptType.Delete:
                             break;
+                        case ScriptType.SingleObject:
+                            break;
                         default: return null;
                     }
                     break;
                 case TriggerPoint.After:
                     switch ((ScriptType)scriptType)
                     {
-                        case ScriptType.TableList:
-                            return DefaultTableListAfterTriggerScript;
+                        case ScriptType.TableList: return DefaultTableListAfterTriggerScript;
                         case ScriptType.Add:
                             break;
                         case ScriptType.Update:
                             break;
                         case ScriptType.Delete:
                             break;
+                        case ScriptType.SingleObject: return DefaultSingleObjectAfterTriggerScript;
                         default: return null;
                     }
                     break;
@@ -98,6 +100,24 @@ public TableListComponent TableListAfter(string operateCode,TableListComponent t
 	//这里写业务逻辑
 	//...
 	return tableListComponent;
+}
+";
+
+        private string DefaultSingleObjectAfterTriggerScript
+            => @"
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
+//end using
+//注释：上面的end using注释为using分隔符，请不要删除；
+//注释：输出日志请使用 logger.Error(),logger.Debug(),logger.Info()
+public SingleObjectComponent SingleObjectAfter(string operateCode,SingleObjectComponent singleObjectComponent)
+{
+	//这里写业务逻辑
+	//...
+	return singleObjectComponent;
 }
 ";
     }

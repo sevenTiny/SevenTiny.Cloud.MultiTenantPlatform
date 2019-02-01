@@ -3,6 +3,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
@@ -43,23 +44,26 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             //接口配置的字段字典
             var interfaceMetaFieldsDic = fieldAggregationService.GetMetaFieldsDicByFieldListId(InterfaceFieldId);
             List<Dictionary<string, FieldBizData>> resultList = new List<Dictionary<string, FieldBizData>>();
-            foreach (var elements in bsonElements)
+            if (bsonElements!=null&&bsonElements.Any())
             {
-                Dictionary<string, FieldBizData> keyValuePairs = new Dictionary<string, FieldBizData>();
-                foreach (var field in interfaceMetaFieldsDic)
+                foreach (var elements in bsonElements)
                 {
-                    //如果当前结果集包含字段
-                    if (elements.Contains(field.Key))
+                    Dictionary<string, FieldBizData> keyValuePairs = new Dictionary<string, FieldBizData>();
+                    foreach (var field in interfaceMetaFieldsDic)
                     {
-                        keyValuePairs.Add(field.Key, new FieldBizData
+                        //如果当前结果集包含字段
+                        if (elements.Contains(field.Key))
                         {
-                            Name = field.Key,
-                            Text = field.Value.Name,
-                            Value = elements[field.Key]
-                        });
+                            keyValuePairs.Add(field.Key, new FieldBizData
+                            {
+                                Name = field.Key,
+                                Text = field.Value.Name,
+                                Value = elements[field.Key]
+                            });
+                        }
                     }
+                    resultList.Add(keyValuePairs);
                 }
-                resultList.Add(keyValuePairs);
             }
             return resultList;
         }

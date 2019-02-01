@@ -5,5 +5,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.ServiceContrac
     public interface ITriggerScriptEngineService
     {
         TableListComponent TableListAfter(int metaObjectId, string operateCode, TableListComponent tableListComponent);
+        SingleObjectComponent SingleObjectAfter(int metaObjectId, string operateCode, SingleObjectComponent singleObjectComponent);
     }
 }

@@ -34,7 +34,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             //这里是选择对象的入口，预先设置Session
             HttpContext.Session.SetInt32("MetaObjectId", metaObjectId);
             var obj = metaObjectService.GetById(metaObjectId);
-            HttpContext.Session.SetString("MetaObjectCode", obj.Code);
+            if (obj != null)
+            {
+                HttpContext.Session.SetString("MetaObjectCode", obj.Code);
+            }
 
             return View(metaFieldService.GetEntitiesUnDeletedByMetaObjectId(metaObjectId));
         }

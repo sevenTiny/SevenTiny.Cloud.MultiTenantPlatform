@@ -9,6 +9,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.ServiceContract;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
 {
@@ -75,22 +76,19 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                 var filter = conditionAggregationService.AnalysisConditionToFilterDefinition(interfaceAggregation.MetaObjectId, interfaceAggregation.SearchConditionId, argumentsDic);
 
                 //get result
-                TableListComponent tableListComponent;
-                int totalCount;
-
                 switch (EnumsTranslaterUseInProgram.ToInterfaceType(interfaceAggregation.InterfaceType))
                 {
                     case InterfaceType.CloudSingleObject:
-                        var document = dataAccessService.GetBsonDocumentsByCondition(filter, 1, 1, out totalCount);
-                        tableListComponent = new TableListComponent
+                        var document = dataAccessService.GetBsonDocumentsByCondition(filter, 1, 1, out int singleCount)?.FirstOrDefault();
+                        SingleObjectComponent singleObjectComponent = new SingleObjectComponent
                         {
-                            BizData = fieldBizDataService.ConvertToDictionaryList(interfaceAggregation.FieldListId, document),
-                            BizDataTotalCount = totalCount
+                            BizData = fieldBizDataService.ConvertToDictionary(interfaceAggregation.FieldListId, document),
                         };
-                        return JsonResultModel.Success("Get Single Data Success", tableListComponent);
+                        singleObjectComponent = triggerScriptEngineService.SingleObjectAfter(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, singleObjectComponent);
+                        return JsonResultModel.Success("Get Single Data Success", singleObjectComponent);
                     case InterfaceType.CloudTableList:
-                        var documents = dataAccessService.GetBsonDocumentsByCondition(filter, queryArgs.pageIndex, queryArgs.pageSize, out totalCount);
-                        tableListComponent = new TableListComponent
+                        var documents = dataAccessService.GetBsonDocumentsByCondition(filter, queryArgs.pageIndex, queryArgs.pageSize, out int totalCount);
+                        TableListComponent tableListComponent = new TableListComponent
                         {
                             BizData = fieldBizDataService.ConvertToDictionaryList(interfaceAggregation.FieldListId, documents),
                             BizDataTotalCount = totalCount
