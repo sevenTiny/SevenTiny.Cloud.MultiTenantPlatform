@@ -1,6 +1,7 @@
 ﻿using SevenTiny.Bantina.Bankinate;
 using SevenTiny.Bantina.Bankinate.Attributes;
 using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Configs;
+using System;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity
 {
@@ -9,7 +10,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity
     {
         public MultiTenantPlatformDbContext() : base(ConnectionStringsConfig.Get("MultiTenantPlatformWeb"))
         {
-            //OpenQueryCache = true;//有bug，升级解决
+            //开启一级缓存
+            OpenQueryCache = false;
         }
     }
 }

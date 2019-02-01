@@ -1,0 +1,71 @@
+﻿@using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity
+@{
+    ViewData["Title"] = "InterfaceList";
+    Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
+
+    List<InterfaceAggregation> entities = ViewData["InterfaceAggregationList"] as List<InterfaceAggregation> ?? new List<InterfaceAggregation>();
+    string metaObjectCode = ViewData["MetaObjectCode"] as string;
+}
+<article class="cl pd-20">
+    <div class="cl pd-5 bg-1 bk-gray">
+        <span class="l">
+            <a class="btn btn-secondary-outline radius" href="javascript:history.back(-1);"><i class="Hui-iconfont">&#xe66b;</i> 返回</a>
+        </span>
+        <span class="r">共有数据：<strong>@entities?.Count</strong> 条</span>
+    </div>
+    <ul id="Huifold1" class="Huifold">
+        @foreach (var item in entities.OrderBy(t => t.SortNumber).ToList())
+        {
+            <li class="item mt-10">
+                <h4 style="background-color:#cbe7fc">@item.Code @item.Name<b>+</b></h4>
+                <div class="info">
+                    <div class="row pt-20 pl-20 pr-20">
+                        <span>查询接口：</span><span>/api/CloudData?interfaceCode=@item.Code</span>
+                    </div>
+                    <div class="row pt-20 pl-20 pr-20">
+                        <span>插入接口：</span><span>/api/CloudData?metaObjectCode=@metaObjectCode (数据json格式request body传递)</span>
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+</article>
+
+@await Html.PartialAsync($"~/Views/Shared/_FooterScripts.cshtml")
+@await Html.PartialAsync("~/Views/Shared/_CommonScript.cshtml")
+<script type="text/javascript">
+    jQuery.Huifold = function (obj, obj_c, speed, obj_type, Event) {
+        if (obj_type == 2) {
+            $(obj + ":first").find("b").html("-");
+            $(obj_c + ":first").show()
+        }
+        $(obj).bind(Event, function () {
+            if ($(this).next().is(":visible")) {
+                if (obj_type == 2) {
+                    return false
+                }
+                else {
+                    $(this).next().slideUp(speed).end().removeClass("selected");
+                    $(this).find("b").html("+")
+                }
+            }
+            else {
+                if (obj_type == 3) {
+                    $(this).next().slideDown(speed).end().addClass("selected");
+                    $(this).find("b").html("-")
+                } else {
+                    $(obj_c).slideUp(speed);
+                    $(obj).removeClass("selected");
+                    $(obj).find("b").html("+");
+                    $(this).next().slideDown(speed).end().addClass("selected");
+                    $(this).find("b").html("-")
+                }
+            }
+        })
+    }
+
+    $(function () {
+        $.Huifold("#Huifold1 .item h4", "#Huifold1 .item .info", "fast", 1, "click"); /*5个参数顺序不可打乱，分别是：相应区,隐藏显示的内容,速度,类型,事件*/
+    });
+</script>
+<!--/请在上方写此页面业务相关的脚本-->

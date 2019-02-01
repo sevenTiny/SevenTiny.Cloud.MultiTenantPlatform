@@ -1,13 +1,10 @@
-﻿using SevenTiny.Bantina.Bankinate;
+﻿using SevenTiny.Bantina.Bankinate.Attributes;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Enum;
-using SevenTiny.Bantina.Bankinate.Attributes;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity
 {
-    public class MetaField : CommonInfo
+    public class MetaField : MetaObjectManageInfo
     {
-        [Column]
-        public int MetaObjectId { get; set; }
         //=DataType
         [Column]
         public int FieldType { get; set; }

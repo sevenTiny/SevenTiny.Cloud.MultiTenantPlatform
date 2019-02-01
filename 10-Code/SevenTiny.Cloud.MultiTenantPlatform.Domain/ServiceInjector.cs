@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.DependencyInjection;
 using System.Reflection;
@@ -12,6 +13,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain
             services.AddScoped(Assembly.GetExecutingAssembly());
 
             services.AddScoped<MultiTenantPlatformDbContext>();
+            services.AddScoped<MultiTenantDataDbContext>();
         }
     }
 }

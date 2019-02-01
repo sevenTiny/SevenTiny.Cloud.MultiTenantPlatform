@@ -6,7 +6,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity
     /// <summary>
     /// EntityInfo Standard Property
     /// </summary>
-    public class CommonInfo
+    public abstract class CommonInfo
     {
         [Key]
         [Column]

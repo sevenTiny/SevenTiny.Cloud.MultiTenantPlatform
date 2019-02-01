@@ -1,5 +1,4 @@
-﻿using SevenTiny.Bantina.Bankinate;
-using SevenTiny.Bantina.Bankinate.Attributes;
+﻿using SevenTiny.Bantina.Bankinate.Attributes;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity
 {
@@ -7,19 +6,17 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity
     /// 组织接口
     /// </summary>
     [Table]
-    public class InterfaceAggregation : CommonInfo
+    public class InterfaceAggregation : MetaObjectManageInfo
     {
-        [Column]
-        public int MetaObjectId { get; set; }
-        [Column]
-        public int InterfaceSearchConditionId { get; set; }
-        [Column]
-        public string InterfaceSearchConditionName { get; set; }
-        [Column]
-        public int InterfaceFieldId { get; set; }
         [Column]
         public int InterfaceType { get; set; }
         [Column]
-        public string InterfaceFieldName { get; set; }
+        public int SearchConditionId { get; set; }
+        [Column]
+        public string SearchConditionName { get; set; }
+        [Column]
+        public int FieldListId { get; set; }
+        [Column]
+        public string FieldListName { get; set; }
     }
 }

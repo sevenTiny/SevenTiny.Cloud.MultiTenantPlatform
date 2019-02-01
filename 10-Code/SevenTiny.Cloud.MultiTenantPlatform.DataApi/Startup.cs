@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain;
+using SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi
 {
@@ -27,8 +23,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi
             //session support
             services.AddDistributedMemoryCache();
             services.AddSession();
-            //DI,可以选择使用哪种方式进行注入
-            services = ServiceInjector.NetCoreInject(services);
+            //DI
+            services.InjectDomain();
+            services.InjectTriggerScriptEngine();
             //end 7tiny ---
 
             services.AddMvc();

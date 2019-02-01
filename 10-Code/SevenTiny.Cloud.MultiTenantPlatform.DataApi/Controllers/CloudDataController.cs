@@ -1,91 +1,165 @@
-﻿//using Microsoft.AspNetCore.Mvc;
-//using MongoDB.Bson;
-//using Newtonsoft.Json;
-//using SevenTiny.Cloud.MultiTenantPlatform.Application.ServiceContract;
-//using SevenTiny.Cloud.MultiTenantPlatform.DataApi.Models;
-//using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Checker;
-//using System;
-//using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using SevenTiny.Cloud.MultiTenantPlatform.DataApi.Models;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.Enum;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
+using SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.ServiceContract;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
-//namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
-//{
-//    [Produces("application/json")]
-//    [Route("api/CloudData")]
-//    public class CloudDataController : Controller
-//    {
-//        private readonly IAggregationConditionService _aggregationConditionService;
-//        private readonly IInterfaceAggregationService _interfaceAggregationService;
-//        private readonly IMultitenantDataService _multitenantDataService;
-//        public CloudDataController(IAggregationConditionService aggregationConditionService, IInterfaceAggregationService interfaceAggregationService, IMultitenantDataService multitenantDataService)
-//        {
-//            _aggregationConditionService = aggregationConditionService;
-//            _interfaceAggregationService = interfaceAggregationService;
-//            _multitenantDataService = multitenantDataService;
-//        }
+namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
+{
+    //[Produces("application/json")]
+    [Route("api/CloudData")]
+    [ApiController]
+    public class CloudDataController : ControllerBase
+    {
+        public CloudDataController(
+            IDataAccessService _dataAccessService,
+            ISearchConditionAggregationService _conditionAggregationService,
+            IInterfaceAggregationService _interfaceAggregationService,
+            IFieldBizDataService _fieldBizDataService,
+            ITriggerScriptEngineService _triggerScriptEngineService
+            )
+        {
+            dataAccessService = _dataAccessService;
+            conditionAggregationService = _conditionAggregationService;
+            interfaceAggregationService = _interfaceAggregationService;
+            fieldBizDataService = _fieldBizDataService;
+            triggerScriptEngineService = _triggerScriptEngineService;
+        }
 
-//        public IActionResult Get(int tenantId, QueryArgs queryArgs)
-//        {
-//            try
-//            {
-//                //1.args check
-//                if (queryArgs == null)
-//                {
-//                    throw new ArgumentNullException("queryArgs can not be null!");
-//                }
-//                queryArgs.QueryArgsCheck();
+        readonly IDataAccessService dataAccessService;
+        readonly IInterfaceAggregationService interfaceAggregationService;
+        readonly ISearchConditionAggregationService conditionAggregationService;
+        readonly IFieldBizDataService fieldBizDataService;
+        readonly ITriggerScriptEngineService triggerScriptEngineService;
 
-//                //2.argumentsDic generate
-//                Dictionary<string, object> argumentsDic = new Dictionary<string, object>();
-//                foreach (var item in Request.Form)
-//                {
-//                    if (!argumentsDic.ContainsKey(item.Key))
-//                    {
-//                        argumentsDic.Add(item.Key, item.Value);
-//                    }
-//                }
-//                foreach (var item in Request.Query)
-//                {
-//                    if (!argumentsDic.ContainsKey(item.Key))
-//                    {
-//                        argumentsDic.Add(item.Key, item.Value);
-//                    }
-//                }
+        [HttpGet]
+        public IActionResult Get([FromQuery]QueryArgs queryArgs)
+        {
+            try
+            {
+                //args check
+                if (queryArgs == null)
+                {
+                    return JsonResultModel.Error($"Parameter invalid:queryArgs = null");
+                }
 
-//                //3.get filter
-//                int conditionId = _interfaceAggregationService.GetConditionAggregationByInterfaceAggregationCode(queryArgs.interfaceCode)?.Id ?? 0;
-//                var filter = _aggregationConditionService.AnalysisConditionToFilterDefinition(conditionId, argumentsDic);
+                var checkResult = queryArgs.QueryArgsCheck();
 
-//                //4.query result
-//                object data = _multitenantDataService.GetObjectDatasByCondition(tenantId, filter, queryArgs.pageIndex, queryArgs.pageSize);
+                if (!checkResult.IsSuccess)
+                {
+                    return checkResult.ToJsonResultModel();
+                }
 
-//                return JsonResultModel.Success("get data success", data);
-//            }
-//            catch (ArgumentException argEx)
-//            {
-//                return JsonResultModel.Error(argEx.Message);
-//            }
-//            catch (Exception ex)
-//            {
-//                return JsonResultModel.Error(JsonConvert.SerializeObject(ex));
-//            }
-//        }
+                //argumentsDic generate
+                Dictionary<string, object> argumentsDic = new Dictionary<string, object>();
+                foreach (var item in Request.Query)
+                {
+                    if (!argumentsDic.ContainsKey(item.Key))
+                    {
+                        argumentsDic.Add(item.Key.ToUpperInvariant(), item.Value);
+                    }
+                }
 
-//        public IActionResult Post(int tenantId, BsonDocument bsons)
-//        {
-//            ArgumentsChecker.CheckTenantId(tenantId);
-//            ArgumentsChecker.CheckNull("bsons", bsons);
-//            _multitenantDataService.Add(tenantId, bsons);
-//            return JsonResultModel.Success("add success");
-//        }
+                //get filter
+                var interfaceAggregation = interfaceAggregationService.GetByMetaObjectIdAndInterfaceAggregationCode(queryArgs.interfaceCode);
+                if (interfaceAggregation == null)
+                {
+                    return JsonResultModel.Error($"未能找到接口编码为[{queryArgs.interfaceCode}]对应的接口信息");
+                }
+                var filter = conditionAggregationService.AnalysisConditionToFilterDefinition(interfaceAggregation.MetaObjectId, interfaceAggregation.SearchConditionId, argumentsDic);
 
-//        public IActionResult Update()
-//        {
-//            return null;
-//        }
+                //get result
+                switch (EnumsTranslaterUseInProgram.ToInterfaceType(interfaceAggregation.InterfaceType))
+                {
+                    case InterfaceType.CloudSingleObject:
+                        var document = dataAccessService.GetBsonDocumentsByCondition(filter, 1, 1, out int singleCount)?.FirstOrDefault();
+                        SingleObjectComponent singleObjectComponent = new SingleObjectComponent
+                        {
+                            BizData = fieldBizDataService.ConvertToDictionary(interfaceAggregation.FieldListId, document),
+                        };
+                        singleObjectComponent = triggerScriptEngineService.SingleObjectAfter(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, singleObjectComponent);
+                        return JsonResultModel.Success("Get Single Data Success", singleObjectComponent);
+                    case InterfaceType.CloudTableList:
+                        var documents = dataAccessService.GetBsonDocumentsByCondition(filter, queryArgs.pageIndex, queryArgs.pageSize, out int totalCount);
+                        TableListComponent tableListComponent = new TableListComponent
+                        {
+                            BizData = fieldBizDataService.ConvertToDictionaryList(interfaceAggregation.FieldListId, documents),
+                            BizDataTotalCount = totalCount
+                        };
+                        tableListComponent = triggerScriptEngineService.TableListAfter(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, tableListComponent);
+                        return JsonResultModel.Success("Get Data List Success", tableListComponent);
+                    case InterfaceType.CloudCount:
+                        var count = dataAccessService.GetBsonDocumentCountByCondition(filter);
+                        return JsonResultModel.Success("Get Data Count Success", count);
+                    case InterfaceType.EnumeDataSource:
+                        break;
+                    default:
+                        break;
+                }
 
-//        public IActionResult Delete()
-//        {
-//            return null;
-//        }
-//    }
-//}
+                return JsonResultModel.Success("Success,No Data");
+            }
+            catch (ArgumentNullException argNullEx)
+            {
+                return JsonResultModel.Error(argNullEx.Message);
+            }
+            catch (ArgumentException argEx)
+            {
+                return JsonResultModel.Error(argEx.Message);
+            }
+            catch (Exception ex)
+            {
+                return JsonResultModel.Error(ex.Message);
+            }
+        }
+
+        /**
+         Content-Type: application/json
+         * */
+        [HttpPost]
+        public IActionResult Post(string metaObjectCode, [FromBody]JObject jObj)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(metaObjectCode))
+                    return JsonResultModel.Error($"Parameter invalid:metaObjectCode = null");
+                if (jObj == null)
+                    return JsonResultModel.Error($"Parameter invalid:data = null");
+
+                var json = jObj.ToString();
+                var bson = BsonDocument.Parse(json);
+
+                //add data
+                var addResult = dataAccessService.Add(metaObjectCode, bson);
+
+                return addResult.ToJsonResultModel();
+            }
+            catch (Exception ex)
+            {
+                return JsonResultModel.Error(ex.ToString());
+            }
+        }
+
+        [HttpPut]
+        public IActionResult Update()
+        {
+            BsonDocument bson = new BsonDocument();
+            bson.Add(new BsonElement("name", "zhangsan"));
+            bson.Add(new BsonElement("age", "21"));
+            return new JsonResult(bson);
+        }
+
+        [HttpDelete]
+        public IActionResult Delete()
+        {
+            return null;
+        }
+    }
+}

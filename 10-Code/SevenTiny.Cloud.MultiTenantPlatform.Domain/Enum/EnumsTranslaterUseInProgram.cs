@@ -37,5 +37,36 @@
                     return string.Empty;
             }
         }
+        public static DataType ToDataType(int dataType)
+        {
+            switch (dataType)
+            {
+                case 0: return DataType.Unknown;
+                case 1: return DataType.Number;
+                case 2: return DataType.Text;
+                case 3: return DataType.DateTime;
+                case 4: return DataType.Date;
+                case 5: return DataType.Boolean;
+                case 6: return DataType.Int;
+                case 7: return DataType.Long;
+                case 9: return DataType.Double;
+                case 10: return DataType.DataSource;
+                case 11: return DataType.StandradDate;
+                case 12: return DataType.StandradDateTime;
+                default: return DataType.Unknown;
+            }
+        }
+
+        public static InterfaceType ToInterfaceType(int interfaceType)
+        {
+            switch (interfaceType)
+            {
+                case 1: return InterfaceType.CloudSingleObject;
+                case 2: return InterfaceType.CloudTableList;
+                case 3: return InterfaceType.CloudCount;
+                case 4: return InterfaceType.EnumeDataSource;
+                default: return InterfaceType.CloudCount;
+            }
+        }
     }
 }

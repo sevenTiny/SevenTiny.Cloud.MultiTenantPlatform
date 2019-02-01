@@ -5,7 +5,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 {
-    public class ApplicationController : Controller
+    public class ApplicationController : ControllerBase
     {
         IApplicationService applicationService;
         IMetaObjectService metaObjectService;
@@ -16,6 +16,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
         {
             applicationService = _applicationService;
             metaObjectService = _metaObjectService;
+        }
+
+        public IActionResult Setting()
+        {
+            return View();
         }
 
         public IActionResult Select()
@@ -113,9 +118,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 
             HttpContext.Session.SetInt32("ApplicationId", application.Id);
             HttpContext.Session.SetString("ApplicationCode", application.Code);
-
-            ViewData["Application"] = app;
-            ViewData["MetaObjects"] = metaObjectService.GetMetaObjectsUnDeletedByApplicationId(application.Id);
+            ViewData["Application"] = application.Code;
 
             return View();
         }

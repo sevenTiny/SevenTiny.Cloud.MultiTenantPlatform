@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using SevenTiny.Cloud.MultiTenantPlatform.Application;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain;
+using SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Web
 {
@@ -11,8 +12,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web
         //使用.netcore自带的DI
         public static void InjectWeb(this IServiceCollection services)
         {
-            //注入Application层的实例
-            services.InjectApplication();
+            services.InjectDomain();
+            services.InjectTriggerScriptEngine();
         }
     }
 }

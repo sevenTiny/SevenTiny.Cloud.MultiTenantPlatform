@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SevenTiny.Cloud.MultiTenantPlatform.Application.ServiceContract;
+using SevenTiny.Bantina.Validation;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
@@ -8,19 +8,21 @@ using System;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 {
-    public class MetaObjectController : Controller
+    public class MetaObjectController : ControllerBase
     {
         IMetaObjectService metaObjectService;
-        IMetaObjectAppService metaObjectAppService;
 
-        public MetaObjectController(IMetaObjectService _metaObjectService,IMetaObjectAppService _metaObjectAppService)
+        public MetaObjectController(IMetaObjectService _metaObjectService)
         {
             metaObjectService = _metaObjectService;
-            metaObjectAppService = _metaObjectAppService;
         }
 
-        private int CurrentApplicationId => HttpContext.Session.GetInt32("ApplicationId") ?? throw new ArgumentNullException("ApplicationId is null,please select application first!");
-        private string CurrentApplicationCode => HttpContext.Session.GetString("ApplicationCode") ?? throw new ArgumentNullException("ApplicationCode is null,please select application first!");
+        public IActionResult Setting()
+        {
+            ViewData["MetaObjects"] = metaObjectService.GetMetaObjectsUnDeletedByApplicationId(CurrentApplicationId);
+
+            return View();
+        }
 
         public IActionResult List()
         {
@@ -48,8 +50,13 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             {
                 return View("Add", ResponseModel.Error("MetaObject Code Can Not Be Null！", metaObject));
             }
+            //校验code格式
+            if (!metaObject.Code.IsAlnum(2, 50))
+            {
+                return View("Add", ResponseModel.Error("编码不合法，2-50位且只能包含字母和数字（字母开头）", metaObject));
+            }
 
-            var addResult = metaObjectAppService.AddMetaObject(CurrentApplicationId, CurrentApplicationCode, metaObject);
+            var addResult = metaObjectService.AddMetaObject(CurrentApplicationId, CurrentApplicationCode, metaObject);
             if (!addResult.IsSuccess)
             {
                 return View("Add", addResult.ToResponseModel());
@@ -57,7 +64,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 
             return RedirectToAction("List");
         }
-
 
         public IActionResult Update(int id)
         {
@@ -80,6 +86,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             {
                 return View("Update", ResponseModel.Error("MetaObject Code Can Not Be Null！", metaObject));
             }
+            //校验code格式，编辑时界面会将'.'传递到后台，不能用下面正则校验，且编辑操作并不会更新编码，无需在此校验
+            //if (!metaObject.Code.IsAlnum(2, 50))
+            //{
+            //    return View("Update", ResponseModel.Error("编码不合法，2-50位且只能包含字母和数字（字母开头）", metaObject));
+            //}
+
             if (metaObjectService.ExistSameNameWithOtherIdByApplicationId(CurrentApplicationId, metaObject.Id, metaObject.Name))
             {
                 return View("Update", ResponseModel.Error("MetaObject Name Has Been Exist！", metaObject));
@@ -91,7 +103,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 
         public IActionResult Delete(int id)
         {
-            metaObjectAppService.Delete(id);
+            metaObjectService.Delete(id);
             return JsonResultModel.Success("删除成功");
         }
 
@@ -110,6 +122,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
         public IActionResult Switch(int id)
         {
             HttpContext.Session.SetInt32("MetaObjectId", id);
+            var obj = metaObjectService.GetById(id);
+            HttpContext.Session.SetString("MetaObjectCode", obj.Code);
+
             //这里换成当前MetaObject的MetaFields列表
             return Redirect("/MetaField/List");
         }

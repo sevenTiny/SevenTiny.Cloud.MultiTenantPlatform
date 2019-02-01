@@ -1,6 +1,7 @@
 ﻿using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
 using System;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
@@ -20,7 +21,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         public bool ExistForSameNameAndNotSameId(string name, int id)
             => dbContext.QueryExist<Application>(t => t.Name.Equals(name) && t.Id != id);
 
-        public new void Update(Application application)
+        public new ResultModel Update(Application application)
         {
             var app = GetById(application.Id);
             if (app != null)
@@ -35,8 +36,13 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
 
                 dbContext.Update(t => t.Id == application.Id, app);
             }
+            return ResultModel.Success();
         }
 
-        public new void Delete(int id) { }
+        public new ResultModel Delete(int id)
+        {
+            throw new NotImplementedException();
+            return ResultModel.Success();
+        }
     }
 }

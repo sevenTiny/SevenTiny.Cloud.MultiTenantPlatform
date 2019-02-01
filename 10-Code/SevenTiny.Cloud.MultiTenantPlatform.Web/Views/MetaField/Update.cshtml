@@ -3,65 +3,57 @@
 @using System.Linq;
 @{
     ViewData["Title"] = "Update";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
 }
 @{
-    ActionResultModel<MetaField> result = Model as ActionResultModel<MetaField> ?? new ActionResultModel<MetaField>(true, string.Empty, new MetaField());
+    ResponseModel result = Model as ResponseModel ?? new ResponseModel();
+    MetaField metaField = result.Data as MetaField ?? new MetaField();
     Array dataTypes = Enum.GetValues(typeof(DataType));
+    Array trueFalse = Enum.GetValues(typeof(TrueFalse));
     //不显示的数据类型
     DataType[] dataTypesExclude = new[] { DataType.Unknown, DataType.StandradDate, DataType.StandradDateTime };
 }
 
-<nav class="breadcrumb">
-    <i class="Hui-iconfont">&#xe67f;</i> 首页
-    <span class="c-gray en">&gt;</span>
-    对象管理
-    <span class="c-gray en">&gt;</span>
-    添加对象
-    <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a>
-</nav>
+@{
+    ViewData["Level_1"] = "对象管理";
+    ViewData["Level_2"] = "修改字段";
+}
+@await Html.PartialAsync("~/Views/Shared/PartialNav.cshtml")
 
 <article class="page-container">
-    <form class="form form-horizontal" id="form-article-add" method="post" action="/MetaField/UpdateLogic">
-        <input type="text" class="input-text" value="@result.Data.Id" placeholder="" id="" name="id" hidden>
+    <form class="form form-horizontal validate" id="form-article-add" method="post" action="/MetaField/UpdateLogic">
+        <input type="text" class="input-text" value="@metaField.Id" name="id" hidden>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>名称：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="@result.Data.Name" placeholder="" id="" name="name">
+                <input type="text" class="input-text" value="@metaField.Name" name="name" required minLength="2" maxlength="50">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>编码：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" style="background-color:#e8e8e8;" value="@result.Data.Code" placeholder="" id="" name="code" readonly="readonly">
+                <input type="text" class="input-text" style="background-color:#e8e8e8;" value="@metaField.Code" name="code" readonly="readonly" required>
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>字段类型：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <span class="select-box">
-                    <select name="fieldType" class="select" value="@result.Data.FieldType" onchange="fieldTypeSwitch(this)">
-                        @foreach (var item in dataTypes)
-                        {
-                            if (!dataTypesExclude.Any(t => t.ToString().Equals(item.ToString())))
-                            {
-                                var value = (int)item;
-                                <option value="@value">@EnumsTranslater.Tran_DataType((int)item)</option>
-                            }
-                        }
+                    <select name="fieldType" class="select" value="@metaField.FieldType" onchange="fieldTypeSwitch(this)" required>
+                        <option value="@metaField.FieldType">@EnumsTranslater.Tran_DataType(metaField.FieldType)</option>
                     </select>
                 </span>
             </div>
         </div>
         @{
             //如果字段类型是数据源，则默认显示数据源div
-            string dataSourceDivDisplay = (int)result.Data.FieldType == 10 ? "display" : "none";
+            string dataSourceDivDisplay = (int)metaField.FieldType == 10 ? "display" : "none";
         }
         <div class="row cl" id="div_datasource" style="display:@dataSourceDivDisplay">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>数据源：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <span class="select-box">
-                    <select name="fieldType" class="select" value="@result.Data.FieldType">
+                    <select id="dataSourceId" name="dataSourceId" class="select" value="@metaField.DataSourceId" required>
                         <option value="0">一级分类</option>
                         <option value="11">├二级分类</option>
                         <option value="12">├二级分类</option>
@@ -71,54 +63,62 @@
             </div>
         </div>
         <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>是否必填：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <span class="select-box">
+                    <select id="isMust" name="isMust" class="select" value="@metaField.IsMust" required>
+                        @foreach (var item in trueFalse)
+                        {
+                            var value = (int)item;
+                            <option value="@value">@EnumsTranslater.Tran_TrueFalse((int)item)</option>
+                        }
+                    </select>
+                </span>
+            </div>
+        </div>
+        <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">分组：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="@result.Data.Group" placeholder="" id="" name="group">
+                <input type="text" class="input-text" value="@metaField.Group" name="group">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">排序值：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" value="@result.Data.SortNumber" placeholder="" id="" name="sortNumber">
+                <input type="text" class="input-text" value="@metaField.SortNumber" name="sortNumber">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">描述：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <textarea name="description" class="textarea" placeholder="说点什么...最多输入1000个字符" datatype="*0-1000" dragonfly="true" nullmsg="无备注" onKeyUp="textarealength(this,1000)">@result.Data.Description</textarea>
-                <p class="textarea-numberbar"><em class="textarea-length">0</em>/1000</p>
+                <textarea name="description" class="textarea ignore" placeholder="说点什么...">@metaField.Description</textarea>
             </div>
         </div>
         <div class="row cl">
             <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
                 <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
-                <button onClick="javascript:window.location='/MetaField/List';" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+                <button onClick="javascript:history.back(-1);" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
                 @if (!result.IsSuccess)
                 {
-                    <br /><br /><span class="c-red">@result.Msg</span>
+                    <br /><br /><span class="c-red">@result.Message</span>
                 }
             </div>
         </div>
     </form>
 </article>
 
-@Html.Partial("~/Views/Shared/_FooterScripts.cshtml")
+@await Html.PartialAsync("~/Views/Shared/_FooterScripts.cshtml")
+@await Html.PartialAsync("~/Views/Shared/_CommonScript.cshtml")
+@await Html.PartialAsync("~/Views/Shared/_FormValidate.cshtml")
 <!--请在下方写此页面业务相关的脚本-->
-<script type="text/javascript" src="~/lib/My97DatePicker/4.8/WdatePicker.js"></script>
-<script type="text/javascript" src="~/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
-<script type="text/javascript" src="~/lib/jquery.validation/1.14.0/validate-methods.js"></script>
-<script type="text/javascript" src="~/lib/jquery.validation/1.14.0/messages_zh.js"></script>
 <script type="text/javascript">
-    $(function () {
-        $('.skin-minimal input').iCheck({
-            checkboxClass: 'icheckbox-blue',
-            radioClass: 'iradio-blue',
-            increaseArea: '20%'
-        });
-    });
+
+    $("#dataSourceId").val(@metaField.DataSourceId);
+    $("#isMust").val(@metaField.IsMust);
+
+    //切换类型
     function fieldTypeSwitch(obj) {
-        if ($(obj).val() == "DataSource") {
-            console.log(1);
+        if ($(obj).val() == 10) {
             $("#div_datasource").show();
         } else {
             $("#div_datasource").hide();
