@@ -29,7 +29,7 @@
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>脚本类型：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <span class="select-box">
-                    <select name="scriptType" class="select" required>
+                    <select id="scriptType" name="scriptType" class="select" onchange="switchTriggerTypeOrTriggerPoint()" required>
                         <option value="">--请选择--</option>
                         @foreach (var item in Enum.GetValues(typeof(ScriptType)))
                         {
@@ -44,7 +44,7 @@
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>触发点：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <span class="select-box">
-                    <select name="triggerPoint" class="select" required>
+                    <select id="triggerPoint" name="triggerPoint" class="select" onchange="switchTriggerTypeOrTriggerPoint()" required>
                         <option value="">--请选择--</option>
                         @foreach (var item in Enum.GetValues(typeof(TriggerPoint)))
                         {
@@ -111,5 +111,30 @@
         lineNumbers: true,//显示行号
         spellcheck: true,//拼写检查
     });
+
+    //切换脚本类型或脚本触发点
+    function switchTriggerTypeOrTriggerPoint() {
+        var scriptType = $("#scriptType").val();
+        var triggerPoint = $("#triggerPoint").val();
+        if (scriptType != null && scriptType != '' && triggerPoint != null && triggerPoint != '') {
+            $.ajax({
+                type: 'GET',
+                url: '/TriggerScript/GetDefaultTriggerScript?scriptType=' + scriptType + '&triggerPoint=' + triggerPoint,
+                dataType: 'json',
+                success: function (data) {
+                    if (data.success) {
+                        if (data.data != null && data.data != '') {
+                        editor.setValue(data.data)
+                        } else {
+                            editor.setValue('')
+                        }
+                    }
+                },
+                error: function (data) {
+                    console.log(data.msg);
+                }
+            });
+        }
+    }
 </script>
 <!--/请在上方写此页面业务相关的脚本-->

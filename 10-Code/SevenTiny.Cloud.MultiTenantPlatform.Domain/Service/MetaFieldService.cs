@@ -71,6 +71,16 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             dbContext.Add<MetaField>(new List<MetaField> {
                 new MetaField{
                     MetaObjectId=metaObjectId,
+                    Code ="_id",
+                    Name ="数据ID",
+                    Description="系统字段",
+                    IsSystem =(int)TrueFalse.True,
+                    IsMust=(int)TrueFalse.True,
+                    FieldType=(int)DataType.Int,
+                    SortNumber=-1
+                },
+                new MetaField{
+                    MetaObjectId=metaObjectId,
                     Code ="IsDeleted",
                     Name ="是否删除",
                     Description="系统字段",
@@ -130,6 +140,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         {
             return new BsonDocument
             {
+                { "_id",Guid.NewGuid().ToString()},
                 { "IsDeleted",false },
                 { "CreateBy", -1 },
                 { "CreateTime", DateTime.Now },

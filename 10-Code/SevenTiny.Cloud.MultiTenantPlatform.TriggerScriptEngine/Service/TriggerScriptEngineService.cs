@@ -1,8 +1,10 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
+using SevenTiny.Bantina.Caching;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
+using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Caching;
 using SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Models;
 using SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.ServiceContract;
 using System;
@@ -42,29 +44,45 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Service
 
         private TableListComponent ExecuteTableListAfter(string operateCode, TableListComponent tableListComponent, string triggerScript)
         {
-            string[] scriptArray = Regex.Split(triggerScript, USING_SEPARATOR, RegexOptions.IgnoreCase);
+            var hashKey = $"{operateCode}_{triggerScript.GetHashCode()}".GetHashCode();
+            var triggerScriptInCache = TriggerScriptCache.GetSet(hashKey, () =>
+            {
+                //检查标识是否存在
+                if (!triggerScript.Contains(USING_SEPARATOR))
+                    throw new KeyNotFoundException($"{USING_SEPARATOR} not found in trigger script");
 
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.Append("using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;");
+                string[] scriptArray = Regex.Split(triggerScript, USING_SEPARATOR, RegexOptions.IgnoreCase);
 
-            //append using
-            stringBuilder.Append(scriptArray[0]);
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.Append("using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;");
 
-            stringBuilder.Append("public class TriggerScript_TableListComponent");
-            stringBuilder.Append("{");
-            stringBuilder.Append(scriptArray[1]);
-            stringBuilder.Append("}");
+                //append using
+                stringBuilder.Append(scriptArray[0]);
 
-            stringBuilder.Append("return new TriggerScript_TableListComponent().TableListAfter(operateCode,tableListComponent);");
+                stringBuilder.Append("public class TriggerScript_TableListComponent");
+                stringBuilder.Append("{");
+                stringBuilder.Append(scriptArray[1]);
+                stringBuilder.Append("}");
 
-            var script = CSharpScript.Create<TableListComponent>(stringBuilder.ToString(),
-                ScriptOptions.Default.AddReferences("SevenTiny.Cloud.MultiTenantPlatform.Domain"),//引用dll
-                globalsType: typeof(TableListArg)
-                );
+                stringBuilder.Append("return new TriggerScript_TableListComponent().TableListAfter(operateCode,tableListComponent);");
 
-            script.Compile();
+                var script = CSharpScript.Create<TableListComponent>(stringBuilder.ToString(),
+                    ScriptOptions.Default
+                    //引用dll
+                    .AddReferences("System")
+                    .AddReferences("System.Collections.Generic")
+                    .AddReferences("System.Linq")
+                    .AddReferences("System.Text")
+                    .AddReferences("SevenTiny.Cloud.MultiTenantPlatform.Domain"),
+                    globalsType: typeof(TableListArg)
+                    );
 
-            var result = script.RunAsync(globals: new TableListArg { operateCode = operateCode, tableListComponent = tableListComponent }).Result.ReturnValue;
+                script.Compile();
+
+                return script;
+            });
+
+            var result = triggerScriptInCache.RunAsync(globals: new TableListArg { operateCode = operateCode, tableListComponent = tableListComponent }).Result.ReturnValue;
 
             return result;
         }

@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="SevenTiny.Bantina" Version="1.0.12" />
     <PackageReference Include="SevenTiny.Bantina.Configuration" Version="1.0.12" />
   </ItemGroup>
 

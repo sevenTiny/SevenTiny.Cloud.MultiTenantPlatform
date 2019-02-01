@@ -88,7 +88,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             }
 
             //补充字段
-            bsons.SetElement(new BsonElement("_id", Guid.NewGuid().ToString()));
+            //bsons.SetElement(new BsonElement("_id", Guid.NewGuid().ToString()));//id已经补充到预置字段
             bsons.SetElement(new BsonElement("MetaObjectCode", metaObjectCode));
 
             db.Add(bsons);
