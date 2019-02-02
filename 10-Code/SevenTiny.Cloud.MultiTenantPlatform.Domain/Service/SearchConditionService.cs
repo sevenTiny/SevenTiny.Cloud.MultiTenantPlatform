@@ -1,9 +1,11 @@
-﻿using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
+﻿using SevenTiny.Bantina;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
@@ -56,6 +58,24 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                 base.Delete(id);
                 return ResultModel.Success();
             }
+        }
+
+        public new void DeleteByMetaObjectId(int metaObjectId)
+        {
+            var searchContions = base.GetEntitiesByMetaObjectId(metaObjectId);
+            TransactionHelper.Transaction(() =>
+            {
+                if (searchContions != null && searchContions.Any())
+                {
+                    //删除字段配置下的所有字段
+                    foreach (var item in searchContions)
+                    {
+                        dbContext.Delete<SearchConditionAggregation>(t => t.SearchConditionId == item.Id);
+                    }
+                }
+                //删除字段配置
+                base.DeleteByMetaObjectId(metaObjectId);
+            });
         }
     }
 }

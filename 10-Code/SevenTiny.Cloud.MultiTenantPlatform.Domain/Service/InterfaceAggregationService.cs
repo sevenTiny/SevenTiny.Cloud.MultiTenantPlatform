@@ -14,20 +14,17 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         public InterfaceAggregationService(
             MultiTenantPlatformDbContext multiTenantPlatformDbContext,
             IFieldListService _interfaceFieldService,
-            ISearchConditionService _searchConditionService,
-            IMetaObjectService _metaObjectService
+            ISearchConditionService _searchConditionService
             ) : base(multiTenantPlatformDbContext)
         {
             dbContext = multiTenantPlatformDbContext;
             this.interfaceFieldService = _interfaceFieldService;
             this.searchConditionService = _searchConditionService;
-            metaObjectService = _metaObjectService;
         }
 
         readonly MultiTenantPlatformDbContext dbContext;
         readonly IFieldListService interfaceFieldService;
         readonly ISearchConditionService searchConditionService;
-        readonly IMetaObjectService metaObjectService;
 
         //新增组织接口
         public new ResultModel Add(InterfaceAggregation entity)

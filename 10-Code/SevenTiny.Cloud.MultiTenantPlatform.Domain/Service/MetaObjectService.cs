@@ -11,14 +11,26 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
 {
     public class MetaObjectService : CommonInfoRepository<MetaObject>, IMetaObjectService
     {
-        public MetaObjectService(MultiTenantPlatformDbContext multiTenantPlatformDbContext, IMetaFieldService _metaFieldService) : base(multiTenantPlatformDbContext)
+        public MetaObjectService(
+            MultiTenantPlatformDbContext multiTenantPlatformDbContext,
+            IMetaFieldService _metaFieldService,
+            IFieldListService _fieldListService,
+            IInterfaceAggregationService _interfaceAggregationService,
+            ISearchConditionService _searchConditionService
+            ) : base(multiTenantPlatformDbContext)
         {
             dbContext = multiTenantPlatformDbContext;
             metaFieldService = _metaFieldService;
+            fieldListService = _fieldListService;
+            interfaceAggregationService = _interfaceAggregationService;
+            searchConditionService = _searchConditionService;
         }
 
         MultiTenantPlatformDbContext dbContext;
         IMetaFieldService metaFieldService;
+        IFieldListService fieldListService;
+        IInterfaceAggregationService interfaceAggregationService;
+        ISearchConditionService searchConditionService;
 
         public List<MetaObject> GetMetaObjectsUnDeletedByApplicationId(int applicationId)
             => dbContext.QueryList<MetaObject>(t => t.ApplicationId == applicationId && t.IsDeleted == (int)IsDeleted.UnDeleted);
@@ -103,8 +115,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             {
                 //把相关字段一并删除
                 metaFieldService.DeleteByMetaObjectId(id);
-                //删除相关接口配置字段
-                //...
+                metaFieldService.DeleteByMetaObjectId(id);
+                fieldListService.DeleteByMetaObjectId(id);//删除相关子对象
+                interfaceAggregationService.DeleteByMetaObjectId(id);
+                searchConditionService.DeleteByMetaObjectId(id);//删除相关子对象
+                //这里补充待删除的子对象
                 base.Delete(id);
             });
             return ResultModel.Success();

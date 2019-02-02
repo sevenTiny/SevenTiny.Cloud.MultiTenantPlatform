@@ -19,6 +19,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository
             dbContext.Delete<TEntity>(t => t.MetaObjectId == metaObjectId);
         }
 
+        public List<TEntity> GetEntitiesByMetaObjectId(int metaObjectId)
+                  => dbContext.QueryList<TEntity>(t =>t.MetaObjectId == metaObjectId);
+
         public List<TEntity> GetEntitiesDeletedByMetaObjectId(int metaObjectId)
             => dbContext.QueryList<TEntity>(t => t.IsDeleted == (int)IsDeleted.Deleted && t.MetaObjectId == metaObjectId);
 

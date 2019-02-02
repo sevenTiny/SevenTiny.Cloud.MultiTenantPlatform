@@ -15,7 +15,7 @@
     <article class="cl pd-20">
         <div class="cl pd-5 bg-1 bk-gray">
             <span class="l">
-                <a class="btn btn-secondary-outline radius" href="javascript:history.back(-1);"><i class="Hui-iconfont">&#xe66b;</i> 返回</a>
+                <a class="btn btn-secondary-outline radius" href="javascript:window.location='/Application/List';"><i class="Hui-iconfont">&#xe66b;</i> 返回</a>
             </span>
             <span class="r">共有数据：<strong>@applications.Count</strong> 条</span>
         </div>
@@ -43,8 +43,8 @@
                             <td>@item.SortNumber</td>
                             <td class="td-status"><span class="label label-danger radius">已删除</span></td>
                             <td class="td-manage">
-                                <a style="text-decoration: none" href="javascript:;" onClick="ajax_operate_table_confirm(this, '/Application/Recover/@item.Id','确认要还原嘛？')" title="还原"><i class="Hui-iconfont">&#xe66b;</i></a>
-                                @*<a title="删除" href="javascript:;" onclick="article_del(this, '1')" class="ml-5" style="text-decoration: none"><i class="Hui-iconfont">&#xe6e2;</i></a>*@
+                                <a style="text-decoration: none" href="javascript:;" onClick="ajax_operate_table_confirm(this, '/Application/Recover/@item.Id','确认要还原嘛？')" title="还原" data-toggle="tooltip" data-placement="top"><i class="Hui-iconfont">&#xe66b;</i></a>
+                                <a title="永久删除" href="javascript:;" onclick="ajax_operate_table_confirm(this,'/Application/Delete/@item.Id','确认要删除吗？该操作不可逆,应用下的所有对象、字段、接口配置等都会被清空！')" class="ml-5" style="text-decoration: none" data-toggle="tooltip" data-placement="top"><i class="Hui-iconfont">&#xe6e2;</i></a>
                             </td>
                         </tr>
                     }

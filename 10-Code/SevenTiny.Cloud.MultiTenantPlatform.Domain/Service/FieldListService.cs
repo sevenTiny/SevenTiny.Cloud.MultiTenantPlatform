@@ -6,6 +6,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
@@ -50,12 +51,31 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             {
                 //存在引用关系，先删除引用该数据的数据
                 return ResultModel.Error("存在引用关系，先删除引用该数据的数据");
-            }   
+            }
             else
             {
                 base.Delete(id);
                 return ResultModel.Success();
             }
+        }
+
+        public new void DeleteByMetaObjectId(int metaObjectId)
+        {
+            var fieldLists = base.GetEntitiesByMetaObjectId(metaObjectId);
+            
+            TransactionHelper.Transaction(() =>
+            {
+                if (fieldLists!=null && fieldLists.Any())
+                {
+                    //删除字段配置下的所有字段
+                    foreach (var item in fieldLists)
+                    {
+                        dbContext.Delete<FieldListAggregation>(t => t.FieldListId == item.Id);
+                    }
+                }
+                //删除字段配置
+                base.DeleteByMetaObjectId(metaObjectId);
+            });
         }
     }
 }
