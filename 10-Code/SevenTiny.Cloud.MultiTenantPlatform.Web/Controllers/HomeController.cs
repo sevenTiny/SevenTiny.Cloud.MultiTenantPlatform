@@ -11,7 +11,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 
         public IActionResult Index()
         {
-            return Redirect("/Application/Detail");
+            return Redirect("/Application/Select");
         }
 
         public IActionResult Welcome()
