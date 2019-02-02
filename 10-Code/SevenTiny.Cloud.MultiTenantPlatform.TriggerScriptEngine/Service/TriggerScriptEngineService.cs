@@ -67,8 +67,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Service
             if (string.IsNullOrEmpty(triggerScript))
                 throw new ArgumentNullException("triggerScript", "triggerScript not fount");
 
-            var hashKey = triggerScript.GetHashCode();
-            var triggerScriptInCache = TriggerScriptCache.GetSet(hashKey, () =>
+            var triggerScriptInCache = TriggerScriptCache.GetSet(triggerScript, () =>
             {
                 //检查标识是否存在
                 if (!triggerScript.Contains(USING_SEPARATOR))
