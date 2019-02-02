@@ -10,6 +10,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract
     public interface IDataAccessService
     {
         ResultModel Add(string metaObjectCode, BsonDocument bsons);
+        ResultModel Update(int metaObjectId, FilterDefinition<BsonDocument> condition, BsonDocument bsons);
+        ResultModel Delete(FilterDefinition<BsonDocument> condition);
         List<ObjectData> GetObjectDatasByCondition(int tenantId, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize);
         List<BsonDocument> GetBsonDocumentsByCondition(FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, out int count);
         int GetBsonDocumentCountByCondition(FilterDefinition<BsonDocument> condition);

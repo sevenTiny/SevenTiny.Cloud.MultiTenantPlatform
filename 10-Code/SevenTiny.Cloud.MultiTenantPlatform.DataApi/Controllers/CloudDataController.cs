@@ -20,10 +20,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
     {
         public CloudDataController(
             IDataAccessService _dataAccessService,
+            ISearchConditionService _searchConditionService,
             ISearchConditionAggregationService _conditionAggregationService,
             IInterfaceAggregationService _interfaceAggregationService,
             IFieldBizDataService _fieldBizDataService,
-            ITriggerScriptEngineService _triggerScriptEngineService
+            ITriggerScriptEngineService _triggerScriptEngineService,
+            IMetaObjectService _metaObjectService
             )
         {
             dataAccessService = _dataAccessService;
@@ -31,6 +33,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
             interfaceAggregationService = _interfaceAggregationService;
             fieldBizDataService = _fieldBizDataService;
             triggerScriptEngineService = _triggerScriptEngineService;
+            searchConditionService = _searchConditionService;
+            metaObjectService = _metaObjectService;
         }
 
         readonly IDataAccessService dataAccessService;
@@ -38,6 +42,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
         readonly ISearchConditionAggregationService conditionAggregationService;
         readonly IFieldBizDataService fieldBizDataService;
         readonly ITriggerScriptEngineService triggerScriptEngineService;
+        readonly ISearchConditionService searchConditionService;
+        readonly IMetaObjectService metaObjectService;
 
         [HttpGet]
         public IActionResult Get([FromQuery]QueryArgs queryArgs)
@@ -73,7 +79,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                 {
                     return JsonResultModel.Error($"未能找到接口编码为[{queryArgs.interfaceCode}]对应的接口信息");
                 }
-                var filter = conditionAggregationService.AnalysisConditionToFilterDefinition(interfaceAggregation.MetaObjectId, interfaceAggregation.SearchConditionId, argumentsDic);
+                var filter = conditionAggregationService.AnalysisConditionToFilterDefinitionByConditionId(interfaceAggregation.MetaObjectId, interfaceAggregation.SearchConditionId, argumentsDic);
 
                 //get result
                 switch ((InterfaceType)interfaceAggregation.InterfaceType)
@@ -98,7 +104,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                         tableListComponent = triggerScriptEngineService.TableListAfter(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, tableListComponent);
                         return JsonResultModel.Success("get data list success", tableListComponent);
                     case InterfaceType.CloudCount:
-                        filter = triggerScriptEngineService.SingleObjectBefore(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, filter);
+                        filter = triggerScriptEngineService.CountBefore(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, filter);
                         var count = dataAccessService.GetBsonDocumentCountByCondition(filter);
                         count = triggerScriptEngineService.CountAfter(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, count);
                         return JsonResultModel.Success("get data count success", count);
@@ -143,6 +149,16 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                 var json = jObj.ToString();
                 var bson = BsonDocument.Parse(json);
 
+                //get metaObject
+                var metaObject = metaObjectService.GetByCode(metaObjectCode);
+                if (metaObject == null)
+                {
+                    return JsonResultModel.Error($"未能找到对象编码为[{metaObjectCode}]对应的对象信息");
+                }
+
+                //trigger before
+                bson = triggerScriptEngineService.AddBefore(metaObject.Id, metaObjectCode, bson);
+
                 //add data
                 var addResult = dataAccessService.Add(metaObjectCode, bson);
 
@@ -154,19 +170,95 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
             }
         }
 
+        /**
+         Content-Type: application/json
+         * */
         [HttpPut]
-        public IActionResult Update()
+        public IActionResult Update(string conditionCode, [FromBody]JObject jObj)
         {
-            BsonDocument bson = new BsonDocument();
-            bson.Add(new BsonElement("name", "zhangsan"));
-            bson.Add(new BsonElement("age", "21"));
-            return new JsonResult(bson);
+            try
+            {
+                //args check
+                if (string.IsNullOrEmpty(conditionCode))
+                    return JsonResultModel.Error($"Parameter invalid:conditionCode = null");
+                if (jObj == null)
+                    return JsonResultModel.Error($"Parameter invalid:data = null");
+
+                //argumentsDic generate
+                Dictionary<string, object> argumentsDic = new Dictionary<string, object>();
+                foreach (var item in Request.Query)
+                {
+                    if (!argumentsDic.ContainsKey(item.Key))
+                    {
+                        argumentsDic.Add(item.Key.ToUpperInvariant(), item.Value);
+                    }
+                }
+
+                //get filter
+                var searchCondition = searchConditionService.GetByCode(conditionCode);
+                if (searchCondition == null)
+                {
+                    return JsonResultModel.Error($"SearchCondition not found by conditionCode[{searchCondition}]");
+                }
+                var filter = conditionAggregationService.AnalysisConditionToFilterDefinitionByConditionId(searchCondition.MetaObjectId, searchCondition.Id, argumentsDic);
+
+                //get object
+                var json = jObj.ToString();
+                var bson = BsonDocument.Parse(json);
+
+                //update before
+                filter = triggerScriptEngineService.UpdateBefore(searchCondition.MetaObjectId, searchCondition.Code, filter);
+
+                //update data
+                dataAccessService.Update(searchCondition.MetaObjectId, filter, bson);
+
+                return JsonResultModel.Success("success");
+            }
+            catch (Exception ex)
+            {
+                return JsonResultModel.Error(ex.ToString());
+            }
         }
 
         [HttpDelete]
-        public IActionResult Delete()
+        public IActionResult Delete(string conditionCode)
         {
-            return null;
+            try
+            {
+                //args check
+                if (string.IsNullOrEmpty(conditionCode))
+                    return JsonResultModel.Error($"Parameter invalid:conditionCode = null");
+
+                //argumentsDic generate
+                Dictionary<string, object> argumentsDic = new Dictionary<string, object>();
+                foreach (var item in Request.Query)
+                {
+                    if (!argumentsDic.ContainsKey(item.Key))
+                    {
+                        argumentsDic.Add(item.Key.ToUpperInvariant(), item.Value);
+                    }
+                }
+
+                //get filter
+                var searchCondition = searchConditionService.GetByCode(conditionCode);
+                if (searchCondition == null)
+                {
+                    return JsonResultModel.Error($"SearchCondition not found by conditionCode[{searchCondition}]");
+                }
+                var filter = conditionAggregationService.AnalysisConditionToFilterDefinitionByConditionId(searchCondition.MetaObjectId, searchCondition.Id, argumentsDic);
+
+                //delete before
+                filter = triggerScriptEngineService.UpdateBefore(searchCondition.MetaObjectId, searchCondition.Code, filter);
+
+                //delete
+                dataAccessService.Delete(filter);
+
+                return JsonResultModel.Success("success");
+            }
+            catch (Exception ex)
+            {
+                return JsonResultModel.Error(ex.ToString());
+            }
         }
     }
 }

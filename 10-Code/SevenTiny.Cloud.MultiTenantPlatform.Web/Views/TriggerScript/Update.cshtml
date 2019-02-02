@@ -1,4 +1,5 @@
 ﻿@using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
+@using SevenTiny.Cloud.MultiTenantPlatform.Domain.Enum;
 @{
     ViewData["Title"] = "Update";
     Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
@@ -26,6 +27,31 @@
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>编码：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <input type="text" class="input-text" style="background-color:#e8e8e8;" value="@entity.Code" name="code" readonly="readonly" required>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>脚本类型：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <span class="select-box">
+                    <select id="scriptType" name="scriptType" class="select" required>
+                        <option value="@entity.ScriptType">@ScriptTypeTranslator.ToCode(entity.ScriptType)</option>
+                    </select>
+                </span>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>失败策略：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <span class="select-box">
+                    <select id="failurePolicy" name="failurePolicy" class="select" required>
+                        <option value="">--请选择--</option>
+                        @foreach (var item in Enum.GetValues(typeof(FailurePolicy)))
+                        {
+                            var value = (int)item;
+                            <option value="@value">@FailurePolicyTranslator.ToChinese(value)</option>
+                        }
+                    </select>
+                </span>
             </div>
         </div>
         <div class="row cl">
@@ -84,5 +110,8 @@
         lineNumbers: true,//显示行号
         spellcheck: true,//拼写检查
     });
+
+    $("#failurePolicy").val(@entity.FailurePolicy);
+
 </script>
 <!--/请在上方写此页面业务相关的脚本-->

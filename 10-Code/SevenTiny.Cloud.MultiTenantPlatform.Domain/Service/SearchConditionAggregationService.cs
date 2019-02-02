@@ -209,14 +209,19 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         /// <param name="searchConditionId">条件id</param>
         /// <param name="conditionValueDic">从http请求中传递过来的参数值集合</param>
         /// <returns></returns>
-        public FilterDefinition<BsonDocument> AnalysisConditionToFilterDefinition(int metaObjectId, int searchConditionId, Dictionary<string, object> conditionValueDic)
+        public FilterDefinition<BsonDocument> AnalysisConditionToFilterDefinitionByConditionId(int metaObjectId, int searchConditionId, Dictionary<string, object> conditionValueDic)
+        {
+            List<SearchConditionAggregation> conditions = GetListByInterfaceConditionId(searchConditionId);
+            return AnalysisConditionToFilterDefinition(metaObjectId, conditions, conditionValueDic);
+        }
+
+        private FilterDefinition<BsonDocument> AnalysisConditionToFilterDefinition(int metaObjectId, List<SearchConditionAggregation> conditions, Dictionary<string, object> conditionValueDic)
         {
             var bf = Builders<BsonDocument>.Filter;
             //全部字段字典缓存
             Dictionary<int, MetaField> metaFieldIdDic = metaFieldService.GetMetaFieldDicIdObjUnDeleted(metaObjectId);
 
             //获取全部条件表达式
-            List<SearchConditionAggregation> conditions = GetListByInterfaceConditionId(searchConditionId);
             if (conditions == null || !conditions.Any())
             {
                 return null;

@@ -44,7 +44,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             //接口配置的字段字典
             var interfaceMetaFieldsDic = fieldAggregationService.GetMetaFieldsDicByFieldListId(InterfaceFieldId);
             List<Dictionary<string, FieldBizData>> resultList = new List<Dictionary<string, FieldBizData>>();
-            if (bsonElements!=null&&bsonElements.Any())
+            if (bsonElements != null && bsonElements.Any())
             {
                 foreach (var elements in bsonElements)
                 {
@@ -57,7 +57,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                             keyValuePairs.Add(field.Key, new FieldBizData
                             {
                                 Name = field.Key,
-                                Text = field.Value.Name,
+                                Text = elements[field.Key]?.ToString(),
                                 Value = elements[field.Key]
                             });
                         }

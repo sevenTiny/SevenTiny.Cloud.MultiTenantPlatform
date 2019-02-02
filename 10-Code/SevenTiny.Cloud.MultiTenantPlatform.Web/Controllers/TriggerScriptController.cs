@@ -128,9 +128,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             return View();
         }
 
-        public IActionResult GetDefaultTriggerScript(int scriptType, int triggerPoint)
+        public IActionResult GetDefaultTriggerScript(int scriptType)
         {
-            string script = triggerScriptService.GetDefaultTriggerScriptByScriptTypeAndTriggerPoint(scriptType, triggerPoint);
+            string script = triggerScriptService.GetDefaultTriggerScriptByScriptType(scriptType);
             return JsonResultModel.Success("get default trigger script", script);
         }
     }

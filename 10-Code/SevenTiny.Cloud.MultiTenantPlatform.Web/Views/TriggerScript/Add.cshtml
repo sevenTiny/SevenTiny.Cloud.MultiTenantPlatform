@@ -41,15 +41,15 @@
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>触发点：</label>
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>失败策略：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <span class="select-box">
-                    <select id="triggerPoint" name="triggerPoint" class="select" onchange="switchTriggerTypeOrTriggerPoint()" required>
+                    <select id="triggerPoint" name="triggerPoint" class="select" required>
                         <option value="">--请选择--</option>
-                        @foreach (var item in Enum.GetValues(typeof(TriggerPoint)))
+                        @foreach (var item in Enum.GetValues(typeof(FailurePolicy)))
                         {
                             var value = (int)item;
-                            <option value="@value">@TriggerPointTranslator.ToCode(value)</option>
+                            <option value="@value">@FailurePolicyTranslator.ToChinese(value)</option>
                         }
                     </select>
                 </span>
@@ -115,11 +115,10 @@
     //切换脚本类型或脚本触发点
     function switchTriggerTypeOrTriggerPoint() {
         var scriptType = $("#scriptType").val();
-        var triggerPoint = $("#triggerPoint").val();
-        if (scriptType != null && scriptType != '' && triggerPoint != null && triggerPoint != '') {
+        if (scriptType != null && scriptType != '') {
             $.ajax({
                 type: 'GET',
-                url: '/TriggerScript/GetDefaultTriggerScript?scriptType=' + scriptType + '&triggerPoint=' + triggerPoint,
+                url: '/TriggerScript/GetDefaultTriggerScript?scriptType=' + scriptType,
                 dataType: 'json',
                 success: function (data) {
                     if (data.success) {

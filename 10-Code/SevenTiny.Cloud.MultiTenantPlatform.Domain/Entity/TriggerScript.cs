@@ -9,6 +9,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity
         [Column]
         public int ScriptType { get; set; }
         [Column]
-        public int TriggerPoint { get; set; }
+        public int FailurePolicy { get; set; }
     }
 }

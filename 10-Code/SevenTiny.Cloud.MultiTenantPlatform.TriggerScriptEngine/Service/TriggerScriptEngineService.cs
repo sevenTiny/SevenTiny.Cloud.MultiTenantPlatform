@@ -117,27 +117,116 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Service
             return CommonExecute<FilterDefinition<BsonDocument>, QueryBeforeArg>(operateCode, triggerScript, "QueryBefore(operateCode,condition)", new QueryBeforeArg { operateCode = operateCode, condition = condition });
         }
 
-        //TableList触发器
-        public FilterDefinition<BsonDocument> TableListBefore(int metaObjectId, string operateCode, FilterDefinition<BsonDocument> condition)
+        public BsonDocument AddBefore(int metaObjectId, string operateCode, BsonDocument bsonElements)
         {
-            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.TableList, (int)TriggerPoint.Before);
+            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.TableList_Before);
             if (triggerScripts != null && triggerScripts.Any())
             {
                 foreach (var item in triggerScripts)
                 {
-                    condition = ExecuteQueryBefore(operateCode, condition, item.Script);
+                    try
+                    {
+                        bsonElements = CommonExecute<BsonDocument, AddArg>(operateCode, item.Script, "AddBefore(operateCode,bsonElements)", new AddArg { operateCode = operateCode, bsonElements = bsonElements });
+                    }
+                    catch (Exception ex)
+                    {
+                        if (item.FailurePolicy == (int)FailurePolicy.Break)
+                        {
+                            throw ex;
+                        }
+                    }
+                }
+            }
+            return bsonElements;
+        }
+
+        public FilterDefinition<BsonDocument> UpdateBefore(int metaObjectId, string operateCode, FilterDefinition<BsonDocument> condition)
+        {
+            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.Update_Before);
+            if (triggerScripts != null && triggerScripts.Any())
+            {
+                foreach (var item in triggerScripts)
+                {
+                    try
+                    {
+                        condition = ExecuteQueryBefore(operateCode, condition, item.Script);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (item.FailurePolicy == (int)FailurePolicy.Break)
+                        {
+                            throw ex;
+                        }
+                    }
+                }
+            }
+            return condition;
+        }
+
+        public FilterDefinition<BsonDocument> DeleteBefore(int metaObjectId, string operateCode, FilterDefinition<BsonDocument> condition)
+        {
+            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.Delete_Before);
+            if (triggerScripts != null && triggerScripts.Any())
+            {
+                foreach (var item in triggerScripts)
+                {
+                    try
+                    {
+                        condition = ExecuteQueryBefore(operateCode, condition, item.Script);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (item.FailurePolicy == (int)FailurePolicy.Break)
+                        {
+                            throw ex;
+                        }
+                    }
+                }
+            }
+            return condition;
+        }
+
+        //TableList触发器
+        public FilterDefinition<BsonDocument> TableListBefore(int metaObjectId, string operateCode, FilterDefinition<BsonDocument> condition)
+        {
+            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.TableList_Before);
+            if (triggerScripts != null && triggerScripts.Any())
+            {
+                foreach (var item in triggerScripts)
+                {
+                    try
+                    {
+                        condition = ExecuteQueryBefore(operateCode, condition, item.Script);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (item.FailurePolicy == (int)FailurePolicy.Break)
+                        {
+                            throw ex;
+                        }
+                    }
                 }
             }
             return condition;
         }
         public TableListComponent TableListAfter(int metaObjectId, string operateCode, TableListComponent tableListComponent)
         {
-            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.TableList, (int)TriggerPoint.After);
+            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.TableList_Before);
             if (triggerScripts != null && triggerScripts.Any())
             {
                 foreach (var item in triggerScripts)
                 {
-                    tableListComponent = CommonExecute<TableListComponent, TableListArg>(operateCode, item.Script, "TableListAfter(operateCode,tableListComponent)", new TableListArg { operateCode = operateCode, tableListComponent = tableListComponent });
+                    try
+                    {
+                        tableListComponent = CommonExecute<TableListComponent, TableListArg>(operateCode, item.Script, "TableListAfter(operateCode,tableListComponent)", new TableListArg { operateCode = operateCode, tableListComponent = tableListComponent });
+                    }
+                    catch (Exception ex)
+                    {
+                        if (item.FailurePolicy == (int)FailurePolicy.Break)
+                        {
+                            throw ex;
+                        }
+                    }
                 }
             }
             return tableListComponent;
@@ -146,24 +235,44 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Service
         //SingleObject触发器
         public FilterDefinition<BsonDocument> SingleObjectBefore(int metaObjectId, string operateCode, FilterDefinition<BsonDocument> condition)
         {
-            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.SingleObject, (int)TriggerPoint.Before);
+            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.SingleObject_Before);
             if (triggerScripts != null && triggerScripts.Any())
             {
                 foreach (var item in triggerScripts)
                 {
-                    condition = ExecuteQueryBefore(operateCode, condition, item.Script);
+                    try
+                    {
+                        condition = ExecuteQueryBefore(operateCode, condition, item.Script);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (item.FailurePolicy == (int)FailurePolicy.Break)
+                        {
+                            throw ex;
+                        }
+                    }
                 }
             }
             return condition;
         }
         public SingleObjectComponent SingleObjectAfter(int metaObjectId, string operateCode, SingleObjectComponent singleObjectComponent)
         {
-            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.SingleObject, (int)TriggerPoint.After);
+            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.SingleObject_Before);
             if (triggerScripts != null && triggerScripts.Any())
             {
                 foreach (var item in triggerScripts)
                 {
-                    singleObjectComponent = CommonExecute<SingleObjectComponent, SingleObjectArg>(operateCode, item.Script, "SingleObjectAfter(operateCode,singleObjectComponent)", new SingleObjectArg { operateCode = operateCode, singleObjectComponent = singleObjectComponent });
+                    try
+                    {
+                        singleObjectComponent = CommonExecute<SingleObjectComponent, SingleObjectArg>(operateCode, item.Script, "SingleObjectAfter(operateCode,singleObjectComponent)", new SingleObjectArg { operateCode = operateCode, singleObjectComponent = singleObjectComponent });
+                    }
+                    catch (Exception ex)
+                    {
+                        if (item.FailurePolicy == (int)FailurePolicy.Break)
+                        {
+                            throw ex;
+                        }
+                    }
                 }
             }
             return singleObjectComponent;
@@ -172,28 +281,47 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Service
         //Count触发器
         public FilterDefinition<BsonDocument> CountBefore(int metaObjectId, string operateCode, FilterDefinition<BsonDocument> condition)
         {
-            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.Count, (int)TriggerPoint.Before);
+            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.Count_Before);
             if (triggerScripts != null && triggerScripts.Any())
             {
                 foreach (var item in triggerScripts)
                 {
-                    condition = ExecuteQueryBefore(operateCode, condition, item.Script);
+                    try
+                    {
+                        condition = ExecuteQueryBefore(operateCode, condition, item.Script);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (item.FailurePolicy == (int)FailurePolicy.Break)
+                        {
+                            throw ex;
+                        }
+                    }
                 }
             }
             return condition;
         }
         public int CountAfter(int metaObjectId, string operateCode, int count)
         {
-            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.Count, (int)TriggerPoint.After);
+            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.Count_Before);
             if (triggerScripts != null && triggerScripts.Any())
             {
                 foreach (var item in triggerScripts)
                 {
-                    count = CommonExecute<int, CountArg>(operateCode, item.Script, "CountAfter(operateCode,count)", new CountArg { operateCode = operateCode, count = count });
+                    try
+                    {
+                        count = CommonExecute<int, CountArg>(operateCode, item.Script, "CountAfter(operateCode,count)", new CountArg { operateCode = operateCode, count = count });
+                    }
+                    catch (Exception ex)
+                    {
+                        if (item.FailurePolicy == (int)FailurePolicy.Break)
+                        {
+                            throw ex;
+                        }
+                    }
                 }
             }
             return count;
-
         }
 
         //触发器数据源
