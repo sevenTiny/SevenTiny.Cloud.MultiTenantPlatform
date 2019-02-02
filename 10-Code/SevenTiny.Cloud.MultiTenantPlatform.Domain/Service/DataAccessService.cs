@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
-using Newtonsoft.Json;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
 using System;
@@ -91,11 +91,23 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             //bsons.SetElement(new BsonElement("_id", Guid.NewGuid().ToString()));//id已经补充到预置字段
             bsons.SetElement(new BsonElement("MetaObjectCode", metaObjectCode));
 
-            db.Add(bsons);
+            db.GetCollectionBson(metaObjectCode).InsertOne(bsons);
 
             return ResultModel.Success($"插入成功，日志：{string.Join(",", ErrorInfo)}");
         }
 
+        public ResultModel Update(string metaObjectCode, FilterDefinition<BsonDocument> condition, BsonDocument bsons)
+        {
+            if (string.IsNullOrEmpty(metaObjectCode))
+                return ResultModel.Error("实体编码不能为空");
+
+            var metaObject = metaObjectService.GetByCode(metaObjectCode);
+
+            if (metaObject == null)
+                return ResultModel.Error("没有找到该实体编码对应的实体信息");
+
+            return Update(metaObject, condition, bsons);
+        }
         public ResultModel Update(int metaObjectId, FilterDefinition<BsonDocument> condition, BsonDocument bsons)
         {
             var metaObject = metaObjectService.GetById(metaObjectId);
@@ -103,6 +115,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             if (metaObject == null)
                 return ResultModel.Error("没有找到该实体编码对应的实体信息");
 
+            return Update(metaObject, condition, bsons);
+        }
+        public ResultModel Update(MetaObject metaObject, FilterDefinition<BsonDocument> condition, BsonDocument bsons)
+        {
             //错误信息返回值
             HashSet<string> ErrorInfo = new HashSet<string>();
 
@@ -144,46 +160,160 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                 }
             }
 
-            db.Update<BsonDocument>(condition, bsons);
+            db.GetCollectionBson(metaObject.Code).ReplaceOne(condition, bsons);
 
             return ResultModel.Success($"修改成功，日志：{string.Join(",", ErrorInfo)}");
         }
 
-        public ResultModel Delete(FilterDefinition<BsonDocument> condition)
+        public ResultModel Delete(string metaObjectCode, FilterDefinition<BsonDocument> condition)
         {
-            db.Delete<BsonDocument>(condition);
+            if (string.IsNullOrEmpty(metaObjectCode))
+                return ResultModel.Error("实体编码不能为空");
+
+            var metaObject = metaObjectService.GetByCode(metaObjectCode);
+
+            if (metaObject == null)
+                return ResultModel.Error("没有找到该实体编码对应的实体信息");
+
+            return Delete(metaObject, condition);
+        }
+        public ResultModel Delete(int metaObjectId, FilterDefinition<BsonDocument> condition)
+        {
+            var metaObject = metaObjectService.GetById(metaObjectId);
+
+            if (metaObject == null)
+                return ResultModel.Error("没有找到该实体编码对应的实体信息");
+
+            return Delete(metaObject, condition);
+        }
+        public ResultModel Delete(MetaObject metaObject, FilterDefinition<BsonDocument> condition)
+        {
+            db.GetCollectionBson(metaObject.Code).DeleteMany(condition);
 
             return ResultModel.Success($"删除成功");
         }
 
-        public List<ObjectData> GetObjectDatasByCondition(int tenantId, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize)
+        public BsonDocument Get(string metaObjectCode, FilterDefinition<BsonDocument> condition)
         {
-            var bf = Builders<BsonDocument>.Filter;
-            condition = bf.And(bf.Eq("tenantId", tenantId), condition);
+            if (string.IsNullOrEmpty(metaObjectCode))
+                throw new Exception("实体编码不能为空");
+            var metaObject = metaObjectService.GetByCode(metaObjectCode);
+            if (metaObject == null)
+                throw new Exception("没有找到该实体编码对应的实体信息");
 
-            var bson = db.QueryListBson<BsonDocument>(condition);
-            return null;
+            return Get(metaObject, condition);
+        }
+        public BsonDocument Get(int metaObjectId, FilterDefinition<BsonDocument> condition)
+        {
+            var metaObject = metaObjectService.GetById(metaObjectId);
+            if (metaObject == null)
+                throw new Exception("没有找到该实体编码对应的实体信息");
+
+            return Get(metaObject, condition);
+        }
+        public BsonDocument Get(MetaObject metaObject, FilterDefinition<BsonDocument> condition)
+        {
+            return db.GetCollectionBson(metaObject.Code).Find<BsonDocument>(condition)?.FirstOrDefault();
         }
 
-        public List<BsonDocument> GetBsonDocumentsByCondition(FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, out int count)
+        public BsonDocument GetById(string metaObjectCode, string _id)
+        {
+            FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.Eq("_id", _id);
+            return Get(metaObjectCode, filter);
+        }
+        public List<BsonDocument> GetByIds(string metaObjectCode, string[] _ids)
+        {
+            FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.In("_id", _ids);
+            return GetList(metaObjectCode, filter);
+        }
+        public List<BsonDocument> GetList(string metaObjectCode, FilterDefinition<BsonDocument> condition)
+        {
+            return GetList(metaObjectCode, condition, 0, 0);
+        }
+
+        public List<BsonDocument> GetList(int metaObjectId, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize)
+        {
+            var metaObject = metaObjectService.GetById(metaObjectId);
+            if (metaObject == null)
+                throw new Exception("没有找到该实体编码对应的实体信息");
+
+            return GetList(metaObject, condition, pageIndex, pageSize);
+        }
+        public List<BsonDocument> GetList(string metaObjectCode, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize)
+        {
+            if (string.IsNullOrEmpty(metaObjectCode))
+                throw new Exception("实体编码不能为空");
+            var metaObject = metaObjectService.GetByCode(metaObjectCode);
+            if (metaObject == null)
+                throw new Exception("没有找到该实体编码对应的实体信息");
+
+            return GetList(metaObject, condition, pageIndex, pageSize);
+        }
+        public List<BsonDocument> GetList(MetaObject metaObject, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize)
         {
             List<BsonDocument> bson = new List<BsonDocument>();
             if (pageSize == 0)
             {
-                bson = db.QueryListBson<BsonDocument>(condition);
-                count = bson.Count;
+                bson = db.GetCollectionBson(metaObject.Code).Find<BsonDocument>(condition).ToList();
             }
             else
             {
-                bson = db.QueryListBson<BsonDocument>(condition, pageIndex, pageSize);
-                count = db.QueryCount<BsonDocument>(condition);
+                //这里等升级完包之后全部替换成orm的方法
+                int skipSize = (pageIndex - 1) > 0 ? ((pageIndex - 1) * pageSize) : 0;
+                bson = db.GetCollectionBson(metaObject.Code).Find(condition).Skip(skipSize).Limit(pageSize).ToList();
             }
             return bson;
         }
 
-        public int GetBsonDocumentCountByCondition(FilterDefinition<BsonDocument> condition)
+        public List<BsonDocument> GetList(int metaObjectId, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, out int count)
         {
-            return db.QueryCount<BsonDocument>(condition);
+            var metaObject = metaObjectService.GetById(metaObjectId);
+            if (metaObject == null)
+                throw new Exception("没有找到该实体编码对应的实体信息");
+            return GetList(metaObject, condition, pageIndex, pageSize, out count);
+        }
+        public List<BsonDocument> GetList(string metaObjectCode, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, out int count)
+        {
+            if (string.IsNullOrEmpty(metaObjectCode))
+                throw new Exception("实体编码不能为空");
+            var metaObject = metaObjectService.GetByCode(metaObjectCode);
+            if (metaObject == null)
+                throw new Exception("没有找到该实体编码对应的实体信息");
+            return GetList(metaObject, condition, pageIndex, pageSize, out count);
+        }
+        public List<BsonDocument> GetList(MetaObject metaObject, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, out int count)
+        {
+            List<BsonDocument> bson = GetList(metaObject.Code, condition, pageIndex, pageSize);
+
+            if (pageSize == 0)
+                count = bson?.Count ?? 0;
+            else
+                count = Convert.ToInt32(db.GetCollectionBson(metaObject.Code).Count(condition));
+
+            return bson;
+        }
+
+        public int GetCount(int metaObjectId, FilterDefinition<BsonDocument> condition)
+        {
+            var metaObject = metaObjectService.GetById(metaObjectId);
+            if (metaObject == null)
+                throw new Exception("没有找到该实体编码对应的实体信息");
+
+            return GetCount(metaObject, condition);
+        }
+        public int GetCount(string metaObjectCode, FilterDefinition<BsonDocument> condition)
+        {
+            if (string.IsNullOrEmpty(metaObjectCode))
+                throw new Exception("实体编码不能为空");
+            var metaObject = metaObjectService.GetByCode(metaObjectCode);
+            if (metaObject == null)
+                throw new Exception("没有找到该实体编码对应的实体信息");
+
+            return GetCount(metaObject, condition);
+        }
+        public int GetCount(MetaObject metaObject, FilterDefinition<BsonDocument> condition)
+        {
+            return Convert.ToInt32(db.GetCollectionBson(metaObject.Code).Count(condition));
         }
     }
 }

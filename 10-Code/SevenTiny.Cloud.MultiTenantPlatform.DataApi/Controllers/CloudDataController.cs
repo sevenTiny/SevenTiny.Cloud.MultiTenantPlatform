@@ -86,7 +86,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                 {
                     case InterfaceType.CloudSingleObject:
                         filter = triggerScriptEngineService.SingleObjectBefore(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, filter);
-                        var document = dataAccessService.GetBsonDocumentsByCondition(filter, 1, 1, out int singleCount)?.FirstOrDefault();
+                        var document = dataAccessService.Get(interfaceAggregation.MetaObjectId, filter);
                         SingleObjectComponent singleObjectComponent = new SingleObjectComponent
                         {
                             BizData = fieldBizDataService.ConvertToDictionary(interfaceAggregation.FieldListId, document),
@@ -95,7 +95,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                         return JsonResultModel.Success("get single data success", singleObjectComponent);
                     case InterfaceType.CloudTableList:
                         filter = triggerScriptEngineService.TableListBefore(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, filter);
-                        var documents = dataAccessService.GetBsonDocumentsByCondition(filter, queryArgs.pageIndex, queryArgs.pageSize, out int totalCount);
+                        var documents = dataAccessService.GetList(interfaceAggregation.MetaObjectId, filter, queryArgs.pageIndex, queryArgs.pageSize, out int totalCount);
                         TableListComponent tableListComponent = new TableListComponent
                         {
                             BizData = fieldBizDataService.ConvertToDictionaryList(interfaceAggregation.FieldListId, documents),
@@ -105,7 +105,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                         return JsonResultModel.Success("get data list success", tableListComponent);
                     case InterfaceType.CloudCount:
                         filter = triggerScriptEngineService.CountBefore(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, filter);
-                        var count = dataAccessService.GetBsonDocumentCountByCondition(filter);
+                        var count = dataAccessService.GetCount(interfaceAggregation.MetaObjectId, filter);
                         count = triggerScriptEngineService.CountAfter(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, count);
                         return JsonResultModel.Success("get data count success", count);
                     case InterfaceType.EnumeDataSource:
@@ -251,7 +251,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                 filter = triggerScriptEngineService.UpdateBefore(searchCondition.MetaObjectId, searchCondition.Code, filter);
 
                 //delete
-                dataAccessService.Delete(filter);
+                dataAccessService.Delete(searchCondition.MetaObjectId, filter);
 
                 return JsonResultModel.Success("success");
             }

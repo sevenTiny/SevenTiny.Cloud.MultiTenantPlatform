@@ -20,23 +20,27 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
 
         public Dictionary<string, FieldBizData> ConvertToDictionary(int InterfaceFieldId, BsonDocument bsonElement)
         {
-            //接口配置的字段字典
-            var interfaceMetaFieldsDic = fieldAggregationService.GetMetaFieldsDicByFieldListId(InterfaceFieldId);
-            Dictionary<string, FieldBizData> keyValuePairs = new Dictionary<string, FieldBizData>();
-            foreach (var field in interfaceMetaFieldsDic)
+            if (bsonElement != null && bsonElement.Any())
             {
-                //如果当前结果集包含字段
-                if (bsonElement.Contains(field.Key))
+                //接口配置的字段字典
+                var interfaceMetaFieldsDic = fieldAggregationService.GetMetaFieldsDicByFieldListId(InterfaceFieldId);
+                Dictionary<string, FieldBizData> keyValuePairs = new Dictionary<string, FieldBizData>();
+                foreach (var field in interfaceMetaFieldsDic)
                 {
-                    keyValuePairs.Add(field.Key, new FieldBizData
+                    //如果当前结果集包含字段
+                    if (bsonElement.Contains(field.Key))
                     {
-                        Name = field.Key,
-                        Text = field.Value.Name,
-                        Value = bsonElement[field.Key]
-                    });
+                        keyValuePairs.Add(field.Key, new FieldBizData
+                        {
+                            Name = field.Key,
+                            Text = field.Value.Name,
+                            Value = bsonElement[field.Key]
+                        });
+                    }
                 }
+                return keyValuePairs;
             }
-            return keyValuePairs;
+            return null;
         }
 
         public List<Dictionary<string, FieldBizData>> ConvertToDictionaryList(int InterfaceFieldId, List<BsonDocument> bsonElements)
