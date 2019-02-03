@@ -3,6 +3,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Domain.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
+using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Caching;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -56,7 +57,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             InterfaceAggregation myEntity = GetById(interfaceAggregation.Id);
             if (myEntity != null)
             {
-                if (interfaceAggregation.InterfaceType!=(int)InterfaceType.TriggerScriptDataSource)
+                if (interfaceAggregation.InterfaceType != (int)InterfaceType.TriggerScriptDataSource)
                 {
                     var interfaceField = interfaceFieldService.GetById(interfaceAggregation.FieldListId);
                     var searchCondition = searchConditionService.GetById(interfaceAggregation.SearchConditionId);
@@ -69,6 +70,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                 }
 
                 myEntity.InterfaceType = interfaceAggregation.InterfaceType;
+
+                //如果脚本有改动，则清空脚本缓存
+                if (!myEntity.Script.Equals(interfaceAggregation.Script))
+                    TriggerScriptCache.ClearCache(interfaceAggregation.Script);
                 myEntity.Script = interfaceAggregation.Script;
 
                 //编码不允许修改

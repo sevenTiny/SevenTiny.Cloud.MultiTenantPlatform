@@ -2,7 +2,6 @@
 using Microsoft.CodeAnalysis.Scripting;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using SevenTiny.Bantina.Caching;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
@@ -118,7 +117,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Service
 
         public BsonDocument AddBefore(int metaObjectId, string operateCode, BsonDocument bsonElements)
         {
-            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.TableList_Before);
+            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.Add_Before);
             if (triggerScripts != null && triggerScripts.Any())
             {
                 foreach (var item in triggerScripts)
@@ -137,6 +136,29 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Service
                 }
             }
             return bsonElements;
+        }
+
+        public List<BsonDocument> BatchAddBefore(int metaObjectId, string operateCode, List<BsonDocument> bsonElementsList)
+        {
+            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.BatchAdd_Before);
+            if (triggerScripts != null && triggerScripts.Any())
+            {
+                foreach (var item in triggerScripts)
+                {
+                    try
+                    {
+                        bsonElementsList = CommonExecute<List<BsonDocument>, BatchAddArg>(operateCode, item.Script, "BatchAddBefore(operateCode,bsonElementsList)", new BatchAddArg { operateCode = operateCode, bsonElementsList = bsonElementsList });
+                    }
+                    catch (Exception ex)
+                    {
+                        if (item.FailurePolicy == (int)FailurePolicy.Break)
+                        {
+                            throw ex;
+                        }
+                    }
+                }
+            }
+            return bsonElementsList;
         }
 
         public FilterDefinition<BsonDocument> UpdateBefore(int metaObjectId, string operateCode, FilterDefinition<BsonDocument> condition)
@@ -210,7 +232,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Service
         }
         public TableListComponent TableListAfter(int metaObjectId, string operateCode, TableListComponent tableListComponent)
         {
-            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.TableList_Before);
+            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.TableList_After);
             if (triggerScripts != null && triggerScripts.Any())
             {
                 foreach (var item in triggerScripts)
@@ -256,7 +278,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Service
         }
         public SingleObjectComponent SingleObjectAfter(int metaObjectId, string operateCode, SingleObjectComponent singleObjectComponent)
         {
-            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.SingleObject_Before);
+            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.SingleObject_After);
             if (triggerScripts != null && triggerScripts.Any())
             {
                 foreach (var item in triggerScripts)
@@ -302,7 +324,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Service
         }
         public int CountAfter(int metaObjectId, string operateCode, int count)
         {
-            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.Count_Before);
+            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.Count_After);
             if (triggerScripts != null && triggerScripts.Any())
             {
                 foreach (var item in triggerScripts)

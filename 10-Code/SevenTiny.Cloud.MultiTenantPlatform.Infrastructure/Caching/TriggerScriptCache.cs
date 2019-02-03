@@ -20,5 +20,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Caching
             }
             return triggerScriptInCache;
         }
+
+        public static void ClearCache(string script)
+        {
+            var hashKey = script.GetHashCode();
+            MemoryCacheHelper.Delete(hashKey);
+        }
     }
 }

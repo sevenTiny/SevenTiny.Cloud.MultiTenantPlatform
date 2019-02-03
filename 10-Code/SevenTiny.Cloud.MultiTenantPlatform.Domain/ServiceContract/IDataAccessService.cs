@@ -9,6 +9,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract
     public interface IDataAccessService
     {
         ResultModel Add(string metaObjectCode, BsonDocument bsons);
+        ResultModel Add(MetaObject metaObject, BsonDocument bsons);
+
+        ResultModel BatchAdd(string metaObjectCode, List<BsonDocument> bsons);
+        ResultModel BatchAdd(MetaObject metaObject, List<BsonDocument> bsons);
+
         ResultModel Update(int metaObjectId, FilterDefinition<BsonDocument> condition, BsonDocument bsons);
         ResultModel Update(string metaObjectCode, FilterDefinition<BsonDocument> condition, BsonDocument bsons);
         ResultModel Update(MetaObject metaObject, FilterDefinition<BsonDocument> condition, BsonDocument bsons);

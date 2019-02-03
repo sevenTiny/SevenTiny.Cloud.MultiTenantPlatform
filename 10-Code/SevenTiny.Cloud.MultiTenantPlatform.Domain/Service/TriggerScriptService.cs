@@ -3,6 +3,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Domain.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
+using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Caching;
 using System;
 using System.Collections.Generic;
 
@@ -28,6 +29,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             {
                 //编码不允许修改
                 //脚本类型不允许修改
+
+                //如果脚本有改动，则清空脚本缓存
+                if (!myfield.Script.Equals(triggerScript.Script))
+                    TriggerScriptCache.ClearCache(triggerScript.Script);
+
                 myfield.Script = triggerScript.Script;
                 myfield.FailurePolicy = triggerScript.FailurePolicy;
 
@@ -85,6 +91,25 @@ public FilterDefinition<BsonDocument> QueryBefore(string operateCode,FilterDefin
 	//这里写业务逻辑
 	//...
 	return condition;
+}
+";
+        private string DefaultBatchAddBeforeTriggerScript
+    => @"
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
+using MongoDB.Bson;
+using MongoDB.Driver;
+//end using
+//注释：上面的end using注释为using分隔符，请不要删除；
+//注释：输出日志请使用 logger.Error(),logger.Debug(),logger.Info()
+public List<BsonDocument> BatchAddBefore(string operateCode,List<BsonDocument> bsonElementsList)
+{
+	//这里写业务逻辑
+	//...
+	return bsonElementsList;
 }
 ";
         private string DefaultAddBeforeTriggerScript

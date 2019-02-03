@@ -8,6 +8,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.ServiceContrac
     public interface ITriggerScriptEngineService
     {
         BsonDocument AddBefore(int metaObjectId, string operateCode, BsonDocument bsonElements);
+        List<BsonDocument> BatchAddBefore(int metaObjectId, string operateCode, List<BsonDocument> bsonElementsList);
         FilterDefinition<BsonDocument> UpdateBefore(int metaObjectId, string operateCode, FilterDefinition<BsonDocument> condition);
         FilterDefinition<BsonDocument> DeleteBefore(int metaObjectId, string operateCode, FilterDefinition<BsonDocument> condition);
 

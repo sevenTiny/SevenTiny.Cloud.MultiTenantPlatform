@@ -160,7 +160,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                 bson = triggerScriptEngineService.AddBefore(metaObject.Id, metaObjectCode, bson);
 
                 //add data
-                var addResult = dataAccessService.Add(metaObjectCode, bson);
+                var addResult = dataAccessService.Add(metaObject, bson);
 
                 return addResult.ToJsonResultModel();
             }

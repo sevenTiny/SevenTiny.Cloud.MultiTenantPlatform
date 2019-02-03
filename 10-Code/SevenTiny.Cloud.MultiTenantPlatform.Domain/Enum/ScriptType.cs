@@ -6,6 +6,7 @@
     public enum ScriptType
     {
         Add_Before = 1,
+        BatchAdd_Before = 2,
         Update_Before = 3,
         Delete_Before = 5,
         TableList_Before = 7,
@@ -22,6 +23,7 @@
             switch ((ScriptType)scriptType)
             {
                 case ScriptType.Add_Before: return "Add_Before";
+                case ScriptType.BatchAdd_Before: return "BatchAdd_Before";
                 case ScriptType.Update_Before: return "Update_Before";
                 case ScriptType.Delete_Before: return "Delete_Before";
                 case ScriptType.TableList_Before: return "TableList_Before";

@@ -36,6 +36,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             if (metaObject == null)
                 return ResultModel.Error("没有找到该实体编码对应的实体信息");
 
+            return Add(metaObject, bsons);
+        }
+        public ResultModel Add(MetaObject metaObject, BsonDocument bsons)
+        {
             //错误信息返回值
             HashSet<string> ErrorInfo = new HashSet<string>();
 
@@ -89,11 +93,90 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
 
             //补充字段
             //bsons.SetElement(new BsonElement("_id", Guid.NewGuid().ToString()));//id已经补充到预置字段
-            bsons.SetElement(new BsonElement("MetaObjectCode", metaObjectCode));
+            bsons.SetElement(new BsonElement("MetaObjectCode", metaObject.Code));
 
-            db.GetCollectionBson(metaObjectCode).InsertOne(bsons);
+            db.GetCollectionBson(metaObject.Code).InsertOne(bsons);
 
             return ResultModel.Success($"插入成功，日志：{string.Join(",", ErrorInfo)}");
+        }
+
+        public ResultModel BatchAdd(string metaObjectCode, List<BsonDocument> bsons)
+        {
+            if (string.IsNullOrEmpty(metaObjectCode))
+                return ResultModel.Error("实体编码不能为空");
+
+            var metaObject = metaObjectService.GetByCode(metaObjectCode);
+
+            if (metaObject == null)
+                return ResultModel.Error("没有找到该实体编码对应的实体信息");
+
+            return BatchAdd(metaObject, bsons);
+        }
+        public ResultModel BatchAdd(MetaObject metaObject, List<BsonDocument> bsonsList)
+        {
+            if (bsonsList != null && bsonsList.Any())
+            {
+                List<BsonDocument> insertBsonsList = new List<BsonDocument>();
+
+                //获取到字段列表
+                var metaFields = metaFieldService.GetMetaFieldUpperKeyDicUnDeleted(metaObject.Id);
+
+                for (int j = 0; j < bsonsList.Count; j++)
+                {
+                    var bsons = bsonsList[j];
+                    for (int i = bsons.ElementCount - 1; i >= 0; i--)
+                    {
+                        var item = bsons.GetElement(i);
+                        string upperKey = item.Name.ToUpperInvariant();
+                        if (metaFields.ContainsKey(upperKey))
+                        {
+                            //检查字段的值是否符合字段类型
+                            var checkResult = metaFieldService.CheckAndGetFieldValueByFieldType(metaFields[upperKey], item.Value);
+                            if (checkResult.IsSuccess)
+                            {
+                                //如果大小写不匹配，则都转化成配置的字段Code形式
+                                if (!item.Name.Equals(metaFields[upperKey].Code))
+                                {
+                                    bsons.RemoveElement(item);
+                                    bsons.Add(new BsonElement(metaFields[upperKey].Code, BsonValue.Create(checkResult.Data)));
+                                }
+                                else
+                                {
+                                    //重置字段的真实类型的值
+                                    bsons.SetElement(new BsonElement(metaFields[upperKey].Code, BsonValue.Create(checkResult.Data)));
+                                }
+                            }
+                            else
+                            {
+                                bsons.RemoveElement(item);
+                            }
+                        }
+                        else
+                        {
+                            //如果字段不在配置字段中，则不进行添加
+                            bsons.RemoveElement(item);
+                        }
+                    }
+
+                    //预置字段及其默认值
+                    foreach (var item in metaFieldService.GetPresetFieldBsonElements())
+                    {
+                        //如果传入的字段已经有了，那么这里就不预置了
+                        if (!bsons.Contains(item.Name))
+                        {
+                            bsons.Add(item);
+                        }
+                    }
+
+                    //补充字段
+                    //bsons.SetElement(new BsonElement("_id", Guid.NewGuid().ToString()));//id已经补充到预置字段
+                    bsons.SetElement(new BsonElement("MetaObjectCode", metaObject.Code));
+
+                    insertBsonsList.Add(bsons);
+                }
+                db.GetCollectionBson(metaObject.Code).InsertMany(insertBsonsList);
+            }
+            return ResultModel.Success($"插入成功");
         }
 
         public ResultModel Update(string metaObjectCode, FilterDefinition<BsonDocument> condition, BsonDocument bsons)
