@@ -205,46 +205,53 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             //错误信息返回值
             HashSet<string> ErrorInfo = new HashSet<string>();
 
-            //获取到字段列表
-            var metaFields = metaFieldService.GetMetaFieldUpperKeyDicUnDeleted(metaObject.Id);
-            for (int i = bsons.ElementCount - 1; i >= 0; i--)
+            if (bsons != null && bsons.Any())
             {
-                var item = bsons.GetElement(i);
-                string upperKey = item.Name.ToUpperInvariant();
-                if (metaFields.ContainsKey(upperKey))
+                //获取到字段列表
+                var metaFields = metaFieldService.GetMetaFieldUpperKeyDicUnDeleted(metaObject.Id);
+                for (int i = bsons.ElementCount - 1; i >= 0; i--)
                 {
-                    //检查字段的值是否符合字段类型
-                    var checkResult = metaFieldService.CheckAndGetFieldValueByFieldType(metaFields[upperKey], item.Value);
-                    if (checkResult.IsSuccess)
+                    var item = bsons.GetElement(i);
+                    string upperKey = item.Name.ToUpperInvariant();
+                    if (metaFields.ContainsKey(upperKey))
                     {
-                        //如果大小写不匹配，则都转化成配置的字段Code形式
-                        if (!item.Name.Equals(metaFields[upperKey].Code))
+                        //检查字段的值是否符合字段类型
+                        var checkResult = metaFieldService.CheckAndGetFieldValueByFieldType(metaFields[upperKey], item.Value);
+                        if (checkResult.IsSuccess)
                         {
-                            bsons.RemoveElement(item);
-                            bsons.Add(new BsonElement(metaFields[upperKey].Code, BsonValue.Create(checkResult.Data)));
+                            //如果大小写不匹配，则都转化成配置的字段Code形式
+                            if (!item.Name.Equals(metaFields[upperKey].Code))
+                            {
+                                bsons.RemoveElement(item);
+                                bsons.Add(new BsonElement(metaFields[upperKey].Code, BsonValue.Create(checkResult.Data)));
+                            }
+                            else
+                            {
+                                //重置字段的真实类型的值
+                                bsons.SetElement(new BsonElement(metaFields[upperKey].Code, BsonValue.Create(checkResult.Data)));
+                            }
                         }
                         else
                         {
-                            //重置字段的真实类型的值
-                            bsons.SetElement(new BsonElement(metaFields[upperKey].Code, BsonValue.Create(checkResult.Data)));
+                            bsons.RemoveElement(item);
+                            ErrorInfo.Add($"字段[{item.Name}]传递的值[{item.Value}]不符合字段定义的类型");
                         }
                     }
                     else
                     {
+                        //如果字段不在配置字段中，则不进行添加
                         bsons.RemoveElement(item);
-                        ErrorInfo.Add($"字段[{item.Name}]传递的值[{item.Value}]不符合字段定义的类型");
+                        ErrorInfo.Add($"字段[{item.Name}]不属于对象[{metaObject.Code}({metaObject.Name})]定义的字段");
                     }
                 }
-                else
+
+                var collection = db.GetCollectionBson(metaObject.Code);
+                var bu = Builders<BsonDocument>.Update;
+                foreach (var item in bsons)
                 {
-                    //如果字段不在配置字段中，则不进行添加
-                    bsons.RemoveElement(item);
-                    ErrorInfo.Add($"字段[{item.Name}]不属于对象[{metaObject.Code}({metaObject.Name})]定义的字段");
+                    collection.UpdateMany(condition, bu.Set(item.Name, item.Value));
                 }
             }
-
-            db.GetCollectionBson(metaObject.Code).ReplaceOne(condition, bsons);
-
             return ResultModel.Success($"修改成功，日志：{string.Join(",", ErrorInfo)}");
         }
 

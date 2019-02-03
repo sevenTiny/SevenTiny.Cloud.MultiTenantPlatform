@@ -33,7 +33,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                         keyValuePairs.Add(field.Key, new FieldBizData
                         {
                             Name = field.Key,
-                            Text = field.Value.Name,
+                            Text = bsonElement[field.Key]?.ToString(),
                             Value = bsonElement[field.Key]
                         });
                     }
