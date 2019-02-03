@@ -35,7 +35,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Service
         /// </summary>
         private string GeneralUsing
             => @"
-            using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
+using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging;
+using  logger = SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging.Logger;
                 ";
         /// <summary>
         /// 公共导入程序集
@@ -47,7 +49,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Service
                 "System.Linq",
                 "System.Collections.Generic",
                 "SevenTiny.Cloud.MultiTenantPlatform.Domain",
-                "Newtonsoft.Json"
+                "Newtonsoft.Json",
+                "SevenTiny.Cloud.MultiTenantPlatform.Infrastructure"
             };
 
         /// <summary>

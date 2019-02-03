@@ -104,7 +104,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 //end using
 //注释：上面的end using注释为using分隔符，请不要删除；
-//注释：输出日志请使用 logger.Error(),logger.Debug(),logger.Info()
+//注释：输出日志请使用 logger.Error(),logger.Debug()
 public List<BsonDocument> BatchAddBefore(string operateCode,List<BsonDocument> bsonElementsList)
 {
 	//这里写业务逻辑

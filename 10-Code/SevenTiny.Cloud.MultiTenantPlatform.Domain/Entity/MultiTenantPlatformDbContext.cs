@@ -11,7 +11,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity
         public MultiTenantPlatformDbContext() : base(ConnectionStringsConfig.Get("MultiTenantPlatformWeb"))
         {
             //开启一级缓存
-            OpenQueryCache = true;
+            OpenQueryCache = false;
         }
     }
 }
