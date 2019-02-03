@@ -13,6 +13,21 @@
         </span>
         <span class="r">共有数据：<strong>@entities?.Count</strong> 条</span>
     </div>
+    <div class="panel panel-default mt-10">
+        <div class="panel-header" style="background-color:#cbe7fc">接口使用说明</div>
+        <div class="panel-body pd-20">
+            <div>
+                <span>查询接口：/api/CloudData?interfaceCode=接口编码&参数=值&参数=值...</span><br />
+                <span>可选参数：pageIndex（页码），pageSize（页大小）</span>
+                <hr class="mt-10 mb-10" />
+                <span>插入接口：/api/CloudData?metaObjectCode=对象编码（字段值request body json格式传递）</span><br />
+                <hr class="mt-10 mb-10" />
+                <span>编辑接口：/api/CloudData?conditionCode=搜索条件编码&参数=值&参数=值...（字段值request body json格式传递）</span><br />
+                <hr class="mt-10 mb-10" />
+                <span>删除接口：/api/CloudData?conditionCode=搜索条件编码&参数=值&参数=值...</span><br />
+            </div>
+        </div>
+    </div>
     <ul id="Huifold1" class="Huifold">
         @foreach (var item in entities.OrderBy(t => t.SortNumber).ToList())
         {
