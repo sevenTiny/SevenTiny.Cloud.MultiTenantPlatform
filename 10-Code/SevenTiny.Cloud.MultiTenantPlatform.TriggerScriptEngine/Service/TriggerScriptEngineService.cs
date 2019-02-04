@@ -85,6 +85,11 @@ using  logger = SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging.Logge
 
                 stringBuilder.Append("public class TriggerScript_Class");
                 stringBuilder.Append("{");
+
+                //common operation
+                stringBuilder.Append("MultiTenantDataDbContext Db = new MultiTenantDataDbContext();");
+
+                //script method
                 stringBuilder.Append(scriptArray[1]);
                 stringBuilder.Append("}");
 

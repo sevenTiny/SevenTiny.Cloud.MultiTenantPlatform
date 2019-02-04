@@ -10,6 +10,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity
         public MultiTenantDataDbContext() : base(ConnectionStringsConfig.Get("mongodb39911"))
         {
         }
-        public IMongoCollection<BsonDocument> GetCollectionBson(string collectionName) => DataBase.GetCollection<BsonDocument>(collectionName);
+        public IMongoCollection<BsonDocument> GetCollection(string collectionName) => DataBase.GetCollection<BsonDocument>(collectionName);
     }
 }

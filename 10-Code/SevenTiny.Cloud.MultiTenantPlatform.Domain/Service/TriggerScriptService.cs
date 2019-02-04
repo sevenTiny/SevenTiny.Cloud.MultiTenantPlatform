@@ -138,6 +138,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
+using MongoDB.Bson;
+using MongoDB.Driver;
 //end using
 //注释：上面的end using注释为using分隔符，请不要删除；
 //注释：输出日志请使用 logger.Error(),logger.Debug(),logger.Info()
@@ -155,6 +157,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
+using MongoDB.Bson;
+using MongoDB.Driver;
 //end using
 //注释：上面的end using注释为using分隔符，请不要删除；
 //注释：输出日志请使用 logger.Error(),logger.Debug(),logger.Info()
@@ -168,6 +172,9 @@ public SingleObjectComponent SingleObjectAfter(string operateCode,SingleObjectCo
         private string DefaultCountAfterTriggerScript
             => @"
 using System;
+using MongoDB.Bson;
+using MongoDB.Driver;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
 //end using
 //注释：上面的end using注释为using分隔符，请不要删除；
 //注释：输出日志请使用 logger.Error(),logger.Debug(),logger.Info()
@@ -184,6 +191,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using MongoDB.Bson;
+using MongoDB.Driver;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
 //end using
 //注释：上面的end using注释为using分隔符，请不要删除；
 //注释：输出日志请使用 logger.Error(),logger.Debug(),logger.Info()
