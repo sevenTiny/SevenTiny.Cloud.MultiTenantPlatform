@@ -5,9 +5,43 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity
     [Table]
     public class FieldListAggregation
     {
+        [Key]
+        [AutoIncrease]
+        [Column]
+        public int Id { get; set; }
         [Column]
         public int FieldListId { get; set; }
         [Column]
         public int MetaFieldId { get; set; }
+        /// <summary>
+        /// 名称
+        /// </summary>
+        [Column]
+        public string Name { get; set; }
+        /// <summary>
+        /// 显示名称
+        /// </summary>
+        [Column]
+        public string Text { get; set; }
+        /// <summary>
+        /// 字段类型
+        /// </summary>
+        [Column]
+        public int FieldType { get; set; }
+        /// <summary>
+        /// 字段长度
+        /// </summary>
+        [Column]
+        public int FieldLength { get; set; }
+        /// <summary>
+        /// 是否显示
+        /// </summary>
+        [Column]
+        public int IsVisible { get; set; }
+        /// <summary>
+        /// 是否是链接
+        /// </summary>
+        [Column]
+        public int IsUrl { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
 using System.Collections.Generic;
@@ -25,6 +26,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract
         BsonDocument Get(string metaObjectCode, FilterDefinition<BsonDocument> condition);
         BsonDocument Get(int metaObjectId, FilterDefinition<BsonDocument> condition);
         BsonDocument Get(MetaObject metaObject, FilterDefinition<BsonDocument> condition);
+        SingleObjectComponent GetSingleObjectComponent(int metaObjectId, int InterfaceFieldId, FilterDefinition<BsonDocument> condition);
 
         BsonDocument GetById(string metaObjectCode, string _id);
         List<BsonDocument> GetByIds(string metaObjectCode, string[] _ids);
@@ -37,6 +39,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract
         List<BsonDocument> GetList(int metaObjectId, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, out int count);
         List<BsonDocument> GetList(string metaObjectCode, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, out int count);
         List<BsonDocument> GetList(MetaObject metaObject, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, out int count);
+        TableListComponent GetTableListComponent(int metaObjectId, int InterfaceFieldId, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, out int count);
 
         int GetCount(int metaObjectId, FilterDefinition<BsonDocument> condition);
         int GetCount(string metaObjectCode, FilterDefinition<BsonDocument> condition);

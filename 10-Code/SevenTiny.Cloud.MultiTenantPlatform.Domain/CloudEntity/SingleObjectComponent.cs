@@ -7,5 +7,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity
     {
         [JsonProperty("biz_data", NullValueHandling = NullValueHandling.Ignore)]
         public Dictionary<string, FieldBizData> BizData { get; set; }
+        /// <summary>
+        /// 列信息
+        /// </summary>
+        [JsonProperty("column_data", NullValueHandling = NullValueHandling.Ignore)]
+        public List<ColunmData> ColunmDatas { get; set; }
     }
 }

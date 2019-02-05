@@ -1,4 +1,6 @@
-﻿using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
+﻿using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
 using System.Collections.Generic;
@@ -44,6 +46,29 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         public Dictionary<string, MetaField> GetMetaFieldsDicByFieldListId(int fieldListId)
         {
             return GetMetaFieldsByFieldListId(fieldListId)?.ToDictionary(t => t.Code, t => t);
+        }
+
+        public List<ColunmData> GetColumnDataByFieldListId(int interfaceFieldId)
+        {
+            var fieldList = GetByFieldListId(interfaceFieldId);
+            if (fieldList != null && fieldList.Any())
+            {
+                List<ColunmData> colunmDatas = new List<ColunmData>();
+                foreach (var item in fieldList)
+                {
+                    colunmDatas.Add(new ColunmData
+                    {
+                        Name = item.Name,
+                        Text = item.Text,
+                        FieldType = item.FieldType,
+                        FieldLength = item.FieldLength,
+                        IsVisible = TrueFalseTranslator.ToBoolean(item.IsVisible),
+                        IsUrl = TrueFalseTranslator.ToBoolean(item.IsUrl)
+                    });
+                }
+                return colunmDatas;
+            }
+            return null;
         }
     }
 }

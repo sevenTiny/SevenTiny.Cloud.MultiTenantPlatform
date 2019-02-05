@@ -15,15 +15,22 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         readonly MultiTenantDataDbContext db;
         readonly IMetaFieldService metaFieldService;
         readonly IMetaObjectService metaObjectService;
+        readonly IFieldBizDataService fieldBizDataService;
+        readonly IFieldListAggregationService fieldListAggregationService;
+
         public DataAccessService(
             MultiTenantDataDbContext _db,
             IMetaFieldService _metaFieldService,
-            IMetaObjectService _metaObjectService
+            IMetaObjectService _metaObjectService,
+            IFieldBizDataService _fieldBizDataService,
+            IFieldListAggregationService _fieldListAggregationService
             )
         {
             db = _db;
             metaFieldService = _metaFieldService;
             metaObjectService = _metaObjectService;
+            fieldBizDataService = _fieldBizDataService;
+            fieldListAggregationService = _fieldListAggregationService;
         }
 
         public ResultModel Add(string metaObjectCode, BsonDocument bsons)
@@ -305,6 +312,16 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         {
             return db.GetCollection(metaObject.Code).Find<BsonDocument>(condition)?.FirstOrDefault();
         }
+        public SingleObjectComponent GetSingleObjectComponent(int metaObjectId, int InterfaceFieldId, FilterDefinition<BsonDocument> condition)
+        {
+            var document = Get(metaObjectId, condition);
+            SingleObjectComponent singleObjectComponent = new SingleObjectComponent
+            {
+                BizData = fieldBizDataService.ToBizDataDictionary(InterfaceFieldId, document),
+                ColunmDatas = fieldListAggregationService.GetColumnDataByFieldListId(InterfaceFieldId)
+            };
+            return singleObjectComponent;
+        }
 
         public BsonDocument GetById(string metaObjectCode, string _id)
         {
@@ -381,6 +398,17 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                 count = Convert.ToInt32(db.GetCollection(metaObject.Code).Count(condition));
 
             return bson;
+        }
+        public TableListComponent GetTableListComponent(int metaObjectId, int InterfaceFieldId, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, out int count)
+        {
+            var documents = GetList(metaObjectId, condition, pageIndex, pageSize, out count);
+            TableListComponent tableListComponent = new TableListComponent
+            {
+                BizData = fieldBizDataService.ToBizDataDictionaryList(InterfaceFieldId, documents),
+                BizDataTotalCount = count,
+                ColunmDatas = fieldListAggregationService.GetColumnDataByFieldListId(InterfaceFieldId)
+            };
+            return tableListComponent;
         }
 
         public int GetCount(int metaObjectId, FilterDefinition<BsonDocument> condition)

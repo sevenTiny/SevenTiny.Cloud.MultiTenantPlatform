@@ -86,21 +86,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                 {
                     case InterfaceType.CloudSingleObject:
                         filter = triggerScriptEngineService.SingleObjectBefore(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, filter);
-                        var document = dataAccessService.Get(interfaceAggregation.MetaObjectId, filter);
-                        SingleObjectComponent singleObjectComponent = new SingleObjectComponent
-                        {
-                            BizData = fieldBizDataService.ToBizDataDictionary(interfaceAggregation.FieldListId, document),
-                        };
+                        var singleObjectComponent = dataAccessService.GetSingleObjectComponent(interfaceAggregation.MetaObjectId, interfaceAggregation.FieldListId, filter);
                         singleObjectComponent = triggerScriptEngineService.SingleObjectAfter(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, singleObjectComponent);
                         return JsonResultModel.Success("get single data success", singleObjectComponent);
                     case InterfaceType.CloudTableList:
                         filter = triggerScriptEngineService.TableListBefore(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, filter);
-                        var documents = dataAccessService.GetList(interfaceAggregation.MetaObjectId, filter, queryArgs.pageIndex, queryArgs.pageSize, out int totalCount);
-                        TableListComponent tableListComponent = new TableListComponent
-                        {
-                            BizData = fieldBizDataService.ToBizDataDictionaryList(interfaceAggregation.FieldListId, documents),
-                            BizDataTotalCount = totalCount
-                        };
+                        var tableListComponent = dataAccessService.GetTableListComponent(interfaceAggregation.MetaObjectId, interfaceAggregation.FieldListId, filter, queryArgs.pageIndex, queryArgs.pageSize, out int totalCount);
                         tableListComponent = triggerScriptEngineService.TableListAfter(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, tableListComponent);
                         return JsonResultModel.Success("get data list success", tableListComponent);
                     case InterfaceType.CloudCount:
