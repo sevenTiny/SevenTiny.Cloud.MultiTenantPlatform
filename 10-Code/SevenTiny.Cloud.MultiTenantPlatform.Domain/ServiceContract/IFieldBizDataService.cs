@@ -8,7 +8,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract
 {
     public interface IFieldBizDataService
     {
-        List<Dictionary<string, FieldBizData>> ConvertToDictionaryList(int InterfaceFieldId, List<BsonDocument> bsonElements);
-        Dictionary<string, FieldBizData> ConvertToDictionary(int InterfaceFieldId, BsonDocument bsonElement);
+        List<Dictionary<string, FieldBizData>> ToBizDataDictionaryList(int InterfaceFieldId, List<BsonDocument> bsonElements);
+        Dictionary<string, FieldBizData> ToBizDataDictionary(int InterfaceFieldId, BsonDocument bsonElement);
     }
 }

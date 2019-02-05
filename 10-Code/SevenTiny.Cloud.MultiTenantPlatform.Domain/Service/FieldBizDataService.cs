@@ -18,7 +18,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             fieldAggregationService = _fieldAggregationService;
         }
 
-        public Dictionary<string, FieldBizData> ConvertToDictionary(int InterfaceFieldId, BsonDocument bsonElement)
+        public Dictionary<string, FieldBizData> ToBizDataDictionary(int InterfaceFieldId, BsonDocument bsonElement)
         {
             if (bsonElement != null && bsonElement.Any())
             {
@@ -43,7 +43,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             return null;
         }
 
-        public List<Dictionary<string, FieldBizData>> ConvertToDictionaryList(int InterfaceFieldId, List<BsonDocument> bsonElements)
+        public List<Dictionary<string, FieldBizData>> ToBizDataDictionaryList(int InterfaceFieldId, List<BsonDocument> bsonElements)
         {
             //接口配置的字段字典
             var interfaceMetaFieldsDic = fieldAggregationService.GetMetaFieldsDicByFieldListId(InterfaceFieldId);

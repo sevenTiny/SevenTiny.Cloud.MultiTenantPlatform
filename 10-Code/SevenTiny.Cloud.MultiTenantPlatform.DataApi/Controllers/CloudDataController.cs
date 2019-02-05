@@ -89,7 +89,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                         var document = dataAccessService.Get(interfaceAggregation.MetaObjectId, filter);
                         SingleObjectComponent singleObjectComponent = new SingleObjectComponent
                         {
-                            BizData = fieldBizDataService.ConvertToDictionary(interfaceAggregation.FieldListId, document),
+                            BizData = fieldBizDataService.ToBizDataDictionary(interfaceAggregation.FieldListId, document),
                         };
                         singleObjectComponent = triggerScriptEngineService.SingleObjectAfter(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, singleObjectComponent);
                         return JsonResultModel.Success("get single data success", singleObjectComponent);
@@ -98,7 +98,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                         var documents = dataAccessService.GetList(interfaceAggregation.MetaObjectId, filter, queryArgs.pageIndex, queryArgs.pageSize, out int totalCount);
                         TableListComponent tableListComponent = new TableListComponent
                         {
-                            BizData = fieldBizDataService.ConvertToDictionaryList(interfaceAggregation.FieldListId, documents),
+                            BizData = fieldBizDataService.ToBizDataDictionaryList(interfaceAggregation.FieldListId, documents),
                             BizDataTotalCount = totalCount
                         };
                         tableListComponent = triggerScriptEngineService.TableListAfter(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, tableListComponent);
