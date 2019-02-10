@@ -102,7 +102,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             //bsons.SetElement(new BsonElement("_id", Guid.NewGuid().ToString()));//id已经补充到预置字段
             bsons.SetElement(new BsonElement("MetaObjectCode", metaObject.Code));
 
-            db.GetCollection(metaObject.Code).InsertOne(bsons);
+            db.GetCollectionBson(metaObject.Code).InsertOne(bsons);
 
             return ResultModel.Success($"插入成功，日志：{string.Join(",", ErrorInfo)}");
         }
@@ -181,7 +181,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
 
                     insertBsonsList.Add(bsons);
                 }
-                db.GetCollection(metaObject.Code).InsertMany(insertBsonsList);
+                db.GetCollectionBson(metaObject.Code).InsertMany(insertBsonsList);
             }
             return ResultModel.Success($"插入成功");
         }
@@ -252,7 +252,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                     }
                 }
 
-                var collection = db.GetCollection(metaObject.Code);
+                var collection = db.GetCollectionBson(metaObject.Code);
                 var bu = Builders<BsonDocument>.Update;
                 foreach (var item in bsons)
                 {
@@ -285,7 +285,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         }
         public ResultModel Delete(MetaObject metaObject, FilterDefinition<BsonDocument> condition)
         {
-            db.GetCollection(metaObject.Code).DeleteMany(condition);
+            db.GetCollectionBson(metaObject.Code).DeleteMany(condition);
 
             return ResultModel.Success($"删除成功");
         }
@@ -310,7 +310,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         }
         public BsonDocument Get(MetaObject metaObject, FilterDefinition<BsonDocument> condition)
         {
-            return db.GetCollection(metaObject.Code).Find<BsonDocument>(condition)?.FirstOrDefault();
+            return db.GetCollectionBson(metaObject.Code).Find<BsonDocument>(condition)?.FirstOrDefault();
         }
         public SingleObjectComponent GetSingleObjectComponent(int metaObjectId, int InterfaceFieldId, FilterDefinition<BsonDocument> condition)
         {
@@ -361,13 +361,13 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             List<BsonDocument> bson = new List<BsonDocument>();
             if (pageSize == 0)
             {
-                bson = db.GetCollection(metaObject.Code).Find<BsonDocument>(condition).ToList();
+                bson = db.GetCollectionBson(metaObject.Code).Find<BsonDocument>(condition).ToList();
             }
             else
             {
                 //这里等升级完包之后全部替换成orm的方法
                 int skipSize = (pageIndex - 1) > 0 ? ((pageIndex - 1) * pageSize) : 0;
-                bson = db.GetCollection(metaObject.Code).Find(condition).Skip(skipSize).Limit(pageSize).ToList();
+                bson = db.GetCollectionBson(metaObject.Code).Find(condition).Skip(skipSize).Limit(pageSize).ToList();
             }
             return bson;
         }
@@ -395,7 +395,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             if (pageSize == 0)
                 count = bson?.Count ?? 0;
             else
-                count = Convert.ToInt32(db.GetCollection(metaObject.Code).Count(condition));
+                count = Convert.ToInt32(db.GetCollectionBson(metaObject.Code).Count(condition));
 
             return bson;
         }
@@ -431,7 +431,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         }
         public int GetCount(MetaObject metaObject, FilterDefinition<BsonDocument> condition)
         {
-            return Convert.ToInt32(db.GetCollection(metaObject.Code).Count(condition));
+            return Convert.ToInt32(db.GetCollectionBson(metaObject.Code).Count(condition));
         }
     }
 }
