@@ -58,6 +58,7 @@
             <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>触发器脚本：</label>
             <div class="formControls col-xs-9 col-sm-9">
                 <textarea id="codeTextArea" name="script" class="ignore">@entity.Script</textarea>
+                <span class="c-red">*提示：F11 全屏模式</span>
             </div>
         </div>
         <div class="row cl">
@@ -93,11 +94,13 @@
 
 <link href="~/lib/codemirror-5.43.0/codemirror.css" rel="stylesheet" />
 <link href="~/lib/codemirror-5.43.0/theme/cobalt.css" rel="stylesheet" />
+<link href="~/lib/codemirror-5.43.0/addon/display/fullscreen.css" rel="stylesheet" />
 @await Html.PartialAsync("~/Views/Shared/_FooterScripts.cshtml")
 @await Html.PartialAsync("~/Views/Shared/_CommonScript.cshtml")
 @await Html.PartialAsync("~/Views/Shared/_FormValidate.cshtml")
 <script src="~/lib/codemirror-5.43.0/codemirror.js"></script>
 <script src="~/lib/codemirror-5.43.0/mode/clike/clike.js"></script>
+<script src="~/lib/codemirror-5.43.0/addon/display/fullscreen.js"></script>
 
 <!--请在下方写此页面业务相关的脚本-->
 <script type="text/javascript">
@@ -105,7 +108,13 @@
         mode: 'text/x-csharp',//编辑器语言
         theme: 'cobalt', //编辑器主题
         extraKeys: {
-            "Ctrl": "autocomplete"
+            "Ctrl": "autocomplete",
+            "F11": function (cm) {
+                cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+            },
+            "Esc": function (cm) {
+                if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+            }
         },//ctrl可以弹出选择项
         lineNumbers: true,//显示行号
         spellcheck: true,//拼写检查
