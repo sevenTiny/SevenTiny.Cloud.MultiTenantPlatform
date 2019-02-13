@@ -72,7 +72,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                 myEntity.InterfaceType = interfaceAggregation.InterfaceType;
 
                 //如果脚本有改动，则清空脚本缓存
-                if (!myEntity.Script.Equals(interfaceAggregation.Script))
+                if (myEntity.Script != null && !myEntity.Script.Equals(interfaceAggregation.Script))
                     TriggerScriptCache.ClearCache(interfaceAggregation.Script);
                 myEntity.Script = interfaceAggregation.Script;
 
