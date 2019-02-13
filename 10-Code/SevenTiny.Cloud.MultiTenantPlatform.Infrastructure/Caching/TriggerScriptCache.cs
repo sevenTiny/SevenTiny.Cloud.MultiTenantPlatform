@@ -11,39 +11,27 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Caching
     /// </summary>
     public class TriggerScriptCache
     {
-        private static IRedisCache redisCache = new RedisCacheManager("101");
         public static TValue GetSet<TValue>(string script, Func<TValue> func)
         {
-            var hashKey = script.GetHashCode().ToString();
+            var hashKey = script.GetHashCode();
             var expired = TimeSpan.FromMinutes(15);
 
-            //redis cache
-            var triggerScriptFunc = redisCache.Get(hashKey); ;
-            if (string.IsNullOrEmpty(triggerScriptFunc))
+            var triggerScriptInCache = MemoryCacheHelper.Get<int, TValue>(hashKey);
+            if (triggerScriptInCache == null)
             {
-                redisCache.Update(hashKey, JsonConvert.SerializeObject(func()));
-                return func();
+                triggerScriptInCache = MemoryCacheHelper.Put<int, TValue>(hashKey, func(), expired);
             }
 
-            //local cache
-            //var triggerScriptInCache = MemoryCacheHelper.Get<int, TValue>(hashKey);
-            //if (triggerScriptInCache == null)
-            //{
-            //    triggerScriptInCache = MemoryCacheHelper.Put<int, TValue>(hashKey, func(), expired);
-            //}
-
-            return JsonConvert.DeserializeObject<TValue>(triggerScriptFunc);
+            return triggerScriptInCache;
         }
 
         public static void ClearCache(string script)
         {
-            var hashKey = script.GetHashCode().ToString();
-
-            //local cache
-            //MemoryCacheHelper.Delete(hashKey);
-
-            //redis cache
-            redisCache.Delete(hashKey);
+            var hashKey = script.GetHashCode();
+            MemoryCacheHelper.Delete(hashKey);
+            //事实上，这是两个项目，内存中缓存是分应用程序域的，web的缓存和dataapi的缓存不是一套，并不能实现清楚缓存的功能
+            //如果修改脚本，则是废弃旧脚本，重新存了个新的而已
+            //因此，本清楚缓存的功能使用内存集合是不可用的！
         }
     }
 }
