@@ -16,5 +16,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging
         {
             logger.Error(log);
         }
+        public static void Info(string log)
+        {
+            logger.Info(log);
+        }
     }
 }
