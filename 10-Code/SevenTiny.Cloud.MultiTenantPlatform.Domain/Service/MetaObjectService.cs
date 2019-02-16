@@ -16,7 +16,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             IMetaFieldService _metaFieldService,
             IFieldListService _fieldListService,
             IInterfaceAggregationService _interfaceAggregationService,
-            ISearchConditionService _searchConditionService
+            ISearchConditionService _searchConditionService,
+            ITriggerScriptService _triggerScriptService
             ) : base(multiTenantPlatformDbContext)
         {
             dbContext = multiTenantPlatformDbContext;
@@ -24,6 +25,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             fieldListService = _fieldListService;
             interfaceAggregationService = _interfaceAggregationService;
             searchConditionService = _searchConditionService;
+            triggerScriptService = _triggerScriptService;
         }
 
         MultiTenantPlatformDbContext dbContext;
@@ -31,6 +33,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         IFieldListService fieldListService;
         IInterfaceAggregationService interfaceAggregationService;
         ISearchConditionService searchConditionService;
+        ITriggerScriptService triggerScriptService;
 
         public List<MetaObject> GetMetaObjectsUnDeletedByApplicationId(int applicationId)
             => dbContext.QueryList<MetaObject>(t => t.ApplicationId == applicationId && t.IsDeleted == (int)IsDeleted.UnDeleted);
@@ -98,7 +101,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                 }
 
                 //预置字段数据
-                metaFieldService.PresetFields(obj.Id);
+                //将公共字段统一处理，不每个对象预置
+                //metaFieldService.PresetFields(obj.Id);
 
                 return ResultModel.Success();
             });
@@ -119,7 +123,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                 fieldListService.DeleteByMetaObjectId(id);//删除相关子对象
                 interfaceAggregationService.DeleteByMetaObjectId(id);
                 searchConditionService.DeleteByMetaObjectId(id);//删除相关子对象
+                triggerScriptService.DeleteByMetaObjectId(id);
                 //这里补充待删除的子对象
+                //...
                 base.Delete(id);
             });
             return ResultModel.Success();

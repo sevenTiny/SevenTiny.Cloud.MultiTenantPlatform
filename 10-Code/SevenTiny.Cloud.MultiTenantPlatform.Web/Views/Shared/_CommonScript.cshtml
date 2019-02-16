@@ -8,8 +8,12 @@
                 url: url,
                 dataType: 'json',
                 success: function (data) {
-                    $(obj).parents("tr").remove();
-                    layer.msg('已删除!', { icon: 1, time: 1000 });
+                    if (data.success) {
+                        $(obj).parents("tr").remove();
+                        layer.msg('已删除!', { icon: 1, time: 1000 });
+                    } else {
+                        layer.msg(data.msg, { icon: 2, time: 1000 });
+                    }
                 },
                 error: function (data) {
                     console.log(data.msg);
@@ -26,8 +30,12 @@
                 url: url,
                 dataType: 'json',
                 success: function (data) {
-                    $(obj).parents("tr").remove();
-                    layer.msg('操作成功!', { icon: 1, time: 1000 });
+                    if (data.success) {
+                        $(obj).parents("tr").remove();
+                        layer.msg('操作成功!', { icon: 1, time: 1000 });
+                    } else {
+                        layer.msg(data.msg, { icon: 2, time: 1000 });
+                    }
                 },
                 error: function (data) {
                     console.log(data.msg);

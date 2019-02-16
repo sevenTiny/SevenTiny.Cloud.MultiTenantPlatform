@@ -20,6 +20,15 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
 
         MultiTenantPlatformDbContext dbContext;
 
+        public new List<MetaField> GetEntitiesDeletedByMetaObjectId(int metaObjectId)
+            => dbContext.QueryList<MetaField>(t => t.IsDeleted == (int)IsDeleted.Deleted && t.MetaObjectId == metaObjectId);
+
+        public new List<MetaField> GetEntitiesUnDeletedByMetaObjectId(int metaObjectId)
+        {
+            //取字段要包含上系统字段
+            return dbContext.QueryList<MetaField>(t => t.IsDeleted == (int)IsDeleted.UnDeleted && (t.MetaObjectId == metaObjectId || t.MetaObjectId == -1));
+        }
+
         public Dictionary<string, MetaField> GetMetaFieldDicUnDeleted(int metaObjectId)
         {
             var metaFields = GetEntitiesUnDeletedByMetaObjectId(metaObjectId);
@@ -76,7 +85,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                     Description="系统字段",
                     IsSystem =(int)TrueFalse.True,
                     IsMust=(int)TrueFalse.True,
-                    FieldType=(int)DataType.Int,
+                    FieldType=(int)DataType.Text,
                     SortNumber=-1
                 },
                 new MetaField{
