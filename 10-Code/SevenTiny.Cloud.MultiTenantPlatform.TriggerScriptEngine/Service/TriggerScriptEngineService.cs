@@ -1,4 +1,6 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Scripting;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -10,6 +12,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Models;
 using SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.ServiceContract;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -37,7 +40,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Service
             => @"
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
 using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging;
-using  logger = SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging.Logger;
+using logger = SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging.Logger;
                 ";
         /// <summary>
         /// 公共导入程序集
@@ -52,6 +55,71 @@ using  logger = SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging.Logge
                 "Newtonsoft.Json",
                 "SevenTiny.Cloud.MultiTenantPlatform.Infrastructure"
             };
+
+        /// <summary>
+        /// 获取完整的脚本
+        /// </summary>
+        /// <param name="triggerScript">触发器脚本（方法）</param>
+        /// <returns></returns>
+        private string GetCompleteScript(string triggerScript)
+        {
+            //检查标识是否存在
+            if (!triggerScript.Contains(USING_SEPARATOR))
+                throw new KeyNotFoundException($"{USING_SEPARATOR} not found in trigger script");
+
+            string[] scriptArray = Regex.Split(triggerScript, USING_SEPARATOR, RegexOptions.IgnoreCase);
+
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.Append(GeneralUsing);
+
+            //append using
+            stringBuilder.Append(scriptArray[0]);
+
+            stringBuilder.Append("public class TriggerScript_Class");
+            stringBuilder.Append("{");
+
+            //common operation
+            stringBuilder.Append("MultiTenantDataDbContext Db = new MultiTenantDataDbContext();");
+
+            //script method
+            stringBuilder.Append(scriptArray[1]);
+            stringBuilder.Append("}");
+
+            return stringBuilder.ToString();
+        }
+
+        /// <summary>
+        /// 编译并检查脚本
+        /// </summary>
+        /// <param name="script">脚本</param>
+        /// <returns></returns>
+        public Tuple<bool, string> CompilationAndCheckScript(string script)
+        {
+            var syntaxTree = CSharpSyntaxTree.ParseText(script);
+
+            // 指定编译选项。
+            var assemblyName = $"GenericGenerator.g";
+            var compilation = CSharpCompilation.Create(assemblyName, new[] { syntaxTree },
+                    options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
+                    .AddReferences(AppDomain.CurrentDomain.GetAssemblies().Select(t =>
+                    {
+                        try
+                        {
+                            return t.Location;
+                        }
+                        catch (Exception)
+                        {
+                            return string.Empty;
+                        }
+                    }).Where(t => !string.IsNullOrEmpty(t)).Select(x => MetadataReference.CreateFromFile(x)));
+
+            using (var ms = new MemoryStream())
+            {
+                var result = compilation.Emit(ms);
+
+                return new Tuple<bool, string>(result.Success, string.Join(",\n", result.Diagnostics));
+            }
+        }
 
         /// <summary>
         /// 通用的执行脚本的方法
@@ -71,31 +139,9 @@ using  logger = SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging.Logge
 
             var triggerScriptInCache = TriggerScriptCache.GetSet(triggerScript, () =>
             {
-                //检查标识是否存在
-                if (!triggerScript.Contains(USING_SEPARATOR))
-                    throw new KeyNotFoundException($"{USING_SEPARATOR} not found in trigger script");
+                string scriptText = $"{GetCompleteScript(triggerScript)} return new TriggerScript_Class().{executeMethod};";
 
-                string[] scriptArray = Regex.Split(triggerScript, USING_SEPARATOR, RegexOptions.IgnoreCase);
-
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.Append(GeneralUsing);
-
-                //append using
-                stringBuilder.Append(scriptArray[0]);
-
-                stringBuilder.Append("public class TriggerScript_Class");
-                stringBuilder.Append("{");
-
-                //common operation
-                stringBuilder.Append("MultiTenantDataDbContext Db = new MultiTenantDataDbContext();");
-
-                //script method
-                stringBuilder.Append(scriptArray[1]);
-                stringBuilder.Append("}");
-
-                stringBuilder.Append($"return new TriggerScript_Class().{executeMethod};");
-
-                var script = CSharpScript.Create<TResult>(stringBuilder.ToString(),
+                var script = CSharpScript.Create<TResult>(scriptText,
                     ScriptOptions.Default
                     .AddReferences(GeneralRefrences),
                     globalsType: typeof(TArg)
