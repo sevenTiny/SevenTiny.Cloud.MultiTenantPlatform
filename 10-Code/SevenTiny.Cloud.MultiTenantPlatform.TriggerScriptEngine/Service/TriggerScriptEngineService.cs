@@ -120,7 +120,7 @@ using logger = SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging.Logger
             {
                 var result = compilation.Emit(ms);
 
-                return new Tuple<bool, string>(result.Success, string.Join(",\n", result.Diagnostics));
+                return new Tuple<bool, string>(result.Success, string.Join(";\r\n", result.Diagnostics));
             }
         }
 

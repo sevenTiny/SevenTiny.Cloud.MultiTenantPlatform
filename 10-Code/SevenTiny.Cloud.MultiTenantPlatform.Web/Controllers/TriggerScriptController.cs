@@ -122,7 +122,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
                 var checkResult2 = triggerScriptEngineService.CompilationAndCheckScript(triggerScript.Script);
                 if (!checkResult2.Item1)
                 {
-                    return View("Update", ResponseModel.Error($"脚本存在错误：{checkResult2.Item2}", triggerScript));
+                    return View("Update", ResponseModel.Error($"脚本存在错误：\r\n{checkResult2.Item2}", triggerScript));
                 }
 
                 //更新操作
