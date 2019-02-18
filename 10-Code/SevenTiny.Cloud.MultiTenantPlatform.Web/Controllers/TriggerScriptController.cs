@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using SevenTiny.Bantina.Validation;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
+using SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
@@ -13,12 +14,15 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
     public class TriggerScriptController : ControllerBase
     {
         readonly ITriggerScriptService triggerScriptService;
+        readonly ITriggerScriptEngineService triggerScriptEngineService;
 
         public TriggerScriptController(
-            ITriggerScriptService _triggerScriptService
+            ITriggerScriptService _triggerScriptService,
+            ITriggerScriptEngineService _triggerScriptEngineService
             )
         {
             triggerScriptService = _triggerScriptService;
+            triggerScriptEngineService = _triggerScriptEngineService;
         }
 
 
@@ -57,6 +61,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             {
                 return View("Add", ResponseModel.Error("编码不合法，2-50位且只能包含字母和数字（字母开头）", triggerScript));
             }
+            if (string.IsNullOrEmpty(triggerScript.Code))
+            {
+                return View("Add", ResponseModel.Error("脚本不能为空", triggerScript));
+            }
 
             //检查编码或名称重复
             var checkResult = triggerScriptService.CheckSameCodeOrName(CurrentMetaObjectId, triggerScript);
@@ -67,6 +75,14 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 
             triggerScript.MetaObjectId = CurrentMetaObjectId;
             triggerScript.Code = $"{CurrentMetaObjectCode}.TriggerScript.{triggerScript.Code}";
+
+            //check script
+            var checkResult2 = triggerScriptEngineService.CompilationAndCheckScript(triggerScript.Script);
+            if (!checkResult2.Item1)
+            {
+                return View("Add", ResponseModel.Error($"脚本存在错误：{checkResult2.Item2}", triggerScript));
+            }
+
             triggerScriptService.Add(triggerScript);
 
             return RedirectToAction("List");
@@ -98,6 +114,13 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             if (!checkResult.IsSuccess)
             {
                 return View("Update", checkResult.ToResponseModel());
+            }
+
+            //check script
+            var checkResult2 = triggerScriptEngineService.CompilationAndCheckScript(triggerScript.Script);
+            if (!checkResult2.Item1)
+            {
+                return View("Update", ResponseModel.Error($"脚本存在错误：{checkResult2.Item2}", triggerScript));
             }
 
             //更新操作

@@ -95,10 +95,13 @@ using logger = SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging.Logger
         /// <returns></returns>
         public Tuple<bool, string> CompilationAndCheckScript(string script)
         {
+            //获得完整的脚本
+            string completeScript = GetCompleteScript(script);
+
             var syntaxTree = CSharpSyntaxTree.ParseText(script);
 
             // 指定编译选项。
-            var assemblyName = $"GenericGenerator.g";
+            var assemblyName = $"GenericGenerator.script";
             var compilation = CSharpCompilation.Create(assemblyName, new[] { syntaxTree },
                     options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
                     .AddReferences(AppDomain.CurrentDomain.GetAssemblies().Select(t =>

@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="2.10.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.1" />
     <PackageReference Include="SevenTiny.Bantina" Version="1.0.12" />
   </ItemGroup>
@@ -317,6 +318,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SevenTiny.Cloud.MultiTenantPlatform.Domain\SevenTiny.Cloud.MultiTenantPlatform.Domain.csproj" />
     <ProjectReference Include="..\SevenTiny.Cloud.MultiTenantPlatform.Infrastructure\SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.csproj" />
+    <ProjectReference Include="..\SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine\SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.csproj" />
   </ItemGroup>
 
   <ItemGroup>
