@@ -65,7 +65,7 @@ using logger = SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging.Logger
         {
             //检查标识是否存在
             if (!triggerScript.Contains(USING_SEPARATOR))
-                throw new KeyNotFoundException($"{USING_SEPARATOR} not found in trigger script");
+                throw new KeyNotFoundException($"'{USING_SEPARATOR}' not found in trigger script");
 
             string[] scriptArray = Regex.Split(triggerScript, USING_SEPARATOR, RegexOptions.IgnoreCase);
 
@@ -98,7 +98,7 @@ using logger = SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging.Logger
             //获得完整的脚本
             string completeScript = GetCompleteScript(script);
 
-            var syntaxTree = CSharpSyntaxTree.ParseText(script);
+            var syntaxTree = CSharpSyntaxTree.ParseText(completeScript);
 
             // 指定编译选项。
             var assemblyName = $"GenericGenerator.script";
@@ -114,7 +114,7 @@ using logger = SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging.Logger
                         {
                             return string.Empty;
                         }
-                    }).Where(t => !string.IsNullOrEmpty(t)).Select(x => MetadataReference.CreateFromFile(x)));
+                    }).Where(t => !string.IsNullOrEmpty(t)).Select(x => MetadataReference.CreateFromFile(x)).ToArray());
 
             using (var ms = new MemoryStream())
             {
