@@ -127,10 +127,11 @@ using logger = SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging.Logger
 
             var syntaxTree = CSharpSyntaxTree.ParseText(completeScript);
 
-            //这句编译检查每次会内存增长
+            //todo:这句编译检查每次会内存增长,这里要考虑性能问题!!!
             var assemblyName = $"GenericGenerator.script";
             var compilation = CSharpCompilation.Create(assemblyName, new[] { syntaxTree })
-                    .AddReferences(GetGeneralMetadataReferences());
+                .WithOptions(new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
+                .AddReferences(GetGeneralMetadataReferences());
 
             using (var ms = new MemoryStream())
             {
@@ -139,8 +140,6 @@ using logger = SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging.Logger
                 ms.Dispose();
                 return new Tuple<bool, string>(result.Success, string.Join(";\r\n", result.Diagnostics));
             }
-            //var result = compilation.Emit(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, assemblyName));
-            //return new Tuple<bool, string>(result.Success, string.Join(";\r\n", result.Diagnostics));
         }
 
         /// <summary>
