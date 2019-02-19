@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using Newtonsoft.Json;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
@@ -14,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -43,7 +45,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging;
 using logger = SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging.Logger;
                 ";
         /// <summary>
-        /// 公共导入程序集
+        /// 公共导入程序集,加触发器脚本的公共引用时，要在这里补充
         /// </summary>
         private string[] GeneralRefrences
             => new string[] {
@@ -53,8 +55,33 @@ using logger = SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging.Logger
                 "System.Collections.Generic",
                 "SevenTiny.Cloud.MultiTenantPlatform.Domain",
                 "Newtonsoft.Json",
-                "SevenTiny.Cloud.MultiTenantPlatform.Infrastructure"
+                "SevenTiny.Cloud.MultiTenantPlatform.Infrastructure",
+                "MongoDB.Bson",
+                "MongoDB.Driver"
             };
+
+        //返回常用的元数据引用
+        private MetadataReference[] GetGeneralMetadataReferences()
+        {
+            Type[] types = new[] {
+                typeof(String),
+                typeof(List<object>),
+                typeof(JsonConvert),
+                typeof(BsonDocument),
+                typeof(MongoDB.Driver.Collation)
+            };
+            List<MetadataReference> metadataReferences = new List<MetadataReference>();
+            foreach (var item in types)
+            {
+                try
+                {
+                    metadataReferences.Add(MetadataReference.CreateFromFile(item.Assembly.Location));
+                }
+                catch (Exception)
+                { }
+            }
+            return metadataReferences.ToArray();
+        }
 
         /// <summary>
         /// 获取完整的脚本
@@ -100,28 +127,20 @@ using logger = SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging.Logger
 
             var syntaxTree = CSharpSyntaxTree.ParseText(completeScript);
 
-            // 指定编译选项。
+            //这句编译检查每次会内存增长
             var assemblyName = $"GenericGenerator.script";
-            var compilation = CSharpCompilation.Create(assemblyName, new[] { syntaxTree },
-                    options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
-                    .AddReferences(AppDomain.CurrentDomain.GetAssemblies().Select(t =>
-                    {
-                        try
-                        {
-                            return t.Location;
-                        }
-                        catch (Exception)
-                        {
-                            return string.Empty;
-                        }
-                    }).Where(t => !string.IsNullOrEmpty(t)).Select(x => MetadataReference.CreateFromFile(x)).ToArray());
+            var compilation = CSharpCompilation.Create(assemblyName, new[] { syntaxTree })
+                    .AddReferences(GetGeneralMetadataReferences());
 
             using (var ms = new MemoryStream())
             {
                 var result = compilation.Emit(ms);
-
+                ms.Flush();
+                ms.Dispose();
                 return new Tuple<bool, string>(result.Success, string.Join(";\r\n", result.Diagnostics));
             }
+            //var result = compilation.Emit(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, assemblyName));
+            //return new Tuple<bool, string>(result.Success, string.Join(";\r\n", result.Diagnostics));
         }
 
         /// <summary>
