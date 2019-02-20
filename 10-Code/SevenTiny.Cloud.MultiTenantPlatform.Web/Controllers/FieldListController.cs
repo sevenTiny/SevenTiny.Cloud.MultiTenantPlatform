@@ -170,7 +170,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             FieldListAggregation fieldAggregation = new FieldListAggregation { FieldListId = id };
             string metaFieldIdsString = Request.Form["metaFieldIds"];
             //get metafield ids
-            var metaFieldIdsSplit = metaFieldIdsString.Contains(',') ? metaFieldIdsString.Split(',') : null;
+            var metaFieldIdsSplit = !string.IsNullOrEmpty(metaFieldIdsString) ? metaFieldIdsString.Split(',') : Array.Empty<string>();
+
             int[] metaFieldIds = (metaFieldIdsSplit != null && metaFieldIdsSplit.Any()) ? metaFieldIdsSplit.Select(t => Convert.ToInt32(t)).ToArray() : new int[0];
             int[] fieldAggregationIds = fieldAggregationService.GetByFieldListId(id)?.Select(t => t.MetaFieldId)?.ToArray() ?? new int[0];
             IEnumerable<int> addIds = metaFieldIds.Except(fieldAggregationIds); //ids will add

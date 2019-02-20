@@ -4,7 +4,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Models
 {
     public class ResponseModel
     {
-        public bool IsSuccess { get; set; }
+        public bool IsSuccess { get; set; } = true;
         public string Message { get; set; }
         public object Data { get; set; }
 

@@ -234,6 +234,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             //return dbContext.ExecuteQueryListSql<MetaField>(builder.ToString());
 
             //直接通过id查询的方案，配合二级缓存性能高
+            //这里需要orm支持in操作性能会提高
             List<MetaField> metaFields = new List<MetaField>();
             foreach (var item in ids)
             {
