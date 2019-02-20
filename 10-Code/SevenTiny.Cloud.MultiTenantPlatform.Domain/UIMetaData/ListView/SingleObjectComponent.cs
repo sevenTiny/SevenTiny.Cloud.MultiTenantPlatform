@@ -11,6 +11,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.UIMetaData.ListView
         /// 列信息
         /// </summary>
         [JsonProperty("column_data", NullValueHandling = NullValueHandling.Ignore)]
-        public List<ColunmData> ColunmDatas { get; set; }
+        public List<Column> ColunmDatas { get; set; }
     }
 }

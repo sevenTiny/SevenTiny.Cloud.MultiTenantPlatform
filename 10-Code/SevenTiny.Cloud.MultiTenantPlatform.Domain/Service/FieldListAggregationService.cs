@@ -58,13 +58,13 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                 {
                     columns.Add(new Column
                     {
-                        MetaField = new MetaField {
+                        CmpData = new ColumnCmpData
+                        {
                             Name = item.Name,
-                            Text = item.Text,
-                            FieldType = item.FieldType,
-                            FieldLength = item.FieldLength,
-                            IsVisible = TrueFalseTranslator.ToBoolean(item.IsVisible),
-                            IsUrl = TrueFalseTranslator.ToBoolean(item.IsUrl)
+                            Title = item.Text,
+                            Type = item.FieldType.ToString(),
+                            Visible = TrueFalseTranslator.ToBoolean(item.IsVisible),
+                            IsLink = TrueFalseTranslator.ToBoolean(item.IsLink)
                         }
                     });
                 }

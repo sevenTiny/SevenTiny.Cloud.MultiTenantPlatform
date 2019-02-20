@@ -42,6 +42,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity
         /// 是否是链接
         /// </summary>
         [Column]
-        public int IsUrl { get; set; }
+        public int IsLink { get; set; }
     }
 }
