@@ -3,6 +3,7 @@ using MongoDB.Driver;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.UIMetaData.ListView;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
 using System;
 using System.Collections.Generic;
@@ -406,7 +407,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             {
                 BizData = fieldBizDataService.ToBizDataDictionaryList(InterfaceFieldId, documents),
                 BizDataTotalCount = count,
-                ColunmDatas = fieldListAggregationService.GetColumnDataByFieldListId(InterfaceFieldId)
+                Columns = fieldListAggregationService.GetColumnDataByFieldListId(InterfaceFieldId)
             };
             return tableListComponent;
         }

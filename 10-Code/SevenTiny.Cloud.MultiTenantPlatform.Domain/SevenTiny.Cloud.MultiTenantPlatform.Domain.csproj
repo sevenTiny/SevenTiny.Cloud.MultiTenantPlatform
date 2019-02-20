@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <Folder Include="Const\" />
+    <Folder Include="UIMetaData\IndexPage\" />
   </ItemGroup>
 
   <ItemGroup>

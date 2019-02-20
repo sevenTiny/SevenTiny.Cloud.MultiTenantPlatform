@@ -1,7 +1,6 @@
-﻿using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
-using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
+﻿using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository;
-using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.UIMetaData.ListView;
 using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract
@@ -22,6 +21,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract
         /// <param name="interfaceFieldId"></param>
         /// <returns></returns>
         Dictionary<string, MetaField> GetMetaFieldsDicByFieldListId(int interfaceFieldId);
-        List<ColunmData> GetColumnDataByFieldListId(int interfaceFieldId);
+        List<Column> GetColumnDataByFieldListId(int interfaceFieldId);
     }
 }

@@ -1,8 +1,8 @@
-﻿using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
-using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
+﻿using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.UIMetaData.ListView;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -48,25 +48,27 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             return GetMetaFieldsByFieldListId(fieldListId)?.ToDictionary(t => t.Code, t => t);
         }
 
-        public List<ColunmData> GetColumnDataByFieldListId(int interfaceFieldId)
+        public List<Column> GetColumnDataByFieldListId(int interfaceFieldId)
         {
             var fieldList = GetByFieldListId(interfaceFieldId);
             if (fieldList != null && fieldList.Any())
             {
-                List<ColunmData> colunmDatas = new List<ColunmData>();
+                List<Column> columns = new List<Column>();
                 foreach (var item in fieldList)
                 {
-                    colunmDatas.Add(new ColunmData
+                    columns.Add(new Column
                     {
-                        Name = item.Name,
-                        Text = item.Text,
-                        FieldType = item.FieldType,
-                        FieldLength = item.FieldLength,
-                        IsVisible = TrueFalseTranslator.ToBoolean(item.IsVisible),
-                        IsUrl = TrueFalseTranslator.ToBoolean(item.IsUrl)
+                        MetaField = new MetaField {
+                            Name = item.Name,
+                            Text = item.Text,
+                            FieldType = item.FieldType,
+                            FieldLength = item.FieldLength,
+                            IsVisible = TrueFalseTranslator.ToBoolean(item.IsVisible),
+                            IsUrl = TrueFalseTranslator.ToBoolean(item.IsUrl)
+                        }
                     });
                 }
-                return colunmDatas;
+                return columns;
             }
             return null;
         }

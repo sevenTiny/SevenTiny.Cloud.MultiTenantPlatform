@@ -1,8 +1,6 @@
 ﻿using MongoDB.Bson;
-using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
-using System;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.UIMetaData;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract
 {
