@@ -3,6 +3,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Domain.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.UIMetaData.ListView;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -21,6 +22,23 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
 
         readonly MultiTenantPlatformDbContext dbContext;
         readonly IMetaFieldService metaFieldService;
+
+        public new ResultModel Add(IList<FieldListAggregation> entities)
+        {
+            var metaFieldIds = entities.Select(t => t.MetaFieldId).ToArray();
+            var metaFields = metaFieldService.GetByIds(metaFieldIds);
+            foreach (var item in entities)
+            {
+                var meta = metaFields.FirstOrDefault(t => t.Id == item.MetaFieldId);
+                if (meta != null)
+                {
+                    item.Name = meta.Code;
+                    item.Text = meta.Name;
+                    item.FieldType = meta.FieldType;
+                }
+            }
+            return base.Add(entities);
+        }
 
         public List<FieldListAggregation> GetByFieldListId(int fieldListId)
         {

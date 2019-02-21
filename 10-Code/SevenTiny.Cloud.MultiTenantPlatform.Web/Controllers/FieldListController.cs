@@ -182,7 +182,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             {
                 fieldAggregations.Add(new FieldListAggregation { FieldListId = id, MetaFieldId = item });
             }
-            fieldAggregationService.Add(fieldAggregations);
+
+            if (fieldAggregations.Any())
+                fieldAggregationService.Add(fieldAggregations);
 
             foreach (var item in deleteIds)
             {
