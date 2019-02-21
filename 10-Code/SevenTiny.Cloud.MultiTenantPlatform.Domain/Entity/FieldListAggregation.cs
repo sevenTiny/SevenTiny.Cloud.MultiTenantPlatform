@@ -37,11 +37,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity
         /// 是否显示
         /// </summary>
         [Column]
-        public int IsVisible { get; set; }
+        public int IsVisible { get; set; } = 1;
         /// <summary>
         /// 是否是链接
         /// </summary>
         [Column]
-        public int IsLink { get; set; }
+        public int IsLink { get; set; } = 0;
     }
 }

@@ -7,6 +7,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract
 {
     public interface IFieldListAggregationService : IRepository<FieldListAggregation>
     {
+        FieldListAggregation GetById(int id);
         List<FieldListAggregation> GetByFieldListId(int interfaceFieldId);
         void DeleteByMetaFieldId(int metaFieldId);
         /// <summary>

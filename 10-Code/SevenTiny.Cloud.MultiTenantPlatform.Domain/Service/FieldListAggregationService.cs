@@ -90,5 +90,22 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             }
             return null;
         }
+
+        public FieldListAggregation GetById(int id)
+        {
+            return dbContext.QueryOne<FieldListAggregation>(t => t.Id == id);
+        }
+
+        public new ResultModel Update(FieldListAggregation entity)
+        {
+            var entityExist = GetById(entity.Id);
+            if (entityExist != null)
+            {
+                entityExist.IsLink = entity.IsLink;
+                entityExist.IsVisible = entity.IsVisible;
+                entityExist.Text = entity.Text;
+            }
+            return base.Update(entityExist);
+        }
     }
 }
