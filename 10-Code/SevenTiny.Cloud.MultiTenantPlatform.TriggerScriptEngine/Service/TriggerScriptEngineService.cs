@@ -5,10 +5,12 @@ using Microsoft.CodeAnalysis.Scripting;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Newtonsoft.Json;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.UIMetaData.ListView;
 using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Caching;
+using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging;
 using SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Models;
 using SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.ServiceContract;
 using System;
@@ -40,6 +42,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Service
         private string GeneralUsing
             => @"
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.UIMetaData;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.UIMetaData.ListView;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.UIMetaData.UserInfo;
 using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging;
 using logger = SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging.Logger;
                 ";
@@ -62,23 +67,45 @@ using logger = SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging.Logger
         //返回常用的元数据引用
         private MetadataReference[] GetGeneralMetadataReferences()
         {
-            Type[] types = new[] {
-                typeof(String),
-                typeof(List<object>),
-                typeof(JsonConvert),
-                typeof(BsonDocument),
-                typeof(MongoDB.Driver.Collation)
-            };
             List<MetadataReference> metadataReferences = new List<MetadataReference>();
+            //从类型导入
+            Type[] types = new[] {
+                typeof(object),
+                typeof(JsonConvert),//newtonsoft.json
+                typeof(BsonDocument),//mongodb
+                typeof(MongoDB.Driver.Collation),//mongodb
+                typeof(FilterDefinition<BsonDocument>),//mongodb
+                //business reference
+                typeof(Logger),//infrastructure
+                typeof(MultiTenantDataDbContext)//domain
+            };
             foreach (var item in types)
             {
                 try
                 {
                     metadataReferences.Add(MetadataReference.CreateFromFile(item.Assembly.Location));
                 }
-                catch (Exception)
-                { }
+                catch (Exception) { }
             }
+            //从dll直接导入(这里都是.netstandard的系统dll)
+            string[] Dlls = new[] {
+                "netstandard.dll",
+                "System.dll",
+                "System.Runtime.dll",
+                "System.Linq.dll",
+                "System.Collections.dll"
+            };
+            string dllLocation = typeof(object).Assembly.Location;
+            string dllPath = dllLocation.Substring(0, dllLocation.LastIndexOf("\\"));
+            foreach (var item in Dlls)
+            {
+                try
+                {
+                    metadataReferences.Add(MetadataReference.CreateFromFile(Path.Combine(dllPath, item)));
+                }
+                catch (Exception) { }
+            }
+
             return metadataReferences.ToArray();
         }
 
