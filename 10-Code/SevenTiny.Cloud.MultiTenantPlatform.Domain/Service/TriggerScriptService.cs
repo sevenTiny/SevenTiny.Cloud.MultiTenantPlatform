@@ -3,6 +3,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Domain.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
+using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Caching;
 using System;
 using System.Collections.Generic;
 
@@ -28,7 +29,14 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             {
                 //编码不允许修改
                 //脚本类型不允许修改
+
+                //如果脚本有改动，则清空脚本缓存
+                if (!myfield.Script.Equals(triggerScript.Script))
+                    TriggerScriptCache.ClearCache(triggerScript.Script);
+
                 myfield.Script = triggerScript.Script;
+                myfield.FailurePolicy = triggerScript.FailurePolicy;
+
                 myfield.Name = triggerScript.Name;
                 myfield.Group = triggerScript.Group;
                 myfield.SortNumber = triggerScript.SortNumber;
@@ -40,58 +48,98 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             return ResultModel.Success();
         }
 
-        public List<TriggerScript> GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(int metaObjectId, int scriptType, int triggerPoint)
+        public List<TriggerScript> GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(int metaObjectId, int scriptType)
         {
-            return dbContext.QueryList<TriggerScript>(t => t.MetaObjectId == metaObjectId && t.ScriptType == scriptType && t.TriggerPoint == triggerPoint);
+            return dbContext.QueryList<TriggerScript>(t => t.MetaObjectId == metaObjectId && t.ScriptType == scriptType);
         }
 
-        public string GetDefaultTriggerScriptByScriptTypeAndTriggerPoint(int scriptType, int triggerPoint)
+        public string GetDefaultTriggerScriptByScriptType(int scriptType)
         {
-            switch ((TriggerPoint)triggerPoint)
+            switch ((ScriptType)scriptType)
             {
-                case TriggerPoint.Before:
-                    switch ((ScriptType)scriptType)
-                    {
-                        case ScriptType.TableList:
-                            break;
-                        case ScriptType.Add:
-                            break;
-                        case ScriptType.Update:
-                            break;
-                        case ScriptType.Delete:
-                            break;
-                        case ScriptType.SingleObject:
-                            break;
-                        default: return null;
-                    }
-                    break;
-                case TriggerPoint.After:
-                    switch ((ScriptType)scriptType)
-                    {
-                        case ScriptType.TableList: return DefaultTableListAfterTriggerScript;
-                        case ScriptType.Add:
-                            break;
-                        case ScriptType.Update:
-                            break;
-                        case ScriptType.Delete:
-                            break;
-                        case ScriptType.SingleObject: return DefaultSingleObjectAfterTriggerScript;
-                        default: return null;
-                    }
-                    break;
-                default:
-                    break;
+                case ScriptType.Add_Before: return DefaultAddBeforeTriggerScript;
+
+                case ScriptType.Update_Before:
+                case ScriptType.Delete_Before:
+                case ScriptType.TableList_Before:
+                case ScriptType.SingleObject_Before:
+                case ScriptType.Count_Before: return DefaultQueryBeforeTriggerScript;
+
+                case ScriptType.TableList_After: return DefaultTableListAfterTriggerScript;
+                case ScriptType.SingleObject_After: return DefaultSingleObjectAfterTriggerScript;
+                case ScriptType.Count_After: return DefaultCountAfterTriggerScript;
+                default: return null;
             }
-            return null;
         }
 
-        private string DefaultTableListAfterTriggerScript
-        => @"
+        public string GetDefaultTriggerScriptDataSourceScript() => DefaultDataSourceTriggerScript;
+
+        private string DefaultQueryBeforeTriggerScript
+            => @"
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
+using MongoDB.Bson;
+using MongoDB.Driver;
+//end using
+//注释：上面的end using注释为using分隔符，请不要删除；
+//注释：输出日志请使用 logger.Error(),logger.Debug(),logger.Info()
+public FilterDefinition<BsonDocument> QueryBefore(string operateCode,FilterDefinition<BsonDocument> condition)
+{
+	//这里写业务逻辑
+	//...
+	return condition;
+}
+";
+        private string DefaultBatchAddBeforeTriggerScript
+    => @"
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
+using MongoDB.Bson;
+using MongoDB.Driver;
+//end using
+//注释：上面的end using注释为using分隔符，请不要删除；
+//注释：输出日志请使用 logger.Error(),logger.Debug()
+public List<BsonDocument> BatchAddBefore(string operateCode,List<BsonDocument> bsonElementsList)
+{
+	//这里写业务逻辑
+	//...
+	return bsonElementsList;
+}
+";
+        private string DefaultAddBeforeTriggerScript
+    => @"
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
+using MongoDB.Bson;
+using MongoDB.Driver;
+//end using
+//注释：上面的end using注释为using分隔符，请不要删除；
+//注释：输出日志请使用 logger.Error(),logger.Debug(),logger.Info()
+public BsonDocument AddBefore(string operateCode,BsonDocument bsonElements)
+{
+	//这里写业务逻辑
+	//...
+	return bsonElements;
+}
+";
+        private string DefaultTableListAfterTriggerScript
+            => @"
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
+using MongoDB.Bson;
+using MongoDB.Driver;
 //end using
 //注释：上面的end using注释为using分隔符，请不要删除；
 //注释：输出日志请使用 logger.Error(),logger.Debug(),logger.Info()
@@ -102,7 +150,6 @@ public TableListComponent TableListAfter(string operateCode,TableListComponent t
 	return tableListComponent;
 }
 ";
-
         private string DefaultSingleObjectAfterTriggerScript
             => @"
 using System;
@@ -110,6 +157,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
+using MongoDB.Bson;
+using MongoDB.Driver;
 //end using
 //注释：上面的end using注释为using分隔符，请不要删除；
 //注释：输出日志请使用 logger.Error(),logger.Debug(),logger.Info()
@@ -118,6 +167,41 @@ public SingleObjectComponent SingleObjectAfter(string operateCode,SingleObjectCo
 	//这里写业务逻辑
 	//...
 	return singleObjectComponent;
+}
+";
+        private string DefaultCountAfterTriggerScript
+            => @"
+using System;
+using MongoDB.Bson;
+using MongoDB.Driver;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
+//end using
+//注释：上面的end using注释为using分隔符，请不要删除；
+//注释：输出日志请使用 logger.Error(),logger.Debug(),logger.Info()
+public int CountAfter(string operateCode,int count)
+{
+	//这里写业务逻辑
+	//...
+	return count;
+}
+";
+        private string DefaultDataSourceTriggerScript
+    => @"
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using MongoDB.Bson;
+using MongoDB.Driver;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
+//end using
+//注释：上面的end using注释为using分隔符，请不要删除；
+//注释：输出日志请使用 logger.Error(),logger.Debug(),logger.Info()
+public object TriggerScriptDataSource(string operateCode, Dictionary<string, object> argumentsDic)
+{
+	//这里写业务逻辑
+	//...
+	return null;
 }
 ";
     }

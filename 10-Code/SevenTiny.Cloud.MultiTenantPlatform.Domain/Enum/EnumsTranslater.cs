@@ -63,6 +63,8 @@
                     return "数据量";
                 case (int)InterfaceType.EnumeDataSource:
                     return "枚举数据源";
+                case (int)InterfaceType.TriggerScriptDataSource:
+                    return "触发器数据源";
                 default:
                     return string.Empty;
             }

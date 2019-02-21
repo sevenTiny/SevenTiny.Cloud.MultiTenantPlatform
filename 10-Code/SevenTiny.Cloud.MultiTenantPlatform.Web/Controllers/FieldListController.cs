@@ -5,6 +5,7 @@ using SevenTiny.Bantina.Validation;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
 using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
 using System;
 using System.Collections.Generic;
@@ -142,13 +143,20 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
         public IActionResult AggregateField(int id)
         {
             //获取组织字段里面本字段配置下的所有字段
-            var aggregateMetaFields = fieldAggregationService.GetByFieldListId(id)?.Select(t => t.MetaFieldId)?.ToList() ?? new List<int>();
+            var fieldListAggregations = fieldAggregationService.GetByFieldListId(id) ?? new List<FieldListAggregation>();
+            var aggregateMetaFieldIds = fieldListAggregations.Select(t => t.MetaFieldId).ToArray();
             //获取到本对象的所有字段
             var metaFields = metaFieldService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
             //过滤出已配置过的字段
-            var aggregateFields = metaFields.Where(t => aggregateMetaFields.Any(n => n == t.Id)).ToList();//get aggregateFields which metafield.id in aggregateMetaFields
+            var aggregateFields = metaFields.Where(t => fieldListAggregations.Any(n => n.MetaFieldId == t.Id)).Select(t => new MetaFieldViewModel
+            {
+                Id = t.Id,
+                Code = t.Code,
+                Name = t.Name,
+                FieldAggregationId = fieldListAggregations.FirstOrDefault(f => f.MetaFieldId == t.Id).Id
+            }).ToList();
             //剩下的是未配置的待选字段
-            var waitingForSelection = metaFields.Where(t => !aggregateMetaFields.Contains(t.Id)).ToList();
+            var waitingForSelection = metaFields.Where(t => !aggregateMetaFieldIds.Contains(t.Id)).ToList();
 
             //【BUG】下面这种从查询到的内存数据中排除的写法是错误的，会导致内存做的缓存中的数据根据引用地址跟着修改，导致缓存数据被改动，下次查询出错
             //如果使用序列化做的缓存应该不会有如下语句出现的缓存问题
@@ -170,7 +178,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             FieldListAggregation fieldAggregation = new FieldListAggregation { FieldListId = id };
             string metaFieldIdsString = Request.Form["metaFieldIds"];
             //get metafield ids
-            int[] metaFieldIds = metaFieldIdsString.Split(',').Select(t => Convert.ToInt32(t)).ToArray();
+            var metaFieldIdsSplit = !string.IsNullOrEmpty(metaFieldIdsString) ? metaFieldIdsString.Split(',') : Array.Empty<string>();
+
+            int[] metaFieldIds = (metaFieldIdsSplit != null && metaFieldIdsSplit.Any()) ? metaFieldIdsSplit.Select(t => Convert.ToInt32(t)).ToArray() : new int[0];
             int[] fieldAggregationIds = fieldAggregationService.GetByFieldListId(id)?.Select(t => t.MetaFieldId)?.ToArray() ?? new int[0];
             IEnumerable<int> addIds = metaFieldIds.Except(fieldAggregationIds); //ids will add
             IEnumerable<int> deleteIds = fieldAggregationIds.Except(metaFieldIds);  //ids will delete
@@ -180,13 +190,35 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             {
                 fieldAggregations.Add(new FieldListAggregation { FieldListId = id, MetaFieldId = item });
             }
-            fieldAggregationService.Add(fieldAggregations);
+
+            if (fieldAggregations.Any())
+                fieldAggregationService.Add(fieldAggregations);
 
             foreach (var item in deleteIds)
             {
                 fieldAggregationService.DeleteByMetaFieldId(item);
             }
             return JsonResultModel.Success("保存成功！");
+        }
+
+        /// <summary>
+        /// 列表字段配置编辑页面
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public IActionResult FieldListAggregationUpdate(int id)
+        {
+            var fieldListAggregation = fieldAggregationService.GetById(id);
+            return View(ResponseModel.Success(fieldListAggregation));
+        }
+        public IActionResult FieldListAggregationUpdateLogic(FieldListAggregation fieldListAggregation)
+        {
+            var result = fieldAggregationService.Update(fieldListAggregation);
+            if (result.IsSuccess)
+            {
+                return View("FieldListAggregationUpdate", ResponseModel.Success(1, "修改成功"));
+            }
+            return View("FieldListAggregationUpdate", result.ToResponseModel());
         }
     }
 }

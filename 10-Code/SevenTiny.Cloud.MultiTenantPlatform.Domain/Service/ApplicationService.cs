@@ -1,28 +1,34 @@
-﻿using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
+﻿using SevenTiny.Bantina;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
 using System;
+using System.Linq;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
 {
     public class ApplicationService : CommonInfoRepository<Application>, IApplicationService
     {
-        public ApplicationService(MultiTenantPlatformDbContext multiTenantPlatformDbContext) : base(multiTenantPlatformDbContext)
+        public ApplicationService(
+            MultiTenantPlatformDbContext multiTenantPlatformDbContext,
+            IMetaObjectService _metaObjectService
+            ) : base(multiTenantPlatformDbContext)
         {
             dbContext = multiTenantPlatformDbContext;
+            metaObjectService = _metaObjectService;
         }
 
         MultiTenantPlatformDbContext dbContext;
-
-        public bool ExistForSameName(string name)
-            => dbContext.QueryExist<Application>(t => t.Name.Equals(name));
-
-        public bool ExistForSameNameAndNotSameId(string name, int id)
-            => dbContext.QueryExist<Application>(t => t.Name.Equals(name) && t.Id != id);
+        readonly IMetaObjectService metaObjectService;
 
         public new ResultModel Update(Application application)
         {
+            if (dbContext.QueryExist<Application>(t => t.Id != application.Id && t.Name == application.Name))
+            {
+                return ResultModel.Error("该名称已存在");
+            }
+
             var app = GetById(application.Id);
             if (app != null)
             {
@@ -34,14 +40,47 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                 app.ModifyBy = -1;
                 app.ModifyTime = DateTime.Now;
 
-                dbContext.Update(t => t.Id == application.Id, app);
+                base.Update(app);
             }
             return ResultModel.Success();
         }
 
         public new ResultModel Delete(int id)
         {
-            throw new NotImplementedException();
+            var metaObjects = dbContext.QueryList<MetaObject>(t => t.ApplicationId == id);
+            if (metaObjects != null && metaObjects.Any())
+            {
+                TransactionHelper.Transaction(() =>
+                {
+                    //删除应用下的所有对象
+                    foreach (var item in metaObjects)
+                    {
+                        metaObjectService.Delete(item.Id);
+                    }
+                });
+            }
+            base.Delete(id);
+            return ResultModel.Success();
+        }
+
+        public new ResultModel Add(Application entity)
+        {
+            //check metaobject of name or code exist?
+            Application obj = dbContext.QueryOne<Application>(t => t.Code.Equals(entity.Code) || t.Name.Equals(entity.Name));
+            if (obj != null)
+            {
+                if (obj.Code.Equals(entity.Code))
+                {
+                    return ResultModel.Error("Code Has Been Exist！", entity);
+                }
+                if (obj.Name.Equals(entity.Name))
+                {
+                    return ResultModel.Error("Name Has Been Exist！", entity);
+                }
+            }
+
+            base.Add(entity);
+
             return ResultModel.Success();
         }
     }

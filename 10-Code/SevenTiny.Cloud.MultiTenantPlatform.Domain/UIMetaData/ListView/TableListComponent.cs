@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity
+namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.UIMetaData.ListView
 {
     public class TableListComponent
     {
@@ -12,5 +12,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity
         /// </summary>
         [JsonProperty("biz_data_total_count", NullValueHandling = NullValueHandling.Ignore)]
         public int BizDataTotalCount { get; set; }
+        /// <summary>
+        /// 列信息
+        /// </summary>
+        [JsonProperty("sub_cmps")]
+        public List<Column> Columns { get; set; }
     }
 }

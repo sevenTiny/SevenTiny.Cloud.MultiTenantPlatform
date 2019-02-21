@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.UIMetaData.UserInfo;
+using System.Collections.Generic;
 
-namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity
+namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.UIMetaData
 {
     /// <summary>
     /// 业务字段
@@ -38,5 +40,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity
         //     存储值
         [JsonProperty("downloadUrl", Order = 3, NullValueHandling = NullValueHandling.Ignore)]
         public string DownloadUrl { get; set; }
+        //
+        // Summary:
+        //     用户头像信息
+        [JsonProperty("avatars", Order = 3, NullValueHandling = NullValueHandling.Ignore)]
+        public Dictionary<string, Avatar> Avatars { get; set; }
     }
 }

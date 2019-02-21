@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SevenTiny.Bantina.Validation;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
 
@@ -58,12 +59,18 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             {
                 return View("Add", ResponseModel.Error("Application Code Can Not Be Null！", application));
             }
-            if (applicationService.ExistForSameName(application.Name))
+            //校验code格式
+            if (!application.Code.IsAlnum(2, 50))
             {
-                return View("Add", ResponseModel.Error("Application Name Has Been Exist！", application));
+                return View("Add", ResponseModel.Error("编码不合法，2-50位且只能包含字母和数字（字母开头）", application));
             }
 
-            applicationService.Add(application);
+            var addResult = applicationService.Add(application);
+            if (!addResult.IsSuccess)
+            {
+                return View("Add", addResult.ToResponseModel());
+            }
+
             return RedirectToAction("List");
         }
 
@@ -87,10 +94,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             {
                 return View("Update", ResponseModel.Error("Application Code Can Not Be Null！", application));
             }
-            if (applicationService.ExistForSameNameAndNotSameId(application.Name, application.Id))
-            {
-                return View("Add", ResponseModel.Error("Application Name Has Been Exist！", application));
-            }
 
             applicationService.Update(application);
             return RedirectToAction("List");
@@ -99,6 +102,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
         public IActionResult LogicDelete(int id)
         {
             applicationService.LogicDelete(id);
+            return JsonResultModel.Success("删除成功");
+        }
+
+        public IActionResult Delete(int id)
+        {
+            applicationService.Delete(id);
             return JsonResultModel.Success("删除成功");
         }
 

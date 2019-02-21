@@ -10,7 +10,7 @@
 <article class="cl pd-20">
     <div class="cl pd-5 bg-1 bk-gray">
         <span class="l">
-            <a class="btn btn-secondary-outline radius" href="javascript:history.back(-1);"><i class="Hui-iconfont">&#xe66b;</i> 返回</a>
+            <a class="btn btn-secondary-outline radius" href="/InterfaceAggregation/List"><i class="Hui-iconfont">&#xe66b;</i> 返回</a>
         </span>
         <span class="r">共有数据：<strong>@entities?.Count</strong> 条</span>
     </div>
@@ -58,7 +58,7 @@
 @await Html.PartialAsync("~/Views/Shared/_CommonScript.cshtml")
 <script type="text/javascript">
     $('.table-sort').dataTable({
-        "aLengthMenu": [[30, 50, 100, -1], ["30", "50", "100", "All"]],//二组数组，第一组数量，
+        "aLengthMenu": [[50, 100, -1], ["50", "100", "All"]],//二组数组，第一组数量，
         "aaSorting": [[6, "asc"], [7, "asc"]],//默认第几个排序
         "bStateSave": true,//状态保存
         "aoColumnDefs": [

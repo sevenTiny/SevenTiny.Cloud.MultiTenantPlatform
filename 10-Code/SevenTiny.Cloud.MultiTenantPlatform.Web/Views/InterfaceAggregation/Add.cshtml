@@ -4,7 +4,7 @@
     ViewData["Title"] = "Add";
     Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
 
-    List<FieldList> interfaceFields = ViewData["InterfaceFields"] as List<FieldList> ?? new List<FieldList>();
+    List<FieldList> fieldList = ViewData["InterfaceFields"] as List<FieldList> ?? new List<FieldList>();
     List<SearchCondition> searchConditions = ViewData["SearchConditions"] as List<SearchCondition> ?? new List<SearchCondition>();
 
     ResponseModel result = Model as ResponseModel ?? new ResponseModel();
@@ -34,7 +34,7 @@
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>接口类型：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <span class="select-box">
-                    <select name="interfaceType" class="select" value="@interfaceAggregation.InterfaceType" onchange="fieldTypeSwitch(this)" required>
+                    <select id="interfaceType" name="interfaceType" class="select" value="@interfaceAggregation.InterfaceType" onchange="switchInterfaceType()" required>
                         <option value="">--请选择--</option>
                         @foreach (var item in Enum.GetValues(typeof(InterfaceType)))
                         {
@@ -45,14 +45,20 @@
                 </span>
             </div>
         </div>
-
-        <div class="row cl">
+        <div class="row cl" id="triggerScriptArea">
+            <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>触发器脚本：</label>
+            <div class="formControls col-xs-9 col-sm-9">
+                <textarea id="codeTextArea" name="script" class="ignore">@interfaceAggregation.Script</textarea>
+                <span class="c-red">*提示：F11 全屏模式</span>
+            </div>
+        </div>
+        <div class="row cl" id="fieldListId">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>字段配置：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <span class="select-box">
-                    <select name="fieldListId" class="select" value="@interfaceAggregation.FieldListId" onchange="fieldTypeSwitch(this)" required>
+                    <select id="sl_fieldListId" name="fieldListId" class="select" value="@interfaceAggregation.FieldListId" onchange="fieldTypeSwitch(this)" required>
                         <option value="">--请选择--</option>
-                        @foreach (var item in interfaceFields)
+                        @foreach (var item in fieldList)
                         {
                             <option value="@item.Id">@item.Name</option>
                         }
@@ -60,11 +66,11 @@
                 </span>
             </div>
         </div>
-        <div class="row cl">
+        <div class="row cl" id="searchConditionArea">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>搜索条件：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <span class="select-box">
-                    <select name="searchConditionId" class="select" value="@interfaceAggregation.SearchConditionId" onchange="fieldTypeSwitch(this)" required>
+                    <select id="sl_searchConditionId" name="searchConditionId" class="select" value="@interfaceAggregation.SearchConditionId" onchange="fieldTypeSwitch(this)" required>
                         <option value="">--请选择--</option>
                         @foreach (var item in searchConditions)
                         {
@@ -98,18 +104,61 @@
                 <button onClick="javascript:history.back(-1);" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
                 @if (!result.IsSuccess)
                 {
-                    <br /><br /><span class="c-red">@result.Message</span>
+                    <br /><br /><pre><span class="c-red">@result.Message</span></pre>
                 }
             </div>
         </div>
     </form>
 </article>
 
+<link href="~/lib/codemirror-5.43.0/codemirror.css" rel="stylesheet" />
+<link href="~/lib/codemirror-5.43.0/theme/cobalt.css" rel="stylesheet" />
+<link href="~/lib/codemirror-5.43.0/addon/display/fullscreen.css" rel="stylesheet" />
 @await Html.PartialAsync("~/Views/Shared/_FooterScripts.cshtml")
 @await Html.PartialAsync("~/Views/Shared/_CommonScript.cshtml")
 @await Html.PartialAsync("~/Views/Shared/_FormValidate.cshtml")
+<script src="~/lib/codemirror-5.43.0/codemirror.js"></script>
+<script src="~/lib/codemirror-5.43.0/mode/clike/clike.js"></script>
+<script src="~/lib/codemirror-5.43.0/addon/display/fullscreen.js"></script>
+
 <!--请在下方写此页面业务相关的脚本-->
 <script type="text/javascript">
+    var editor = CodeMirror.fromTextArea($("#codeTextArea")[0], {
+        mode: 'text/x-csharp',//编辑器语言
+        theme: 'cobalt', //编辑器主题
+        extraKeys: {
+            "Ctrl": "autocomplete",
+            "F11": function (cm) {
+                cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+            },
+            "Esc": function (cm) {
+                if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+            }
+        },//ctrl可以弹出选择项
+        lineNumbers: true,//显示行号
+        spellcheck: true,//拼写检查
+    });
 
+    //初始化预置显隐
+    switchInterfaceType()
+
+    //切换接口类型
+    function switchInterfaceType() {
+        if ($("#interfaceType").val() == 5) {
+            $("#triggerScriptArea").show()
+
+            $("#fieldListId").hide()
+            $("#searchConditionArea").hide()
+            $("#sl_fieldListId").addClass("ignore")
+            $("#sl_searchConditionId").addClass("ignore")
+        } else {
+            $("#triggerScriptArea").hide()
+
+            $("#fieldListId").show()
+            $("#searchConditionArea").show()
+            $("#sl_fieldListId").removeClass("ignore")
+            $("#sl_searchConditionId").removeClass("ignore")
+        }
+    }
 </script>
 <!--/请在上方写此页面业务相关的脚本-->

@@ -10,7 +10,7 @@
 <article class="cl pd-20">
     <div class="cl pd-5 bg-1 bk-gray">
         <span class="l">
-            <a class="btn btn-secondary-outline radius" href="javascript:history.back(-1);"><i class="Hui-iconfont">&#xe66b;</i> 返回</a>
+            <a class="btn btn-secondary-outline radius" href="/MetaObject/List"><i class="Hui-iconfont">&#xe66b;</i> 返回</a>
         </span>
         <span class="r">共有数据：<strong>@metaObjects?.Count</strong> 条</span>
     </div>
@@ -54,7 +54,7 @@
 <script type="text/javascript" src="~/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
     $('.table-sort').dataTable({
-        "aLengthMenu": [[30, 50, 100, -1], ["30", "50", "100", "All"]],//二组数组，第一组数量，
+        "aLengthMenu": [[50, 100, -1], ["50", "100", "All"]],//二组数组，第一组数量，
         "aaSorting": [[4, "asc"], [0, "asc"]],//默认第几个排序
         "bStateSave": true,//状态保存
         "aoColumnDefs": [

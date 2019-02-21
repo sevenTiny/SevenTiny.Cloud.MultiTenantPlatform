@@ -20,10 +20,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
     {
         public CloudDataController(
             IDataAccessService _dataAccessService,
+            ISearchConditionService _searchConditionService,
             ISearchConditionAggregationService _conditionAggregationService,
             IInterfaceAggregationService _interfaceAggregationService,
             IFieldBizDataService _fieldBizDataService,
-            ITriggerScriptEngineService _triggerScriptEngineService
+            ITriggerScriptEngineService _triggerScriptEngineService,
+            IMetaObjectService _metaObjectService
             )
         {
             dataAccessService = _dataAccessService;
@@ -31,6 +33,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
             interfaceAggregationService = _interfaceAggregationService;
             fieldBizDataService = _fieldBizDataService;
             triggerScriptEngineService = _triggerScriptEngineService;
+            searchConditionService = _searchConditionService;
+            metaObjectService = _metaObjectService;
         }
 
         readonly IDataAccessService dataAccessService;
@@ -38,6 +42,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
         readonly ISearchConditionAggregationService conditionAggregationService;
         readonly IFieldBizDataService fieldBizDataService;
         readonly ITriggerScriptEngineService triggerScriptEngineService;
+        readonly ISearchConditionService searchConditionService;
+        readonly IMetaObjectService metaObjectService;
 
         [HttpGet]
         public IActionResult Get([FromQuery]QueryArgs queryArgs)
@@ -73,38 +79,36 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                 {
                     return JsonResultModel.Error($"未能找到接口编码为[{queryArgs.interfaceCode}]对应的接口信息");
                 }
-                var filter = conditionAggregationService.AnalysisConditionToFilterDefinition(interfaceAggregation.MetaObjectId, interfaceAggregation.SearchConditionId, argumentsDic);
+                var filter = conditionAggregationService.AnalysisConditionToFilterDefinitionByConditionId(interfaceAggregation.MetaObjectId, interfaceAggregation.SearchConditionId, argumentsDic);
 
                 //get result
-                switch (EnumsTranslaterUseInProgram.ToInterfaceType(interfaceAggregation.InterfaceType))
+                switch ((InterfaceType)interfaceAggregation.InterfaceType)
                 {
                     case InterfaceType.CloudSingleObject:
-                        var document = dataAccessService.GetBsonDocumentsByCondition(filter, 1, 1, out int singleCount)?.FirstOrDefault();
-                        SingleObjectComponent singleObjectComponent = new SingleObjectComponent
-                        {
-                            BizData = fieldBizDataService.ConvertToDictionary(interfaceAggregation.FieldListId, document),
-                        };
+                        filter = triggerScriptEngineService.SingleObjectBefore(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, filter);
+                        var singleObjectComponent = dataAccessService.GetSingleObjectComponent(interfaceAggregation.MetaObjectId, interfaceAggregation.FieldListId, filter);
                         singleObjectComponent = triggerScriptEngineService.SingleObjectAfter(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, singleObjectComponent);
-                        return JsonResultModel.Success("Get Single Data Success", singleObjectComponent);
+                        return JsonResultModel.Success("get single data success", singleObjectComponent);
                     case InterfaceType.CloudTableList:
-                        var documents = dataAccessService.GetBsonDocumentsByCondition(filter, queryArgs.pageIndex, queryArgs.pageSize, out int totalCount);
-                        TableListComponent tableListComponent = new TableListComponent
-                        {
-                            BizData = fieldBizDataService.ConvertToDictionaryList(interfaceAggregation.FieldListId, documents),
-                            BizDataTotalCount = totalCount
-                        };
+                        filter = triggerScriptEngineService.TableListBefore(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, filter);
+                        var tableListComponent = dataAccessService.GetTableListComponent(interfaceAggregation.MetaObjectId, interfaceAggregation.FieldListId, filter, queryArgs.pageIndex, queryArgs.pageSize, out int totalCount);
                         tableListComponent = triggerScriptEngineService.TableListAfter(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, tableListComponent);
-                        return JsonResultModel.Success("Get Data List Success", tableListComponent);
+                        return JsonResultModel.Success("get data list success", tableListComponent);
                     case InterfaceType.CloudCount:
-                        var count = dataAccessService.GetBsonDocumentCountByCondition(filter);
-                        return JsonResultModel.Success("Get Data Count Success", count);
+                        filter = triggerScriptEngineService.CountBefore(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, filter);
+                        var count = dataAccessService.GetCount(interfaceAggregation.MetaObjectId, filter);
+                        count = triggerScriptEngineService.CountAfter(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, count);
+                        return JsonResultModel.Success("get data count success", count);
                     case InterfaceType.EnumeDataSource:
                         break;
+                    case InterfaceType.TriggerScriptDataSource:
+                        object triggerScriptDataSourceResult = triggerScriptEngineService.TriggerScriptDataSource(interfaceAggregation.Code, argumentsDic, interfaceAggregation.Script);
+                        return JsonResultModel.Success("get trigger script result success", triggerScriptDataSourceResult);
                     default:
                         break;
                 }
 
-                return JsonResultModel.Success("Success,No Data");
+                return JsonResultModel.Success("success,no data");
             }
             catch (ArgumentNullException argNullEx)
             {
@@ -136,8 +140,18 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                 var json = jObj.ToString();
                 var bson = BsonDocument.Parse(json);
 
+                //get metaObject
+                var metaObject = metaObjectService.GetByCode(metaObjectCode);
+                if (metaObject == null)
+                {
+                    return JsonResultModel.Error($"未能找到对象编码为[{metaObjectCode}]对应的对象信息");
+                }
+
+                //trigger before
+                bson = triggerScriptEngineService.AddBefore(metaObject.Id, metaObjectCode, bson);
+
                 //add data
-                var addResult = dataAccessService.Add(metaObjectCode, bson);
+                var addResult = dataAccessService.Add(metaObject, bson);
 
                 return addResult.ToJsonResultModel();
             }
@@ -147,19 +161,95 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
             }
         }
 
+        /**
+         Content-Type: application/json
+         * */
         [HttpPut]
-        public IActionResult Update()
+        public IActionResult Update(string conditionCode, [FromBody]JObject jObj)
         {
-            BsonDocument bson = new BsonDocument();
-            bson.Add(new BsonElement("name", "zhangsan"));
-            bson.Add(new BsonElement("age", "21"));
-            return new JsonResult(bson);
+            try
+            {
+                //args check
+                if (string.IsNullOrEmpty(conditionCode))
+                    return JsonResultModel.Error($"Parameter invalid:conditionCode = null");
+                if (jObj == null)
+                    return JsonResultModel.Error($"Parameter invalid:data = null");
+
+                //argumentsDic generate
+                Dictionary<string, object> argumentsDic = new Dictionary<string, object>();
+                foreach (var item in Request.Query)
+                {
+                    if (!argumentsDic.ContainsKey(item.Key))
+                    {
+                        argumentsDic.Add(item.Key.ToUpperInvariant(), item.Value);
+                    }
+                }
+
+                //get filter
+                var searchCondition = searchConditionService.GetByCode(conditionCode);
+                if (searchCondition == null)
+                {
+                    return JsonResultModel.Error($"SearchCondition not found by conditionCode[{searchCondition}]");
+                }
+                var filter = conditionAggregationService.AnalysisConditionToFilterDefinitionByConditionId(searchCondition.MetaObjectId, searchCondition.Id, argumentsDic);
+
+                //get object
+                var json = jObj.ToString();
+                var bson = BsonDocument.Parse(json);
+
+                //update before
+                filter = triggerScriptEngineService.UpdateBefore(searchCondition.MetaObjectId, searchCondition.Code, filter);
+
+                //update data
+                dataAccessService.Update(searchCondition.MetaObjectId, filter, bson);
+
+                return JsonResultModel.Success("success");
+            }
+            catch (Exception ex)
+            {
+                return JsonResultModel.Error(ex.ToString());
+            }
         }
 
         [HttpDelete]
-        public IActionResult Delete()
+        public IActionResult Delete(string conditionCode)
         {
-            return null;
+            try
+            {
+                //args check
+                if (string.IsNullOrEmpty(conditionCode))
+                    return JsonResultModel.Error($"Parameter invalid:conditionCode = null");
+
+                //argumentsDic generate
+                Dictionary<string, object> argumentsDic = new Dictionary<string, object>();
+                foreach (var item in Request.Query)
+                {
+                    if (!argumentsDic.ContainsKey(item.Key))
+                    {
+                        argumentsDic.Add(item.Key.ToUpperInvariant(), item.Value);
+                    }
+                }
+
+                //get filter
+                var searchCondition = searchConditionService.GetByCode(conditionCode);
+                if (searchCondition == null)
+                {
+                    return JsonResultModel.Error($"SearchCondition not found by conditionCode[{searchCondition}]");
+                }
+                var filter = conditionAggregationService.AnalysisConditionToFilterDefinitionByConditionId(searchCondition.MetaObjectId, searchCondition.Id, argumentsDic);
+
+                //delete before
+                filter = triggerScriptEngineService.UpdateBefore(searchCondition.MetaObjectId, searchCondition.Code, filter);
+
+                //delete
+                dataAccessService.Delete(searchCondition.MetaObjectId, filter);
+
+                return JsonResultModel.Success("success");
+            }
+            catch (Exception ex)
+            {
+                return JsonResultModel.Error(ex.ToString());
+            }
         }
     }
 }

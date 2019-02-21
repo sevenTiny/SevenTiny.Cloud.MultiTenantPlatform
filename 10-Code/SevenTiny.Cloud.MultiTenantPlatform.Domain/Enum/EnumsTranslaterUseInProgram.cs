@@ -55,18 +55,6 @@
                 case 12: return DataType.StandradDateTime;
                 default: return DataType.Unknown;
             }
-        }
-
-        public static InterfaceType ToInterfaceType(int interfaceType)
-        {
-            switch (interfaceType)
-            {
-                case 1: return InterfaceType.CloudSingleObject;
-                case 2: return InterfaceType.CloudTableList;
-                case 3: return InterfaceType.CloudCount;
-                case 4: return InterfaceType.EnumeDataSource;
-                default: return InterfaceType.CloudCount;
-            }
-        }
+        }        
     }
 }

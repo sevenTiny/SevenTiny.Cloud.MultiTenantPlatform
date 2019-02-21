@@ -33,7 +33,7 @@
                 @foreach (var item in entities)
                 {
                     <tr class="text-c">
-                        <td><a class="ml-5" href="javascript:alert('弹窗显示配置详情页');" title="@item.Description" style="font-weight:bold;color:dodgerblue" data-toggle="tooltip" data-placement="top">@item.Name</a></td>
+                        <td><a class="ml-5" href="/InterfaceAggregation/Update/@item.Id" title="@item.Description" style="font-weight:bold;color:dodgerblue" data-toggle="tooltip" data-placement="top">@item.Name</a></td>
                         <td style="color:#d72323;font-weight:bold">@item.Code</td>
                         <td><a class="ml-5" href="/SearchCondition/AggregationCondition/@item.SearchConditionId" title="搜索条件" style="font-weight:bold;color:dodgerblue" data-toggle="tooltip" data-placement="top">@item.SearchConditionName</a></td>
                         <td><a class="ml-5" href="/FieldList/AggregateField/@item.FieldListId" title="字段配置" style="font-weight:bold;color:dodgerblue" data-toggle="tooltip" data-placement="top">@item.FieldListName</a></td>
@@ -55,7 +55,7 @@
 <script type="text/javascript" src="~/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
     $('.table-sort').dataTable({
-        "aLengthMenu": [[30, 50, 100, -1], ["30", "50", "100", "All"]],//二组数组，第一组数量，
+        "aLengthMenu": [[50, 100, -1], ["50", "100", "All"]],//二组数组，第一组数量，
         "aaSorting": [[5, "asc"]],//默认第几个排序
         "bStateSave": true,//状态保存
         "aoColumnDefs": [

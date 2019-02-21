@@ -20,6 +20,10 @@
         /// <summary>
         /// 枚举数据源
         /// </summary>
-        EnumeDataSource = 4
+        EnumeDataSource = 4,
+        /// <summary>
+        /// 触发器脚本数据源
+        /// </summary>
+        TriggerScriptDataSource = 5
     }
 }

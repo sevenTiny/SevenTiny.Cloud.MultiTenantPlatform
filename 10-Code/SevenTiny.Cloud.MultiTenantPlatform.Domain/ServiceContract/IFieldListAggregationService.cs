@@ -1,12 +1,13 @@
 ﻿using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository;
-using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.UIMetaData.ListView;
 using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract
 {
     public interface IFieldListAggregationService : IRepository<FieldListAggregation>
     {
+        FieldListAggregation GetById(int id);
         List<FieldListAggregation> GetByFieldListId(int interfaceFieldId);
         void DeleteByMetaFieldId(int metaFieldId);
         /// <summary>
@@ -21,5 +22,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract
         /// <param name="interfaceFieldId"></param>
         /// <returns></returns>
         Dictionary<string, MetaField> GetMetaFieldsDicByFieldListId(int interfaceFieldId);
+        List<Column> GetColumnDataByFieldListId(int interfaceFieldId);
     }
 }
