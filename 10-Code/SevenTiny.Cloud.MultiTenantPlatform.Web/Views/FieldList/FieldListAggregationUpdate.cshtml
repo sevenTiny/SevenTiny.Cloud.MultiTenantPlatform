@@ -8,12 +8,6 @@
     FieldListAggregation fieldListAggregation = result.Data as FieldListAggregation ?? new FieldListAggregation();
 }
 
-@{
-    ViewData["Level_1"] = "对象设置";
-    ViewData["Level_2"] = "修改列表字段";
-}
-@await Html.PartialAsync("~/Views/Shared/PartialNav.cshtml")
-
 <article class="page-container">
     <form class="form form-horizontal validate" id="form-article-add" method="post" action="/FieldList/FieldListAggregationUpdateLogic">
         <input type="text" class="input-text" value="@fieldListAggregation.Id" name="id" hidden>

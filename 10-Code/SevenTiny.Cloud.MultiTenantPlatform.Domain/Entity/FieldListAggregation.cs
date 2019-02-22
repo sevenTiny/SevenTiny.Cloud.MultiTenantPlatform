@@ -43,5 +43,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity
         /// </summary>
         [Column]
         public int IsLink { get; set; } = 0;
+        /// <summary>
+        /// 列表排序值
+        /// </summary>
+        [Column]
+        public int SortNumber { get; set; }
     }
 }

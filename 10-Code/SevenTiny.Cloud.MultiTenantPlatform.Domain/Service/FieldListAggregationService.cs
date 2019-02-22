@@ -6,6 +6,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Domain.UIMetaData.ListView;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
 {
@@ -82,7 +83,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                             Title = item.Text,
                             Type = item.FieldType.ToString(),
                             Visible = TrueFalseTranslator.ToBoolean(item.IsVisible),
-                            IsLink = TrueFalseTranslator.ToBoolean(item.IsLink)
+                            IsLink = TrueFalseTranslator.ToBoolean(item.IsLink),
+                            ShowIndex = item.SortNumber
                         }
                     });
                 }
@@ -106,6 +108,29 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                 entityExist.Text = entity.Text;
             }
             return base.Update(entityExist);
+        }
+
+        public async void SortFields(int interfaceFieldId, int[] currentOrderMetaFieldIds)
+        {
+            await Task.Run(() =>
+            {
+                var fieldList = GetByFieldListId(interfaceFieldId);
+                if (fieldList != null && fieldList.Any())
+                {
+                    //i为当前应该保持的顺序
+                    for (int i = 0; i < currentOrderMetaFieldIds.Length; i++)
+                    {
+                        //寻找第i个字段
+                        var item = fieldList.FirstOrDefault(t => t.MetaFieldId == currentOrderMetaFieldIds[i]);
+                        //如果该字段的排序值!=当前应该保持的顺序，则加到更新队列
+                        if (item != null && item.SortNumber != i)
+                        {
+                            item.SortNumber = i;
+                            base.Update(item);
+                        }
+                    }
+                }
+            });
         }
     }
 }

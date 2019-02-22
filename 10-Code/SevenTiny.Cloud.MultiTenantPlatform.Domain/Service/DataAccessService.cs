@@ -319,7 +319,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             SingleObjectComponent singleObjectComponent = new SingleObjectComponent
             {
                 BizData = fieldBizDataService.ToBizDataDictionary(InterfaceFieldId, document),
-                ColunmDatas = fieldListAggregationService.GetColumnDataByFieldListId(InterfaceFieldId)
+                ColunmDatas = fieldListAggregationService.GetColumnDataByFieldListId(InterfaceFieldId).OrderBy(t => t.CmpData.ShowIndex).ToList()
             };
             return singleObjectComponent;
         }
@@ -407,7 +407,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             {
                 BizData = fieldBizDataService.ToBizDataDictionaryList(InterfaceFieldId, documents),
                 BizDataTotalCount = count,
-                Columns = fieldListAggregationService.GetColumnDataByFieldListId(InterfaceFieldId)
+                Columns = fieldListAggregationService.GetColumnDataByFieldListId(InterfaceFieldId).OrderBy(t => t.CmpData.ShowIndex).ToList()
             };
             return tableListComponent;
         }

@@ -148,13 +148,19 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             //获取到本对象的所有字段
             var metaFields = metaFieldService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
             //过滤出已配置过的字段
-            var aggregateFields = metaFields.Where(t => fieldListAggregations.Any(n => n.MetaFieldId == t.Id)).Select(t => new MetaFieldViewModel
-            {
-                Id = t.Id,
-                Code = t.Code,
-                Name = t.Name,
-                FieldAggregationId = fieldListAggregations.FirstOrDefault(f => f.MetaFieldId == t.Id).Id
-            }).ToList();
+            var aggregateFields = metaFields.Where(t => fieldListAggregations.Any(n => n.MetaFieldId == t.Id))
+                .Select(t =>
+                {
+                    var fieldAggregation = fieldListAggregations.FirstOrDefault(f => f.MetaFieldId == t.Id);
+                    return new MetaFieldViewModel
+                    {
+                        Id = t.Id,
+                        Code = t.Code,
+                        Name = t.Name,
+                        FieldAggregationId = fieldAggregation.Id,
+                        SortNumber = fieldAggregation.SortNumber
+                    };
+                }).OrderBy(t => t.SortNumber).ToList();
             //剩下的是未配置的待选字段
             var waitingForSelection = metaFields.Where(t => !aggregateMetaFieldIds.Contains(t.Id)).ToList();
 
@@ -175,7 +181,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
         /// <returns></returns>
         public IActionResult AggregateFieldAddLogic(int id)
         {
-            FieldListAggregation fieldAggregation = new FieldListAggregation { FieldListId = id };
             string metaFieldIdsString = Request.Form["metaFieldIds"];
             //get metafield ids
             var metaFieldIdsSplit = !string.IsNullOrEmpty(metaFieldIdsString) ? metaFieldIdsString.Split(',') : Array.Empty<string>();
@@ -198,6 +203,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             {
                 fieldAggregationService.DeleteByMetaFieldId(item);
             }
+
+            //对当前列表配置的顺序进行重新排序
+            fieldAggregationService.SortFields(id, metaFieldIds);
+
             return JsonResultModel.Success("保存成功！");
         }
 

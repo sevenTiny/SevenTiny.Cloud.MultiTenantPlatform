@@ -23,5 +23,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract
         /// <returns></returns>
         Dictionary<string, MetaField> GetMetaFieldsDicByFieldListId(int interfaceFieldId);
         List<Column> GetColumnDataByFieldListId(int interfaceFieldId);
+        /// <summary>
+        /// 字段排序
+        /// </summary>
+        /// <param name="interfaceFieldId">接口字段id</param>
+        /// <param name="currentOrderIds">当前需要保存的元数据id顺序，这里定位具体数据id要配合接口字段id条件</param>
+        void SortFields(int interfaceFieldId, int[] currentOrderIds);
     }
 }
