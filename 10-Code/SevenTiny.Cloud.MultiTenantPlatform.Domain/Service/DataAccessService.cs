@@ -409,6 +409,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                 BizDataTotalCount = count,
                 Columns = fieldListAggregationService.GetColumnDataByFieldListId(InterfaceFieldId).OrderBy(t => t.CmpData.ShowIndex).ToList()
             };
+
+            if (pageSize != 0)
+                tableListComponent.PageCount = count / pageSize;
+
             return tableListComponent;
         }
 
