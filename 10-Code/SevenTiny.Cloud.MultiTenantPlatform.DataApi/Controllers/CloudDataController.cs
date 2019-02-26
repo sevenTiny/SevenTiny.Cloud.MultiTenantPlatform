@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -14,6 +15,7 @@ using System.Linq;
 namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
 {
     //[Produces("application/json")]
+    [EnableCors("AllowSameDomain")]
     [Route("api/CloudData")]
     [ApiController]
     public class CloudDataController : ControllerBase

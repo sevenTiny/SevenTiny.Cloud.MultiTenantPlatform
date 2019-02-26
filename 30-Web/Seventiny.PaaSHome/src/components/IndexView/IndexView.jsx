@@ -1,41 +1,47 @@
 import React, { Component } from 'react';
 import IceContainer from '@icedesign/container';
 import './IndexView.scss';
+import TableList from '../TableList';
+import SearchForm from '../SearchForm';
 
 const styles = {
-  exceptionContent: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
+  container: {
+    padding: '0 0 20px',
   },
   title: {
-    color: '#333',
+    margin: '0',
+    padding: '15px 20px',
+    fonSize: '16px',
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    color: 'rgba(0,0,0,.85)',
+    fontWeight: '500',
+    borderBottom: '1px solid #eee',
   },
-  description: {
-    color: '#666',
+  pagination: {
+    textAlign: 'right',
   },
 };
 
 export default class IndexView extends Component {
-  static displayName = 'IndexView';
+  constructor(props) {
+    super(props);
+    this.state = {
+      metaObjectCode: 'Student'
+    }
+  }
+
+  conditionChange = (value) => {
+    alert(JSON.stringify(value))
+  };
+
   render() {
     return (
-      <div className="basic-not-found">
-        <IceContainer>
-          <div style={styles.exceptionContent} className="exception-content">
-            <div className="prompt">
-              <h3 style={styles.title} className="title">
-                抱歉，你访问的页面不存在
-              </h3>
-              <p style={styles.description} className="description">
-                您要找的页面没有找到，请返回
-                <a href="#">首页</a>
-                继续浏览
-              </p>
-            </div>
-          </div>
-        </IceContainer>
-      </div>
+      <IceContainer style={styles.container}>
+        <SearchForm onChange={this.conditionChange} />
+        <TableList metaObject={this.state.metaObjectCode} />
+      </IceContainer>
     );
   }
 }

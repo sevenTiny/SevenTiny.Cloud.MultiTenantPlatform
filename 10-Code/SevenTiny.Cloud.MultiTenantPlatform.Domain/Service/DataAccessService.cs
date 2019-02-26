@@ -362,14 +362,13 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             List<BsonDocument> bson = new List<BsonDocument>();
             if (pageSize == 0)
             {
-                bson = db.GetCollectionBson(metaObject.Code).Find<BsonDocument>(condition).ToList();
+                //无条件默认取10000条
+                pageSize = 10000;
             }
-            else
-            {
-                //这里等升级完包之后全部替换成orm的方法
-                int skipSize = (pageIndex - 1) > 0 ? ((pageIndex - 1) * pageSize) : 0;
-                bson = db.GetCollectionBson(metaObject.Code).Find(condition).Skip(skipSize).Limit(pageSize).ToList();
-            }
+
+            //这里等升级完包之后全部替换成orm的方法
+            int skipSize = (pageIndex - 1) > 0 ? ((pageIndex - 1) * pageSize) : 0;
+            bson = db.GetCollectionBson(metaObject.Code).Find(condition).Skip(skipSize).Limit(pageSize).ToList();
             return bson;
         }
 

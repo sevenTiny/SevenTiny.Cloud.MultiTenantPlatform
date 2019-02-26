@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import TableList from '../../components/IndexView';
+import IndexView from '../../components/IndexView';
 
 export default class PaasHome extends Component {
   render() {
     return (
       <div>
-        <TableList />
+        <IndexView />
       </div>
     );
   }
