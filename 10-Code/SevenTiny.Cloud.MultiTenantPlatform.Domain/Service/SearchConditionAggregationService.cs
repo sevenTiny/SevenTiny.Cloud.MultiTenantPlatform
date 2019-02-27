@@ -206,16 +206,18 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         /// <summary>
         /// 将条件配置解析成mongodb可以执行的条件
         /// </summary>
-        /// <param name="searchConditionId">条件id</param>
-        /// <param name="conditionValueDic">从http请求中传递过来的参数值集合</param>
+        /// <param name="metaObjectId">条件id</param>
+        /// <param name="searchConditionId">从http请求中传递过来的参数值集合</param>
+        /// <param name="conditionValueDic">参数</param>
+        /// <param name="isIgnoreArgumentsCheck">是否忽略参数校验,如果为true，需要的参数未传递会抛出异常；如果为false，需要的参数不存在条件返回null</param>
         /// <returns></returns>
-        public FilterDefinition<BsonDocument> AnalysisConditionToFilterDefinitionByConditionId(int metaObjectId, int searchConditionId, Dictionary<string, object> conditionValueDic)
+        public FilterDefinition<BsonDocument> AnalysisConditionToFilterDefinitionByConditionId(int metaObjectId, int searchConditionId, Dictionary<string, object> conditionValueDic, bool isIgnoreArgumentsCheck = false)
         {
             List<SearchConditionAggregation> conditions = GetListByInterfaceConditionId(searchConditionId);
-            return AnalysisConditionToFilterDefinition(metaObjectId, conditions, conditionValueDic);
+            return AnalysisConditionToFilterDefinition(metaObjectId, conditions, conditionValueDic, isIgnoreArgumentsCheck);
         }
 
-        private FilterDefinition<BsonDocument> AnalysisConditionToFilterDefinition(int metaObjectId, List<SearchConditionAggregation> conditions, Dictionary<string, object> conditionValueDic)
+        private FilterDefinition<BsonDocument> AnalysisConditionToFilterDefinition(int metaObjectId, List<SearchConditionAggregation> conditions, Dictionary<string, object> conditionValueDic, bool isIgnoreArgumentsCheck = false)
         {
             var bf = Builders<BsonDocument>.Filter;
             //全部字段字典缓存
@@ -273,12 +275,20 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                                     //如果valueType==-1 则表明是连接条件
                                     if (item.ValueType == -1)
                                     {
-                                        filterDefinition = bf.And(filterDefinition, ConditionRouter(item));
+                                        var tempCondition = ConditionRouter(item);
+                                        if (tempCondition != null)
+                                        {
+                                            filterDefinition = bf.And(filterDefinition, tempCondition);
+                                        }
                                     }
                                     //如果是表达式语句
                                     else
                                     {
-                                        filterDefinition = bf.And(filterDefinition, ConditionValue(item));
+                                        var tempCondition = ConditionValue(item);
+                                        if (tempCondition != null)
+                                        {
+                                            filterDefinition = bf.And(filterDefinition, tempCondition);
+                                        }
                                     }
                                 }
                                 break;
@@ -289,12 +299,20 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                                     //如果valueType==-1 则表明是连接条件
                                     if (item.ValueType == -1)
                                     {
-                                        filterDefinition = bf.Or(filterDefinition, ConditionRouter(item));
+                                        var tempCondition = ConditionRouter(item);
+                                        if (tempCondition != null)
+                                        {
+                                            filterDefinition = bf.Or(filterDefinition, tempCondition);
+                                        }
                                     }
                                     //如果是表达式语句
                                     else
                                     {
-                                        filterDefinition = bf.Or(filterDefinition, ConditionValue(item));
+                                        var tempCondition = ConditionValue(item);
+                                        if (tempCondition != null)
+                                        {
+                                            filterDefinition = bf.Or(filterDefinition, tempCondition);
+                                        }
                                     }
                                 }
                                 break;
@@ -319,7 +337,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                     //如果没有传递参数值，则抛出异常
                     if (!conditionValueDic.ContainsKey(keyUpper))
                     {
-                        throw new ArgumentNullException(key, $"Conditions define field parameters [{key}] but do not provide values.");
+                        //如果忽略参数检查，则直接返回null
+                        if (isIgnoreArgumentsCheck)
+                            return null;
+                        //如果不忽略参数检查，则抛出异常
+                        else
+                            throw new ArgumentNullException(key, $"Conditions define field parameters [{key}] but do not provide values.");
                     }
                     object argumentValue = conditionValueDic.SafeGet(keyUpper);
                     //将值转化为字段同类型的类型值

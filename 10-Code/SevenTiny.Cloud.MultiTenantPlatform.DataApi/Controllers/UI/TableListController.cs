@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
+using MongoDB.Driver;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SevenTiny.Cloud.MultiTenantPlatform.DataApi.Models;
@@ -25,7 +26,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
             IInterfaceAggregationService _interfaceAggregationService,
             IFieldBizDataService _fieldBizDataService,
             ITriggerScriptEngineService _triggerScriptEngineService,
-            IMetaObjectService _metaObjectService
+            IMetaObjectService _metaObjectService,
+            IMetaFieldService _metaFieldService
             )
         {
             dataAccessService = _dataAccessService;
@@ -35,6 +37,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
             triggerScriptEngineService = _triggerScriptEngineService;
             searchConditionService = _searchConditionService;
             metaObjectService = _metaObjectService;
+            metaFieldService = _metaFieldService;
         }
 
         readonly IDataAccessService dataAccessService;
@@ -44,6 +47,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
         readonly ITriggerScriptEngineService triggerScriptEngineService;
         readonly ISearchConditionService searchConditionService;
         readonly IMetaObjectService metaObjectService;
+        readonly IMetaFieldService metaFieldService;
 
         /// <summary>
         /// 这块的逻辑为：
@@ -53,7 +57,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
         /// <param name="queryArgs"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Post([FromQuery]QueryArgs queryArgs)
+        public IActionResult Post([FromQuery]UITableListQueryArgs queryArgs)
         {
             try
             {
@@ -63,7 +67,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                     return JsonResultModel.Error($"Parameter invalid:queryArgs = null");
                 }
 
-                var checkResult = queryArgs.QueryArgsCheck();
+                var checkResult = queryArgs.ArgsCheck();
 
                 if (!checkResult.IsSuccess)
                 {
@@ -80,16 +84,25 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                     }
                 }
 
+                //这里根据视图来匹配搜索条件
                 //get filter
-                var interfaceAggregation = interfaceAggregationService.GetByMetaObjectIdAndInterfaceAggregationCode(queryArgs.interfaceCode);
+                var interfaceAggregation = interfaceAggregationService.GetByMetaObjectIdAndInterfaceAggregationCode("待定");
                 if (interfaceAggregation == null)
                 {
-                    return JsonResultModel.Error($"未能找到接口编码为[{queryArgs.interfaceCode}]对应的接口信息");
+                    return JsonResultModel.Error($"未能找到接口编码为[{"待定"}]对应的接口信息");
                 }
-                var filter = conditionAggregationService.AnalysisConditionToFilterDefinitionByConditionId(interfaceAggregation.MetaObjectId, interfaceAggregation.SearchConditionId, argumentsDic);
+
+                //分析搜索条件，是否忽略参数校验为true，如果参数没传递则不抛出异常且处理为忽略参数
+                var filter = conditionAggregationService.AnalysisConditionToFilterDefinitionByConditionId(interfaceAggregation.MetaObjectId, interfaceAggregation.SearchConditionId, argumentsDic, true);
+                //如果参数都没传递或者其他原因导致条件没有，则直接返回全部
+                if (filter == null)
+                {
+                    filter = Builders<BsonDocument>.Filter.Empty;
+                }
 
                 filter = triggerScriptEngineService.TableListBefore(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, filter);
-                var tableListComponent = dataAccessService.GetTableListComponent(interfaceAggregation.MetaObjectId, interfaceAggregation.FieldListId, filter, queryArgs.pageIndex, queryArgs.pageSize, out int totalCount);
+                var sort = metaFieldService.GetSortDefinitionBySortFields(interfaceAggregation.MetaObjectId, queryArgs.SortFields);
+                var tableListComponent = dataAccessService.GetTableListComponent(interfaceAggregation.MetaObjectId, interfaceAggregation.FieldListId, filter, queryArgs.PageIndex, queryArgs.PageSize, sort, out int totalCount);
                 tableListComponent = triggerScriptEngineService.TableListAfter(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, tableListComponent);
 
                 return JsonResultModel.Success("get data list success", tableListComponent);

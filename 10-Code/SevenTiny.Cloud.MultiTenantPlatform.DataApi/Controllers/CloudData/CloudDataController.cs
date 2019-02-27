@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
+using MongoDB.Driver;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SevenTiny.Cloud.MultiTenantPlatform.DataApi.Models;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
 using SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.ServiceContract;
 using System;
 using System.Collections.Generic;
@@ -27,7 +29,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
             IInterfaceAggregationService _interfaceAggregationService,
             IFieldBizDataService _fieldBizDataService,
             ITriggerScriptEngineService _triggerScriptEngineService,
-            IMetaObjectService _metaObjectService
+            IMetaObjectService _metaObjectService,
+            IMetaFieldService _metaFieldService
             )
         {
             dataAccessService = _dataAccessService;
@@ -37,6 +40,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
             triggerScriptEngineService = _triggerScriptEngineService;
             searchConditionService = _searchConditionService;
             metaObjectService = _metaObjectService;
+            metaFieldService = _metaFieldService;
         }
 
         readonly IDataAccessService dataAccessService;
@@ -46,6 +50,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
         readonly ITriggerScriptEngineService triggerScriptEngineService;
         readonly ISearchConditionService searchConditionService;
         readonly IMetaObjectService metaObjectService;
+        readonly IMetaFieldService metaFieldService;
 
         [HttpGet]
         public IActionResult Get([FromQuery]QueryArgs queryArgs)
@@ -93,7 +98,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                         return JsonResultModel.Success("get single data success", singleObjectComponent);
                     case InterfaceType.CloudTableList:
                         filter = triggerScriptEngineService.TableListBefore(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, filter);
-                        var tableListComponent = dataAccessService.GetTableListComponent(interfaceAggregation.MetaObjectId, interfaceAggregation.FieldListId, filter, queryArgs.pageIndex, queryArgs.pageSize, out int totalCount);
+                        var sort = metaFieldService.GetSortDefinitionBySortFields(interfaceAggregation.MetaObjectId, new[] { new SortField { Column = "_id", IsDesc = false } });//暂时用id正序排列
+                        var tableListComponent = dataAccessService.GetTableListComponent(interfaceAggregation.MetaObjectId, interfaceAggregation.FieldListId, filter, queryArgs.pageIndex, queryArgs.pageSize, sort, out int totalCount);
                         tableListComponent = triggerScriptEngineService.TableListAfter(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, tableListComponent);
                         return JsonResultModel.Success("get data list success", tableListComponent);
                     case InterfaceType.CloudCount:

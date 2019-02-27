@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson;
+using MongoDB.Driver;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository;
@@ -269,6 +270,40 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             base.Delete(id);
 
             return ResultModel.Success("删除成功");
+        }
+
+        public SortDefinition<BsonDocument> GetSortDefinitionBySortFields(int metaObjectId, SortField[] sortFields)
+        {
+            var builder = new SortDefinitionBuilder<BsonDocument>();
+            if (sortFields == null || !sortFields.Any())
+            {
+                throw new ArgumentNullException(nameof(sortFields), $"argument of {nameof(sortFields)} is null or empty");
+            }
+            //获取全部字段
+            var metaFieldDic = GetMetaFieldDicUnDeleted(metaObjectId);
+            SortDefinition<BsonDocument> sort = null;
+            foreach (var item in sortFields)
+            {
+                if (!metaFieldDic.ContainsKey(item.Column))
+                {
+                    throw new ArgumentNullException(item.Column, $"field of {item.Column} is not exist in current MetaObject");
+                }
+                if (item.IsDesc)
+                {
+                    if (sort == null)
+                        sort = builder.Descending(item.Column);
+                    else
+                        sort = sort.Descending(item.Column);
+                }
+                else
+                {
+                    if (sort == null)
+                        sort = builder.Ascending(item.Column);
+                    else
+                        sort = sort.Ascending(item.Column);
+                }
+            }
+            return sort;
         }
     }
 }

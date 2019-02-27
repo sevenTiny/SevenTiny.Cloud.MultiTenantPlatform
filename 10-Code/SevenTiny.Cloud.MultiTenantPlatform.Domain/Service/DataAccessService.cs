@@ -329,25 +329,25 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.Eq("_id", _id);
             return Get(metaObjectCode, filter);
         }
-        public List<BsonDocument> GetByIds(string metaObjectCode, string[] _ids)
+        public List<BsonDocument> GetByIds(string metaObjectCode, string[] _ids, SortDefinition<BsonDocument> sort)
         {
             FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.In("_id", _ids);
-            return GetList(metaObjectCode, filter);
+            return GetList(metaObjectCode, filter, sort);
         }
-        public List<BsonDocument> GetList(string metaObjectCode, FilterDefinition<BsonDocument> condition)
+        public List<BsonDocument> GetList(string metaObjectCode, FilterDefinition<BsonDocument> condition, SortDefinition<BsonDocument> sort)
         {
-            return GetList(metaObjectCode, condition, 0, 0);
+            return GetList(metaObjectCode, condition, 0, 0, sort);
         }
 
-        public List<BsonDocument> GetList(int metaObjectId, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize)
+        public List<BsonDocument> GetList(int metaObjectId, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort)
         {
             var metaObject = metaObjectService.GetById(metaObjectId);
             if (metaObject == null)
                 throw new Exception("没有找到该实体编码对应的实体信息");
 
-            return GetList(metaObject, condition, pageIndex, pageSize);
+            return GetList(metaObject, condition, pageIndex, pageSize, sort);
         }
-        public List<BsonDocument> GetList(string metaObjectCode, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize)
+        public List<BsonDocument> GetList(string metaObjectCode, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort)
         {
             if (string.IsNullOrEmpty(metaObjectCode))
                 throw new Exception("实体编码不能为空");
@@ -355,9 +355,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             if (metaObject == null)
                 throw new Exception("没有找到该实体编码对应的实体信息");
 
-            return GetList(metaObject, condition, pageIndex, pageSize);
+            return GetList(metaObject, condition, pageIndex, pageSize, sort);
         }
-        public List<BsonDocument> GetList(MetaObject metaObject, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize)
+        public List<BsonDocument> GetList(MetaObject metaObject, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort)
         {
             List<BsonDocument> bson = new List<BsonDocument>();
             if (pageSize == 0)
@@ -368,29 +368,29 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
 
             //这里等升级完包之后全部替换成orm的方法
             int skipSize = (pageIndex - 1) > 0 ? ((pageIndex - 1) * pageSize) : 0;
-            bson = db.GetCollectionBson(metaObject.Code).Find(condition).Skip(skipSize).Limit(pageSize).ToList();
+            bson = db.GetCollectionBson(metaObject.Code).Find(condition).Skip(skipSize).Limit(pageSize).Sort(sort).ToList();
             return bson;
         }
 
-        public List<BsonDocument> GetList(int metaObjectId, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, out int count)
+        public List<BsonDocument> GetList(int metaObjectId, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort, out int count)
         {
             var metaObject = metaObjectService.GetById(metaObjectId);
             if (metaObject == null)
                 throw new Exception("没有找到该实体编码对应的实体信息");
-            return GetList(metaObject, condition, pageIndex, pageSize, out count);
+            return GetList(metaObject, condition, pageIndex, pageSize, sort, out count);
         }
-        public List<BsonDocument> GetList(string metaObjectCode, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, out int count)
+        public List<BsonDocument> GetList(string metaObjectCode, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort, out int count)
         {
             if (string.IsNullOrEmpty(metaObjectCode))
                 throw new Exception("实体编码不能为空");
             var metaObject = metaObjectService.GetByCode(metaObjectCode);
             if (metaObject == null)
                 throw new Exception("没有找到该实体编码对应的实体信息");
-            return GetList(metaObject, condition, pageIndex, pageSize, out count);
+            return GetList(metaObject, condition, pageIndex, pageSize, sort, out count);
         }
-        public List<BsonDocument> GetList(MetaObject metaObject, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, out int count)
+        public List<BsonDocument> GetList(MetaObject metaObject, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort, out int count)
         {
-            List<BsonDocument> bson = GetList(metaObject.Code, condition, pageIndex, pageSize);
+            List<BsonDocument> bson = GetList(metaObject.Code, condition, pageIndex, pageSize, sort);
 
             if (pageSize == 0)
                 count = bson?.Count ?? 0;
@@ -399,9 +399,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
 
             return bson;
         }
-        public TableListComponent GetTableListComponent(int metaObjectId, int InterfaceFieldId, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, out int count)
+        public TableListComponent GetTableListComponent(int metaObjectId, int InterfaceFieldId, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort, out int count)
         {
-            var documents = GetList(metaObjectId, condition, pageIndex, pageSize, out count);
+            var documents = GetList(metaObjectId, condition, pageIndex, pageSize, sort, out count);
             TableListComponent tableListComponent = new TableListComponent
             {
                 BizData = fieldBizDataService.ToBizDataDictionaryList(InterfaceFieldId, documents),
