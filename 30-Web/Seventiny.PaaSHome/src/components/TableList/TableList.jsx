@@ -27,8 +27,9 @@ const state = [
 
 // MOCK 数据，实际业务按需进行替换
 const getData = (length = 10) => {
-  let data = axios.get(tableDataUri);
-  debugger
+  axios.get(tableDataUri).then(function (response) {
+    console.log(response.data)
+  });
   return Array.from({ length }).map((item, index) => {
     return {
       id: index + 1,
