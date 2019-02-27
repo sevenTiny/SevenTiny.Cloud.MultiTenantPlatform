@@ -277,7 +277,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             var builder = new SortDefinitionBuilder<BsonDocument>();
             if (sortFields == null || !sortFields.Any())
             {
-                throw new ArgumentNullException(nameof(sortFields), $"argument of {nameof(sortFields)} is null or empty");
+                //默认给更新时间倒序排列
+                sortFields = new[] { new SortField { Column = "ModifyTime", IsDesc = true } };
             }
             //获取全部字段
             var metaFieldDic = GetMetaFieldDicUnDeleted(metaObjectId);

@@ -98,7 +98,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                         return JsonResultModel.Success("get single data success", singleObjectComponent);
                     case InterfaceType.CloudTableList:
                         filter = triggerScriptEngineService.TableListBefore(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, filter);
-                        var sort = metaFieldService.GetSortDefinitionBySortFields(interfaceAggregation.MetaObjectId, new[] { new SortField { Column = "_id", IsDesc = false } });//暂时用id正序排列
+                        var sort = metaFieldService.GetSortDefinitionBySortFields(interfaceAggregation.MetaObjectId, null);
                         var tableListComponent = dataAccessService.GetTableListComponent(interfaceAggregation.MetaObjectId, interfaceAggregation.FieldListId, filter, queryArgs.pageIndex, queryArgs.pageSize, sort, out int totalCount);
                         tableListComponent = triggerScriptEngineService.TableListAfter(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, tableListComponent);
                         return JsonResultModel.Success("get data list success", tableListComponent);
