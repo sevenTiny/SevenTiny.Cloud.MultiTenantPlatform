@@ -81,7 +81,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                 }
 
                 //get filter
-                var interfaceAggregation = interfaceAggregationService.GetByMetaObjectIdAndInterfaceAggregationCode(queryArgs.interfaceCode);
+                var interfaceAggregation = interfaceAggregationService.GetByInterfaceAggregationCode(queryArgs.interfaceCode);
                 if (interfaceAggregation == null)
                 {
                     return JsonResultModel.Error($"未能找到接口编码为[{queryArgs.interfaceCode}]对应的接口信息");

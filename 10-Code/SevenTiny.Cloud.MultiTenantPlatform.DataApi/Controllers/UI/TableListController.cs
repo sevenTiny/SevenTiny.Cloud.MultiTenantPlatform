@@ -23,7 +23,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
             IDataAccessService _dataAccessService,
             ISearchConditionService _searchConditionService,
             ISearchConditionAggregationService _conditionAggregationService,
-            IInterfaceAggregationService _interfaceAggregationService,
+            IIndexViewService _indexViewService,
             IFieldBizDataService _fieldBizDataService,
             ITriggerScriptEngineService _triggerScriptEngineService,
             IMetaObjectService _metaObjectService,
@@ -32,7 +32,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
         {
             dataAccessService = _dataAccessService;
             conditionAggregationService = _conditionAggregationService;
-            interfaceAggregationService = _interfaceAggregationService;
+            indexViewService = _indexViewService;
             fieldBizDataService = _fieldBizDataService;
             triggerScriptEngineService = _triggerScriptEngineService;
             searchConditionService = _searchConditionService;
@@ -41,7 +41,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
         }
 
         readonly IDataAccessService dataAccessService;
-        readonly IInterfaceAggregationService interfaceAggregationService;
+        readonly IIndexViewService indexViewService;
         readonly ISearchConditionAggregationService conditionAggregationService;
         readonly IFieldBizDataService fieldBizDataService;
         readonly ITriggerScriptEngineService triggerScriptEngineService;
@@ -84,26 +84,25 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                     }
                 }
 
-                //这里根据视图来匹配搜索条件
                 //get filter
-                var interfaceAggregation = interfaceAggregationService.GetByMetaObjectIdAndInterfaceAggregationCode("待定");
-                if (interfaceAggregation == null)
+                var indexView = indexViewService.GetByCode(queryArgs.ViewName);
+                if (indexView == null)
                 {
-                    return JsonResultModel.Error($"未能找到接口编码为[{"待定"}]对应的接口信息");
+                    return JsonResultModel.Error($"未能找到视图编码为[{queryArgs.ViewName}]对应的视图信息");
                 }
 
                 //分析搜索条件，是否忽略参数校验为true，如果参数没传递则不抛出异常且处理为忽略参数
-                var filter = conditionAggregationService.AnalysisConditionToFilterDefinitionByConditionId(interfaceAggregation.MetaObjectId, interfaceAggregation.SearchConditionId, argumentsDic, true);
+                var filter = conditionAggregationService.AnalysisConditionToFilterDefinitionByConditionId(indexView.MetaObjectId, indexView.SearchConditionId, argumentsDic, true);
                 //如果参数都没传递或者其他原因导致条件没有，则直接返回全部
                 if (filter == null)
                 {
                     filter = Builders<BsonDocument>.Filter.Empty;
                 }
 
-                filter = triggerScriptEngineService.TableListBefore(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, filter);
-                var sort = metaFieldService.GetSortDefinitionBySortFields(interfaceAggregation.MetaObjectId, queryArgs.SortFields);
-                var tableListComponent = dataAccessService.GetTableListComponent(interfaceAggregation.MetaObjectId, interfaceAggregation.FieldListId, filter, queryArgs.PageIndex, queryArgs.PageSize, sort, out int totalCount);
-                tableListComponent = triggerScriptEngineService.TableListAfter(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, tableListComponent);
+                filter = triggerScriptEngineService.TableListBefore(indexView.MetaObjectId, indexView.Code, filter);
+                var sort = metaFieldService.GetSortDefinitionBySortFields(indexView.MetaObjectId, queryArgs.SortFields);
+                var tableListComponent = dataAccessService.GetTableListComponent(indexView.MetaObjectId, indexView.FieldListId, filter, queryArgs.PageIndex, queryArgs.PageSize, sort, out int totalCount);
+                tableListComponent = triggerScriptEngineService.TableListAfter(indexView.MetaObjectId, indexView.Code, tableListComponent);
 
                 return JsonResultModel.Success("get data list success", tableListComponent);
             }

@@ -42,9 +42,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Models
         /// <returns></returns>
         public ResultModel ArgsCheck()
         {
-            if (string.IsNullOrEmpty(MetaObject))
+            if (string.IsNullOrEmpty(ViewName))
             {
-                return ResultModel.Error("MetaObject can not be null!");
+                return ResultModel.Error("ViewName can not be null!");
             }
             return ResultModel.Success();
         }
