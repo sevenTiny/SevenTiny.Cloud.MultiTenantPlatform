@@ -57,7 +57,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
         /// <param name="queryArgs"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Post([FromQuery]UITableListQueryArgs queryArgs)
+        public IActionResult Post([FromBody]UITableListQueryArgs queryArgs)
         {
             try
             {
