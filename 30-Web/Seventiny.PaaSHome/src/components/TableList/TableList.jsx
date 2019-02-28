@@ -6,8 +6,6 @@ import axios from 'axios';
 
 //请求列表数据的地址
 const tableDataUri = dataApiHost + '/api/UI/TableList?viewName=WangDongApp.DataTest.IndexView.TestIndexView';
-//默认页大小
-const defaultPageSize = 10;
 
 const random = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -36,7 +34,9 @@ export default class TableList extends Component {
     data: [],
     totalCount: 0,
     columnData: [],
-    widths: {}
+    widths: {},
+    //默认页大小
+    pageSize: 15
   };
 
   //属性被更改时触发
@@ -53,7 +53,7 @@ export default class TableList extends Component {
   }
 
   // MOCK 数据，实际业务按需进行替换
-  getData = (length = defaultPageSize) => {
+  getData = () => {
     var th = this;
     var bizDatas = [];
 
@@ -71,7 +71,7 @@ export default class TableList extends Component {
         },
         SortFields: null,
         PageIndex: this.state.current,
-        PageSize: length
+        PageSize: this.state.pageSize
       }
     }).then(function (response) {
       if (response.status == 200) {
@@ -115,13 +115,13 @@ export default class TableList extends Component {
   //   });
   // };
 
-  fetchData = (len) => {
+  fetchData = () => {
     this.setState(
       {
         isLoading: true,
       },
       () => {
-        this.getData(len);
+        this.getData();
         //由于异步返回结果，所以下面同步的方法是执行效果有误的
         // .then((data) => {
         //   this.setState({
@@ -146,7 +146,8 @@ export default class TableList extends Component {
 
   //页大小切换效果
   onPageSizeChange = (num) => {
-    this.fetchData(num)
+    this.setState({ pageSize: num })
+    this.fetchData()
   }
 
   //表格列拖拽增加列宽度效果
@@ -159,7 +160,7 @@ export default class TableList extends Component {
   }
 
   handleFilterChange = () => {
-    this.fetchData(defaultPageSize);
+    this.fetchData();
   };
 
   renderState = (value) => {
@@ -192,7 +193,7 @@ export default class TableList extends Component {
           fixedHeader={true}
           maxBodyHeight={window.innerHeight * 0.6}
           onResizeChange={this.onResizeChange}
-          >
+        >
           {
             this.state.columnData.map((item, index) => {
               return <Table.Column title={item.cmp_data.title} key={''} dataIndex={item.cmp_data.name} width={this.state.widths[item.cmp_data.name]} resizable />
@@ -204,10 +205,12 @@ export default class TableList extends Component {
           style={styles.pagination}
           current={current}
           onChange={this.handlePaginationChange}
+          pageSize={this.state.pageSize}
           pageSizeSelector="dropdown"
           pageSizePosition="end"
           pageSizeList={[15, 30, 60, 100]}
-          total={this.state.totalCount} totalRender={total => `共${total}条`}
+          total={this.state.totalCount}
+          totalRender={total => `共${total}条`}
           onPageSizeChange={this.onPageSizeChange}
         />
       </IceContainer>
