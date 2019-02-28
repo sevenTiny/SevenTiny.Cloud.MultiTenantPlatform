@@ -4,7 +4,10 @@ import IceContainer from '@icedesign/container';
 import dataApiHost from '../../commonConfig';
 import axios from 'axios';
 
-const tableDataUri = dataApiHost + '/api/CloudData?interfaceCode=WangDongApp.DataTest.Interface.UnDeletedTextFieldList&pageSize=10';
+//请求列表数据的地址
+const tableDataUri = dataApiHost + '/api/UI/TableList?viewName=WangDongApp.DataTest.IndexView.TestIndexView';
+//默认页大小
+const defaultPageSize = 10;
 
 const random = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -25,42 +28,92 @@ const state = [
   },
 ];
 
-// MOCK 数据，实际业务按需进行替换
-const getData = (length = 10) => {
-  axios.get(tableDataUri).then(function (response) {
-    console.log(response.data)
-  });
-  return Array.from({ length }).map((item, index) => {
-    return {
-      id: index + 1,
-      type: ['休年假', '事假', '调休'][random(0, 2)],
-      startTime: `20${random(10, 20)}-0${random(1, 9)}-12`,
-      endTime: `20${random(10, 20)}-0${random(1, 9)}-18`,
-      days: random(1, 10),
-      origin: ['本人提交', '电话申请'][random(0, 1)],
-      state: state[random(0, 2)],
-    };
-  });
-};
-
 export default class TableList extends Component {
+
   state = {
     current: 1,
     isLoading: false,
     data: [],
+    totalCount: 0,
+    columnData: [],
+    widths: {}
   };
+
+  //属性被更改时触发
+  shouldComponentUpdate(newProps) {
+    //如果属性被更新
+    if (newProps !== this.props) {
+      this.fetchData()
+    }
+    return true;
+  }
 
   componentDidMount() {
     this.fetchData();
   }
 
-  mockApi = (len) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(getData(len));
-      }, 600);
+  // MOCK 数据，实际业务按需进行替换
+  getData = (length = defaultPageSize) => {
+    var th = this;
+    var bizDatas = [];
+
+    //请求数据
+    axios({
+      method: 'post',
+      url: tableDataUri,
+      data: {
+        ViewName: this.props.ViewName,
+        MetaObject: this.props.MetaObject,
+        Application: null,
+        SearchData: {
+          SearchView: null,
+          Items: this.props.searchDatas
+        },
+        SortFields: null,
+        PageIndex: this.state.current,
+        PageSize: length
+      }
+    }).then(function (response) {
+      if (response.status == 200) {
+        if (response.data.success) {
+          //给请求到的数据属性赋值给table组件
+          var result = response.data.data
+          var widths = {}
+          bizDatas = result.biz_data.map((item, index) => {
+            var obj = {}
+            for (var columnItem in result.sub_cmps) {
+              //列编码
+              var columnName = result.sub_cmps[columnItem].cmp_data.name;
+              //添加该列的字段
+              obj[columnName] = item[columnName].text;
+              widths[columnName] = item[columnName].width == null ? 100 : item[columnName].width;
+            }
+            //宽度赋值
+            return obj;
+          });
+          th.setState({
+            data: bizDatas,
+            isLoading: false,
+            totalCount: result.biz_data_total_count,
+            columnData: result.sub_cmps,
+            widths: widths
+          });
+        }
+      } else {
+        th.setState({
+          isLoading: true,
+        });
+        console.error(response)
+      }
     });
+    return bizDatas;
   };
+
+  // mockApi = (len) => {
+  //   return new Promise((resolve) => {
+  //     resolve(this.getData(len));
+  //   });
+  // };
 
   fetchData = (len) => {
     this.setState(
@@ -68,12 +121,14 @@ export default class TableList extends Component {
         isLoading: true,
       },
       () => {
-        this.mockApi(len).then((data) => {
-          this.setState({
-            data,
-            isLoading: false,
-          });
-        });
+        this.getData(len);
+        //由于异步返回结果，所以下面同步的方法是执行效果有误的
+        // .then((data) => {
+        //   this.setState({
+        //     data,
+        //     isLoading: false,
+        //   });
+        // });
       }
     );
   };
@@ -89,8 +144,22 @@ export default class TableList extends Component {
     );
   };
 
+  //页大小切换效果
+  onPageSizeChange = (num) => {
+    this.fetchData(num)
+  }
+
+  //表格列拖拽增加列宽度效果
+  onResizeChange = (dataIndex, value) => {
+    const { widths } = this.state;
+    widths[dataIndex] = widths[dataIndex] + value;
+    this.setState({
+      widths
+    });
+  }
+
   handleFilterChange = () => {
-    this.fetchData(5);
+    this.fetchData(defaultPageSize);
   };
 
   renderState = (value) => {
@@ -114,25 +183,32 @@ export default class TableList extends Component {
 
     return (
       <IceContainer style={styles.container}>
-        <h4 style={styles.title}>请假记录</h4>
         <Table
           loading={isLoading}
           dataSource={data}
           hasBorder={false}
-          style={{ padding: '0 20px 20px' }}
-        >
-          <Table.Column title="索引" dataIndex="id" />
-          <Table.Column title="假期类型" dataIndex="type" />
-          <Table.Column title="开始日期" dataIndex="startTime" />
-          <Table.Column title="结束时间" dataIndex="endTime" />
-          <Table.Column title="请假天数" dataIndex="days" />
-          <Table.Column title="假期来源" dataIndex="origin" />
-          <Table.Column title="状态" dataIndex="state" cell={this.renderState} />
+          style={{ padding: '0 20px 20px', whiteSpace: 'nowrap' }}
+          useVirtual
+          fixedHeader={true}
+          maxBodyHeight={window.innerHeight * 0.6}
+          onResizeChange={this.onResizeChange}
+          >
+          {
+            this.state.columnData.map((item, index) => {
+              return <Table.Column title={item.cmp_data.title} key={''} dataIndex={item.cmp_data.name} width={this.state.widths[item.cmp_data.name]} resizable />
+            })
+          }
+          {/* <Table.Column title="状态" dataIndex="state" cell={this.renderState} /> */}
         </Table>
         <Pagination
           style={styles.pagination}
           current={current}
           onChange={this.handlePaginationChange}
+          pageSizeSelector="dropdown"
+          pageSizePosition="end"
+          pageSizeList={[15, 30, 60, 100]}
+          total={this.state.totalCount} totalRender={total => `共${total}条`}
+          onPageSizeChange={this.onPageSizeChange}
         />
       </IceContainer>
     );
@@ -142,17 +218,6 @@ export default class TableList extends Component {
 const styles = {
   container: {
     padding: '0 0 20px',
-  },
-  title: {
-    margin: '0',
-    padding: '15px 20px',
-    fonSize: '16px',
-    textOverflow: 'ellipsis',
-    overflow: 'hidden',
-    whiteSpace: 'nowrap',
-    color: 'rgba(0,0,0,.85)',
-    fontWeight: '500',
-    borderBottom: '1px solid #eee',
   },
   pagination: {
     textAlign: 'right',

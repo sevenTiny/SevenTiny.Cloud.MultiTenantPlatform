@@ -15,6 +15,7 @@ using System.Linq;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
 {
+    [EnableCors("AllowSameDomain")]
     [Route("api/UI/[controller]")]
     [ApiController]
     public class TableListController : ControllerBase

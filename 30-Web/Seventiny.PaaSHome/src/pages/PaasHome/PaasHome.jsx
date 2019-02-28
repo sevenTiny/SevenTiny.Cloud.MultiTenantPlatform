@@ -5,7 +5,7 @@ export default class PaasHome extends Component {
   render() {
     return (
       <div>
-        <IndexView />
+        <IndexView ViewName={"WangDongApp.DataTest.IndexView.TestIndexView"} MetaObject={"WangDongApp.DataTest"}/>
       </div>
     );
   }

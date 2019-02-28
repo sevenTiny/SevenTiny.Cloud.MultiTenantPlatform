@@ -28,19 +28,34 @@ export default class IndexView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      metaObjectCode: 'Student'
+      searchDatas: null
     }
   }
 
+  //条件改变重新赋值
   conditionChange = (value) => {
-    alert(JSON.stringify(value))
+    //创建搜索条件数组
+    var searchDatas = [];
+    for (var item in value) {
+      if (value[item] != null && value[item] != '') {
+        searchDatas.push({
+          Name: item,
+          Text: null,
+          Value: value[item]
+        });
+      }
+    }
+    this.setState({
+      searchDatas: searchDatas
+    })
   };
 
   render() {
     return (
       <IceContainer style={styles.container}>
+        <h4 style={styles.title}>请假记录</h4>
         <SearchForm onChange={this.conditionChange} />
-        <TableList metaObject={this.state.metaObjectCode} />
+        <TableList searchDatas={this.state.searchDatas} ViewName={this.props.ViewName} MetaObject={this.props.MetaObject} />
       </IceContainer>
     );
   }
