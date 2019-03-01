@@ -10,6 +10,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract
         /// </summary>
         /// <param name="interfaceAggregationCode"></param>
         /// <returns></returns>
-        InterfaceAggregation GetByMetaObjectIdAndInterfaceAggregationCode(string interfaceAggregationCode);
+        InterfaceAggregation GetByInterfaceAggregationCode(string interfaceAggregationCode);
     }
 }

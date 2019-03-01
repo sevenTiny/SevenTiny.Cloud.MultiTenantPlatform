@@ -19,6 +19,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            string[] urls = new[] { "http://localhost:4444" };
+            services.AddCors(options =>
+            options.AddPolicy("AllowSameDomain",
+            builder => builder.WithOrigins(urls).AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin().AllowCredentials())
+            );
+
             //start 7tiny ---
             //session support
             services.AddDistributedMemoryCache();

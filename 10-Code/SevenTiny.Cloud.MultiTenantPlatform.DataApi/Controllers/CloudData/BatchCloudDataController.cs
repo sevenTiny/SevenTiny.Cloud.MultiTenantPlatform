@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -13,6 +14,7 @@ using System.Linq;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
 {
+    [EnableCors("AllowSameDomain")]
     [Route("api/BatchCloudData")]
     [ApiController]
     public class BatchCloudDataController : ControllerBase

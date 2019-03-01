@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson;
+using MongoDB.Driver;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
@@ -53,5 +54,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract
         /// <param name="ids"></param>
         /// <returns></returns>
         List<MetaField> GetByIds(int[] ids);
+        /// <summary>
+        /// 生成mongodb的排序字段配置
+        /// </summary>
+        /// <param name="metaObjectId"></param>
+        /// <param name="sortFields"></param>
+        /// <returns></returns>
+        SortDefinition<BsonDocument> GetSortDefinitionBySortFields(int metaObjectId, SortField[] sortFields);
     }
 }

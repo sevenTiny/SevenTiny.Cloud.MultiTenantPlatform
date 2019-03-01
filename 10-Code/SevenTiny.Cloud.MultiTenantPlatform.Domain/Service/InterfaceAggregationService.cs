@@ -88,7 +88,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             return ResultModel.Success();
         }
 
-        public InterfaceAggregation GetByMetaObjectIdAndInterfaceAggregationCode(string interfaceAggregationCode)
+        public InterfaceAggregation GetByInterfaceAggregationCode(string interfaceAggregationCode)
         {
             var interfaceAggregation = dbContext.QueryOne<InterfaceAggregation>(t => t.Code.Equals(interfaceAggregationCode));
             return interfaceAggregation;

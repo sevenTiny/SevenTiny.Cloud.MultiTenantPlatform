@@ -24,6 +24,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity
         public int SearchConditionId { get; set; }
         [Column]
         public int ParentId { get; set; }
+        /// <summary>
+        /// 连接节点没有field，field=-1。可以通过该字段判断是否为连接节点
+        /// </summary>
         [Column]
         public int FieldId { get; set; }
         [Column]
@@ -37,6 +40,14 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity
         public string Value { get; set; }
         [Column]
         public int ValueType { get; set; }
+        [Column]
+        public string Text { get; set; }
+        /// <summary>
+        /// 是否显示
+        /// </summary>
+        [Column]
+        public int Visible { get; set; }
+
         public List<SearchConditionAggregation> Children { get; set; }
     }
 }
