@@ -35,6 +35,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             var searchCondition = searchConditionService.GetById(entity.SearchConditionId);
             entity.FieldListName = interfaceField.Name;
             entity.SearchConditionName = searchCondition.Name;
+            entity.Title = entity.Name;
 
             base.Add(entity);
             return ResultModel.Success();
@@ -65,6 +66,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                 myEntity.Description = entity.Description;
                 myEntity.ModifyBy = -1;
                 myEntity.ModifyTime = DateTime.Now;
+                myEntity.Title = entity.Title;
+                myEntity.Icon = entity.Icon;
             }
             base.Update(myEntity);
             return ResultModel.Success();

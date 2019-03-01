@@ -38,9 +38,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 
         public IActionResult Add()
         {
+            var indexView = new Domain.Entity.IndexView();
+            indexView.Icon = "bars";
             ViewData["InterfaceFields"] = interfaceFieldService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
             ViewData["SearchConditions"] = searchConditionService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
-            return View();
+            return View(ResponseModel.Success(indexView));
         }
 
         public IActionResult AddLogic(IndexView entity)

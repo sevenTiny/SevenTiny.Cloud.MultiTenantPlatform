@@ -8,6 +8,16 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity
     [Table]
     public class IndexView : MetaObjectManageInfo
     {
+        /// <summary>
+        /// 页面标题
+        /// </summary>
+        [Column]
+        public string Title { get; set; }
+        /// <summary>
+        /// 标题图标
+        /// </summary>
+        [Column]
+        public string Icon { get; set; }
         [Column]
         public int SearchConditionId { get; set; }
         [Column]
