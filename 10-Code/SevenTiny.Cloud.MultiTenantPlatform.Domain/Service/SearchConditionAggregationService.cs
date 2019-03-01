@@ -36,7 +36,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
 
         public List<SearchConditionAggregation> GetConditionItemsBySearchConditionId(int searchConditionId)
         {
-            return dbContext.QueryList<SearchConditionAggregation>(t => t.SearchConditionId == searchConditionId && t.FieldId == -1);
+            return dbContext.QueryList<SearchConditionAggregation>(t => t.SearchConditionId == searchConditionId && t.FieldId != -1);
         }
 
         public ResultModel Delete(int id)
@@ -117,7 +117,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                     ConditionType = conditionTypeId,
                     Name = $"{metaField.Name} {EnumsTranslaterUseInProgram.Tran_ConditionType(conditionTypeId)} {conditionValue}",
                     Value = conditionValue,
-                    ValueType = conditionValueTypeId
+                    ValueType = conditionValueTypeId,
+                    Text = metaField.Name,
+                    Visible = (int)TrueFalse.True
                 };
                 base.Add(newCondition);
 
@@ -399,6 +401,23 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                     }
                 }
             }
+        }
+
+        public new ResultModel Update(SearchConditionAggregation entity)
+        {
+            var myEntity = dbContext.QueryOne<SearchConditionAggregation>(t => t.Id == entity.Id);
+            if (myEntity != null)
+            {
+                myEntity.Text = entity.Text;
+                myEntity.Visible = entity.Visible;
+            }
+            base.Update(myEntity);
+            return ResultModel.Success();
+        }
+
+        public SearchConditionAggregation GetById(int id)
+        {
+            return dbContext.QueryOne<SearchConditionAggregation>(t => t.Id == id);
         }
     }
 }

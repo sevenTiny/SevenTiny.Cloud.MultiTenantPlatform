@@ -30,9 +30,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             return View(searchConditionService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId));
         }
 
-        public IActionResult SearchItemList(int searchConditionId)
+        public IActionResult SearchItemList(int id)
         {
-            return View(conditionAggregationService.GetConditionItemsBySearchConditionId(searchConditionId));
+            return View(conditionAggregationService.GetConditionItemsBySearchConditionId(id));
         }
 
         public IActionResult Add()
@@ -107,6 +107,32 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             searchConditionService.Update(entity);
 
             return RedirectToAction("List");
+        }
+
+        public IActionResult SearchItemUpdate(int id)
+        {
+            var entity = conditionAggregationService.GetById(id);
+            return View(ResponseModel.Success(entity));
+        }
+
+        public IActionResult SearchItemUpdateLogic(SearchConditionAggregation entity)
+        {
+            if (entity.Id == 0)
+            {
+                return View("Update", ResponseModel.Error("Id不能为空", entity));
+            }
+            if (string.IsNullOrEmpty(entity.Text))
+            {
+                return View("Update", ResponseModel.Error("显示名称不能为空", entity));
+            }
+
+            //更新操作
+            var result = conditionAggregationService.Update(entity);
+            if (result.IsSuccess)
+            {
+                return View("SearchItemUpdate", ResponseModel.Success(1, "修改成功"));
+            }
+            return View("SearchItemUpdate", result.ToResponseModel());
         }
 
         public IActionResult Delete(int id)
