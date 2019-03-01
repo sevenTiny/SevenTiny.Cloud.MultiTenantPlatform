@@ -85,6 +85,18 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                     }
                 }
 
+                //search data条件参数提供
+                if (queryArgs.SearchData?.Items != null)
+                {
+                    foreach (var item in queryArgs.SearchData.Items)
+                    {
+                        if (!argumentsDic.ContainsKey(item.Name))
+                        {
+                            argumentsDic.Add(item.Name.ToUpperInvariant(), item.Value);
+                        }
+                    }
+                }
+
                 //get filter
                 var indexView = indexViewService.GetByCode(queryArgs.ViewName);
                 if (indexView == null)
