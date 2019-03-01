@@ -4,9 +4,11 @@ import './IndexView.scss';
 import TableList from '../TableList';
 import SearchForm from '../SearchForm';
 import dataApiHost from '../../commonConfig';
+import axios from 'axios';
+import { Table } from '@alifd/next';
 
 //请求视图页组件的接口
-const indexComponentApi = dataApiHost + '/api/UI/IndexPage?viewName=WangDongApp.DataTest.IndexView.TestIndexView';
+const indexComponentApi = dataApiHost + '/api/UI/IndexPage';
 
 const styles = {
   container: {
@@ -32,65 +34,44 @@ export default class IndexView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchDatas: null
+      title: '请假记录',
+      searchDatas: null,
+      loadTable: false
     }
+    this.getData()
   }
 
   // MOCK 数据，实际业务按需进行替换
   getData = () => {
     var th = this;
-    var bizDatas = [];
-
     //请求数据
     axios({
       method: 'get',
-      url: indexComponentApi,
-      data: {
-        ViewName: this.props.ViewName,
-        MetaObject: this.props.MetaObject,
-        Application: null,
-        SearchData: {
-          SearchView: null,
-          Items: this.props.searchDatas
-        },
-        SortFields: null,
-        PageIndex: this.state.current,
-        PageSize: this.state.pageSize
-      }
+      url: indexComponentApi + '?viewName=' + this.props.ViewName,
     }).then(function (response) {
       if (response.status == 200) {
         if (response.data.success) {
-          //给请求到的数据属性赋值给table组件
           var result = response.data.data
-          var widths = {}
-          bizDatas = result.biz_data.map((item, index) => {
-            var obj = {}
-            for (var columnItem in result.sub_cmps) {
-              //列编码
-              var columnName = result.sub_cmps[columnItem].cmp_data.name;
-              //添加该列的字段
-              obj[columnName] = item[columnName].text;
-              widths[columnName] = item[columnName].width == null ? 100 : item[columnName].width;
-            }
-            //宽度赋值
-            return obj;
-          });
+          console.log(result)
           th.setState({
-            data: bizDatas,
-            isLoading: false,
-            totalCount: result.biz_data_total_count,
-            columnData: result.sub_cmps,
-            widths: widths
-          });
+            loadTable: true
+          })
+          // bizDatas = result.biz_data.map((item, index) => {
+          //   var obj = {}
+          //   for (var columnItem in result.sub_cmps) {
+          //     //列编码
+          //     var columnName = result.sub_cmps[columnItem].cmp_data.name;
+          //     //添加该列的字段
+          //     obj[columnName] = item[columnName].text;
+          //   }
+          //   //宽度赋值
+          //   return obj;
+          // });
         }
       } else {
-        th.setState({
-          isLoading: true,
-        });
         console.error(response)
       }
     });
-    return bizDatas;
   };
 
   //条件改变重新赋值
@@ -114,9 +95,11 @@ export default class IndexView extends Component {
   render() {
     return (
       <IceContainer style={styles.container}>
-        <h4 style={styles.title}>请假记录</h4>
+        <h4 style={styles.title}>{this.state.title}</h4>
         <SearchForm onChange={this.conditionChange} />
-        <TableList searchDatas={this.state.searchDatas} ViewName={this.props.ViewName} MetaObject={this.props.MetaObject} />
+        {
+          this.state.loadTable ? <TableList searchDatas={this.state.searchDatas} ViewName={this.props.ViewName} MetaObject={this.props.MetaObject} /> : ''
+        }
       </IceContainer>
     );
   }
