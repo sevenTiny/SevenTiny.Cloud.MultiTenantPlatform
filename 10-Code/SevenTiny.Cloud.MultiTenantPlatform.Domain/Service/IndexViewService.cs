@@ -2,10 +2,12 @@
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
+using SevenTiny.Cloud.MultiTenantPlatform.Domain.UIMetaData.IndexPage;
 using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
 using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Caching;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
@@ -15,17 +17,20 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         public IndexViewService(
             MultiTenantPlatformDbContext multiTenantPlatformDbContext,
             IFieldListService _interfaceFieldService,
-            ISearchConditionService _searchConditionService
+            ISearchConditionService _searchConditionService,
+            ISearchConditionAggregationService _searchConditionAggregationService
             ) : base(multiTenantPlatformDbContext)
         {
             dbContext = multiTenantPlatformDbContext;
             this.interfaceFieldService = _interfaceFieldService;
             this.searchConditionService = _searchConditionService;
+            searchConditionAggregationService = _searchConditionAggregationService;
         }
 
         readonly MultiTenantPlatformDbContext dbContext;
         readonly IFieldListService interfaceFieldService;
         readonly ISearchConditionService searchConditionService;
+        readonly ISearchConditionAggregationService searchConditionAggregationService;
 
         //新增
         public new ResultModel Add(IndexView entity)
@@ -47,6 +52,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         /// <param name="entity"></param>
         public new ResultModel Update(IndexView entity)
         {
+
             IndexView myEntity = GetById(entity.Id);
             if (myEntity != null)
             {
@@ -71,6 +77,40 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             }
             base.Update(myEntity);
             return ResultModel.Success();
+        }
+
+        public IndexPageComponent GetIndexPageComponentByIndexView(IndexView indexView)
+        {
+            var indexPage = new IndexPageComponent();
+            indexPage.Title = indexView.Title;
+            indexPage.Icon = indexView.Icon;
+            //通过配置IndexView来分析
+            indexPage.LayoutType = (int)LayoutType.SearchForm_TableList;
+
+            //构建searchForm
+            var conditionAggregations = searchConditionAggregationService.GetConditionItemsBySearchConditionId(indexView.SearchConditionId);
+            if (conditionAggregations != null && conditionAggregations.Any())
+            {
+                List<SearchItem> searchItems = new List<SearchItem>();
+                foreach (var item in conditionAggregations)
+                {
+                    searchItems.Add(new SearchItem
+                    {
+                        Name = item.FieldName,
+                        Text = item.Text,
+                        Visible = TrueFalseTranslator.ToBoolean(item.Visible),
+                        Value = item.Value,
+                        //字段类型
+                        Type = item.FieldType,
+                        ValueType = item.ValueType
+                    });
+                }
+                indexPage.SearchForm = new SearchFormComponent { SearchItems = searchItems.ToArray() };
+            }
+
+            //构建buttonList
+
+            return indexPage;
         }
     }
 }

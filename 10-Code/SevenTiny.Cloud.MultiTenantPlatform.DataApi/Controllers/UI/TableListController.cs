@@ -117,7 +117,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                 var tableListComponent = dataAccessService.GetTableListComponent(indexView.MetaObjectId, indexView.FieldListId, filter, queryArgs.PageIndex, queryArgs.PageSize, sort, out int totalCount);
                 tableListComponent = triggerScriptEngineService.TableListAfter(indexView.MetaObjectId, indexView.Code, tableListComponent);
 
-                return JsonResultModel.Success("get data list success", tableListComponent);
+                return JsonResultModel.Success("get table component success", tableListComponent);
             }
             catch (ArgumentNullException argNullEx)
             {

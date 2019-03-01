@@ -27,6 +27,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.UIMetaData.IndexPage
         public string Name { get; set; }
         [JsonProperty("value")]
         public object Value { get; set; }
+        [JsonProperty("value_type")]
+        public int ValueType { get; set; }
         [JsonProperty("visible")]
         public bool Visible { get; set; }
     }

@@ -80,6 +80,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                             FieldId = -1,//连接节点没有field
                             FieldCode = "-1",
                             FieldName = tempKey,
+                            FieldType = -1,
                             ConditionType = conditionJointTypeId,
                             Name = EnumsTranslaterUseInProgram.Tran_ConditionJoint(conditionJointTypeId),
                             Value = "-1",
@@ -114,6 +115,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                     FieldId = fieldId,
                     FieldName = metaField.Name,
                     FieldCode = metaField.Code,
+                    FieldType = metaField.FieldType,
                     ConditionType = conditionTypeId,
                     Name = $"{metaField.Name} {EnumsTranslaterUseInProgram.Tran_ConditionType(conditionTypeId)} {conditionValue}",
                     Value = conditionValue,
