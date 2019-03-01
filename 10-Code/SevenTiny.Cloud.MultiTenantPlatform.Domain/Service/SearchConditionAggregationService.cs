@@ -29,9 +29,14 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         readonly MultiTenantPlatformDbContext dbContext;
         readonly IMetaFieldService metaFieldService;
 
-        public List<SearchConditionAggregation> GetListByInterfaceConditionId(int searchConditionId)
+        public List<SearchConditionAggregation> GetListBySearchConditionId(int searchConditionId)
         {
             return dbContext.QueryList<SearchConditionAggregation>(t => t.SearchConditionId == searchConditionId);
+        }
+
+        public List<SearchConditionAggregation> GetConditionItemsBySearchConditionId(int searchConditionId)
+        {
+            return dbContext.QueryList<SearchConditionAggregation>(t => t.SearchConditionId == searchConditionId && t.FieldId == -1);
         }
 
         public ResultModel Delete(int id)
@@ -57,7 +62,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                 if (parentId != -1)
                 {
                     //判断是否有树存在
-                    List<SearchConditionAggregation> conditionListExist = GetListByInterfaceConditionId(interfaceConditionId);
+                    List<SearchConditionAggregation> conditionListExist = GetListBySearchConditionId(interfaceConditionId);
                     //查看当前兄弟节点的父节点id
                     SearchConditionAggregation brotherCondition = conditionListExist.FirstOrDefault(t => t.Id == brotherNodeId);
                     parentId = brotherCondition.ParentId;
@@ -126,7 +131,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             //将要删除的节点id集合
             List<int> willBeDeleteIds = new List<int>();
 
-            List<SearchConditionAggregation> allConditions = GetListByInterfaceConditionId(searchConditionId);
+            List<SearchConditionAggregation> allConditions = GetListBySearchConditionId(searchConditionId);
             if (allConditions == null || !allConditions.Any())
             {
                 return ResultModel.Success("删除成功！");
@@ -213,7 +218,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
         /// <returns></returns>
         public FilterDefinition<BsonDocument> AnalysisConditionToFilterDefinitionByConditionId(int metaObjectId, int searchConditionId, Dictionary<string, object> conditionValueDic, bool isIgnoreArgumentsCheck = false)
         {
-            List<SearchConditionAggregation> conditions = GetListByInterfaceConditionId(searchConditionId);
+            List<SearchConditionAggregation> conditions = GetListBySearchConditionId(searchConditionId);
             return AnalysisConditionToFilterDefinition(metaObjectId, conditions, conditionValueDic, isIgnoreArgumentsCheck);
         }
 

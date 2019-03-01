@@ -85,18 +85,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                     }
                 }
 
-                //search data条件参数提供
-                if (queryArgs.SearchData?.Items != null)
-                {
-                    foreach (var item in queryArgs.SearchData.Items)
-                    {
-                        if (!argumentsDic.ContainsKey(item.Name))
-                        {
-                            argumentsDic.Add(item.Name.ToUpperInvariant(), item.Value);
-                        }
-                    }
-                }
-
                 //get filter
                 var indexView = indexViewService.GetByCode(queryArgs.ViewName);
                 if (indexView == null)
@@ -112,12 +100,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                     filter = Builders<BsonDocument>.Filter.Empty;
                 }
 
-                filter = triggerScriptEngineService.TableListBefore(indexView.MetaObjectId, indexView.Code, filter);
-                var sort = metaFieldService.GetSortDefinitionBySortFields(indexView.MetaObjectId, queryArgs.SortFields);
-                var tableListComponent = dataAccessService.GetTableListComponent(indexView.MetaObjectId, indexView.FieldListId, filter, queryArgs.PageIndex, queryArgs.PageSize, sort, out int totalCount);
-                tableListComponent = triggerScriptEngineService.TableListAfter(indexView.MetaObjectId, indexView.Code, tableListComponent);
+                //filter = triggerScriptEngineService.TableListBefore(indexView.MetaObjectId, indexView.Code, filter);
+                //var sort = metaFieldService.GetSortDefinitionBySortFields(indexView.MetaObjectId, queryArgs.SortFields);
+                //var tableListComponent = dataAccessService.GetTableListComponent(indexView.MetaObjectId, indexView.FieldListId, filter, queryArgs.PageIndex, queryArgs.PageSize, sort, out int totalCount);
+                //tableListComponent = triggerScriptEngineService.TableListAfter(indexView.MetaObjectId, indexView.Code, tableListComponent);
 
-                return JsonResultModel.Success("get data list success", tableListComponent);
+                return JsonResultModel.Success("get data list success", null);
             }
             catch (ArgumentNullException argNullEx)
             {

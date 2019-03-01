@@ -10,7 +10,13 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract
     public interface ISearchConditionAggregationService : IRepository<SearchConditionAggregation>
     {
         ResultModel Delete(int id);
-        List<SearchConditionAggregation> GetListByInterfaceConditionId(int searchConditionId);
+        /// <summary>
+        /// 获取搜索项集合，不包含连接节点
+        /// </summary>
+        /// <param name="searchConditionId"></param>
+        /// <returns></returns>
+        List<SearchConditionAggregation> GetConditionItemsBySearchConditionId(int searchConditionId);
+        List<SearchConditionAggregation> GetListBySearchConditionId(int searchConditionId);
         ResultModel AggregateCondition(int interfaceConditionId, int brotherNodeId, int conditionJointTypeId, int fieldId, int conditionTypeId, string conditionValue, int conditionValueTypeId);
 
         ResultModel DeleteAggregateCondition(int nodeId, int searchConditionId);
