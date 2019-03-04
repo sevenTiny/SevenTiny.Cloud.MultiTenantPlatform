@@ -5,7 +5,6 @@ import TableList from '../TableList';
 import SearchForm from '../SearchForm';
 import dataApiHost from '../../commonConfig';
 import axios from 'axios';
-import { Table } from '@alifd/next';
 
 //请求视图页组件的接口
 const indexComponentApi = dataApiHost + '/api/UI/IndexPage';
@@ -33,12 +32,16 @@ const styles = {
 export default class IndexView extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      title: '请假记录',
-      searchDatas: null,
-      loadTable: false
-    }
     this.getData()
+  }
+  
+  state = {
+    icon: null,
+    title: '',
+    searchDatas: null,
+    layoutType: -1,//布局类型
+    loadComponents: false,//是否加载组件标识
+    searchItems: []
   }
 
   // MOCK 数据，实际业务按需进行替换
@@ -52,21 +55,15 @@ export default class IndexView extends Component {
       if (response.status == 200) {
         if (response.data.success) {
           var result = response.data.data
-          console.log(result)
           th.setState({
-            loadTable: true
+            icon: result.icon,
+            title: result.title,
+            layoutType: result.layout_type,
+            loadComponents: true,
+            searchItems: result.search_form.search_items
           })
-          // bizDatas = result.biz_data.map((item, index) => {
-          //   var obj = {}
-          //   for (var columnItem in result.sub_cmps) {
-          //     //列编码
-          //     var columnName = result.sub_cmps[columnItem].cmp_data.name;
-          //     //添加该列的字段
-          //     obj[columnName] = item[columnName].text;
-          //   }
-          //   //宽度赋值
-          //   return obj;
-          // });
+          // console.log('log1')//log
+          // console.log(th.state)//log
         }
       } else {
         console.error(response)
@@ -92,14 +89,26 @@ export default class IndexView extends Component {
     })
   };
 
+  getTitle = () => {
+    return <h4 style={styles.title}>{this.state.title}</h4>
+  }
+
+  getSearchForm = () => {
+    if (this.state.searchItems != null && this.state.searchItems.length > 0) {
+      return <SearchForm onChange={this.conditionChange} searchItems={this.state.searchItems} />
+    }
+  }
+
+  getTableList = () => {
+    return <TableList searchDatas={this.state.searchDatas} ViewName={this.props.ViewName} MetaObject={this.props.MetaObject} />
+  }
+
   render() {
     return (
       <IceContainer style={styles.container}>
-        <h4 style={styles.title}>{this.state.title}</h4>
-        <SearchForm onChange={this.conditionChange} />
-        {
-          this.state.loadTable ? <TableList searchDatas={this.state.searchDatas} ViewName={this.props.ViewName} MetaObject={this.props.MetaObject} /> : ''
-        }
+        {this.getTitle()}
+        {this.getSearchForm()}
+        {this.getTableList()}
       </IceContainer>
     );
   }

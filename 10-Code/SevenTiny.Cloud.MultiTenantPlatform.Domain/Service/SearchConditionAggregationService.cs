@@ -259,7 +259,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
             //连接条件解析器。如果是连接条件， 则执行下面逻辑将左...右子条件解析
             FilterDefinition<BsonDocument> ConditionRouter(SearchConditionAggregation routeCondition)
             {
-                FilterDefinition<BsonDocument> filterDefinition = null;
+                FilterDefinition<BsonDocument> filterDefinition = Builders<BsonDocument>.Filter.Empty;
                 //将子节点全部取出
                 var routeConditionChildren = conditions.Where(t => t.ParentId == routeCondition.Id).ToList();
                 var first = routeConditionChildren.FirstOrDefault();
@@ -348,7 +348,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                     {
                         //如果忽略参数检查，则直接返回null
                         if (isIgnoreArgumentsCheck)
-                            return null;
+                            return Builders<BsonDocument>.Filter.Empty;
                         //如果不忽略参数检查，则抛出异常
                         else
                             throw new ArgumentNullException(key, $"Conditions define field parameters [{key}] but do not provide values.");
@@ -371,7 +371,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                         case (int)ConditionType.NotEqual:
                             return bf.Ne(key, value);
                         default:
-                            return null;
+                            return Builders<BsonDocument>.Filter.Empty;
                     }
                 }
                 //如果来自配置，则直接从配置里面获取到值
@@ -399,7 +399,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                         case (int)ConditionType.NotEqual:
                             return bf.Ne(routeCondition.FieldCode, convertResult.Data);
                         default:
-                            return null;
+                            return Builders<BsonDocument>.Filter.Empty;
                     }
                 }
             }

@@ -96,7 +96,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Service
                 {
                     searchItems.Add(new SearchItem
                     {
-                        Name = item.FieldName,
+                        Name = item.FieldCode,
                         Text = item.Text,
                         Visible = TrueFalseTranslator.ToBoolean(item.Visible),
                         Value = item.Value,
