@@ -1,6 +1,6 @@
 /* eslint react/no-string-refs:0 */
 import React, { Component } from 'react';
-import { Grid, DatePicker, Select } from '@alifd/next';
+import { Button, Grid, DatePicker, Select, Input } from '@alifd/next';
 import {
   FormBinderWrapper as IceFormBinderWrapper,
   FormBinder as IceFormBinder,
@@ -10,13 +10,35 @@ import {
 const { Row, Col } = Grid;
 
 export default class SearchForm extends Component {
+  constructor(props) {
+    super(props)
+
+    let formValueObj = {}
+    this.props.searchItems.map((item, index) => {
+      //如果类型是预置类型
+      if (item.value_type == 1) {
+        formValueObj[item.name] = item.value
+      }
+    })
+
+    this.state = {
+      searchItems: this.props.searchItems,
+      value: formValueObj
+    }
+  }
+
   state = {
     value: {},
+    searchItems: [],
   };
 
+  search = () => {
+    this.props.onChange(this.state.value)
+  }
+
   formChange = (value) => {
-    this.props.onChange(value);
-  };
+    this.setState({ value: value })
+  }
 
   render() {
     return (
@@ -26,7 +48,49 @@ export default class SearchForm extends Component {
         ref="form"
       >
         <Row wrap gutter="20" style={styles.formRow}>
+          {this.state.searchItems.map((item, index) => {
+
+            let formItem = null
+            if (true) {
+              formItem =
+                <Input
+                  hasClear
+                  readOnly={item.value_type == 1}
+                  placeholder="请输入" />
+            }
+
+            return (
+              <Col l="8" key={index} hidden={!item.visible}>
+                <div style={styles.formItem} >
+                  <span style={styles.formLabel}>{item.text}：</span>
+                  <IceFormBinder triggerType="onBlur" name={item.name} >
+                    {formItem}
+                  </IceFormBinder>
+                  <div style={styles.formError}>
+                    <IceFormError name={item.name} />
+                  </div>
+                </div>
+              </Col>)
+          })
+          }
           <Col l="8">
+            <div style={styles.formItem}>
+              <Button type="secondary" onClick={this.search}>搜索</Button>
+            </div>
+          </Col>
+
+          {/* <Col l="8">
+            <div style={styles.formItem}>
+              <span style={styles.formLabel}>开始日期：</span>
+              <IceFormBinder triggerType="onBlur" name="startTime" >
+                <Input
+                  readOnly={true}
+                  placeholder="请输入11233" />
+              </IceFormBinder>
+            </div>
+          </Col> */}
+
+          {/* <Col l="8">
             <div style={styles.formItem}>
               <span style={styles.formLabel}>开始日期：</span>
               <IceFormBinder triggerType="onBlur" name="startTime">
@@ -62,7 +126,7 @@ export default class SearchForm extends Component {
                 <IceFormError name="type" />
               </div>
             </div>
-          </Col>
+          </Col> */}
         </Row>
       </IceFormBinderWrapper>
     );

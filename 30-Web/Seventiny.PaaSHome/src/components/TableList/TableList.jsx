@@ -36,7 +36,7 @@ export default class TableList extends Component {
     columnData: [],
     widths: {},
     //默认页大小
-    pageSize: 15
+    pageSize: 60
   };
 
   //属性被更改时触发

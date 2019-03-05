@@ -33,6 +33,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity
         public string FieldCode { get; set; }
         [Column]
         public string FieldName { get; set; }
+        /// <summary>
+        /// 字段类型
+        /// </summary>
+        [Column]
+        public int FieldType { get; set; }
         [Column]
         public int ConditionType { get; set; }
         [Column]

@@ -30,5 +30,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract
         /// <param name="isIgnoreArgumentsCheck">是否忽略参数校验,如果为true，需要的参数未传递会抛出异常；如果为false，需要的参数不存在条件返回null</param>
         /// <returns></returns>
         FilterDefinition<BsonDocument> AnalysisConditionToFilterDefinitionByConditionId(int metaObjectId, int searchConditionId, Dictionary<string, object> conditionValueDic, bool isIgnoreArgumentsCheck = false);
+        SearchConditionAggregation GetById(int id);
     }
 }

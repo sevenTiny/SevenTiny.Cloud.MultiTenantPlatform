@@ -50,15 +50,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
         readonly IMetaObjectService metaObjectService;
         readonly IMetaFieldService metaFieldService;
 
-        /// <summary>
-        /// 这块的逻辑为：
-        /// 根据视图找到搜索表单和列表
-        /// 依据搜索表单中的
-        /// </summary>
-        /// <param name="queryArgs"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public IActionResult Post([FromBody]UIIndexPageQueryArgs queryArgs)
+
+        [HttpGet]
+        public IActionResult Get([FromQuery]UIIndexPageQueryArgs queryArgs)
         {
             try
             {
@@ -92,20 +86,15 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                     return JsonResultModel.Error($"未能找到视图编码为[{queryArgs.ViewName}]对应的视图信息");
                 }
 
-                //分析搜索条件，是否忽略参数校验为true，如果参数没传递则不抛出异常且处理为忽略参数
-                var filter = conditionAggregationService.AnalysisConditionToFilterDefinitionByConditionId(indexView.MetaObjectId, indexView.SearchConditionId, argumentsDic, true);
-                //如果参数都没传递或者其他原因导致条件没有，则直接返回全部
-                if (filter == null)
-                {
-                    filter = Builders<BsonDocument>.Filter.Empty;
-                }
+                var indexPageComponent = indexViewService.GetIndexPageComponentByIndexView(indexView);
 
+                //IndexView触发器
                 //filter = triggerScriptEngineService.TableListBefore(indexView.MetaObjectId, indexView.Code, filter);
                 //var sort = metaFieldService.GetSortDefinitionBySortFields(indexView.MetaObjectId, queryArgs.SortFields);
                 //var tableListComponent = dataAccessService.GetTableListComponent(indexView.MetaObjectId, indexView.FieldListId, filter, queryArgs.PageIndex, queryArgs.PageSize, sort, out int totalCount);
                 //tableListComponent = triggerScriptEngineService.TableListAfter(indexView.MetaObjectId, indexView.Code, tableListComponent);
 
-                return JsonResultModel.Success("get data list success", null);
+                return JsonResultModel.Success("get index page component success", indexPageComponent);
             }
             catch (ArgumentNullException argNullEx)
             {
