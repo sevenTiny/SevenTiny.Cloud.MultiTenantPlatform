@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SevenTiny.Bantina.Validation;
-using SevenTiny.Cloud.MultiTenantPlatform.Domain.Entity;
-using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
 

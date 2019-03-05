@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using SevenTiny.Cloud.MultiTenantPlatform.Domain;
+using SevenTiny.Cloud.MultiTenantPlatform.Core;
 using SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Web

@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Const\**" />
+    <EmbeddedResource Remove="Const\**" />
+    <None Remove="Const\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SevenTiny.Bantina" Version="1.0.12" />
+    <PackageReference Include="SevenTiny.Bantina.Bankinate" Version="1.0.57" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SevenTiny.Cloud.MultiTenantPlatform.Infrastructure\SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

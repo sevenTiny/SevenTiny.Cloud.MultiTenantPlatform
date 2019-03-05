@@ -1,6 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
-using SevenTiny.Cloud.MultiTenantPlatform.Domain.UIMetaData.ListView;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.UIMetaData.ListView;
 using System;
 using System.Collections.Generic;
 

@@ -1,4 +1,4 @@
-﻿using SevenTiny.Cloud.MultiTenantPlatform.Domain.UIMetaData.ListView;
+﻿using SevenTiny.Cloud.MultiTenantPlatform.Core.UIMetaData.ListView;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Models
 {

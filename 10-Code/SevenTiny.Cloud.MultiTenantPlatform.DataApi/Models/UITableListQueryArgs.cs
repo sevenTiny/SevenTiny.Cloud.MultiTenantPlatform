@@ -1,4 +1,4 @@
-﻿using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
+﻿using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,13 +40,13 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Models
         /// 参数校验
         /// </summary>
         /// <returns></returns>
-        public ResultModel ArgsCheck()
+        public Result ArgsCheck()
         {
             if (string.IsNullOrEmpty(ViewName))
             {
-                return ResultModel.Error("ViewName can not be null!");
+                return Result.Error("ViewName can not be null!");
             }
-            return ResultModel.Success();
+            return Result.Success();
         }
     }
 }
