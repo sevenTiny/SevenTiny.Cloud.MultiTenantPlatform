@@ -12,8 +12,18 @@ const { Row, Col } = Grid;
 export default class SearchForm extends Component {
   constructor(props) {
     super(props)
+
+    let formValueObj = {}
+    this.props.searchItems.map((item, index) => {
+      //如果类型是预置类型
+      if (item.value_type == 1) {
+        formValueObj[item.name] = item.value
+      }
+    })
+
     this.state = {
-      searchItems: this.props.searchItems
+      searchItems: this.props.searchItems,
+      value: formValueObj
     }
   }
 
@@ -45,7 +55,7 @@ export default class SearchForm extends Component {
               formItem =
                 <Input
                   hasClear
-                  defaultValue='123123'
+                  readOnly={item.value_type == 1}
                   placeholder="请输入" />
             }
 
@@ -53,7 +63,7 @@ export default class SearchForm extends Component {
               <Col l="8" key={index} hidden={!item.visible}>
                 <div style={styles.formItem} >
                   <span style={styles.formLabel}>{item.text}：</span>
-                  <IceFormBinder triggerType="onBlur" name={item.name} value="333" >
+                  <IceFormBinder triggerType="onBlur" name={item.name} >
                     {formItem}
                   </IceFormBinder>
                   <div style={styles.formError}>
@@ -65,20 +75,21 @@ export default class SearchForm extends Component {
           }
           <Col l="8">
             <div style={styles.formItem}>
-              <span style={styles.formLabel}>开始日期：</span>
-              <Input
-                // hasClear
-                defaultValue='123123'
-                value='123123'
-                placeholder="请输入11233" />
-
-            </div>
-          </Col>
-          <Col l="8">
-            <div style={styles.formItem}>
               <Button type="secondary" onClick={this.search}>搜索</Button>
             </div>
           </Col>
+
+          {/* <Col l="8">
+            <div style={styles.formItem}>
+              <span style={styles.formLabel}>开始日期：</span>
+              <IceFormBinder triggerType="onBlur" name="startTime" >
+                <Input
+                  readOnly={true}
+                  placeholder="请输入11233" />
+              </IceFormBinder>
+            </div>
+          </Col> */}
+
           {/* <Col l="8">
             <div style={styles.formItem}>
               <span style={styles.formLabel}>开始日期：</span>
