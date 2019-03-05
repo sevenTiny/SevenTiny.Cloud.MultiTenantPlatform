@@ -1,4 +1,4 @@
-﻿using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
+﻿using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Models
 {
@@ -26,7 +26,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Models
 
     public static class ResponseModelExtension
     {
-        public static ResponseModel ToResponseModel(this ResultModel resultModel)
+        public static ResponseModel ToResponseModel(this Result resultModel)
             =>
             new ResponseModel
             {

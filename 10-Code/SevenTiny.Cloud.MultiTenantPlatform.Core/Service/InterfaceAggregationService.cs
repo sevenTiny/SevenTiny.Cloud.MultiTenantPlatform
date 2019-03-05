@@ -2,7 +2,7 @@
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
+using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
 using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Caching;
 using System;
 using System.Collections.Generic;
@@ -28,7 +28,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         readonly ISearchConditionService searchConditionService;
 
         //新增组织接口
-        public new ResultModel Add(InterfaceAggregation entity)
+        public new Result Add(InterfaceAggregation entity)
         {
             if (entity.InterfaceType == (int)InterfaceType.TriggerScriptDataSource)
             {
@@ -45,14 +45,14 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             }
 
             base.Add(entity);
-            return ResultModel.Success();
+            return Result.Success();
         }
 
         /// <summary>
         /// 更新对象
         /// </summary>
         /// <param name="interfaceAggregation"></param>
-        public new ResultModel Update(InterfaceAggregation interfaceAggregation)
+        public new Result Update(InterfaceAggregation interfaceAggregation)
         {
             InterfaceAggregation myEntity = GetById(interfaceAggregation.Id);
             if (myEntity != null)
@@ -85,7 +85,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                 myEntity.ModifyTime = DateTime.Now;
             }
             base.Update(myEntity);
-            return ResultModel.Success();
+            return Result.Success();
         }
 
         public InterfaceAggregation GetByInterfaceAggregationCode(string interfaceAggregationCode)

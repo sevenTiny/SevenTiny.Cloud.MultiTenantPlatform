@@ -2,7 +2,7 @@
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
+using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
 using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Caching;
 using System;
 using System.Collections.Generic;
@@ -22,7 +22,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         /// 更新对象
         /// </summary>
         /// <param name="triggerScript"></param>
-        public new ResultModel Update(TriggerScript triggerScript)
+        public new Result Update(TriggerScript triggerScript)
         {
             TriggerScript myfield = GetById(triggerScript.Id);
             if (myfield != null)
@@ -45,7 +45,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                 myfield.ModifyTime = DateTime.Now;
             }
             base.Update(myfield);
-            return ResultModel.Success();
+            return Result.Success();
         }
 
         public List<TriggerScript> GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(int metaObjectId, int scriptType)

@@ -3,7 +3,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.UIMetaData.ListView;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
+using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,7 +24,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         readonly MultiTenantPlatformDbContext dbContext;
         readonly IMetaFieldService metaFieldService;
 
-        public new ResultModel Add(IList<FieldListAggregation> entities)
+        public new Result Add(IList<FieldListAggregation> entities)
         {
             var metaFieldIds = entities.Select(t => t.MetaFieldId).ToArray();
             var metaFields = metaFieldService.GetByIds(metaFieldIds);
@@ -98,7 +98,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             return dbContext.QueryOne<FieldListAggregation>(t => t.Id == id);
         }
 
-        public new ResultModel Update(FieldListAggregation entity)
+        public new Result Update(FieldListAggregation entity)
         {
             var entityExist = GetById(entity.Id);
             if (entityExist != null)

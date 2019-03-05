@@ -1,13 +1,13 @@
-﻿using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
+﻿using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
 using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Repository
 {
     public interface IRepository<TEntity> where TEntity : class
     {
-        ResultModel Add(TEntity entity);
-        ResultModel Add(IList<TEntity> entities);
-        ResultModel Update(TEntity entity);
-        ResultModel Delete(TEntity entity);
+        Result Add(TEntity entity);
+        Result Add(IList<TEntity> entities);
+        Result Update(TEntity entity);
+        Result Delete(TEntity entity);
     }
 }

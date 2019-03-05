@@ -8,7 +8,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.DataApi.Models;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.CloudEntity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
+using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
 using SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.ServiceContract;
 using System;
 using System.Collections.Generic;

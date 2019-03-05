@@ -2,7 +2,7 @@
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
+using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +25,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         /// 更新对象
         /// </summary>
         /// <param name="metaField"></param>
-        public new ResultModel Update(SearchCondition searchCondition)
+        public new Result Update(SearchCondition searchCondition)
         {
             SearchCondition myfield = GetById(searchCondition.Id);
             if (myfield != null)
@@ -39,24 +39,24 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                 myfield.ModifyTime = DateTime.Now;
             }
             base.Update(myfield);
-            return ResultModel.Success();
+            return Result.Success();
         }
 
         /// <summary>
         /// 根据id删除配置字段，校验是否被引用
         /// </summary>
         /// <param name="id"></param>
-        public new ResultModel Delete(int id)
+        public new Result Delete(int id)
         {
             if (dbContext.QueryExist<InterfaceAggregation>(t => t.SearchConditionId == id))
             {
                 //存在引用关系，先删除引用该数据的数据
-                return ResultModel.Error("存在引用关系，先删除引用该数据的数据");
+                return Result.Error("存在引用关系，先删除引用该数据的数据");
             }
             else
             {
                 base.Delete(id);
-                return ResultModel.Success();
+                return Result.Success();
             }
         }
 

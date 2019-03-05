@@ -21,7 +21,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenTiny.Cloud.MultiTenant
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenantPlatform.Core", "..\10-Code\SevenTiny.Cloud.MultiTenantPlatform.Core\SevenTiny.Cloud.MultiTenantPlatform.Core.csproj", "{FA26B98A-6D41-4E39-873E-79A90692AA66}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{688A3896-6809-46A5-ACC4-76892191D2AA}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{688A3896-6809-46A5-ACC4-76892191D2AA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.SevenTiny.Cloud.MultiTenantPlatform.Core", "..\10-Code\Test.SevenTiny.Cloud.MultiTenantPlatform.Core\Test.SevenTiny.Cloud.MultiTenantPlatform.Core.csproj", "{EBA08CD1-F2D2-45CD-B1C2-BAA73CE7885D}"
 EndProject

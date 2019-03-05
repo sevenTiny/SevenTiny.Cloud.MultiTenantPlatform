@@ -3,26 +3,26 @@ using MongoDB.Driver;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.CloudEntity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.UIMetaData.ListView;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
+using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
 using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract
 {
     public interface IDataAccessService
     {
-        ResultModel Add(string metaObjectCode, BsonDocument bsons);
-        ResultModel Add(MetaObject metaObject, BsonDocument bsons);
+        Result Add(string metaObjectCode, BsonDocument bsons);
+        Result Add(MetaObject metaObject, BsonDocument bsons);
 
-        ResultModel BatchAdd(string metaObjectCode, List<BsonDocument> bsons);
-        ResultModel BatchAdd(MetaObject metaObject, List<BsonDocument> bsons);
+        Result BatchAdd(string metaObjectCode, List<BsonDocument> bsons);
+        Result BatchAdd(MetaObject metaObject, List<BsonDocument> bsons);
 
-        ResultModel Update(int metaObjectId, FilterDefinition<BsonDocument> condition, BsonDocument bsons);
-        ResultModel Update(string metaObjectCode, FilterDefinition<BsonDocument> condition, BsonDocument bsons);
-        ResultModel Update(MetaObject metaObject, FilterDefinition<BsonDocument> condition, BsonDocument bsons);
+        Result Update(int metaObjectId, FilterDefinition<BsonDocument> condition, BsonDocument bsons);
+        Result Update(string metaObjectCode, FilterDefinition<BsonDocument> condition, BsonDocument bsons);
+        Result Update(MetaObject metaObject, FilterDefinition<BsonDocument> condition, BsonDocument bsons);
 
-        ResultModel Delete(int metaObjectId, FilterDefinition<BsonDocument> condition);
-        ResultModel Delete(string metaObjectCode, FilterDefinition<BsonDocument> condition);
-        ResultModel Delete(MetaObject metaObject, FilterDefinition<BsonDocument> condition);
+        Result Delete(int metaObjectId, FilterDefinition<BsonDocument> condition);
+        Result Delete(string metaObjectCode, FilterDefinition<BsonDocument> condition);
+        Result Delete(MetaObject metaObject, FilterDefinition<BsonDocument> condition);
 
         BsonDocument Get(string metaObjectCode, FilterDefinition<BsonDocument> condition);
         BsonDocument Get(int metaObjectId, FilterDefinition<BsonDocument> condition);

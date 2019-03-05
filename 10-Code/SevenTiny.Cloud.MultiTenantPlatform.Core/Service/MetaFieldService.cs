@@ -4,7 +4,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
+using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,7 +52,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         /// 更新对象
         /// </summary>
         /// <param name="metaField"></param>
-        public new ResultModel Update(MetaField metaField)
+        public new Result Update(MetaField metaField)
         {
             MetaField myfield = GetById(metaField.Id);
             if (myfield != null)
@@ -69,7 +69,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                 myfield.ModifyTime = DateTime.Now;
             }
             base.Update(myfield);
-            return ResultModel.Success();
+            return Result.Success();
         }
 
         /// <summary>
@@ -165,15 +165,15 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         /// <param name="fieldId"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public ResultModel CheckAndGetFieldValueByFieldType(int fieldId, object value)
+        public Result CheckAndGetFieldValueByFieldType(int fieldId, object value)
         {
             MetaField metaField = GetById(fieldId);
             return CheckAndGetFieldValueByFieldType(metaField, value);
         }
 
-        public ResultModel CheckAndGetFieldValueByFieldType(MetaField metaField, object value)
+        public Result CheckAndGetFieldValueByFieldType(MetaField metaField, object value)
         {
-            ResultModel result = new ResultModel();
+            Result result = new Result();
             switch (EnumsTranslaterUseInProgram.ToDataType(metaField.FieldType))
             {
                 case DataType.Boolean:
@@ -252,24 +252,24 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         /// 删除,需要先解除引用关系
         /// </summary>
         /// <param name="id"></param>
-        public new ResultModel Delete(int id)
+        public new Result Delete(int id)
         {
             //先检查引用关系
             if (dbContext.QueryExist<FieldListAggregation>(t => t.MetaFieldId == id))
             {
-                return ResultModel.Error("字段列表存在相关字段的引用关系，请先解除引用关系");
+                return Result.Error("字段列表存在相关字段的引用关系，请先解除引用关系");
             }
 
             if (dbContext.QueryExist<SearchConditionAggregation>(t => t.FieldId == id))
             {
-                return ResultModel.Error("搜索条件存在相关字段的引用关系，请先解除引用关系");
+                return Result.Error("搜索条件存在相关字段的引用关系，请先解除引用关系");
             }
 
             // ... 如果有其他引用字段的地方需要补充引用关系检查
 
             base.Delete(id);
 
-            return ResultModel.Success("删除成功");
+            return Result.Success("删除成功");
         }
 
         public SortDefinition<BsonDocument> GetSortDefinitionBySortFields(int metaObjectId, SortField[] sortFields)

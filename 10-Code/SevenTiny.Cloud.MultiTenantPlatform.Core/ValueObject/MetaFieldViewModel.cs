@@ -1,6 +1,6 @@
 ﻿using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 
-namespace SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject
+namespace SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject
 {
     public class MetaFieldViewModel : MetaField
     {

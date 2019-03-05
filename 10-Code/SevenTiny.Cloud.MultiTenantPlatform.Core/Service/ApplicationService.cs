@@ -2,7 +2,7 @@
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
+using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
 using System;
 using System.Linq;
 
@@ -22,11 +22,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         MultiTenantPlatformDbContext dbContext;
         readonly IMetaObjectService metaObjectService;
 
-        public new ResultModel Update(Application application)
+        public new Result Update(Application application)
         {
             if (dbContext.QueryExist<Application>(t => t.Id != application.Id && t.Name == application.Name))
             {
-                return ResultModel.Error("该名称已存在");
+                return Result.Error("该名称已存在");
             }
 
             var app = GetById(application.Id);
@@ -42,10 +42,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 
                 base.Update(app);
             }
-            return ResultModel.Success();
+            return Result.Success();
         }
 
-        public new ResultModel Delete(int id)
+        public new Result Delete(int id)
         {
             var metaObjects = dbContext.QueryList<MetaObject>(t => t.ApplicationId == id);
             if (metaObjects != null && metaObjects.Any())
@@ -60,10 +60,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                 });
             }
             base.Delete(id);
-            return ResultModel.Success();
+            return Result.Success();
         }
 
-        public new ResultModel Add(Application entity)
+        public new Result Add(Application entity)
         {
             //check metaobject of name or code exist?
             Application obj = dbContext.QueryOne<Application>(t => t.Code.Equals(entity.Code) || t.Name.Equals(entity.Name));
@@ -71,17 +71,17 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             {
                 if (obj.Code.Equals(entity.Code))
                 {
-                    return ResultModel.Error("Code Has Been Exist！", entity);
+                    return Result.Error("Code Has Been Exist！", entity);
                 }
                 if (obj.Name.Equals(entity.Name))
                 {
-                    return ResultModel.Error("Name Has Been Exist！", entity);
+                    return Result.Error("Name Has Been Exist！", entity);
                 }
             }
 
             base.Add(entity);
 
-            return ResultModel.Success();
+            return Result.Success();
         }
     }
 }

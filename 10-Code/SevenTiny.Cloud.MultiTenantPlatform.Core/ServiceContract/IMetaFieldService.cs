@@ -2,7 +2,7 @@
 using MongoDB.Driver;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Repository;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
+using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
 using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract
@@ -46,8 +46,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract
         /// <param name="fieldId"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        ResultModel CheckAndGetFieldValueByFieldType(int fieldId, object value);
-        ResultModel CheckAndGetFieldValueByFieldType(MetaField metaField, object value);
+        Result CheckAndGetFieldValueByFieldType(int fieldId, object value);
+        Result CheckAndGetFieldValueByFieldType(MetaField metaField, object value);
         /// <summary>
         /// 获取字段列表集合通过字段id集合
         /// </summary>

@@ -1,6 +1,6 @@
 ﻿using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
+using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
 using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Repository
@@ -36,17 +36,17 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Repository
         /// <param name="metaObjectId"></param>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public ResultModel CheckSameCodeOrName(int metaObjectId, TEntity entity)
+        public Result CheckSameCodeOrName(int metaObjectId, TEntity entity)
         {
             var obj = dbContext.QueryOne<TEntity>(t => t.MetaObjectId == metaObjectId && t.Id != entity.Id && (t.Code.Equals(entity.Code) || t.Name.Equals(entity.Name)));
             if (obj != null)
             {
                 if (obj.Code.Equals(entity.Code))
-                    return ResultModel.Error($"编码[{obj.Code}]已存在", entity);
+                    return Result.Error($"编码[{obj.Code}]已存在", entity);
                 else if (obj.Name.Equals(entity.Name))
-                    return ResultModel.Error($"名称[{obj.Name}]已存", entity);
+                    return Result.Error($"名称[{obj.Name}]已存", entity);
             }
-            return ResultModel.Success();
+            return Result.Success();
         }
     }
 }

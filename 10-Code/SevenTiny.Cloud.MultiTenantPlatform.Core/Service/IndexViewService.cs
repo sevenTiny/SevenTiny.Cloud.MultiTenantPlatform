@@ -3,7 +3,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.UIMetaData.IndexPage;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
+using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
 using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Caching;
 using System;
 using System.Collections.Generic;
@@ -33,7 +33,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         readonly ISearchConditionAggregationService searchConditionAggregationService;
 
         //新增
-        public new ResultModel Add(IndexView entity)
+        public new Result Add(IndexView entity)
         {
             //查询并将名字赋予字段
             var interfaceField = interfaceFieldService.GetById(entity.FieldListId);
@@ -43,14 +43,14 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             entity.Title = entity.Name;
 
             base.Add(entity);
-            return ResultModel.Success();
+            return Result.Success();
         }
 
         /// <summary>
         /// 更新对象
         /// </summary>
         /// <param name="entity"></param>
-        public new ResultModel Update(IndexView entity)
+        public new Result Update(IndexView entity)
         {
 
             IndexView myEntity = GetById(entity.Id);
@@ -76,7 +76,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                 myEntity.Icon = entity.Icon;
             }
             base.Update(myEntity);
-            return ResultModel.Success();
+            return Result.Success();
         }
 
         public IndexPageComponent GetIndexPageComponentByIndexView(IndexView indexView)

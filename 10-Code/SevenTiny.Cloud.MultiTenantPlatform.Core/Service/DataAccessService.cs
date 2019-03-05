@@ -4,7 +4,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Core.CloudEntity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.UIMetaData.ListView;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
+using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,19 +34,19 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             fieldListAggregationService = _fieldListAggregationService;
         }
 
-        public ResultModel Add(string metaObjectCode, BsonDocument bsons)
+        public Result Add(string metaObjectCode, BsonDocument bsons)
         {
             if (string.IsNullOrEmpty(metaObjectCode))
-                return ResultModel.Error("实体编码不能为空");
+                return Result.Error("实体编码不能为空");
 
             var metaObject = metaObjectService.GetByCode(metaObjectCode);
 
             if (metaObject == null)
-                return ResultModel.Error("没有找到该实体编码对应的实体信息");
+                return Result.Error("没有找到该实体编码对应的实体信息");
 
             return Add(metaObject, bsons);
         }
-        public ResultModel Add(MetaObject metaObject, BsonDocument bsons)
+        public Result Add(MetaObject metaObject, BsonDocument bsons)
         {
             //错误信息返回值
             HashSet<string> ErrorInfo = new HashSet<string>();
@@ -105,22 +105,22 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 
             db.GetCollectionBson(metaObject.Code).InsertOne(bsons);
 
-            return ResultModel.Success($"插入成功，日志：{string.Join(",", ErrorInfo)}");
+            return Result.Success($"插入成功，日志：{string.Join(",", ErrorInfo)}");
         }
 
-        public ResultModel BatchAdd(string metaObjectCode, List<BsonDocument> bsons)
+        public Result BatchAdd(string metaObjectCode, List<BsonDocument> bsons)
         {
             if (string.IsNullOrEmpty(metaObjectCode))
-                return ResultModel.Error("实体编码不能为空");
+                return Result.Error("实体编码不能为空");
 
             var metaObject = metaObjectService.GetByCode(metaObjectCode);
 
             if (metaObject == null)
-                return ResultModel.Error("没有找到该实体编码对应的实体信息");
+                return Result.Error("没有找到该实体编码对应的实体信息");
 
             return BatchAdd(metaObject, bsons);
         }
-        public ResultModel BatchAdd(MetaObject metaObject, List<BsonDocument> bsonsList)
+        public Result BatchAdd(MetaObject metaObject, List<BsonDocument> bsonsList)
         {
             if (bsonsList != null && bsonsList.Any())
             {
@@ -184,31 +184,31 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                 }
                 db.GetCollectionBson(metaObject.Code).InsertMany(insertBsonsList);
             }
-            return ResultModel.Success($"插入成功");
+            return Result.Success($"插入成功");
         }
 
-        public ResultModel Update(string metaObjectCode, FilterDefinition<BsonDocument> condition, BsonDocument bsons)
+        public Result Update(string metaObjectCode, FilterDefinition<BsonDocument> condition, BsonDocument bsons)
         {
             if (string.IsNullOrEmpty(metaObjectCode))
-                return ResultModel.Error("实体编码不能为空");
+                return Result.Error("实体编码不能为空");
 
             var metaObject = metaObjectService.GetByCode(metaObjectCode);
 
             if (metaObject == null)
-                return ResultModel.Error("没有找到该实体编码对应的实体信息");
+                return Result.Error("没有找到该实体编码对应的实体信息");
 
             return Update(metaObject, condition, bsons);
         }
-        public ResultModel Update(int metaObjectId, FilterDefinition<BsonDocument> condition, BsonDocument bsons)
+        public Result Update(int metaObjectId, FilterDefinition<BsonDocument> condition, BsonDocument bsons)
         {
             var metaObject = metaObjectService.GetById(metaObjectId);
 
             if (metaObject == null)
-                return ResultModel.Error("没有找到该实体编码对应的实体信息");
+                return Result.Error("没有找到该实体编码对应的实体信息");
 
             return Update(metaObject, condition, bsons);
         }
-        public ResultModel Update(MetaObject metaObject, FilterDefinition<BsonDocument> condition, BsonDocument bsons)
+        public Result Update(MetaObject metaObject, FilterDefinition<BsonDocument> condition, BsonDocument bsons)
         {
             //错误信息返回值
             HashSet<string> ErrorInfo = new HashSet<string>();
@@ -260,35 +260,35 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                     collection.UpdateMany(condition, bu.Set(item.Name, item.Value));
                 }
             }
-            return ResultModel.Success($"修改成功，日志：{string.Join(",", ErrorInfo)}");
+            return Result.Success($"修改成功，日志：{string.Join(",", ErrorInfo)}");
         }
 
-        public ResultModel Delete(string metaObjectCode, FilterDefinition<BsonDocument> condition)
+        public Result Delete(string metaObjectCode, FilterDefinition<BsonDocument> condition)
         {
             if (string.IsNullOrEmpty(metaObjectCode))
-                return ResultModel.Error("实体编码不能为空");
+                return Result.Error("实体编码不能为空");
 
             var metaObject = metaObjectService.GetByCode(metaObjectCode);
 
             if (metaObject == null)
-                return ResultModel.Error("没有找到该实体编码对应的实体信息");
+                return Result.Error("没有找到该实体编码对应的实体信息");
 
             return Delete(metaObject, condition);
         }
-        public ResultModel Delete(int metaObjectId, FilterDefinition<BsonDocument> condition)
+        public Result Delete(int metaObjectId, FilterDefinition<BsonDocument> condition)
         {
             var metaObject = metaObjectService.GetById(metaObjectId);
 
             if (metaObject == null)
-                return ResultModel.Error("没有找到该实体编码对应的实体信息");
+                return Result.Error("没有找到该实体编码对应的实体信息");
 
             return Delete(metaObject, condition);
         }
-        public ResultModel Delete(MetaObject metaObject, FilterDefinition<BsonDocument> condition)
+        public Result Delete(MetaObject metaObject, FilterDefinition<BsonDocument> condition)
         {
             db.GetCollectionBson(metaObject.Code).DeleteMany(condition);
 
-            return ResultModel.Success($"删除成功");
+            return Result.Success($"删除成功");
         }
 
         public BsonDocument Get(string metaObjectCode, FilterDefinition<BsonDocument> condition)

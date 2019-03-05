@@ -3,7 +3,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
+using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
 using System;
 using System.Collections.Generic;
 
@@ -47,7 +47,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         public MetaObject GetMetaObjectByCodeAndApplicationId(int applicationId, string code)
             => dbContext.QueryOne<MetaObject>(t => t.ApplicationId == applicationId && t.Code.Equals(code));
 
-        public new ResultModel Update(MetaObject metaObject)
+        public new Result Update(MetaObject metaObject)
         {
             MetaObject app = GetById(metaObject.Id);
             if (app != null)
@@ -60,13 +60,13 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                 app.ModifyTime = DateTime.Now;
             }
             base.Update(app);
-            return ResultModel.Success();
+            return Result.Success();
         }
 
         public bool ExistSameNameWithOtherIdByApplicationId(int applicationId, int id, string name)
             => dbContext.QueryExist<MetaObject>(t => t.ApplicationId != applicationId && t.Name.Equals(name) && t.Id != id);
 
-        public ResultModel AddMetaObject(int applicationId, string applicationCode, MetaObject metaObject)
+        public Result AddMetaObject(int applicationId, string applicationCode, MetaObject metaObject)
         {
             //check metaobject of name or code exist?
             MetaObject obj = GetMetaObjectByCodeOrNameWithApplicationId(applicationId, metaObject.Code, metaObject.Name);
@@ -74,16 +74,16 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             {
                 if (obj.Code.Equals(metaObject.Code))
                 {
-                    return ResultModel.Error("MetaObject Code Has Been Exist！", metaObject);
+                    return Result.Error("MetaObject Code Has Been Exist！", metaObject);
                 }
                 if (obj.Name.Equals(metaObject.Name))
                 {
-                    return ResultModel.Error("MetaObject Name Has Been Exist！", metaObject);
+                    return Result.Error("MetaObject Name Has Been Exist！", metaObject);
                 }
             }
             if (applicationId == default(int))
             {
-                return ResultModel.Error("Application Id Can Not Be Null！", metaObject);
+                return Result.Error("Application Id Can Not Be Null！", metaObject);
             }
 
             metaObject.ApplicationId = applicationId;
@@ -97,14 +97,14 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 
                 if (obj == null)
                 {
-                    return ResultModel.Error("add metaobject then query faild！", metaObject);
+                    return Result.Error("add metaobject then query faild！", metaObject);
                 }
 
                 //预置字段数据
                 //将公共字段统一处理，不每个对象预置
                 //metaFieldService.PresetFields(obj.Id);
 
-                return ResultModel.Success();
+                return Result.Success();
             });
         }
 
@@ -112,7 +112,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         /// 删除
         /// </summary>
         /// <param name="id"></param>
-        public new ResultModel Delete(int id)
+        public new Result Delete(int id)
         {
             var metaObject = GetById(id);
             TransactionHelper.Transaction(() =>
@@ -128,7 +128,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                 //...
                 base.Delete(id);
             });
-            return ResultModel.Success();
+            return Result.Success();
         }
     }
 }
