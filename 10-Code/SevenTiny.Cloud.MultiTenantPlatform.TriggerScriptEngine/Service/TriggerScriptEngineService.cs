@@ -5,10 +5,10 @@ using Microsoft.CodeAnalysis.Scripting;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Newtonsoft.Json;
-using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
-using SevenTiny.Cloud.MultiTenantPlatform.Domain.Enum;
-using SevenTiny.Cloud.MultiTenantPlatform.Domain.ServiceContract;
-using SevenTiny.Cloud.MultiTenantPlatform.Domain.UIMetaData.ListView;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.CloudEntity;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.UIMetaData.ListView;
 using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Caching;
 using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging;
 using SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Models;
@@ -41,10 +41,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Service
         /// </summary>
         private string GeneralUsing
             => @"
-using SevenTiny.Cloud.MultiTenantPlatform.Domain.CloudEntity;
-using SevenTiny.Cloud.MultiTenantPlatform.Domain.UIMetaData;
-using SevenTiny.Cloud.MultiTenantPlatform.Domain.UIMetaData.ListView;
-using SevenTiny.Cloud.MultiTenantPlatform.Domain.UIMetaData.UserInfo;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.CloudEntity;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.UIMetaData;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.UIMetaData.ListView;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.UIMetaData.UserInfo;
 using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging;
 using logger = SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging.Logger;
                 ";
@@ -57,7 +57,7 @@ using logger = SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging.Logger
                 "System.Text",
                 "System.Linq",
                 "System.Collections.Generic",
-                "SevenTiny.Cloud.MultiTenantPlatform.Domain",
+                "SevenTiny.Cloud.MultiTenantPlatform.Core",
                 "Newtonsoft.Json",
                 "SevenTiny.Cloud.MultiTenantPlatform.Infrastructure",
                 "MongoDB.Bson",

@@ -1,4 +1,4 @@
-﻿using SevenTiny.Cloud.MultiTenantPlatform.Domain.ValueObject;
+﻿using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
