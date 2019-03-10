@@ -1,4 +1,4 @@
-﻿namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Enum
+﻿namespace SevenTiny.Cloud.MultiTenantPlatform.UIModel.Enum
 {
     public enum LayoutType
     {

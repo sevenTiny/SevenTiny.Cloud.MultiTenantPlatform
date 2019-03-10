@@ -1,5 +1,5 @@
 ﻿using MongoDB.Bson;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.UIMetaData;
+using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData;
 using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract

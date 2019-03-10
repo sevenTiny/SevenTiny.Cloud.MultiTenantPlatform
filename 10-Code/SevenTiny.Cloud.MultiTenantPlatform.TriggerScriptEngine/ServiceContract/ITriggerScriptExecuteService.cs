@@ -1,15 +1,13 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.UIMetaData.ListView;
+using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.ListView;
 using System;
 using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.ServiceContract
 {
-    public interface ITriggerScriptEngineService
+    public interface ITriggerScriptExecuteService
     {
-        Tuple<bool, string> CompilationAndCheckScript(string script);
-
         BsonDocument AddBefore(int metaObjectId, string operateCode, BsonDocument bsonElements);
         List<BsonDocument> BatchAddBefore(int metaObjectId, string operateCode, List<BsonDocument> bsonElementsList);
         FilterDefinition<BsonDocument> UpdateBefore(int metaObjectId, string operateCode, FilterDefinition<BsonDocument> condition);

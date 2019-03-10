@@ -14,15 +14,18 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
     public class TriggerScriptController : ControllerBase
     {
         readonly ITriggerScriptService triggerScriptService;
-        readonly ITriggerScriptEngineService triggerScriptEngineService;
+        readonly ITriggerScriptExecuteService triggerScriptEngineService;
+        readonly ITriggerScriptCheckService triggerScriptCheckService;
 
         public TriggerScriptController(
             ITriggerScriptService _triggerScriptService,
-            ITriggerScriptEngineService _triggerScriptEngineService
+            ITriggerScriptExecuteService _triggerScriptEngineService,
+            ITriggerScriptCheckService _triggerScriptCheckService
             )
         {
             triggerScriptService = _triggerScriptService;
             triggerScriptEngineService = _triggerScriptEngineService;
+            triggerScriptCheckService = _triggerScriptCheckService;
         }
 
 
@@ -77,7 +80,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             triggerScript.Code = $"{CurrentMetaObjectCode}.TriggerScript.{triggerScript.Code}";
 
             //check script
-            var checkResult2 = triggerScriptEngineService.CompilationAndCheckScript(triggerScript.Script);
+            var checkResult2 = triggerScriptCheckService.CompilationAndCheckScript(triggerScript.Script);
             if (!checkResult2.Item1)
             {
                 return View("Add", ResponseModel.Error($"脚本存在错误：{checkResult2.Item2}", triggerScript));
@@ -119,7 +122,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
                 }
 
                 //check script
-                var checkResult2 = triggerScriptEngineService.CompilationAndCheckScript(triggerScript.Script);
+                var checkResult2 = triggerScriptCheckService.CompilationAndCheckScript(triggerScript.Script);
                 if (!checkResult2.Item1)
                 {
                     return View("Update", ResponseModel.Error($"脚本存在错误：\r\n{checkResult2.Item2}", triggerScript));

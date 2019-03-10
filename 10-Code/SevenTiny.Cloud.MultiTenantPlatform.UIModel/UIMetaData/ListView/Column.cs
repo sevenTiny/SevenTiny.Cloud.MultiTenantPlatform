@@ -1,13 +1,10 @@
 ﻿using Newtonsoft.Json;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using System.Collections.Generic;
 
-namespace SevenTiny.Cloud.MultiTenantPlatform.Core.UIMetaData.ListView
+namespace SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.ListView
 {
     public class Column : BaseComponent
     {
-        [JsonIgnore]
-        public MetaField MetaField { get; set; }
         //
         // Summary:
         //     列数据

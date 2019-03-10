@@ -74,135 +74,121 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 
         public string GetDefaultTriggerScriptDataSourceScript() => DefaultDataSourceTriggerScript;
 
-        private string DefaultQueryBeforeTriggerScript
+        /// <summary>
+        /// 所有脚本默认内置的通用命名空间引用，个性化的引用请写在各自脚本中
+        /// </summary>
+        private string DefaultCommonUsing
             => @"
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.CloudEntity;
 using MongoDB.Bson;
 using MongoDB.Driver;
+";
+
+        /// <summary>
+        /// 所有脚本类内方法外内置的通用代码段，个性化请卸写在各自脚本中
+        /// </summary>
+        private string DefaultCommonClassInnerCode
+           => @"
 //end using
 //注释：上面的end using注释为using分隔符，请不要删除；
 //注释：输出日志请使用 logger.Error(),logger.Debug(),logger.Info()
+";
+
+        /// <summary>
+        /// 所有脚本方法内默认内置的通用代码段，个性化请写在各自脚本中
+        /// </summary>
+        private string DefaultCommonMethodCode
+            => @"
+
+";
+
+        #region 各类触发点的触发器脚本
+
+        private string DefaultQueryBeforeTriggerScript
+            => $@"
+{DefaultCommonUsing}
+{DefaultCommonClassInnerCode}
 public FilterDefinition<BsonDocument> QueryBefore(string operateCode,FilterDefinition<BsonDocument> condition)
-{
+{{
+    {DefaultCommonMethodCode}
 	//这里写业务逻辑
 	//...
 	return condition;
-}
+}}
 ";
         private string DefaultBatchAddBeforeTriggerScript
-    => @"
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.CloudEntity;
-using MongoDB.Bson;
-using MongoDB.Driver;
-//end using
-//注释：上面的end using注释为using分隔符，请不要删除；
-//注释：输出日志请使用 logger.Error(),logger.Debug()
+    => $@"
+{DefaultCommonUsing}
+{DefaultCommonClassInnerCode}
 public List<BsonDocument> BatchAddBefore(string operateCode,List<BsonDocument> bsonElementsList)
-{
+{{
+    {DefaultCommonMethodCode}
 	//这里写业务逻辑
 	//...
 	return bsonElementsList;
-}
+}}
 ";
         private string DefaultAddBeforeTriggerScript
-    => @"
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.CloudEntity;
-using MongoDB.Bson;
-using MongoDB.Driver;
-//end using
-//注释：上面的end using注释为using分隔符，请不要删除；
-//注释：输出日志请使用 logger.Error(),logger.Debug(),logger.Info()
+    => $@"
+{DefaultCommonUsing}
+{DefaultCommonClassInnerCode}
 public BsonDocument AddBefore(string operateCode,BsonDocument bsonElements)
-{
+{{
+    {DefaultCommonMethodCode}
 	//这里写业务逻辑
 	//...
 	return bsonElements;
-}
+}}
 ";
         private string DefaultTableListAfterTriggerScript
-            => @"
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.CloudEntity;
-using MongoDB.Bson;
-using MongoDB.Driver;
-//end using
-//注释：上面的end using注释为using分隔符，请不要删除；
-//注释：输出日志请使用 logger.Error(),logger.Debug(),logger.Info()
+            => $@"
+{DefaultCommonUsing}
+{DefaultCommonClassInnerCode}
 public TableListComponent TableListAfter(string operateCode,TableListComponent tableListComponent)
-{
+{{
+    {DefaultCommonMethodCode}
 	//这里写业务逻辑
 	//...
 	return tableListComponent;
-}
+}}
 ";
         private string DefaultSingleObjectAfterTriggerScript
-            => @"
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.CloudEntity;
-using MongoDB.Bson;
-using MongoDB.Driver;
-//end using
-//注释：上面的end using注释为using分隔符，请不要删除；
-//注释：输出日志请使用 logger.Error(),logger.Debug(),logger.Info()
+            => $@"
+{DefaultCommonUsing}
+{DefaultCommonClassInnerCode}
 public SingleObjectComponent SingleObjectAfter(string operateCode,SingleObjectComponent singleObjectComponent)
-{
+{{
+    {DefaultCommonMethodCode}
 	//这里写业务逻辑
 	//...
 	return singleObjectComponent;
-}
+}}
 ";
         private string DefaultCountAfterTriggerScript
-            => @"
-using System;
-using MongoDB.Bson;
-using MongoDB.Driver;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.CloudEntity;
-//end using
-//注释：上面的end using注释为using分隔符，请不要删除；
-//注释：输出日志请使用 logger.Error(),logger.Debug(),logger.Info()
+            => $@"
+{DefaultCommonUsing}
+{DefaultCommonClassInnerCode}
 public int CountAfter(string operateCode,int count)
-{
+{{
+    {DefaultCommonMethodCode}
 	//这里写业务逻辑
 	//...
 	return count;
-}
+}}
 ";
         private string DefaultDataSourceTriggerScript
-    => @"
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MongoDB.Bson;
-using MongoDB.Driver;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.CloudEntity;
-//end using
-//注释：上面的end using注释为using分隔符，请不要删除；
-//注释：输出日志请使用 logger.Error(),logger.Debug(),logger.Info()
+    => $@"
+{DefaultCommonUsing}
+{DefaultCommonClassInnerCode}
 public object TriggerScriptDataSource(string operateCode, Dictionary<string, object> argumentsDic)
-{
+{{
+    {DefaultCommonMethodCode}
 	//这里写业务逻辑
 	//...
 	return null;
-}
+}}
 ";
+
+        #endregion
     }
 }

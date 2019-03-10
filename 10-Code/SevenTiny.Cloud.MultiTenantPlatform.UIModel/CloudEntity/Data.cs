@@ -1,16 +1,14 @@
-﻿using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
-
-namespace SevenTiny.Cloud.MultiTenantPlatform.Core.CloudEntity
+﻿namespace SevenTiny.Cloud.MultiTenantPlatform.UIModel.CloudEntity
 {
     /// <summary>
     /// MetaData
     /// </summary>
     public class Data
     {
-        public Data(string dataKey, DataType dataType, object dataValue)
+        public Data(string dataKey, int dataType, object dataValue)
         {
             this.DataKey = dataKey;
-            this.DataType = (int)dataType;
+            this.DataType = dataType;
             this.DataValue = dataValue;
         }
         public string DataKey { get; set; }

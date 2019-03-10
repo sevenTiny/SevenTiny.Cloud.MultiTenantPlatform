@@ -1,172 +1,29 @@
 ﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using Newtonsoft.Json;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.CloudEntity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.UIMetaData.ListView;
 using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Caching;
-using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging;
+using SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Base;
 using SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Models;
 using SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.ServiceContract;
+using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.ListView;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Service
 {
-    public class TriggerScriptEngineService : ITriggerScriptEngineService
+    public class TriggerScriptExecuteService : ITriggerScriptExecuteService
     {
-        public TriggerScriptEngineService(ITriggerScriptService _triggerScriptService)
+        public TriggerScriptExecuteService(ITriggerScriptService _triggerScriptService)
         {
             triggerScriptService = _triggerScriptService;
         }
 
         readonly ITriggerScriptService triggerScriptService;
-
-        /// <summary>
-        /// using 分隔符（脚本中必须存在该分割符）
-        /// </summary>
-        private readonly string USING_SEPARATOR = "//end using";
-
-        /// <summary>
-        /// 引入公共的命名控件
-        /// </summary>
-        private string GeneralUsing
-            => @"
-using SevenTiny.Cloud.MultiTenantPlatform.Core.CloudEntity;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.UIMetaData;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.UIMetaData.ListView;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.UIMetaData.UserInfo;
-using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging;
-using logger = SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging.Logger;
-                ";
-        /// <summary>
-        /// 公共导入程序集,加触发器脚本的公共引用时，要在这里补充
-        /// </summary>
-        private string[] GeneralRefrences
-            => new string[] {
-                "System",
-                "System.Text",
-                "System.Linq",
-                "System.Collections.Generic",
-                "SevenTiny.Cloud.MultiTenantPlatform.Core",
-                "Newtonsoft.Json",
-                "SevenTiny.Cloud.MultiTenantPlatform.Infrastructure",
-                "MongoDB.Bson",
-                "MongoDB.Driver"
-            };
-
-        //返回常用的元数据引用
-        private MetadataReference[] GetGeneralMetadataReferences()
-        {
-            List<MetadataReference> metadataReferences = new List<MetadataReference>();
-            //从类型导入
-            Type[] types = new[] {
-                typeof(object),
-                typeof(JsonConvert),//newtonsoft.json
-                typeof(BsonDocument),//mongodb
-                typeof(MongoDB.Driver.Collation),//mongodb
-                typeof(FilterDefinition<BsonDocument>),//mongodb
-                //business reference
-                typeof(Logger),//infrastructure
-                typeof(MultiTenantDataDbContext)//domain
-            };
-            foreach (var item in types)
-            {
-                try
-                {
-                    metadataReferences.Add(MetadataReference.CreateFromFile(item.Assembly.Location));
-                }
-                catch (Exception) { }
-            }
-            //从dll直接导入(这里都是.netstandard的系统dll)
-            string[] Dlls = new[] {
-                "netstandard.dll",
-                "System.dll",
-                "System.Runtime.dll",
-                "System.Linq.dll",
-                "System.Collections.dll"
-            };
-            string dllLocation = typeof(object).Assembly.Location;
-            string dllPath = dllLocation.Substring(0, dllLocation.LastIndexOf("\\"));
-            foreach (var item in Dlls)
-            {
-                try
-                {
-                    metadataReferences.Add(MetadataReference.CreateFromFile(Path.Combine(dllPath, item)));
-                }
-                catch (Exception) { }
-            }
-
-            return metadataReferences.ToArray();
-        }
-
-        /// <summary>
-        /// 获取完整的脚本
-        /// </summary>
-        /// <param name="triggerScript">触发器脚本（方法）</param>
-        /// <returns></returns>
-        private string GetCompleteScript(string triggerScript)
-        {
-            //检查标识是否存在
-            if (!triggerScript.Contains(USING_SEPARATOR))
-                throw new KeyNotFoundException($"'{USING_SEPARATOR}' not found in trigger script");
-
-            string[] scriptArray = Regex.Split(triggerScript, USING_SEPARATOR, RegexOptions.IgnoreCase);
-
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.Append(GeneralUsing);
-
-            //append using
-            stringBuilder.Append(scriptArray[0]);
-
-            stringBuilder.Append("public class TriggerScript_Class");
-            stringBuilder.Append("{");
-
-            //common operation
-            stringBuilder.Append("MultiTenantDataDbContext Db = new MultiTenantDataDbContext();");
-
-            //script method
-            stringBuilder.Append(scriptArray[1]);
-            stringBuilder.Append("}");
-
-            return stringBuilder.ToString();
-        }
-
-        /// <summary>
-        /// 编译并检查脚本
-        /// </summary>
-        /// <param name="script">脚本</param>
-        /// <returns></returns>
-        public Tuple<bool, string> CompilationAndCheckScript(string script)
-        {
-            //获得完整的脚本
-            string completeScript = GetCompleteScript(script);
-
-            var syntaxTree = CSharpSyntaxTree.ParseText(completeScript);
-
-            //todo:这句编译检查每次会内存增长,这里要考虑性能问题!!!
-            var assemblyName = $"GenericGenerator.script";
-            var compilation = CSharpCompilation.Create(assemblyName, new[] { syntaxTree })
-                .WithOptions(new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary))
-                .AddReferences(GetGeneralMetadataReferences());
-
-            using (var ms = new MemoryStream())
-            {
-                var result = compilation.Emit(ms);
-                ms.Flush();
-                ms.Dispose();
-                return new Tuple<bool, string>(result.Success, string.Join(";\r\n", result.Diagnostics));
-            }
-        }
 
         /// <summary>
         /// 通用的执行脚本的方法
@@ -186,11 +43,11 @@ using logger = SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging.Logger
 
             var triggerScriptInCache = TriggerScriptCache.GetSet(triggerScript, () =>
             {
-                string scriptText = $"{GetCompleteScript(triggerScript)} return new TriggerScript_Class().{executeMethod};";
+                string scriptText = $"{TriggerScriptParsing.GetCompleteScript(triggerScript)} return new TriggerScript_Class().{executeMethod};";
 
                 var script = CSharpScript.Create<TResult>(scriptText,
                     ScriptOptions.Default
-                    .AddReferences(GeneralRefrences),
+                    .AddReferences(ReferenceProvider.GeneralRefrences),
                     globalsType: typeof(TArg)
                     );
 

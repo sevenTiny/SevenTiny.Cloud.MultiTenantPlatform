@@ -1,8 +1,7 @@
 ﻿using Newtonsoft.Json;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
-using System.Collections.Generic;
+using SevenTiny.Cloud.MultiTenantPlatform.UIModel.Enum;
 
-namespace SevenTiny.Cloud.MultiTenantPlatform.Core.UIMetaData.IndexPage
+namespace SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.IndexPage
 {
     public class IndexPageComponent
     {

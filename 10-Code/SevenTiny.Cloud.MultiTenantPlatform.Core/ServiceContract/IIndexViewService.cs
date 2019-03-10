@@ -1,6 +1,6 @@
 ﻿using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Repository;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.UIMetaData.IndexPage;
+using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.IndexPage;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract
 {

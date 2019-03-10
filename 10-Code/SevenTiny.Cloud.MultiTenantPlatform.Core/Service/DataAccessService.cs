@@ -3,7 +3,7 @@ using MongoDB.Driver;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.CloudEntity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.UIMetaData.ListView;
+using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.ListView;
 using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
 using System;
 using System.Collections.Generic;
