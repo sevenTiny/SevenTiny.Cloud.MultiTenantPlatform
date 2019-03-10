@@ -26,7 +26,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
             ISearchConditionAggregationService _conditionAggregationService,
             IIndexViewService _indexViewService,
             IFieldBizDataService _fieldBizDataService,
-            ITriggerScriptEngineService _triggerScriptEngineService,
+            ITriggerScriptExecuteService _triggerScriptEngineService,
             IMetaObjectService _metaObjectService,
             IMetaFieldService _metaFieldService
             )
@@ -45,7 +45,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
         readonly IIndexViewService indexViewService;
         readonly ISearchConditionAggregationService conditionAggregationService;
         readonly IFieldBizDataService fieldBizDataService;
-        readonly ITriggerScriptEngineService triggerScriptEngineService;
+        readonly ITriggerScriptExecuteService triggerScriptEngineService;
         readonly ISearchConditionService searchConditionService;
         readonly IMetaObjectService metaObjectService;
         readonly IMetaFieldService metaFieldService;

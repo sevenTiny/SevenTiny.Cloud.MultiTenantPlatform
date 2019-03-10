@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace SevenTiny.Cloud.MultiTenantPlatform.Core.UIMetaData.IndexPage
+namespace SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.IndexPage
 {
     /// <summary>
     /// 搜索表单

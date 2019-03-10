@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace SevenTiny.Cloud.MultiTenantPlatform.Core.UIMetaData.UserInfo
+namespace SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.UserInfo
 {
     /// <summary>
     /// 头像信息

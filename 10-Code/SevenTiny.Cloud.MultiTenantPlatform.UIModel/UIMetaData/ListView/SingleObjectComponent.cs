@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace SevenTiny.Cloud.MultiTenantPlatform.Core.UIMetaData.ListView
+namespace SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.ListView
 {
     public class SingleObjectComponent
     {
