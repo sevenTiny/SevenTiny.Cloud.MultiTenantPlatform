@@ -1,6 +1,7 @@
 ﻿using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
+using System;
 using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Repository
@@ -13,6 +14,14 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Repository
         }
 
         MultiTenantPlatformDbContext dbContext;
+
+        public new Result Update(TEntity entity)
+        {
+            entity.ModifyTime = DateTime.Now;
+
+            base.Update(entity);
+            return Result.Success();
+        }
 
         public Result Delete(int id)
         {

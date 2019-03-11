@@ -6,6 +6,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Repository
 {
     public interface ICommonInfoRepository<TEntity> : IRepository<TEntity> where TEntity : CommonInfo
     {
+        new Result Update(TEntity entity);
         Result Delete(int id);
         Result LogicDelete(int id);
         Result Recover(int id);
