@@ -17,11 +17,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Models
     }
     public static class JsonResultModelExtension
     {
-        public static JsonResult ToJsonResultModel(this Result resultModel)
+        public static JsonResult ToJsonResultModel(this Result resultModel, string successMessage = null)
         {
             if (resultModel.IsSuccess)
             {
-                return JsonResultModel.Success(resultModel.Message, resultModel.Data);
+                return JsonResultModel.Success(successMessage ?? resultModel.Message, resultModel.Data);
             }
             else
             {
