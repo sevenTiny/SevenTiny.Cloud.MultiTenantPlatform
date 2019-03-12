@@ -10,7 +10,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject
 
         public Result() { }
 
-        public Result(bool isSuccess, string message, object data)
+        public Result(bool isSuccess, string message = null, object data = null)
         {
             IsSuccess = isSuccess;
             Message = message;
@@ -23,7 +23,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject
         public static Result Success(object data, string message = null)
             => new Result { IsSuccess = true, Data = data, Message = message };
 
-        public static Result Error(string message, object data = null)
+        public static Result Error(string message = null, object data = null)
             => new Result { IsSuccess = false, Message = message, Data = data };
     }
 
@@ -32,6 +32,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject
         public static Result Continue(this Result result, Func<Result> executor)
         {
             return result.IsSuccess ? executor() : result;
+        }
+        public static Result ContinueAssert(this Result result, bool assertResult, string message)
+        {
+            return result.IsSuccess ? new Result(assertResult, message) : result;
         }
     }
 }
