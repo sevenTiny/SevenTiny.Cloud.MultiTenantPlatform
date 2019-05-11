@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27004.2008
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{96B1B369-C366-4046-95BD-478CB3145B74}"
 EndProject
@@ -17,22 +17,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenant
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Component", "Component", "{5226E167-D5D7-43E6-8FC5-192DCFDF6517}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenantPlatform.Account", "..\10-Code\SevenTiny.Cloud.MultiTenantPlatform.Account\SevenTiny.Cloud.MultiTenantPlatform.Account.csproj", "{1242AA90-43D6-4CAF-BEA0-BF0424B3B21B}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenantPlatform.Core", "..\10-Code\SevenTiny.Cloud.MultiTenantPlatform.Core\SevenTiny.Cloud.MultiTenantPlatform.Core.csproj", "{FA26B98A-6D41-4E39-873E-79A90692AA66}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{688A3896-6809-46A5-ACC4-76892191D2AA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.SevenTiny.Cloud.MultiTenantPlatform.Core", "..\10-Code\Test.SevenTiny.Cloud.MultiTenantPlatform.Core\Test.SevenTiny.Cloud.MultiTenantPlatform.Core.csproj", "{EBA08CD1-F2D2-45CD-B1C2-BAA73CE7885D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.SevenTiny.Cloud.MultiTenantPlatform.Account", "..\10-Code\Test.SevenTiny.Cloud.MultiTenantPlatform.Account\Test.SevenTiny.Cloud.MultiTenantPlatform.Account.csproj", "{CF1A02B4-F94B-4C2B-BDBE-359A4EA5167C}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.SevenTiny.Cloud.MultiTenantPlatform.Infrastructure", "..\10-Code\Test.SevenTiny.Cloud.MultiTenantPlatform.Infrastructure\Test.SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.csproj", "{4F393564-7250-4BA3-86AC-B63AE6A4F619}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenTiny.Cloud.MultiTenantPlatform.UIModel", "..\10-Code\SevenTiny.Cloud.MultiTenantPlatform.UIModel\SevenTiny.Cloud.MultiTenantPlatform.UIModel.csproj", "{1FBD55AE-9EC1-4052-B85E-384A66EB16B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenantPlatform.UIModel", "..\10-Code\SevenTiny.Cloud.MultiTenantPlatform.UIModel\SevenTiny.Cloud.MultiTenantPlatform.UIModel.csproj", "{1FBD55AE-9EC1-4052-B85E-384A66EB16B3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00-info", "00-info", "{385112A8-F5FA-4728-989E-15F62E321390}"
 	ProjectSection(SolutionItems) = preProject
+		重构说明.md = 重构说明.md
 		项目分层说明及引用关系.md = 项目分层说明及引用关系.md
 	EndProjectSection
 EndProject
@@ -58,10 +55,6 @@ Global
 		{968E51C4-8C2E-47CC-B46A-2CEB61C8C1C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{968E51C4-8C2E-47CC-B46A-2CEB61C8C1C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{968E51C4-8C2E-47CC-B46A-2CEB61C8C1C0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1242AA90-43D6-4CAF-BEA0-BF0424B3B21B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1242AA90-43D6-4CAF-BEA0-BF0424B3B21B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1242AA90-43D6-4CAF-BEA0-BF0424B3B21B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1242AA90-43D6-4CAF-BEA0-BF0424B3B21B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FA26B98A-6D41-4E39-873E-79A90692AA66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FA26B98A-6D41-4E39-873E-79A90692AA66}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA26B98A-6D41-4E39-873E-79A90692AA66}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -70,10 +63,6 @@ Global
 		{EBA08CD1-F2D2-45CD-B1C2-BAA73CE7885D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EBA08CD1-F2D2-45CD-B1C2-BAA73CE7885D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EBA08CD1-F2D2-45CD-B1C2-BAA73CE7885D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CF1A02B4-F94B-4C2B-BDBE-359A4EA5167C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CF1A02B4-F94B-4C2B-BDBE-359A4EA5167C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CF1A02B4-F94B-4C2B-BDBE-359A4EA5167C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CF1A02B4-F94B-4C2B-BDBE-359A4EA5167C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4F393564-7250-4BA3-86AC-B63AE6A4F619}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4F393564-7250-4BA3-86AC-B63AE6A4F619}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F393564-7250-4BA3-86AC-B63AE6A4F619}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -91,10 +80,8 @@ Global
 		{95AC3ADD-FF94-4753-930B-B925A3F3F325} = {C2B695A9-F5A6-4B33-A156-1EE934683EC7}
 		{087F46A9-1D6C-42E1-99ED-5BB5BAD18FEB} = {688A3896-6809-46A5-ACC4-76892191D2AA}
 		{968E51C4-8C2E-47CC-B46A-2CEB61C8C1C0} = {5226E167-D5D7-43E6-8FC5-192DCFDF6517}
-		{1242AA90-43D6-4CAF-BEA0-BF0424B3B21B} = {5226E167-D5D7-43E6-8FC5-192DCFDF6517}
 		{FA26B98A-6D41-4E39-873E-79A90692AA66} = {5226E167-D5D7-43E6-8FC5-192DCFDF6517}
 		{EBA08CD1-F2D2-45CD-B1C2-BAA73CE7885D} = {96B1B369-C366-4046-95BD-478CB3145B74}
-		{CF1A02B4-F94B-4C2B-BDBE-359A4EA5167C} = {96B1B369-C366-4046-95BD-478CB3145B74}
 		{4F393564-7250-4BA3-86AC-B63AE6A4F619} = {96B1B369-C366-4046-95BD-478CB3145B74}
 		{1FBD55AE-9EC1-4052-B85E-384A66EB16B3} = {5226E167-D5D7-43E6-8FC5-192DCFDF6517}
 	EndGlobalSection
