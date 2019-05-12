@@ -27,12 +27,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.SevenTiny.Cloud.MultiT
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenantPlatform.UIModel", "..\10-Code\SevenTiny.Cloud.MultiTenantPlatform.UIModel\SevenTiny.Cloud.MultiTenantPlatform.UIModel.csproj", "{1FBD55AE-9EC1-4052-B85E-384A66EB16B3}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00-info", "00-info", "{385112A8-F5FA-4728-989E-15F62E321390}"
-	ProjectSection(SolutionItems) = preProject
-		重构说明.md = 重构说明.md
-		项目分层说明及引用关系.md = 项目分层说明及引用关系.md
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
