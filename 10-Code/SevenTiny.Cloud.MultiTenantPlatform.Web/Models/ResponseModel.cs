@@ -1,4 +1,5 @@
-﻿using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
+﻿using SevenTiny.Bantina;
+using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Models
 {
@@ -26,13 +27,20 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Models
 
     public static class ResponseModelExtension
     {
-        public static ResponseModel ToResponseModel(this Result resultModel)
+        public static ResponseModel ToResponseModel(this Result result)
             =>
             new ResponseModel
             {
-                IsSuccess = resultModel.IsSuccess,
-                Message = resultModel.Message,
-                Data = resultModel.Data
+                IsSuccess = result.IsSuccess,
+                Message = result.Message,
+            };
+        public static ResponseModel ToResponseModel<T>(this Result<T> result)
+            =>
+            new ResponseModel
+            {
+                IsSuccess = result.IsSuccess,
+                Message = result.Message,
+                Data = result.Data
             };
     }
 }

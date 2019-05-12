@@ -7,6 +7,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Caching;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using SevenTiny.Bantina;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 {
@@ -28,7 +29,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         readonly ISearchConditionService searchConditionService;
 
         //新增组织接口
-        public new Result Add(InterfaceAggregation entity)
+        public new Result<InterfaceAggregation> Add(InterfaceAggregation entity)
         {
             if (entity.InterfaceType == (int)InterfaceType.TriggerScriptDataSource)
             {
@@ -45,14 +46,14 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             }
 
             base.Add(entity);
-            return Result.Success();
+            return Result<InterfaceAggregation>.Success();
         }
 
         /// <summary>
         /// 更新对象
         /// </summary>
         /// <param name="interfaceAggregation"></param>
-        public new Result Update(InterfaceAggregation interfaceAggregation)
+        public new Result<InterfaceAggregation> Update(InterfaceAggregation interfaceAggregation)
         {
             InterfaceAggregation myEntity = GetById(interfaceAggregation.Id);
             if (myEntity != null)
@@ -85,12 +86,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                 myEntity.ModifyTime = DateTime.Now;
             }
             base.Update(myEntity);
-            return Result.Success();
+            return Result<InterfaceAggregation>.Success();
         }
 
         public InterfaceAggregation GetByInterfaceAggregationCode(string interfaceAggregationCode)
         {
-            var interfaceAggregation = dbContext.QueryOne<InterfaceAggregation>(t => t.Code.Equals(interfaceAggregationCode));
+            var interfaceAggregation = dbContext.Queryable<InterfaceAggregation>().Where(t => t.Code.Equals(interfaceAggregationCode)).ToOne();
             return interfaceAggregation;
         }
     }

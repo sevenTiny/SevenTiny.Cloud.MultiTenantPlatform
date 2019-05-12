@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SevenTiny.Bantina;
 using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Models
@@ -17,16 +18,19 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Models
     }
     public static class JsonResultModelExtension
     {
-        public static JsonResult ToJsonResultModel(this Result resultModel, string successMessage = null)
+        public static JsonResult ToJsonResultModel(this Result result)
         {
-            if (resultModel.IsSuccess)
-            {
-                return JsonResultModel.Success(successMessage ?? resultModel.Message, resultModel.Data);
-            }
+            if (result.IsSuccess)
+                return JsonResultModel.Success(result.Message);
             else
-            {
-                return JsonResultModel.Error(resultModel.Message);
-            }
+                return JsonResultModel.Error(result.Message);
+        }
+        public static JsonResult ToJsonResultModel<T>(this Result<T> result)
+        {
+            if (result.IsSuccess)
+                return JsonResultModel.Success(result.Message, result.Data);
+            else
+                return JsonResultModel.Error(result.Message);
         }
     }
 }

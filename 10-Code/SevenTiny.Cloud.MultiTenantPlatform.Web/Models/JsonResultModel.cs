@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SevenTiny.Bantina;
 using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Models
@@ -18,15 +19,15 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Models
 
     public static class JsonResultModelExtension
     {
-        public static JsonResult ToJsonResultModel(this Result resultModel)
+        public static JsonResult ToJsonResultModel<T>(this Result<T> result)
         {
-            if (resultModel.IsSuccess)
+            if (result.IsSuccess)
             {
-                return JsonResultModel.Success(resultModel.Message, resultModel.Data);
+                return JsonResultModel.Success(result.Message, result.Data);
             }
             else
             {
-                return JsonResultModel.Error(resultModel.Message);
+                return JsonResultModel.Error(result.Message);
             }
         }
     }

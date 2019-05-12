@@ -1,17 +1,15 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
 using SevenTiny.Bantina;
-using SevenTiny.Bantina.Bankinate.Helpers;
+using SevenTiny.Bantina.Extensions;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
-using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 {
@@ -31,28 +29,28 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 
         public List<SearchConditionAggregation> GetListBySearchConditionId(int searchConditionId)
         {
-            return dbContext.QueryList<SearchConditionAggregation>(t => t.SearchConditionId == searchConditionId);
+            return dbContext.Queryable<SearchConditionAggregation>().Where(t => t.SearchConditionId == searchConditionId).ToList();
         }
 
         public List<SearchConditionAggregation> GetConditionItemsBySearchConditionId(int searchConditionId)
         {
-            return dbContext.QueryList<SearchConditionAggregation>(t => t.SearchConditionId == searchConditionId && t.FieldId != -1);
+            return dbContext.Queryable<SearchConditionAggregation>().Where(t => t.SearchConditionId == searchConditionId && t.FieldId != -1).ToList();
         }
 
-        public Result Delete(int id)
+        public Result<SearchConditionAggregation> Delete(int id)
         {
             dbContext.Delete<SearchConditionAggregation>(t => t.Id == id);
-            return Result.Success();
+            return Result<SearchConditionAggregation>.Success();
         }
 
         //组织接口搜索条件
-        public Result AggregateCondition(int interfaceConditionId, int brotherNodeId, int conditionJointTypeId, int fieldId, int conditionTypeId, string conditionValue, int conditionValueTypeId)
+        public Result<SearchConditionAggregation> AggregateCondition(int interfaceConditionId, int brotherNodeId, int conditionJointTypeId, int fieldId, int conditionTypeId, string conditionValue, int conditionValueTypeId)
         {
             //如果不是参数传递值，则根据传入的字段校验数据
             if (conditionValueTypeId != (int)ConditionValueType.Parameter)
             {
                 if (!metaFieldService.CheckAndGetFieldValueByFieldType(fieldId, conditionValue).IsSuccess)
-                    return Result.Error("字段值和字段定义的类型不匹配");
+                    return Result<SearchConditionAggregation>.Error("字段值和字段定义的类型不匹配");
             }
 
             return TransactionHelper.Transaction(() =>
@@ -88,7 +86,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                         };
                         base.Add(newParentCondition);
                         //查询刚才插入的节点
-                        newParentCondition = dbContext.QueryOne<SearchConditionAggregation>(t => t.FieldName.Contains(tempKey));
+                        newParentCondition = dbContext.Queryable<SearchConditionAggregation>().Where(t => t.FieldName.Contains(tempKey)).ToOne();
 
                         //将兄弟节点的父节点指向新插入的节点
                         brotherCondition.ParentId = newParentCondition.Id;
@@ -101,9 +99,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                 //检验是否没有条件节点
                 if (parentId == -1)
                 {
-                    if (dbContext.QueryExist<SearchConditionAggregation>(t => t.Id == parentId))
+                    if (dbContext.Queryable<SearchConditionAggregation>().Where(t => t.Id == parentId).Any())
                     {
-                        return Result.Error("已经存在条件节点，请查证后操作！");
+                        return Result<SearchConditionAggregation>.Error("已经存在条件节点，请查证后操作！");
                     }
                 }
                 //新增节点
@@ -125,12 +123,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                 };
                 base.Add(newCondition);
 
-                return Result.Success("保存成功！");
+                return Result<SearchConditionAggregation>.Success("保存成功！");
             });
         }
 
         //删除某个节点
-        public Result DeleteAggregateCondition(int nodeId, int searchConditionId)
+        public Result<SearchConditionAggregation> DeleteAggregateCondition(int nodeId, int searchConditionId)
         {
             //将要删除的节点id集合
             List<int> willBeDeleteIds = new List<int>();
@@ -138,12 +136,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             List<SearchConditionAggregation> allConditions = GetListBySearchConditionId(searchConditionId);
             if (allConditions == null || !allConditions.Any())
             {
-                return Result.Success("删除成功！");
+                return Result<SearchConditionAggregation>.Success("删除成功！");
             }
             SearchConditionAggregation conditionAggregation = allConditions.FirstOrDefault(t => t.Id == nodeId);
             if (conditionAggregation == null)
             {
-                return Result.Success("删除成功！");
+                return Result<SearchConditionAggregation>.Success("删除成功！");
             }
             //获取父节点id
             int parentId = conditionAggregation.ParentId;
@@ -151,7 +149,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             if (parentId == -1)
             {
                 DeleteNodeAndChildrenNodes(allConditions, nodeId);
-                return Result.Success("删除成功！");
+                return Result<SearchConditionAggregation>.Success("删除成功！");
             }
             //如果不是顶级节点，查询所有兄弟节点。
             //如果所有兄弟节点（包含自己）多余两个，则直接删除此节点;
@@ -159,7 +157,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             if (conditionList.Count > 2)
             {
                 DeleteNodeAndChildrenNodes(allConditions, nodeId);
-                return Result.Success("删除成功！");
+                return Result<SearchConditionAggregation>.Success("删除成功！");
             }
             //如果兄弟节点为两个，则将父亲节点删除，将另一个兄弟节点作为父节点。
             else if (conditionList.Count == 2)
@@ -180,10 +178,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             //如果没有兄弟节点，则直接将节点以及父节点都删除（如果数据不出问题，默认不存在此种情况，直接返回结果）
             else
             {
-                return Result.Success("删除成功！");
+                return Result<SearchConditionAggregation>.Success("删除成功！");
             }
 
-            return Result.Success("删除成功！");
+            return Result<SearchConditionAggregation>.Success("删除成功！");
 
             //删除节点级所有下级节点
             void DeleteNodeAndChildrenNodes(List<SearchConditionAggregation> sourceConditions, int currentNodeId)
@@ -405,21 +403,21 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             }
         }
 
-        public new Result Update(SearchConditionAggregation entity)
+        public new Result<SearchConditionAggregation> Update(SearchConditionAggregation entity)
         {
-            var myEntity = dbContext.QueryOne<SearchConditionAggregation>(t => t.Id == entity.Id);
+            var myEntity = dbContext.Queryable<SearchConditionAggregation>().Where(t => t.Id == entity.Id).ToOne();
             if (myEntity != null)
             {
                 myEntity.Text = entity.Text;
                 myEntity.Visible = entity.Visible;
             }
             base.Update(myEntity);
-            return Result.Success();
+            return Result<SearchConditionAggregation>.Success();
         }
 
         public SearchConditionAggregation GetById(int id)
         {
-            return dbContext.QueryOne<SearchConditionAggregation>(t => t.Id == id);
+            return dbContext.Queryable<SearchConditionAggregation>().Where(t => t.Id == id).ToOne();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
+using SevenTiny.Bantina;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Repository;
@@ -22,12 +23,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         MultiTenantPlatformDbContext dbContext;
 
         public new List<MetaField> GetEntitiesDeletedByMetaObjectId(int metaObjectId)
-            => dbContext.QueryList<MetaField>(t => t.IsDeleted == (int)IsDeleted.Deleted && t.MetaObjectId == metaObjectId);
+            => dbContext.Queryable<MetaField>().Where(t => t.IsDeleted == (int)IsDeleted.Deleted && t.MetaObjectId == metaObjectId).ToList();
 
         public new List<MetaField> GetEntitiesUnDeletedByMetaObjectId(int metaObjectId)
         {
             //取字段要包含上系统字段
-            return dbContext.QueryList<MetaField>(t => t.IsDeleted == (int)IsDeleted.UnDeleted && (t.MetaObjectId == metaObjectId || t.MetaObjectId == -1));
+            return dbContext.Queryable<MetaField>().Where(t => t.IsDeleted == (int)IsDeleted.UnDeleted && (t.MetaObjectId == metaObjectId || t.MetaObjectId == -1)).ToList();
         }
 
         public Dictionary<string, MetaField> GetMetaFieldDicUnDeleted(int metaObjectId)
@@ -52,7 +53,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         /// 更新对象
         /// </summary>
         /// <param name="metaField"></param>
-        public new Result Update(MetaField metaField)
+        public new Result<MetaField> Update(MetaField metaField)
         {
             MetaField myfield = GetById(metaField.Id);
             if (myfield != null)
@@ -69,7 +70,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                 myfield.ModifyTime = DateTime.Now;
             }
             base.Update(myfield);
-            return Result.Success();
+            return Result<MetaField>.Success();
         }
 
         /// <summary>
@@ -165,15 +166,15 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         /// <param name="fieldId"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public Result CheckAndGetFieldValueByFieldType(int fieldId, object value)
+        public Result<dynamic> CheckAndGetFieldValueByFieldType(int fieldId, object value)
         {
             MetaField metaField = GetById(fieldId);
             return CheckAndGetFieldValueByFieldType(metaField, value);
         }
 
-        public Result CheckAndGetFieldValueByFieldType(MetaField metaField, object value)
+        public Result<dynamic> CheckAndGetFieldValueByFieldType(MetaField metaField, object value)
         {
-            Result result = new Result();
+            Result<dynamic> result = new Result<dynamic>();
             switch (EnumsTranslaterUseInProgram.ToDataType(metaField.FieldType))
             {
                 case DataType.Boolean:
@@ -255,12 +256,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         public new Result Delete(int id)
         {
             //先检查引用关系
-            if (dbContext.QueryExist<FieldListAggregation>(t => t.MetaFieldId == id))
+            if (dbContext.Queryable<FieldListAggregation>().Where(t => t.MetaFieldId == id).Any())
             {
                 return Result.Error("字段列表存在相关字段的引用关系，请先解除引用关系");
             }
 
-            if (dbContext.QueryExist<SearchConditionAggregation>(t => t.FieldId == id))
+            if (dbContext.Queryable<SearchConditionAggregation>().Where(t => t.FieldId == id).Any())
             {
                 return Result.Error("搜索条件存在相关字段的引用关系，请先解除引用关系");
             }

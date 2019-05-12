@@ -1,10 +1,10 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
+using SevenTiny.Bantina;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.CloudEntity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.ListView;
-using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -395,7 +395,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             if (pageSize == 0)
                 count = bson?.Count ?? 0;
             else
-                count = Convert.ToInt32(db.GetCollectionBson(metaObject.Code).Count(condition));
+                count = Convert.ToInt32(db.GetCollectionBson(metaObject.Code).CountDocuments(condition));
 
             return bson;
         }
@@ -435,7 +435,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         }
         public int GetCount(MetaObject metaObject, FilterDefinition<BsonDocument> condition)
         {
-            return Convert.ToInt32(db.GetCollectionBson(metaObject.Code).Count(condition));
+            return Convert.ToInt32(db.GetCollectionBson(metaObject.Code).CountDocuments(condition));
         }
     }
 }

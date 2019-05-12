@@ -1,8 +1,5 @@
-﻿using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using SevenTiny.Bantina;
+using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Models
 {

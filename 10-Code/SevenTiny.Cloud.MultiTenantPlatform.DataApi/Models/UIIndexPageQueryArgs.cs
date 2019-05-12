@@ -1,4 +1,4 @@
-﻿using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
+﻿using SevenTiny.Bantina;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Models
 {

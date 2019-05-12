@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SevenTiny.Cloud.MultiTenantPlatform.UIModel.Enum;
+using SevenTiny.Bantina;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 {
@@ -34,7 +35,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         readonly ISearchConditionAggregationService searchConditionAggregationService;
 
         //新增
-        public new Result Add(IndexView entity)
+        public new Result<IndexView> Add(IndexView entity)
         {
             //查询并将名字赋予字段
             var interfaceField = interfaceFieldService.GetById(entity.FieldListId);
@@ -44,14 +45,14 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             entity.Title = entity.Name;
 
             base.Add(entity);
-            return Result.Success();
+            return Result<IndexView>.Success();
         }
 
         /// <summary>
         /// 更新对象
         /// </summary>
         /// <param name="entity"></param>
-        public new Result Update(IndexView entity)
+        public new Result<IndexView> Update(IndexView entity)
         {
 
             IndexView myEntity = GetById(entity.Id);
@@ -77,7 +78,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                 myEntity.Icon = entity.Icon;
             }
             base.Update(myEntity);
-            return Result.Success();
+            return Result<IndexView>.Success();
         }
 
         public IndexPageComponent GetIndexPageComponentByIndexView(IndexView indexView)

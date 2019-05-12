@@ -2,11 +2,8 @@
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
-using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 {
@@ -46,17 +43,17 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         /// 根据id删除配置字段，校验是否被引用
         /// </summary>
         /// <param name="id"></param>
-        public new Result Delete(int id)
+        public new Result<InterfaceAggregation> Delete(int id)
         {
-            if (dbContext.QueryExist<InterfaceAggregation>(t => t.SearchConditionId == id))
+            if (dbContext.Queryable<InterfaceAggregation>().Where(t => t.SearchConditionId == id).Any())
             {
                 //存在引用关系，先删除引用该数据的数据
-                return Result.Error("存在引用关系，先删除引用该数据的数据");
+                return Result<InterfaceAggregation>.Error("存在引用关系，先删除引用该数据的数据");
             }
             else
             {
                 base.Delete(id);
-                return Result.Success();
+                return Result<InterfaceAggregation>.Success();
             }
         }
 

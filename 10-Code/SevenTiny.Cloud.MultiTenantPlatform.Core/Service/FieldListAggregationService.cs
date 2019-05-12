@@ -7,6 +7,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SevenTiny.Bantina;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 {
@@ -24,7 +25,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         readonly MultiTenantPlatformDbContext dbContext;
         readonly IMetaFieldService metaFieldService;
 
-        public new Result Add(IList<FieldListAggregation> entities)
+        public new Result<IList<FieldListAggregation>> Add(IList<FieldListAggregation> entities)
         {
             var metaFieldIds = entities.Select(t => t.MetaFieldId).ToArray();
             var metaFields = metaFieldService.GetByIds(metaFieldIds);
@@ -43,7 +44,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 
         public List<FieldListAggregation> GetByFieldListId(int fieldListId)
         {
-            return dbContext.QueryList<FieldListAggregation>(t => t.FieldListId == fieldListId);
+            return dbContext.Queryable<FieldListAggregation>().Where(t => t.FieldListId == fieldListId).ToList();
         }
 
         public void DeleteByMetaFieldId(int metaFieldId)
@@ -95,7 +96,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 
         public FieldListAggregation GetById(int id)
         {
-            return dbContext.QueryOne<FieldListAggregation>(t => t.Id == id);
+            return dbContext.Queryable<FieldListAggregation>().Where(t => t.Id == id).ToOne();
         }
 
         public new Result Update(FieldListAggregation entity)

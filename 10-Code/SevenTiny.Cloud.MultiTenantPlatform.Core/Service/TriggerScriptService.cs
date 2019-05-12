@@ -6,6 +6,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
 using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Caching;
 using System;
 using System.Collections.Generic;
+using SevenTiny.Bantina;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 {
@@ -22,7 +23,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         /// 更新对象
         /// </summary>
         /// <param name="triggerScript"></param>
-        public new Result Update(TriggerScript triggerScript)
+        public new Result<TriggerScript> Update(TriggerScript triggerScript)
         {
             TriggerScript myfield = GetById(triggerScript.Id);
             if (myfield != null)
@@ -45,12 +46,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                 myfield.ModifyTime = DateTime.Now;
             }
             base.Update(myfield);
-            return Result.Success();
+            return Result<TriggerScript>.Success();
         }
 
         public List<TriggerScript> GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(int metaObjectId, int scriptType)
         {
-            return dbContext.QueryList<TriggerScript>(t => t.MetaObjectId == metaObjectId && t.ScriptType == scriptType);
+            return dbContext.Queryable<TriggerScript>().Where(t => t.MetaObjectId == metaObjectId && t.ScriptType == scriptType).ToList();
         }
 
         public string GetDefaultTriggerScriptByScriptType(int scriptType)

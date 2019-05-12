@@ -24,7 +24,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 
         public new Result Update(Application application)
         {
-            if (dbContext.QueryExist<Application>(t => t.Id != application.Id && t.Name == application.Name))
+            if (dbContext.Queryable<Application>().Where(t => t.Id != application.Id && t.Name == application.Name).Any())
             {
                 return Result.Error("该名称已存在");
             }
@@ -47,7 +47,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 
         public new Result Delete(int id)
         {
-            var metaObjects = dbContext.QueryList<MetaObject>(t => t.ApplicationId == id);
+            var metaObjects = dbContext.Queryable<MetaObject>().Where(t => t.ApplicationId == id).ToList();
             if (metaObjects != null && metaObjects.Any())
             {
                 TransactionHelper.Transaction(() =>
@@ -63,25 +63,25 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             return Result.Success();
         }
 
-        public new Result Add(Application entity)
+        public new Result<Application> Add(Application entity)
         {
             //check metaobject of name or code exist?
-            Application obj = dbContext.QueryOne<Application>(t => t.Code.Equals(entity.Code) || t.Name.Equals(entity.Name));
+            Application obj = dbContext.Queryable<Application>().Where(t => t.Code.Equals(entity.Code) || t.Name.Equals(entity.Name)).ToOne();
             if (obj != null)
             {
                 if (obj.Code.Equals(entity.Code))
                 {
-                    return Result.Error("Code Has Been Exist！", entity);
+                    return Result<Application>.Error("Code Has Been Exist！", entity);
                 }
                 if (obj.Name.Equals(entity.Name))
                 {
-                    return Result.Error("Name Has Been Exist！", entity);
+                    return Result<Application>.Error("Name Has Been Exist！", entity);
                 }
             }
 
             base.Add(entity);
 
-            return Result.Success();
+            return Result<Application>.Success();
         }
     }
 }

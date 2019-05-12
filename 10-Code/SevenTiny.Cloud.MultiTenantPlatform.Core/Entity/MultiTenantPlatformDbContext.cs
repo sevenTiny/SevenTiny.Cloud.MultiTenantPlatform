@@ -13,7 +13,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Entity
             //开启一级缓存
             OpenQueryCache = false;
             //用redis做缓存
-            CacheMediaType = Bantina.Bankinate.Cache.CacheMediaType.Local;
+            CacheMediaType = CacheMediaType.Local;
             CacheMediaServer = $"{RedisConfig.Get("101", "Server")}:{RedisConfig.Get("101", "Port")}";//redis服务器地址以及端口号
         }
     }

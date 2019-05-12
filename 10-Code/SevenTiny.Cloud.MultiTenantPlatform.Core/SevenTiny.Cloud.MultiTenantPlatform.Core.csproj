@@ -11,8 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="SevenTiny.Bantina" Version="1.0.12" />
-    <PackageReference Include="SevenTiny.Bantina.Bankinate" Version="1.0.57" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
+    <PackageReference Include="SevenTiny.Bantina" Version="1.0.14" />
+    <PackageReference Include="SevenTiny.Bantina.Bankinate.MongoDb" Version="1.0.7" />
+    <PackageReference Include="SevenTiny.Bantina.Bankinate.MySql" Version="1.0.15" />
   </ItemGroup>
 
   <ItemGroup>

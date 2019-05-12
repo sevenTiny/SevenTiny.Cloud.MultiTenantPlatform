@@ -1,15 +1,15 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
+using SevenTiny.Bantina;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Repository;
-using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
 using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract
 {
     public interface ISearchConditionAggregationService : IRepository<SearchConditionAggregation>
     {
-        Result Delete(int id);
+        Result<SearchConditionAggregation> Delete(int id);
         /// <summary>
         /// 获取搜索项集合，不包含连接节点
         /// </summary>
@@ -17,9 +17,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract
         /// <returns></returns>
         List<SearchConditionAggregation> GetConditionItemsBySearchConditionId(int searchConditionId);
         List<SearchConditionAggregation> GetListBySearchConditionId(int searchConditionId);
-        Result AggregateCondition(int interfaceConditionId, int brotherNodeId, int conditionJointTypeId, int fieldId, int conditionTypeId, string conditionValue, int conditionValueTypeId);
+        Result<SearchConditionAggregation> AggregateCondition(int interfaceConditionId, int brotherNodeId, int conditionJointTypeId, int fieldId, int conditionTypeId, string conditionValue, int conditionValueTypeId);
 
-        Result DeleteAggregateCondition(int nodeId, int searchConditionId);
+        Result<SearchConditionAggregation> DeleteAggregateCondition(int nodeId, int searchConditionId);
 
         /// <summary>
         /// 将条件配置解析成mongodb可以执行的条件

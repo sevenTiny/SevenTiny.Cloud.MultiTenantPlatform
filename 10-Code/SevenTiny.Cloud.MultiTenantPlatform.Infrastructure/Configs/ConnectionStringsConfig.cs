@@ -1,17 +1,20 @@
-﻿using SevenTiny.Bantina.Bankinate.Attributes;
-using SevenTiny.Bantina.Configuration;
+﻿using SevenTiny.Bantina.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Configs
 {
     [ConfigName("ConnectionStrings")]
-    public class ConnectionStringsConfig : ConfigBase<ConnectionStringsConfig>
+    public class ConnectionStringsConfig : MySqlConfigBase<ConnectionStringsConfig>
     {
-        [Column]
+        private static ConnectionStringsConfig Instance = new ConnectionStringsConfig();
+
+        [ConfigProperty]
         public string Key { get; set; }
-        [Column]
+        [ConfigProperty]
         public string Value { get; set; }
+
+        protected override string _ConnectionString => GetConnectionStringFromAppSettings("SeventinyConfig");
 
         private static Dictionary<string, string> _configs;
 
@@ -19,7 +22,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Configs
         {
             if (_configs == null)
             {
-                _configs = Configs.ToDictionary(t => t.Key, v => v.Value);
+                _configs = Instance.GetConfigList().ToDictionary(t => t.Key, v => v.Value);
             }
             if (_configs.ContainsKey(key))
             {
