@@ -7,6 +7,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Caching;
 using System;
 using System.Collections.Generic;
 using SevenTiny.Bantina;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.DataAccess;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 {
@@ -80,7 +81,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         /// </summary>
         private string DefaultCommonUsing
             => @"
-using SevenTiny.Cloud.MultiTenantPlatform.Core.CloudEntity;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.DataAccess;
 using MongoDB.Bson;
 using MongoDB.Driver;
 ";

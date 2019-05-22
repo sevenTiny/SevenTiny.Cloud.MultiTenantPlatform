@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using SevenTiny.Bantina;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.DataAccess;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 {

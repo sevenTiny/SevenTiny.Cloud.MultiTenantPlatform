@@ -3,7 +3,7 @@ using SevenTiny.Bantina.Bankinate.Attributes;
 using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Configs;
 using System;
 
-namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Entity
+namespace SevenTiny.Cloud.MultiTenantPlatform.Core.DataAccess
 {
     [DataBase("MultiTenantPlatformWeb")]
     public class MultiTenantPlatformDbContext : MySqlDbContext<MultiTenantPlatformDbContext>

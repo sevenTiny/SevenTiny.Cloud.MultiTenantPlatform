@@ -2,7 +2,7 @@
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Newtonsoft.Json;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.CloudEntity;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.DataAccess;
 using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging;
 using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData;
 using System;
@@ -23,7 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.CloudEntity;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.DataAccess;
 using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData;
 using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.ListView;
 using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.UserInfo;

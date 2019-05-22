@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using SevenTiny.Cloud.MultiTenantPlatform.UIModel.Enum;
 using SevenTiny.Bantina;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.DataAccess;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 {
