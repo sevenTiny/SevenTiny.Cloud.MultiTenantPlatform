@@ -5,7 +5,7 @@ using System.Linq;
 namespace SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Configs
 {
     [ConfigName("ConnectionStrings")]
-    public class ConnectionStringsConfig : MySqlConfigBase<ConnectionStringsConfig>
+    public class ConnectionStringsConfig : MySqlRowConfigBase<ConnectionStringsConfig>
     {
         private static ConnectionStringsConfig Instance = new ConnectionStringsConfig();
 
@@ -22,7 +22,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Configs
         {
             if (_configs == null)
             {
-                _configs = Instance.GetConfigList().ToDictionary(t => t.Key, v => v.Value);
+                _configs = Instance.Config.ToDictionary(t => t.Key, v => v.Value);
             }
             if (_configs.ContainsKey(key))
             {

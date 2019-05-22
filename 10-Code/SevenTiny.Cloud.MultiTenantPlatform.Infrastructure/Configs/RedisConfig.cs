@@ -7,7 +7,7 @@ using System.Linq;
 namespace SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Configs
 {
     [ConfigName("Redis")]
-    public class RedisConfig : MySqlConfigBase<RedisConfig>
+    public class RedisConfig : MySqlRowConfigBase<RedisConfig>
     {
         private static RedisConfig Instance = new RedisConfig();
 
@@ -26,7 +26,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Configs
 
         private static void Initial()
         {
-            var group = Instance.GetConfigList().GroupBy(t => t.KeySpace).Select(t => new { KeySpace = t.Key, RedisConfig = t }).ToList();
+            var group = Instance.Config.GroupBy(t => t.KeySpace).Select(t => new { KeySpace = t.Key, RedisConfig = t }).ToList();
             dictionary = new Dictionary<string, Dictionary<string, string>>();
             foreach (var item in group)
             {
