@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Seventiny.Cloud.Development
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Seventiny.Cloud.ImplementWeb", "..\10-Code\Seventiny.Cloud.ImplementWeb\Seventiny.Cloud.ImplementWeb.csproj", "{9AD6A7AC-9353-43A9-B10B-561497E4C5EE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Seventiny.Cloud.DataApi", "..\10-Code\Seventiny.Cloud.DataApi\Seventiny.Cloud.DataApi.csproj", "{AB11F9F1-12B3-454B-84C4-FF881E06B963}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +79,10 @@ Global
 		{9AD6A7AC-9353-43A9-B10B-561497E4C5EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9AD6A7AC-9353-43A9-B10B-561497E4C5EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9AD6A7AC-9353-43A9-B10B-561497E4C5EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB11F9F1-12B3-454B-84C4-FF881E06B963}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB11F9F1-12B3-454B-84C4-FF881E06B963}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB11F9F1-12B3-454B-84C4-FF881E06B963}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB11F9F1-12B3-454B-84C4-FF881E06B963}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -92,6 +98,7 @@ Global
 		{1FBD55AE-9EC1-4052-B85E-384A66EB16B3} = {5226E167-D5D7-43E6-8FC5-192DCFDF6517}
 		{D0688BB0-4659-42AC-A587-75A7AC584D31} = {C2B695A9-F5A6-4B33-A156-1EE934683EC7}
 		{9AD6A7AC-9353-43A9-B10B-561497E4C5EE} = {C2B695A9-F5A6-4B33-A156-1EE934683EC7}
+		{AB11F9F1-12B3-454B-84C4-FF881E06B963} = {C2B695A9-F5A6-4B33-A156-1EE934683EC7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9275BAE2-A702-407D-B637-BDFE92758D51}
