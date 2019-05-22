@@ -1,34 +1,19 @@
 ﻿using SevenTiny.Bantina.Configuration;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Configs
 {
     [ConfigName("ConnectionStrings")]
-    public class ConnectionStringsConfig : MySqlRowConfigBase<ConnectionStringsConfig>
+    public class ConnectionStringsConfig : MySqlColumnConfigBase<ConnectionStringsConfig>
     {
-        private static ConnectionStringsConfig Instance = new ConnectionStringsConfig();
+        public static ConnectionStringsConfig Instance = new ConnectionStringsConfig();
 
         [ConfigProperty]
-        public string Key { get; set; }
+        public string mongodb39911 { get; set; }
         [ConfigProperty]
-        public string Value { get; set; }
+        public string MultiTenantPlatformWeb { get; set; }
+        [ConfigProperty]
+        public string mysql39901 { get; set; }
 
         protected override string _ConnectionString => GetConnectionStringFromAppSettings("SeventinyConfig");
-
-        private static Dictionary<string, string> _configs;
-
-        public static string Get(string key)
-        {
-            if (_configs == null)
-            {
-                _configs = Instance.Config.ToDictionary(t => t.Key, v => v.Value);
-            }
-            if (_configs.ContainsKey(key))
-            {
-                return _configs[key];
-            }
-            return string.Empty;
-        }
     }
 }
