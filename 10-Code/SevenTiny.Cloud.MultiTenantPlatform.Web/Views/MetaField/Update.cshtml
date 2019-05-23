@@ -40,7 +40,7 @@
             <div class="formControls col-xs-8 col-sm-9">
                 <span class="select-box">
                     <select name="fieldType" class="select" value="@metaField.FieldType" onchange="fieldTypeSwitch(this)" required>
-                        <option value="@metaField.FieldType">@EnumsTranslater.Tran_DataType(metaField.FieldType)</option>
+                        <option value="@metaField.FieldType">@DataTypeTranslator.ToLabel(metaField.FieldType)</option>
                     </select>
                 </span>
             </div>
@@ -70,7 +70,7 @@
                         @foreach (var item in trueFalse)
                         {
                             var value = (int)item;
-                            <option value="@value">@EnumsTranslater.Tran_TrueFalse((int)item)</option>
+                            <option value="@value">@TrueFalseTranslator.ToLabel((int)item)</option>
                         }
                     </select>
                 </span>

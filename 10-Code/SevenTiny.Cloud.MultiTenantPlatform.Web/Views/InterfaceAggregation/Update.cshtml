@@ -42,7 +42,7 @@
                         @foreach (var item in Enum.GetValues(typeof(InterfaceType)))
                         {
                             var value = (int)item;
-                            <option value="@value">@EnumsTranslater.Tran_InterfaceType(value)</option>
+                            <option value="@value">@InterfaceTypeTranslator.ToLabel(value)</option>
                         }
                     </select>
                 </span>

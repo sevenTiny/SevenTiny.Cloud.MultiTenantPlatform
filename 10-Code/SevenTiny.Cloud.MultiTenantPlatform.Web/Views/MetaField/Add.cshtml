@@ -43,7 +43,7 @@
                             if (!dataTypesExclude.Any(t => t.ToString().Equals(item.ToString())))
                             {
                                 var value = (int)item;
-                                <option value="@value">@EnumsTranslater.Tran_DataType((int)item)</option>
+                                <option value="@value">@DataTypeTranslator.ToLabel((int)item)</option>
                             }
                         }
                     </select>
@@ -71,7 +71,7 @@
                         @foreach (var item in trueFalse)
                         {
                             var value = (int)item;
-                            <option value="@value">@EnumsTranslater.Tran_TrueFalse((int)item)</option>
+                            <option value="@value">@TrueFalseTranslator.ToLabel((int)item)</option>
                         }
                     </select>
                 </span>

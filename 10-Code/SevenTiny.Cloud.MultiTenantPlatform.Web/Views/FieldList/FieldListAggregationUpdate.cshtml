@@ -31,7 +31,7 @@
                     @foreach (var item in Enum.GetValues(typeof(TrueFalse)))
                     {
                         var value = (int)item;
-                        <option value="@value">@EnumsTranslater.Tran_TrueFalse(value)</option>
+                        <option value="@value">@TrueFalseTranslator.ToLabel(value)</option>
                     }
                 </select>
             </div>
@@ -44,7 +44,7 @@
                     @foreach (var item in Enum.GetValues(typeof(TrueFalse)))
                     {
                         var value = (int)item;
-                        <option value="@value">@EnumsTranslater.Tran_TrueFalse(value)</option>
+                        <option value="@value">@TrueFalseTranslator.ToLabel(value)</option>
                     }
                 </select>
             </div>

@@ -43,21 +43,21 @@
                             <td>@item.Code</td>
                         }
                         <td>@item.Description</td>
-                        <td>@EnumsTranslater.Tran_DataType(item.FieldType)</td>
+                        <td>@DataTypeTranslator.ToLabel(item.FieldType)</td>
                         @if (item.IsMust == (int)TrueFalse.True)
                         {
-                            <td style="color:#00CC33">@EnumsTranslater.Tran_TrueFalse(item.IsMust)</td>
+                            <td style="color:#00CC33">@TrueFalseTranslator.ToLabel(item.IsMust)</td>
                         }
                         else
                         {
-                            <td>@EnumsTranslater.Tran_TrueFalse(item.IsMust)</td>
+                            <td>@TrueFalseTranslator.ToLabel(item.IsMust)</td>
                         }@if (item.IsSystem == (int)TrueFalse.True)
                         {
-                            <td style="color:#00CC33">@EnumsTranslater.Tran_TrueFalse(item.IsSystem)</td>
+                            <td style="color:#00CC33">@TrueFalseTranslator.ToLabel(item.IsSystem)</td>
                         }
                         else
                         {
-                            <td>@EnumsTranslater.Tran_TrueFalse(item.IsSystem)</td>
+                            <td>@TrueFalseTranslator.ToLabel(item.IsSystem)</td>
                         }
                         <td>@item.SortNumber</td>
                         <td>@item.Group</td>

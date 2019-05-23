@@ -26,4 +26,25 @@
         /// </summary>
         TriggerScriptDataSource = 5
     }
+    public static class InterfaceTypeTranslator
+    {
+        public static string ToLabel(int datatype)
+        {
+            switch (datatype)
+            {
+                case (int)InterfaceType.CloudSingleObject:
+                    return "单对象";
+                case (int)InterfaceType.CloudTableList:
+                    return "数据集合";
+                case (int)InterfaceType.CloudCount:
+                    return "数据量";
+                case (int)InterfaceType.EnumeDataSource:
+                    return "枚举数据源";
+                case (int)InterfaceType.TriggerScriptDataSource:
+                    return "触发器数据源";
+                default:
+                    return string.Empty;
+            }
+        }
+    }
 }

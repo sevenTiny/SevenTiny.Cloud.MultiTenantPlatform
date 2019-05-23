@@ -176,7 +176,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         public Result<dynamic> CheckAndGetFieldValueByFieldType(MetaField metaField, object value)
         {
             Result<dynamic> result = new Result<dynamic>();
-            switch (EnumsTranslaterUseInProgram.ToDataType(metaField.FieldType))
+            switch ((DataType)metaField.FieldType)
             {
                 case DataType.Boolean:
                     result.IsSuccess = bool.TryParse(Convert.ToString(value), out bool boolVal);

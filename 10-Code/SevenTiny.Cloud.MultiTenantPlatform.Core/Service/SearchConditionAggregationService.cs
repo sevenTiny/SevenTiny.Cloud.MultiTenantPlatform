@@ -81,7 +81,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                             FieldName = tempKey,
                             FieldType = -1,
                             ConditionType = conditionJointTypeId,
-                            Name = EnumsTranslaterUseInProgram.Tran_ConditionJoint(conditionJointTypeId),
+                            Name = ConditionJointTranslator.ToLabelWithExplain(conditionJointTypeId),
                             Value = "-1",
                             ValueType = -1
                         };
@@ -116,7 +116,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                     FieldCode = metaField.Code,
                     FieldType = metaField.FieldType,
                     ConditionType = conditionTypeId,
-                    Name = $"{metaField.Name} {EnumsTranslaterUseInProgram.Tran_ConditionType(conditionTypeId)} {conditionValue}",
+                    Name = $"{metaField.Name} {ConditionTypeTranslator.ToLabel(conditionTypeId)} {conditionValue}",
                     Value = conditionValue,
                     ValueType = conditionValueTypeId,
                     Text = metaField.Name,
