@@ -114,8 +114,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 
         public async void SortFields(int interfaceFieldId, int[] currentOrderMetaFieldIds)
         {
-            await Task.Run(() =>
-            {
+            //异步方法mysql超时!!!
+            //await Task.Run(() =>
+            //{
                 var fieldList = GetByFieldListId(interfaceFieldId);
                 if (fieldList != null && fieldList.Any())
                 {
@@ -132,7 +133,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                         }
                     }
                 }
-            });
+            //});
         }
     }
 }
