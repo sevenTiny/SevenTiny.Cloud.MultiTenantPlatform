@@ -67,7 +67,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                     //删除字段配置下的所有字段
                     foreach (var item in fieldLists)
                     {
-                        dbContext.Delete<FieldListAggregation>(t => t.FieldListId == item.Id);
+                        dbContext.Delete<FieldListMetaField>(t => t.FieldListId == item.Id);
                     }
                 }
                 //删除字段配置

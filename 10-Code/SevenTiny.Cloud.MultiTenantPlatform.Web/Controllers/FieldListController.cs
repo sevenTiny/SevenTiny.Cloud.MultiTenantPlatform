@@ -18,13 +18,13 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
         readonly IFieldListService fieldListService;
         readonly IMetaFieldService metaFieldService;
         readonly IInterfaceAggregationService interfaceAggregationService;
-        readonly IFieldListAggregationService fieldAggregationService;
+        readonly IFieldListMetaFieldService fieldAggregationService;
 
         public FieldListController(
             IFieldListService _interfaceFieldService,
             IMetaFieldService _metaFieldService,
             IInterfaceAggregationService _interfaceAggregationService,
-            IFieldListAggregationService _fieldAggregationService
+            IFieldListMetaFieldService _fieldAggregationService
             )
         {
             fieldListService = _interfaceFieldService;
@@ -143,7 +143,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
         public IActionResult AggregateField(int id)
         {
             //获取组织字段里面本字段配置下的所有字段
-            var fieldListAggregations = fieldAggregationService.GetByFieldListId(id) ?? new List<FieldListAggregation>();
+            var fieldListAggregations = fieldAggregationService.GetByFieldListId(id) ?? new List<FieldListMetaField>();
             var aggregateMetaFieldIds = fieldListAggregations.Select(t => t.MetaFieldId).ToArray();
             //获取到本对象的所有字段
             var metaFields = metaFieldService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
@@ -190,10 +190,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             IEnumerable<int> addIds = metaFieldIds.Except(fieldAggregationIds); //ids will add
             IEnumerable<int> deleteIds = fieldAggregationIds.Except(metaFieldIds);  //ids will delete
 
-            IList<FieldListAggregation> fieldAggregations = new List<FieldListAggregation>();
+            IList<FieldListMetaField> fieldAggregations = new List<FieldListMetaField>();
             foreach (var item in addIds)
             {
-                fieldAggregations.Add(new FieldListAggregation { FieldListId = id, MetaFieldId = item });
+                fieldAggregations.Add(new FieldListMetaField { FieldListId = id, MetaFieldId = item });
             }
 
             if (fieldAggregations.Any())
@@ -215,12 +215,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public IActionResult FieldListAggregationUpdate(int id)
+        public IActionResult FieldListMetaFieldUpdate(int id)
         {
             var fieldListAggregation = fieldAggregationService.GetById(id);
             return View(ResponseModel.Success(fieldListAggregation));
         }
-        public IActionResult FieldListAggregationUpdateLogic(FieldListAggregation fieldListAggregation)
+        public IActionResult FieldListAggregationUpdateLogic(FieldListMetaField fieldListAggregation)
         {
             var result = fieldAggregationService.Update(fieldListAggregation);
             if (result.IsSuccess)

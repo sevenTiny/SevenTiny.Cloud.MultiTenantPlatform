@@ -2,8 +2,11 @@
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Entity
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [Table]
-    public class FieldListAggregation
+    public class FieldListMetaField
     {
         [Key]
         [AutoIncrease]

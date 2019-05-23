@@ -8,9 +8,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 {
     public class FieldBizDataService : IFieldBizDataService
     {
-        readonly IFieldListAggregationService fieldAggregationService;
+        readonly IFieldListMetaFieldService fieldAggregationService;
         public FieldBizDataService(
-            IFieldListAggregationService _fieldAggregationService
+            IFieldListMetaFieldService _fieldAggregationService
             )
         {
             fieldAggregationService = _fieldAggregationService;

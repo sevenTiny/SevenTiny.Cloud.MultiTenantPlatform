@@ -12,9 +12,9 @@ using SevenTiny.Cloud.MultiTenantPlatform.Core.DataAccess;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 {
-    public class FieldListAggregationService : Repository<FieldListAggregation>, IFieldListAggregationService
+    public class FieldListMetaFieldService : Repository<FieldListMetaField>, IFieldListMetaFieldService
     {
-        public FieldListAggregationService(
+        public FieldListMetaFieldService(
             MultiTenantPlatformDbContext multiTenantPlatformDbContext,
             IMetaFieldService _metaFieldService
             ) : base(multiTenantPlatformDbContext)
@@ -26,7 +26,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         readonly MultiTenantPlatformDbContext dbContext;
         readonly IMetaFieldService metaFieldService;
 
-        public new Result<IList<FieldListAggregation>> Add(IList<FieldListAggregation> entities)
+        public new Result<IList<FieldListMetaField>> Add(IList<FieldListMetaField> entities)
         {
             var metaFieldIds = entities.Select(t => t.MetaFieldId).ToArray();
             var metaFields = metaFieldService.GetByIds(metaFieldIds);
@@ -43,14 +43,14 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             return base.Add(entities);
         }
 
-        public List<FieldListAggregation> GetByFieldListId(int fieldListId)
+        public List<FieldListMetaField> GetByFieldListId(int fieldListId)
         {
-            return dbContext.Queryable<FieldListAggregation>().Where(t => t.FieldListId == fieldListId).ToList();
+            return dbContext.Queryable<FieldListMetaField>().Where(t => t.FieldListId == fieldListId).ToList();
         }
 
         public void DeleteByMetaFieldId(int metaFieldId)
         {
-            dbContext.Delete<FieldListAggregation>(t => t.MetaFieldId == metaFieldId);
+            dbContext.Delete<FieldListMetaField>(t => t.MetaFieldId == metaFieldId);
         }
 
         public List<MetaField> GetMetaFieldsByFieldListId(int fieldListId)
@@ -95,12 +95,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             return null;
         }
 
-        public FieldListAggregation GetById(int id)
+        public FieldListMetaField GetById(int id)
         {
-            return dbContext.Queryable<FieldListAggregation>().Where(t => t.Id == id).ToOne();
+            return dbContext.Queryable<FieldListMetaField>().Where(t => t.Id == id).ToOne();
         }
 
-        public new Result Update(FieldListAggregation entity)
+        public new Result Update(FieldListMetaField entity)
         {
             var entityExist = GetById(entity.Id);
             if (entityExist != null)
@@ -117,22 +117,22 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             //异步方法mysql超时!!!
             //await Task.Run(() =>
             //{
-                var fieldList = GetByFieldListId(interfaceFieldId);
-                if (fieldList != null && fieldList.Any())
+            var fieldList = GetByFieldListId(interfaceFieldId);
+            if (fieldList != null && fieldList.Any())
+            {
+                //i为当前应该保持的顺序
+                for (int i = 0; i < currentOrderMetaFieldIds.Length; i++)
                 {
-                    //i为当前应该保持的顺序
-                    for (int i = 0; i < currentOrderMetaFieldIds.Length; i++)
+                    //寻找第i个字段
+                    var item = fieldList.FirstOrDefault(t => t.MetaFieldId == currentOrderMetaFieldIds[i]);
+                    //如果该字段的排序值!=当前应该保持的顺序，则加到更新队列
+                    if (item != null && item.SortNumber != i)
                     {
-                        //寻找第i个字段
-                        var item = fieldList.FirstOrDefault(t => t.MetaFieldId == currentOrderMetaFieldIds[i]);
-                        //如果该字段的排序值!=当前应该保持的顺序，则加到更新队列
-                        if (item != null && item.SortNumber != i)
-                        {
-                            item.SortNumber = i;
-                            base.Update(item);
-                        }
+                        item.SortNumber = i;
+                        base.Update(item);
                     }
                 }
+            }
             //});
         }
     }

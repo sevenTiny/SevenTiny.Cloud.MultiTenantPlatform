@@ -5,10 +5,10 @@ using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract
 {
-    public interface IFieldListAggregationService : IRepository<FieldListAggregation>
+    public interface IFieldListMetaFieldService : IRepository<FieldListMetaField>
     {
-        FieldListAggregation GetById(int id);
-        List<FieldListAggregation> GetByFieldListId(int interfaceFieldId);
+        FieldListMetaField GetById(int id);
+        List<FieldListMetaField> GetByFieldListId(int interfaceFieldId);
         void DeleteByMetaFieldId(int metaFieldId);
         /// <summary>
         /// 获取接口配置的字段信息通过接口字段配置id

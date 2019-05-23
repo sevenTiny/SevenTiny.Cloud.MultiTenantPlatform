@@ -18,7 +18,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             {
                 //先将应用名赋值到ViewData
                 string appName = CurrentApplicationCode;
-                return HttpContext.Session.GetInt32("ApplicationId") ?? throw new ArgumentNullException("ApplicationId is null,please select application first!");
+                var applicationId = HttpContext.Session.GetInt32("ApplicationId");
+
+                if (applicationId == null)
+                    Response.Redirect("/Application/Select");
+
+                return applicationId ?? throw new ArgumentNullException("ApplicationId is null,please select application first!");
             }
         }
         /// <summary>
@@ -28,9 +33,13 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
         {
             get
             {
-                string appName = HttpContext.Session.GetString("ApplicationCode") ?? throw new ArgumentNullException("ApplicationCode is null,please select application first!");
-                ViewData["Application"] = appName;
-                return appName;
+                var applicationCode = HttpContext.Session.GetString("ApplicationCode");
+
+                if (string.IsNullOrEmpty(applicationCode))
+                    Response.Redirect("/Application/Select");
+
+                ViewData["Application"] = applicationCode ?? throw new ArgumentNullException("ApplicationCode is null,please select application first!");
+                return applicationCode;
             }
         }
 
@@ -41,7 +50,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
         {
             get
             {
-               return HttpContext.Session.GetInt32("MetaObjectId") ?? throw new ArgumentNullException("MetaObjectId is null,please select MetaObject first!"); ;
+                return HttpContext.Session.GetInt32("MetaObjectId") ?? throw new ArgumentNullException("MetaObjectId is null,please select MetaObject first!"); ;
             }
         }
 

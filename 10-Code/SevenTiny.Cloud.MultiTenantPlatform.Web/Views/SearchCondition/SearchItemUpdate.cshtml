@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
 
     ResponseModel result = Model as ResponseModel ?? new ResponseModel();
-    SearchConditionAggregation entity = result.Data as SearchConditionAggregation ?? new SearchConditionAggregation();
+    SearchConditionNode entity = result.Data as SearchConditionNode ?? new SearchConditionNode();
 }
 <article class="page-container">
     <form class="form form-horizontal validate" id="form-article-add" method="post" action="/SearchCondition/SearchItemUpdateLogic">

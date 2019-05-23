@@ -5,9 +5,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Entity
 {
     /// <summary>
     /// 条件字段
+    /// 每一个大条件里面会包含很多子条件，以SearchConditionId字段区分
     /// </summary>
     [Table]
-    public class SearchConditionAggregation
+    public class SearchConditionNode
     {
         [Key]
         [AutoIncrease]
@@ -53,6 +54,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Entity
         [Column]
         public int Visible { get; set; }
 
-        public List<SearchConditionAggregation> Children { get; set; }
+        public List<SearchConditionNode> Children { get; set; }
     }
 }

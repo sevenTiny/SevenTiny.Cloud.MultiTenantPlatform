@@ -115,7 +115,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
             return View(ResponseModel.Success(entity));
         }
 
-        public IActionResult SearchItemUpdateLogic(SearchConditionAggregation entity)
+        public IActionResult SearchItemUpdateLogic(SearchConditionNode entity)
         {
             if (entity.Id == 0)
             {
@@ -181,21 +181,21 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
         [HttpGet]
         public IActionResult AggregateConditionTreeView(int id)
         {
-            List<SearchConditionAggregation> conditions = conditionAggregationService.GetListBySearchConditionId(id);
+            List<SearchConditionNode> conditions = conditionAggregationService.GetListBySearchConditionId(id);
 
-            SearchConditionAggregation condition = conditions?.FirstOrDefault(t => t.ParentId == -1);
+            SearchConditionNode condition = conditions?.FirstOrDefault(t => t.ParentId == -1);
             if (condition != null)
             {
                 condition.Children = GetTree(conditions, condition.Id);
             }
 
             //Tree Search
-            List<SearchConditionAggregation> GetTree(List<SearchConditionAggregation> source, int parentId)
+            List<SearchConditionNode> GetTree(List<SearchConditionNode> source, int parentId)
             {
                 var childs = source.Where(t => t.ParentId == parentId).ToList();
                 if (childs == null)
                 {
-                    return new List<SearchConditionAggregation>();
+                    return new List<SearchConditionNode>();
                 }
                 else
                 {
@@ -206,11 +206,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
 
             if (condition != null)
             {
-                return JsonResultModel.Success("构造树成功！", new List<SearchConditionAggregation> { condition });
+                return JsonResultModel.Success("构造树成功！", new List<SearchConditionNode> { condition });
             }
             else
             {
-                return JsonResultModel.Success("构造树成功！", new List<SearchConditionAggregation>());
+                return JsonResultModel.Success("构造树成功！", new List<SearchConditionNode>());
             }
         }
     }

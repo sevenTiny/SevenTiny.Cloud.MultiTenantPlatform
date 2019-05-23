@@ -10,6 +10,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Entity
     [Table]
     public class SearchCondition : MetaObjectManageInfo
     {
-        public List<SearchConditionAggregation> ConditionFields { get; set; }
+        public List<SearchConditionNode> ConditionFields { get; set; }
     }
 }

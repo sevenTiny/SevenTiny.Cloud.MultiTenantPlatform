@@ -257,12 +257,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         public new Result Delete(int id)
         {
             //先检查引用关系
-            if (dbContext.Queryable<FieldListAggregation>().Where(t => t.MetaFieldId == id).Any())
+            if (dbContext.Queryable<FieldListMetaField>().Where(t => t.MetaFieldId == id).Any())
             {
                 return Result.Error("字段列表存在相关字段的引用关系，请先解除引用关系");
             }
 
-            if (dbContext.Queryable<SearchConditionAggregation>().Where(t => t.FieldId == id).Any())
+            if (dbContext.Queryable<SearchConditionNode>().Where(t => t.FieldId == id).Any())
             {
                 return Result.Error("搜索条件存在相关字段的引用关系，请先解除引用关系");
             }

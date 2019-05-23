@@ -4,7 +4,7 @@
 @{
     ViewData["Title"] = "AggregateCondition";
     Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
-    List<SearchConditionAggregation> entities = ViewData["AggregationConditions"] as List<SearchConditionAggregation> ?? new List<SearchConditionAggregation>();
+    List<SearchConditionNode> entities = ViewData["AggregationConditions"] as List<SearchConditionNode> ?? new List<SearchConditionNode>();
     List<MetaField> metafields = ViewData["MetaFields"] as List<MetaField> ?? new List<MetaField>();
     int searchConditionId = Convert.ToInt32(ViewData["SearchConditionId"]);
 }

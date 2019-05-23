@@ -7,19 +7,19 @@ using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract
 {
-    public interface ISearchConditionAggregationService : IRepository<SearchConditionAggregation>
+    public interface ISearchConditionAggregationService : IRepository<SearchConditionNode>
     {
-        Result<SearchConditionAggregation> Delete(int id);
+        Result<SearchConditionNode> Delete(int id);
         /// <summary>
         /// 获取搜索项集合，不包含连接节点
         /// </summary>
         /// <param name="searchConditionId"></param>
         /// <returns></returns>
-        List<SearchConditionAggregation> GetConditionItemsBySearchConditionId(int searchConditionId);
-        List<SearchConditionAggregation> GetListBySearchConditionId(int searchConditionId);
-        Result<SearchConditionAggregation> AggregateCondition(int interfaceConditionId, int brotherNodeId, int conditionJointTypeId, int fieldId, int conditionTypeId, string conditionValue, int conditionValueTypeId);
+        List<SearchConditionNode> GetConditionItemsBySearchConditionId(int searchConditionId);
+        List<SearchConditionNode> GetListBySearchConditionId(int searchConditionId);
+        Result<SearchConditionNode> AggregateCondition(int interfaceConditionId, int brotherNodeId, int conditionJointTypeId, int fieldId, int conditionTypeId, string conditionValue, int conditionValueTypeId);
 
-        Result<SearchConditionAggregation> DeleteAggregateCondition(int nodeId, int searchConditionId);
+        Result<SearchConditionNode> DeleteAggregateCondition(int nodeId, int searchConditionId);
 
         /// <summary>
         /// 将条件配置解析成mongodb可以执行的条件
@@ -30,6 +30,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract
         /// <param name="isIgnoreArgumentsCheck">是否忽略参数校验,如果为true，需要的参数未传递会抛出异常；如果为false，需要的参数不存在条件返回null</param>
         /// <returns></returns>
         FilterDefinition<BsonDocument> AnalysisConditionToFilterDefinitionByConditionId(int metaObjectId, int searchConditionId, Dictionary<string, object> conditionValueDic, bool isIgnoreArgumentsCheck = false);
-        SearchConditionAggregation GetById(int id);
+        SearchConditionNode GetById(int id);
     }
 }
