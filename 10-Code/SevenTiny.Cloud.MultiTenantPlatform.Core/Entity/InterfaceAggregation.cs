@@ -43,5 +43,15 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Entity
         /// </summary>
         [Column]
         public string FormName { get; set; }
+        /// <summary>
+        /// 数据源Id
+        /// </summary>
+        [Column]
+        public int DataSourceId { get; set; }
+        /// <summary>
+        /// 数据源名称
+        /// </summary>
+        [Column]
+        public string DataSourceName { get; set; }
     }
 }

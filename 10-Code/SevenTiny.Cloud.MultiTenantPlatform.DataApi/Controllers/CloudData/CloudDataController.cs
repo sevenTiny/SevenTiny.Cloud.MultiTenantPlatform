@@ -91,18 +91,18 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
                 //get result
                 switch ((InterfaceType)interfaceAggregation.InterfaceType)
                 {
-                    case InterfaceType.CloudSingleObject:
+                    case InterfaceType.SingleObject:
                         filter = triggerScriptEngineService.SingleObjectBefore(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, filter);
                         var singleObjectComponent = dataAccessService.GetSingleObjectComponent(interfaceAggregation.MetaObjectId, interfaceAggregation.FieldListId, filter);
                         singleObjectComponent = triggerScriptEngineService.SingleObjectAfter(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, singleObjectComponent);
                         return JsonResultModel.Success("get single data success", singleObjectComponent);
-                    case InterfaceType.CloudTableList:
+                    case InterfaceType.TableList:
                         filter = triggerScriptEngineService.TableListBefore(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, filter);
                         var sort = metaFieldService.GetSortDefinitionBySortFields(interfaceAggregation.MetaObjectId, null);
                         var tableListComponent = dataAccessService.GetTableListComponent(interfaceAggregation.MetaObjectId, interfaceAggregation.FieldListId, filter, queryArgs.pageIndex, queryArgs.pageSize, sort, out int totalCount);
                         tableListComponent = triggerScriptEngineService.TableListAfter(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, tableListComponent);
                         return JsonResultModel.Success("get data list success", tableListComponent);
-                    case InterfaceType.CloudCount:
+                    case InterfaceType.Count:
                         filter = triggerScriptEngineService.CountBefore(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, filter);
                         var count = dataAccessService.GetCount(interfaceAggregation.MetaObjectId, filter);
                         count = triggerScriptEngineService.CountAfter(interfaceAggregation.MetaObjectId, interfaceAggregation.Code, count);

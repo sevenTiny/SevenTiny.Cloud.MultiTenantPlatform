@@ -8,15 +8,15 @@
         /// <summary>
         /// 单对象
         /// </summary>
-        CloudSingleObject = 1,
+        SingleObject = 1,
         /// <summary>
         /// 对象列表
         /// </summary>
-        CloudTableList = 2,
+        TableList = 2,
         /// <summary>
         /// 数量
         /// </summary>
-        CloudCount = 3,
+        Count = 3,
         /// <summary>
         /// 枚举数据源
         /// </summary>
@@ -32,11 +32,11 @@
         {
             switch (datatype)
             {
-                case (int)InterfaceType.CloudSingleObject:
+                case (int)InterfaceType.SingleObject:
                     return "单对象";
-                case (int)InterfaceType.CloudTableList:
+                case (int)InterfaceType.TableList:
                     return "数据集合";
-                case (int)InterfaceType.CloudCount:
+                case (int)InterfaceType.Count:
                     return "数据量";
                 case (int)InterfaceType.EnumeDataSource:
                     return "枚举数据源";

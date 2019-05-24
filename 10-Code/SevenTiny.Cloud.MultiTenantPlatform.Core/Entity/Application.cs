@@ -1,8 +1,4 @@
-﻿using SevenTiny.Bantina.Bankinate;
-using SevenTiny.Bantina.Bankinate.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using SevenTiny.Bantina.Bankinate.Attributes;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Entity
 {
