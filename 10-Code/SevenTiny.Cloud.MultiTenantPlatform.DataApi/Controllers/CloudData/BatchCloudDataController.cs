@@ -22,7 +22,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
         public BatchCloudDataController(
             IDataAccessService _dataAccessService,
             ISearchConditionService _searchConditionService,
-            ISearchConditionAggregationService _conditionAggregationService,
+            ISearchConditionNodeService _conditionAggregationService,
             IInterfaceAggregationService _interfaceAggregationService,
             IFieldBizDataService _fieldBizDataService,
             ITriggerScriptExecuteService _triggerScriptEngineService,
@@ -40,7 +40,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Controllers
 
         readonly IDataAccessService dataAccessService;
         readonly IInterfaceAggregationService interfaceAggregationService;
-        readonly ISearchConditionAggregationService conditionAggregationService;
+        readonly ISearchConditionNodeService conditionAggregationService;
         readonly IFieldBizDataService fieldBizDataService;
         readonly ITriggerScriptExecuteService triggerScriptEngineService;
         readonly ISearchConditionService searchConditionService;

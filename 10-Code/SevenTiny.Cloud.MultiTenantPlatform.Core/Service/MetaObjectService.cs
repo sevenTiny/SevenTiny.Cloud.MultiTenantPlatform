@@ -18,7 +18,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             IFieldListService _fieldListService,
             IInterfaceAggregationService _interfaceAggregationService,
             ISearchConditionService _searchConditionService,
-            ITriggerScriptService _triggerScriptService
+            ITriggerScriptService _triggerScriptService,
+            IFormService formService
             ) : base(multiTenantPlatformDbContext)
         {
             dbContext = multiTenantPlatformDbContext;
@@ -27,6 +28,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             interfaceAggregationService = _interfaceAggregationService;
             searchConditionService = _searchConditionService;
             triggerScriptService = _triggerScriptService;
+            _formService = formService;
         }
 
         MultiTenantPlatformDbContext dbContext;
@@ -35,6 +37,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         IInterfaceAggregationService interfaceAggregationService;
         ISearchConditionService searchConditionService;
         ITriggerScriptService triggerScriptService;
+        IFormService _formService;
 
         public List<MetaObject> GetMetaObjectsUnDeletedByApplicationId(int applicationId)
             => dbContext.Queryable<MetaObject>().Where(t => t.ApplicationId == applicationId && t.IsDeleted == (int)IsDeleted.UnDeleted).ToList();
@@ -119,14 +122,19 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             TransactionHelper.Transaction(() =>
             {
                 //把相关字段一并删除
+                //删除字段
                 metaFieldService.DeleteByMetaObjectId(id);
-                metaFieldService.DeleteByMetaObjectId(id);
+                //删除列表
                 fieldListService.DeleteByMetaObjectId(id);//删除相关子对象
+                //删除接口
                 interfaceAggregationService.DeleteByMetaObjectId(id);
+                //删除搜索条件
                 searchConditionService.DeleteByMetaObjectId(id);//删除相关子对象
+                //删除触发器
                 triggerScriptService.DeleteByMetaObjectId(id);
-                //这里补充待删除的子对象
-                //...
+                //删除表单
+                _formService.DeleteByMetaObjectId(id);
+                //这里要补充待删除的子对象
                 base.Delete(id);
             });
             return Result<MetaObject>.Success();

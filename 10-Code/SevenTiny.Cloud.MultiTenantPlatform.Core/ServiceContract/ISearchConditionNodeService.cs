@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract
 {
-    public interface ISearchConditionAggregationService : IRepository<SearchConditionNode>
+    public interface ISearchConditionNodeService : IRepository<SearchConditionNode>
     {
         Result<SearchConditionNode> Delete(int id);
         /// <summary>

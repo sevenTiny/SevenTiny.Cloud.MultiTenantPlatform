@@ -14,9 +14,9 @@ using System.Linq.Expressions;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 {
-    public class SearchConditionAggregationService : Repository<SearchConditionNode>, ISearchConditionAggregationService
+    public class SearchConditionNodeService : Repository<SearchConditionNode>, ISearchConditionNodeService
     {
-        public SearchConditionAggregationService(
+        public SearchConditionNodeService(
             MultiTenantPlatformDbContext multiTenantPlatformDbContext,
             IMetaFieldService _metaFieldService
             ) : base(multiTenantPlatformDbContext)

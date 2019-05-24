@@ -12,12 +12,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Controllers
     {
         private readonly ISearchConditionService searchConditionService;
         private readonly IMetaFieldService metaFieldService;
-        readonly ISearchConditionAggregationService conditionAggregationService;
+        readonly ISearchConditionNodeService conditionAggregationService;
 
         public SearchConditionController(
             ISearchConditionService _searchConditionService,
             IMetaFieldService _metaFieldService,
-            ISearchConditionAggregationService _conditionAggregationService
+            ISearchConditionNodeService _conditionAggregationService
             )
         {
             searchConditionService = _searchConditionService;

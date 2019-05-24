@@ -21,7 +21,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             MultiTenantPlatformDbContext multiTenantPlatformDbContext,
             IFieldListService _interfaceFieldService,
             ISearchConditionService _searchConditionService,
-            ISearchConditionAggregationService _searchConditionAggregationService
+            ISearchConditionNodeService _searchConditionAggregationService
             ) : base(multiTenantPlatformDbContext)
         {
             dbContext = multiTenantPlatformDbContext;
@@ -33,7 +33,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         readonly MultiTenantPlatformDbContext dbContext;
         readonly IFieldListService interfaceFieldService;
         readonly ISearchConditionService searchConditionService;
-        readonly ISearchConditionAggregationService searchConditionAggregationService;
+        readonly ISearchConditionNodeService searchConditionAggregationService;
 
         //新增
         public new Result<IndexView> Add(IndexView entity)
