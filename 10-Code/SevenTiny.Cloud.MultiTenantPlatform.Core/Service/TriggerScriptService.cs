@@ -30,14 +30,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             if (myfield != null)
             {
                 //编码不允许修改
-                //脚本类型不允许修改
-
-                //如果脚本有改动，则清空脚本缓存
-                if (!myfield.Script.Equals(triggerScript.Script))
-                    TriggerScriptCache.ClearCache(triggerScript.Script);
-
+                myfield.ServiceType = triggerScript.ServiceType;
+                myfield.ServiceMethod = triggerScript.ServiceMethod;
+                myfield.TriggerPoint = triggerScript.TriggerPoint;
+                myfield.Language = triggerScript.Language;
+                myfield.OnFailurePolicy = triggerScript.OnFailurePolicy;
                 myfield.Script = triggerScript.Script;
-                myfield.FailurePolicy = triggerScript.FailurePolicy;
 
                 myfield.Name = triggerScript.Name;
                 myfield.Group = triggerScript.Group;
@@ -46,8 +44,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                 myfield.ModifyBy = -1;
                 myfield.ModifyTime = DateTime.Now;
             }
-            base.Update(myfield);
-            return Result<TriggerScript>.Success();
+            return base.Update(myfield);
         }
 
         public List<TriggerScript> GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(int metaObjectId, int scriptType)
