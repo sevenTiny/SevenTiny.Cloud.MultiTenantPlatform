@@ -14,8 +14,4 @@
         /// </summary>
         DataSource = 2
     }
-    public static class ScriptTypeTranslator
-    {
-
-    }
 }

@@ -57,9 +57,15 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             return base.Update(myfield);
         }
 
-        public Result CompilateAndCheckScript(string script)
+        public Result CompilateAndCheckScript(string script, string applicationCode)
         {
-            return Result.Success();
+            var dynamicScript = new DynamicScript
+            {
+                Script = script,
+                Language = DynamicScriptLanguage.CSharp,
+                ProjectName = applicationCode
+            };
+            return _scriptEngineProvider.CheckScript(dynamicScript);
         }
 
         public List<TriggerScript> GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(int metaObjectId, int serviceType)
@@ -80,10 +86,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                     dynamicScript.FunctionName = FunctionName_MetaObject_Interface_Add_Before;
                     dynamicScript.ProjectName = applicationCode;
                     dynamicScript.Parameters = new[] { bsonElements };
-                    //这里回头放开
-                    //var result = _scriptEngineProvider.Run<BsonDocument>(dynamicScript);
-                    //if (!result.IsSuccess && (OnFailureAction)script.OnFailurePolicy == OnFailureAction.Break)
-                    //    throw new Exception(result.Message);
+                    var result = _scriptEngineProvider.RunScript<BsonDocument>(dynamicScript);
+                    if (!result.IsSuccess && (OnFailurePolicy)script.OnFailurePolicy == OnFailurePolicy.Break)
+                        throw new Exception(result.Message);
                 }
             }
             return bsonElements;

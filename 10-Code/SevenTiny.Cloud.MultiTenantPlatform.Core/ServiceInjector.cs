@@ -8,7 +8,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core
 {
     public static class ServiceInjector
     {
-        public static void InjectDomain(this IServiceCollection services)
+        public static void InjectCore(this IServiceCollection services)
         {
             services.AddScoped(Assembly.GetExecutingAssembly());
 

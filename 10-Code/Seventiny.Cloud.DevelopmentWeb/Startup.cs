@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Seventiny.Cloud.DevelopmentWeb.Filters;
+using SevenTiny.Cloud.MultiTenantPlatform.Core;
 
 namespace Seventiny.Cloud.DevelopmentWeb
 {
@@ -31,8 +33,20 @@ namespace Seventiny.Cloud.DevelopmentWeb
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            //start 7tiny ---
+            //session support
+            services.AddDistributedMemoryCache();
+            services.AddSession(o =>
+            {
+                o.IdleTimeout = TimeSpan.FromDays(1);
+            });
+            //DI
+            services.InjectCore();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc(options =>
+            {
+                options.Filters.Add<HttpGlobalExceptionFilter>();
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,11 +63,21 @@ namespace Seventiny.Cloud.DevelopmentWeb
                 app.UseHsts();
             }
 
+            //start 7tiny ---
+            //session support
+            app.UseSession();
+            //end 7tiny ---
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
-            app.UseMvc();
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                        template: "{controller=Home}/{action=Index}/{id?}");
+            });
         }
     }
 }

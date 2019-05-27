@@ -10,7 +10,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract
 {
     public interface ITriggerScriptService : IMetaObjectManageRepository<TriggerScript>
     {
-        Result CompilateAndCheckScript(string script);
+        Result CompilateAndCheckScript(string script, string applicationCode);
         List<TriggerScript> GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(int metaObjectId, int scriptType);
         string GetDefaultMetaObjectTriggerScriptByServiceTypeBefore(int serviceType);
         string GetDefaultMetaObjectTriggerScriptByServiceTypeAfter(int serviceType);

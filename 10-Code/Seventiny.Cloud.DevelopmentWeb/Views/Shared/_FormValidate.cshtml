@@ -1,0 +1,19 @@
+﻿<!--需要提前引入jquery-->
+<script type="text/javascript" src="~/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript" src="~/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="~/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script>
+    $().ready(function () {
+        $("form.validate").validate({
+            ignore: ".ignore"
+        });
+    });
+
+    //文本区域的限制
+    $(".textarea").Huitextarealength({
+        minlength: 0,
+        maxlength: 1000,
+        //errorClass:"error",//错误样式,超出限制 给文本框增加一个样式
+        exceed: false//超出最大字数是否允许输入
+    });
+</script>

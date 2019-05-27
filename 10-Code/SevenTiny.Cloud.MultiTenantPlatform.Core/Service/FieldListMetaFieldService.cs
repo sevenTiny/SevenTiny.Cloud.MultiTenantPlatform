@@ -112,7 +112,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             return base.Update(entityExist);
         }
 
-        public async void SortFields(int interfaceFieldId, int[] currentOrderMetaFieldIds)
+        public void SortFields(int interfaceFieldId, int[] currentOrderMetaFieldIds)
         {
             //异步方法mysql超时!!!
             //await Task.Run(() =>
