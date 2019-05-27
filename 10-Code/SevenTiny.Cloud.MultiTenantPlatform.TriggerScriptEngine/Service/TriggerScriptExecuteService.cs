@@ -75,7 +75,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Service
 
         public BsonDocument AddBefore(int metaObjectId, string operateCode, BsonDocument bsonElements)
         {
-            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.Add_Before);
+            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(metaObjectId, (int)ScriptType.Add_Before);
             if (triggerScripts != null && triggerScripts.Any())
             {
                 foreach (var item in triggerScripts)
@@ -98,7 +98,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Service
 
         public List<BsonDocument> BatchAddBefore(int metaObjectId, string operateCode, List<BsonDocument> bsonElementsList)
         {
-            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.BatchAdd_Before);
+            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(metaObjectId, (int)ScriptType.BatchAdd_Before);
             if (triggerScripts != null && triggerScripts.Any())
             {
                 foreach (var item in triggerScripts)
@@ -121,7 +121,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Service
 
         public FilterDefinition<BsonDocument> UpdateBefore(int metaObjectId, string operateCode, FilterDefinition<BsonDocument> condition)
         {
-            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.Update_Before);
+            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(metaObjectId, (int)ScriptType.Update_Before);
             if (triggerScripts != null && triggerScripts.Any())
             {
                 foreach (var item in triggerScripts)
@@ -144,7 +144,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Service
 
         public FilterDefinition<BsonDocument> DeleteBefore(int metaObjectId, string operateCode, FilterDefinition<BsonDocument> condition)
         {
-            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.Delete_Before);
+            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(metaObjectId, (int)ScriptType.Delete_Before);
             if (triggerScripts != null && triggerScripts.Any())
             {
                 foreach (var item in triggerScripts)
@@ -168,7 +168,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Service
         //TableList触发器
         public FilterDefinition<BsonDocument> TableListBefore(int metaObjectId, string operateCode, FilterDefinition<BsonDocument> condition)
         {
-            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.TableList_Before);
+            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(metaObjectId, (int)ScriptType.TableList_Before);
             if (triggerScripts != null && triggerScripts.Any())
             {
                 foreach (var item in triggerScripts)
@@ -190,7 +190,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Service
         }
         public TableListComponent TableListAfter(int metaObjectId, string operateCode, TableListComponent tableListComponent)
         {
-            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.TableList_After);
+            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(metaObjectId, (int)ScriptType.TableList_After);
             if (triggerScripts != null && triggerScripts.Any())
             {
                 foreach (var item in triggerScripts)
@@ -214,7 +214,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Service
         //SingleObject触发器
         public FilterDefinition<BsonDocument> SingleObjectBefore(int metaObjectId, string operateCode, FilterDefinition<BsonDocument> condition)
         {
-            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.SingleObject_Before);
+            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(metaObjectId, (int)ScriptType.SingleObject_Before);
             if (triggerScripts != null && triggerScripts.Any())
             {
                 foreach (var item in triggerScripts)
@@ -236,7 +236,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Service
         }
         public SingleObjectComponent SingleObjectAfter(int metaObjectId, string operateCode, SingleObjectComponent singleObjectComponent)
         {
-            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.SingleObject_After);
+            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(metaObjectId, (int)ScriptType.SingleObject_After);
             if (triggerScripts != null && triggerScripts.Any())
             {
                 foreach (var item in triggerScripts)
@@ -260,7 +260,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Service
         //Count触发器
         public FilterDefinition<BsonDocument> CountBefore(int metaObjectId, string operateCode, FilterDefinition<BsonDocument> condition)
         {
-            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.Count_Before);
+            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(metaObjectId, (int)ScriptType.Count_Before);
             if (triggerScripts != null && triggerScripts.Any())
             {
                 foreach (var item in triggerScripts)
@@ -282,7 +282,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.TriggerScriptEngine.Service
         }
         public int CountAfter(int metaObjectId, string operateCode, int count)
         {
-            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(metaObjectId, (int)ScriptType.Count_After);
+            var triggerScripts = triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(metaObjectId, (int)ScriptType.Count_After);
             if (triggerScripts != null && triggerScripts.Any())
             {
                 foreach (var item in triggerScripts)

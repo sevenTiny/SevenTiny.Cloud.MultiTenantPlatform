@@ -8,17 +8,27 @@ using System;
 using System.Collections.Generic;
 using SevenTiny.Bantina;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.DataAccess;
+using Seventiny.Cloud.ScriptEngine;
+using MongoDB.Bson;
+using MongoDB.Driver;
+using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.ListView;
+using System.Linq;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 {
     public class TriggerScriptService : MetaObjectManageRepository<TriggerScript>, ITriggerScriptService
     {
-        public TriggerScriptService(MultiTenantPlatformDbContext multiTenantPlatformDbContext) : base(multiTenantPlatformDbContext)
+        public TriggerScriptService(
+            MultiTenantPlatformDbContext multiTenantPlatformDbContext,
+            IScriptEngineProvider scriptEngineProvider
+            ) : base(multiTenantPlatformDbContext)
         {
-            dbContext = multiTenantPlatformDbContext;
+            _dbContext = multiTenantPlatformDbContext;
+            _scriptEngineProvider = scriptEngineProvider;
         }
 
-        readonly MultiTenantPlatformDbContext dbContext;
+        readonly MultiTenantPlatformDbContext _dbContext;
+        readonly IScriptEngineProvider _scriptEngineProvider;
 
         /// <summary>
         /// 更新对象
@@ -47,52 +57,162 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             return base.Update(myfield);
         }
 
-        public List<TriggerScript> GetTriggerScriptsUnDeletedByMetaObjectIdAndScriptType(int metaObjectId, int scriptType)
+        public Result CompilateAndCheckScript(string script)
         {
-            return dbContext.Queryable<TriggerScript>().Where(t => t.MetaObjectId == metaObjectId && t.ScriptType == scriptType).ToList();
+            return Result.Success();
         }
 
-        public string GetDefaultTriggerScriptByScriptType(int scriptType)
+        public List<TriggerScript> GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(int metaObjectId, int serviceType)
         {
-            switch ((ScriptType)scriptType)
+            return _dbContext.Queryable<TriggerScript>().Where(t => t.MetaObjectId == metaObjectId && t.ServiceType == serviceType).ToList();
+        }
+
+        #region Execute Script
+        public BsonDocument Run_MetaObject_Interface_Add_Before(int metaObjectId, string interfaceCode, BsonDocument bsonElements)
+        {
+            string applicationCode = interfaceCode.Split('.')[0];
+            var triggerScripts = GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(metaObjectId, (int)ServiceType.Interface_Add)?.Where(t => t.TriggerPoint == (int)TriggerPoint.Before).ToList();
+            if (triggerScripts != null && triggerScripts.Any())
             {
-                case ScriptType.Add_Before: return DefaultAddBeforeTriggerScript;
-
-                case ScriptType.Update_Before:
-                case ScriptType.Delete_Before:
-                case ScriptType.TableList_Before:
-                case ScriptType.SingleObject_Before:
-                case ScriptType.Count_Before: return DefaultQueryBeforeTriggerScript;
-
-                case ScriptType.TableList_After: return DefaultTableListAfterTriggerScript;
-                case ScriptType.SingleObject_After: return DefaultSingleObjectAfterTriggerScript;
-                case ScriptType.Count_After: return DefaultCountAfterTriggerScript;
-                default: return null;
+                foreach (var script in triggerScripts)
+                {
+                    var dynamicScript = script.ToDynamicScript();
+                    dynamicScript.FunctionName = FunctionName_MetaObject_Interface_Add_Before;
+                    dynamicScript.ProjectName = applicationCode;
+                    dynamicScript.Parameters = new[] { bsonElements };
+                    //这里回头放开
+                    //var result = _scriptEngineProvider.Run<BsonDocument>(dynamicScript);
+                    //if (!result.IsSuccess && (OnFailureAction)script.OnFailurePolicy == OnFailureAction.Break)
+                    //    throw new Exception(result.Message);
+                }
             }
+            return bsonElements;
+        }
+        public BsonDocument Run_MetaObject_Interface_Add_After(int metaObjectId, string interfaceCode, BsonDocument bsonElements)
+        {
+            throw new NotImplementedException();
+        }
+        public List<BsonDocument> Run_MetaObject_Interface_BatchAdd_Before(int metaObjectId, string interfaceCode, List<BsonDocument> bsonElementsList)
+        {
+            throw new NotImplementedException();
+        }
+        public List<BsonDocument> Run_MetaObject_Interface_BatchAdd_After(int metaObjectId, string interfaceCode, List<BsonDocument> bsonElementsList)
+        {
+            throw new NotImplementedException();
+        }
+        public FilterDefinition<BsonDocument> Run_MetaObject_Interface_Update_Before(int metaObjectId, string interfaceCode, FilterDefinition<BsonDocument> condition)
+        {
+            throw new NotImplementedException();
+        }
+        public FilterDefinition<BsonDocument> Run_MetaObject_Interface_Delete_Before(int metaObjectId, string interfaceCode, FilterDefinition<BsonDocument> condition)
+        {
+            throw new NotImplementedException();
         }
 
-        public string GetDefaultTriggerScriptDataSourceScript() => DefaultDataSourceTriggerScript;
+        public FilterDefinition<BsonDocument> Run_MetaObject_Interface_TableList_Before(int metaObjectId, string interfaceCode, FilterDefinition<BsonDocument> condition)
+        {
+            throw new NotImplementedException();
+        }
+        public TableListComponent Run_MetaObject_Interface_TableList_After(int metaObjectId, string interfaceCode, TableListComponent tableListComponent)
+        {
+            throw new NotImplementedException();
+        }
 
+        public FilterDefinition<BsonDocument> Run_MetaObject_Interface_SingleObject_Before(int metaObjectId, string interfaceCode, FilterDefinition<BsonDocument> condition)
+        {
+            throw new NotImplementedException();
+        }
+        public SingleObjectComponent Run_MetaObject_Interface_SingleObject_After(int metaObjectId, string interfaceCode, SingleObjectComponent singleObjectComponent)
+        {
+            throw new NotImplementedException();
+        }
+
+        public FilterDefinition<BsonDocument> Run_MetaObject_Interface_Count_Before(int metaObjectId, string interfaceCode, FilterDefinition<BsonDocument> condition)
+        {
+            throw new NotImplementedException();
+        }
+        public int Run_MetaObject_Interface_Count_After(int metaObjectId, string interfaceCode, int count)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object Run_DataSource(string interfaceCode, Dictionary<string, object> argumentsDic)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+
+        #region 根据场景获取默认的脚本模板
+        public string GetDefaultMetaObjectTriggerScriptByServiceTypeBefore(int serviceType)
+        {
+            switch ((ServiceType)serviceType)
+            {
+                case ServiceType.UI_ObjectData:
+                    break;
+                case ServiceType.Interface_Add: return DefaultScript_MetaObject_Interface_Add_Before;
+                case ServiceType.Interface_BatchAdd: return DefaultScript_MetaObject_Interface_BatchAdd_Before;
+                case ServiceType.Interface_Update: return DefaultScript_MetaObject_Interface_Update_Before;
+                case ServiceType.Interface_Put: return DefaultScript_MetaObject_Interface_Put_Before;
+                case ServiceType.Interface_Delete: return DefaultScript_MetaObject_Interface_Delete_Before;
+                case ServiceType.Interface_TableList: return DefaultScript_MetaObject_Interface_TableList_Before;
+                case ServiceType.Interface_SingleObject: return DefaultScript_MetaObject_Interface_SingleObject_Before;
+                case ServiceType.Interface_Count: return DefaultScript_MetaObject_Interface_Count_Before;
+                default: return string.Empty;
+            }
+            return string.Empty;
+        }
+        public string GetDefaultMetaObjectTriggerScriptByServiceTypeAfter(int serviceType)
+        {
+            switch ((ServiceType)serviceType)
+            {
+                case ServiceType.UI_ObjectData:
+                    break;
+                case ServiceType.Interface_Add: return DefaultScript_MetaObject_Interface_Add_After;
+                case ServiceType.Interface_BatchAdd: return DefaultScript_MetaObject_Interface_BatchAdd_After;
+                case ServiceType.Interface_Update: return DefaultScript_MetaObject_Interface_Update_After;
+                case ServiceType.Interface_Put: return DefaultScript_MetaObject_Interface_Put_After;
+                case ServiceType.Interface_Delete: return DefaultScript_MetaObject_Interface_Delete_After;
+                case ServiceType.Interface_TableList: return DefaultScript_MetaObject_Interface_TableList_After;
+                case ServiceType.Interface_SingleObject: return DefaultScript_MetaObject_Interface_SingleObject_After;
+                case ServiceType.Interface_Count: return DefaultScript_MetaObject_Interface_Count_After;
+                default: return string.Empty;
+            }
+            return string.Empty;
+        }
+        public string GetDefaultDataSourceTriggerScript() => DefaultScript_DataSource;
+        #endregion
+
+        #region 各类触发点的触发器脚本
         /// <summary>
         /// 所有脚本默认内置的通用命名空间引用，个性化的引用请写在各自脚本中
         /// </summary>
         private string DefaultCommonUsing
             => @"
+//命名空间
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.DataAccess;
+using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData;
+using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.ListView;
+using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.UserInfo;
+using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.DataAccess;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using logger = SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging.Logger;
 ";
-
         /// <summary>
-        /// 所有脚本类内方法外内置的通用代码段，个性化请卸写在各自脚本中
+        /// 所有脚本类内方法外内置的通用代码段，个性化请写在各自脚本中
         /// </summary>
         private string DefaultCommonClassInnerCode
            => @"
 //end using
 //注释：上面的end using注释为using分隔符，请不要删除；
-//注释：输出日志请使用 logger.Error(),logger.Debug(),logger.Info()
+//注释：输出日志请使用 logger.Error(),logger.Debug(),logger.Info()等
+MultiTenantDataDbContext db = new MultiTenantDataDbContext();
 ";
-
         /// <summary>
         /// 所有脚本方法内默认内置的通用代码段，个性化请写在各自脚本中
         /// </summary>
@@ -100,38 +220,47 @@ using MongoDB.Driver;
             => @"
 
 ";
-
-        #region 各类触发点的触发器脚本
-
-        private string DefaultQueryBeforeTriggerScript
-            => $@"
+        /// <summary>
+        /// 查询条件的脚本可重用
+        /// </summary>
+        /// <param name="methodName"></param>
+        /// <returns></returns>
+        private string Get_DefaultScript_MetaObject_Interface_QueryCondition(string methodName)
+=> $@"
 {DefaultCommonUsing}
 {DefaultCommonClassInnerCode}
-public FilterDefinition<BsonDocument> QueryBefore(string operateCode,FilterDefinition<BsonDocument> condition)
+public FilterDefinition<BsonDocument> {methodName}(string interfaceCode,FilterDefinition<BsonDocument> condition)
 {{
     {DefaultCommonMethodCode}
 	//这里写业务逻辑
 	//...
 	return condition;
-}}
-";
-        private string DefaultBatchAddBeforeTriggerScript
-    => $@"
+}}"
+;
+
+        const string FunctionName_MetaObject_Interface_Add_Before = "Interface_Add_Before";
+        const string FunctionName_MetaObject_Interface_Add_After = "Interface_Add_After";
+        const string FunctionName_MetaObject_Interface_BatchAdd_Before = "Interface_BatchAdd_Before";
+        const string FunctionName_MetaObject_Interface_BatchAdd_After = "Interface_BatchAdd_After";
+        const string FunctionName_MetaObject_Interface_Update_Before = "Interface_Update_Before";
+        const string FunctionName_MetaObject_Interface_Update_After = "Interface_Update_After";
+        const string FunctionName_MetaObject_Interface_Put_Before = "Interface_Put_Before";
+        const string FunctionName_MetaObject_Interface_Put_After = "Interface_Put_After";
+        const string FunctionName_MetaObject_Interface_Delete_Before = "Interface_Delete_Before";
+        const string FunctionName_MetaObject_Interface_Delete_After = "Interface_Delete_After";
+        const string FunctionName_MetaObject_Interface_TableList_Before = "Interface_TableList_Before";
+        const string FunctionName_MetaObject_Interface_TableList_After = "Interface_TableList_After";
+        const string FunctionName_MetaObject_Interface_SingleObject_Before = "Interface_SingleObject_Before";
+        const string FunctionName_MetaObject_Interface_SingleObject_After = "Interface_SingleObject_After";
+        const string FunctionName_MetaObject_Interface_Count_Before = "Interface_Count_Before";
+        const string FunctionName_MetaObject_Interface_Count_After = "Interface_Count_After";
+        const string FunctionName_DataSource = "TriggerScriptDataSource";
+
+        private string DefaultScript_MetaObject_Interface_Add_Before
+=> $@"
 {DefaultCommonUsing}
 {DefaultCommonClassInnerCode}
-public List<BsonDocument> BatchAddBefore(string operateCode,List<BsonDocument> bsonElementsList)
-{{
-    {DefaultCommonMethodCode}
-	//这里写业务逻辑
-	//...
-	return bsonElementsList;
-}}
-";
-        private string DefaultAddBeforeTriggerScript
-    => $@"
-{DefaultCommonUsing}
-{DefaultCommonClassInnerCode}
-public BsonDocument AddBefore(string operateCode,BsonDocument bsonElements)
+public BsonDocument {FunctionName_MetaObject_Interface_Add_Before}(string interfaceCode,BsonDocument bsonElements)
 {{
     {DefaultCommonMethodCode}
 	//这里写业务逻辑
@@ -139,23 +268,70 @@ public BsonDocument AddBefore(string operateCode,BsonDocument bsonElements)
 	return bsonElements;
 }}
 ";
-        private string DefaultTableListAfterTriggerScript
-            => $@"
+        private string DefaultScript_MetaObject_Interface_Add_After
+=> $@"
 {DefaultCommonUsing}
 {DefaultCommonClassInnerCode}
-public TableListComponent TableListAfter(string operateCode,TableListComponent tableListComponent)
+public BsonDocument {FunctionName_MetaObject_Interface_Add_After}(string interfaceCode,BsonDocument bsonElements)
 {{
     {DefaultCommonMethodCode}
 	//这里写业务逻辑
 	//...
-	return tableListComponent;
+	return bsonElements;
 }}
 ";
-        private string DefaultSingleObjectAfterTriggerScript
+        private string DefaultScript_MetaObject_Interface_BatchAdd_Before
+=> $@"
+{DefaultCommonUsing}
+{DefaultCommonClassInnerCode}
+public List<BsonDocument> {FunctionName_MetaObject_Interface_BatchAdd_Before}(string interfaceCode,List<BsonDocument> bsonElementsList)
+{{
+    {DefaultCommonMethodCode}
+	//这里写业务逻辑
+	//...
+	return bsonElementsList;
+}}
+";
+        private string DefaultScript_MetaObject_Interface_BatchAdd_After
             => $@"
 {DefaultCommonUsing}
 {DefaultCommonClassInnerCode}
-public SingleObjectComponent SingleObjectAfter(string operateCode,SingleObjectComponent singleObjectComponent)
+public List<BsonDocument> {FunctionName_MetaObject_Interface_BatchAdd_After}(string interfaceCode,List<BsonDocument> bsonElementsList)
+{{
+    {DefaultCommonMethodCode}
+	//这里写业务逻辑
+	//...
+	return bsonElementsList;
+}}
+";
+        private string DefaultScript_MetaObject_Interface_Update_Before
+            => string.Empty;
+        private string DefaultScript_MetaObject_Interface_Update_After => string.Empty;
+        private string DefaultScript_MetaObject_Interface_Put_Before => string.Empty;
+        private string DefaultScript_MetaObject_Interface_Put_After => string.Empty;
+        private string DefaultScript_MetaObject_Interface_Delete_Before => string.Empty;
+        private string DefaultScript_MetaObject_Interface_Delete_After => string.Empty;
+        private string DefaultScript_MetaObject_Interface_TableList_Before
+=> Get_DefaultScript_MetaObject_Interface_QueryCondition("Interface_TableList_Before");
+        private string DefaultScript_MetaObject_Interface_TableList_After
+=> $@"
+{DefaultCommonUsing}
+{DefaultCommonClassInnerCode}
+public TableListComponent {FunctionName_MetaObject_Interface_TableList_After}(string interfaceCode, TableListComponent tableListComponent)
+{{
+    { DefaultCommonMethodCode}
+    //这里写业务逻辑
+    //...
+    return tableListComponent;
+}}
+";
+        private string DefaultScript_MetaObject_Interface_SingleObject_Before
+=> Get_DefaultScript_MetaObject_Interface_QueryCondition("Interface_SingleObject_Before");
+        private string DefaultScript_MetaObject_Interface_SingleObject_After
+=> $@"
+{DefaultCommonUsing}
+{DefaultCommonClassInnerCode}
+public SingleObjectComponent {FunctionName_MetaObject_Interface_SingleObject_After}(string interfaceCode,SingleObjectComponent singleObjectComponent)
 {{
     {DefaultCommonMethodCode}
 	//这里写业务逻辑
@@ -163,11 +339,13 @@ public SingleObjectComponent SingleObjectAfter(string operateCode,SingleObjectCo
 	return singleObjectComponent;
 }}
 ";
-        private string DefaultCountAfterTriggerScript
-            => $@"
+        private string DefaultScript_MetaObject_Interface_Count_Before
+=> Get_DefaultScript_MetaObject_Interface_QueryCondition("Interface_Count_Before");
+        private string DefaultScript_MetaObject_Interface_Count_After
+        => $@"
 {DefaultCommonUsing}
 {DefaultCommonClassInnerCode}
-public int CountAfter(string operateCode,int count)
+public int {FunctionName_MetaObject_Interface_Count_After}(string interfaceCode,int count)
 {{
     {DefaultCommonMethodCode}
 	//这里写业务逻辑
@@ -175,11 +353,12 @@ public int CountAfter(string operateCode,int count)
 	return count;
 }}
 ";
-        private string DefaultDataSourceTriggerScript
-    => $@"
+
+        private string DefaultScript_DataSource
+        => $@"
 {DefaultCommonUsing}
 {DefaultCommonClassInnerCode}
-public object TriggerScriptDataSource(string operateCode, Dictionary<string, object> argumentsDic)
+public object {FunctionName_DataSource}(string operateCode, Dictionary<string, object> argumentsDic)
 {{
     {DefaultCommonMethodCode}
 	//这里写业务逻辑
@@ -187,7 +366,6 @@ public object TriggerScriptDataSource(string operateCode, Dictionary<string, obj
 	return null;
 }}
 ";
-
         #endregion
     }
 }

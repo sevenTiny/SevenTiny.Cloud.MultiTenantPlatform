@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Seventiny.Cloud.ScriptEngine;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.DataAccess;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.DependencyInjection;
 using System.Reflection;
 
@@ -12,6 +12,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core
         {
             services.AddScoped(Assembly.GetExecutingAssembly());
 
+            //脚本引擎
+            services.AddSingleton<IScriptEngineProvider, ScriptEngineProvider>();
             services.AddScoped<MultiTenantPlatformDbContext>();
             services.AddScoped<MultiTenantDataDbContext>();
         }

@@ -23,4 +23,8 @@
     <ProjectReference Include="..\SevenTiny.Cloud.MultiTenantPlatform.UIModel\SevenTiny.Cloud.MultiTenantPlatform.UIModel.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="MetaAccess\" />
+  </ItemGroup>
+
 </Project>

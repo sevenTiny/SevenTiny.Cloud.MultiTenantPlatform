@@ -1,4 +1,5 @@
-﻿using SevenTiny.Bantina.Bankinate.Attributes;
+﻿using Seventiny.Cloud.ScriptEngine;
+using SevenTiny.Bantina.Bankinate.Attributes;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Entity
 {
@@ -39,5 +40,17 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Entity
         /// </summary>
         [Column]
         public string Script { get; set; }
+    }
+
+    public static class TriggerScriptExtensions
+    {
+        public static DynamicScript ToDynamicScript(this TriggerScript triggerScript)
+        {
+            return new DynamicScript
+            {
+                Script = triggerScript.Script,
+                Language = (DynamicScriptLanguage)triggerScript.Language
+            };
+        }
     }
 }
