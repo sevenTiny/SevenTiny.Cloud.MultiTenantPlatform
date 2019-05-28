@@ -33,6 +33,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         public new Result<TriggerScript> Add(TriggerScript triggerScript)
         {
             triggerScript.ScriptType = (int)ScriptType.MetaObject;
+            triggerScript.ServiceMethod = (int)ServiceMethod.Post;
             return base.Add(triggerScript);
         }
 
@@ -69,7 +70,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             {
                 Script = script,
                 Language = DynamicScriptLanguage.CSharp,
-                ProjectName = applicationCode
+                ProjectName = applicationCode,
+                FunctionName = "Test"//这里
             };
             return _scriptEngineProvider.CheckScript(dynamicScript);
         }
@@ -211,8 +213,8 @@ using logger = SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging.Logger
         /// 所有脚本类内方法外内置的通用代码段，个性化请写在各自脚本中
         /// </summary>
         private string DefaultCommonClassInnerCode
-=> @"//end using
-//注释：上面的end using注释为using分隔符，请不要删除；
+=> @"//EndUsing
+//注释：上面的 EndUsing 注释为using分隔符，请不要删除；
 //注释：输出日志请使用 logger.Error(),logger.Debug(),logger.Info()等
 MultiTenantDataDbContext db = new MultiTenantDataDbContext();";
         /// <summary>

@@ -14,7 +14,7 @@
 }
 @await Html.PartialAsync("~/Views/Shared/PartialNav.cshtml")
 
-<article class="page-container">
+<article class="page-container" style="padding-bottom:80px">
     <form class="form form-horizontal validate" id="form-article-add" method="post" action="/TriggerScript/UpdateLogic">
         <input type="text" class="input-text" value="@entity.Id" name="id" hidden>
         <div class="row cl">
@@ -33,13 +33,8 @@
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>服务类型：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <span class="select-box">
-                    <select id="ServiceType" name="ServiceType" class="select" style="background-color:#e8e8e8;" readonly="readonly" required>
-                        <option value="">--请选择--</option>
-                        @foreach (var item in Enum.GetValues(typeof(ServiceType)))
-                        {
-                            var value = (int)item;
-                            <option value="@value">@Enum.GetName(typeof(ServiceType), value)</option>
-                        }
+                    <select id="ServiceType" name="ServiceType" class="select" style="background-color:#e8e8e8;" required>
+                        <option value="@entity.ServiceType">@Enum.GetName(typeof(ServiceType), @entity.ServiceType)</option>
                     </select>
                 </span>
             </div>
@@ -57,12 +52,7 @@
             <div class="formControls col-xs-4 col-sm-4">
                 <span class="select-box">
                     <select id="TriggerPoint" name="TriggerPoint" class="select" style="background-color:#e8e8e8;" readonly="readonly" required>
-                        <option value="">--请选择--</option>
-                        @foreach (var item in Enum.GetValues(typeof(TriggerPoint)))
-                        {
-                            var value = (int)item;
-                            <option value="@value">@Enum.GetName(typeof(TriggerPoint), value)</option>
-                        }
+                        <option value="@entity.TriggerPoint">@Enum.GetName(typeof(TriggerPoint), @entity.TriggerPoint)</option>
                     </select>
                 </span>
             </div>
@@ -155,8 +145,6 @@
         spellcheck: true,//拼写检查
     });
 
-    $("#ServiceType").val(@entity.ServiceType);
-    $("#TriggerPoint").val(@entity.TriggerPoint);
     $("#OnFailurePolicy").val(@entity.OnFailurePolicy);
 
 </script>

@@ -59,9 +59,6 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
                 return View("Add", checkResult.ToResponseModel());
             }
 
-            triggerScript.MetaObjectId = CurrentMetaObjectId;
-            triggerScript.Code = $"{CurrentMetaObjectCode}.TriggerScript.{triggerScript.Code}";
-
             //check script
             var checkResult2 = triggerScriptService.CompilateAndCheckScript(triggerScript.Script, CurrentApplicationCode);
             if (!checkResult2.IsSuccess)
@@ -69,6 +66,8 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
                 return View("Add", ResponseModel.Error($"脚本存在错误：{checkResult2.Message}", triggerScript));
             }
 
+            triggerScript.MetaObjectId = CurrentMetaObjectId;
+            triggerScript.Code = $"{CurrentMetaObjectCode}.TriggerScript.{triggerScript.Code}";
             triggerScriptService.Add(triggerScript);
 
             return RedirectToAction("List");

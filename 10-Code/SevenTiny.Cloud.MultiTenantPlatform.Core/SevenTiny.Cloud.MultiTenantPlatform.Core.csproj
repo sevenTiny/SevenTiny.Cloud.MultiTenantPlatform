@@ -15,6 +15,7 @@
     <PackageReference Include="SevenTiny.Bantina" Version="1.0.15" />
     <PackageReference Include="SevenTiny.Bantina.Bankinate.MongoDb" Version="1.0.8" />
     <PackageReference Include="SevenTiny.Bantina.Bankinate.MySql" Version="1.0.17" />
+    <PackageReference Include="SevenTiny.Bantina.Configuration.Core" Version="1.0.17" />
     <PackageReference Include="Seventiny.Cloud.ScriptEngine" Version="1.0.4" />
   </ItemGroup>
 
