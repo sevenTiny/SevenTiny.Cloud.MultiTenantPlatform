@@ -9,7 +9,6 @@
     ResponseModel result = Model as ResponseModel ?? new ResponseModel();
     MetaField metaField = result.Data as MetaField ?? new MetaField();
     Array dataTypes = Enum.GetValues(typeof(DataType));
-    Array trueFalse = Enum.GetValues(typeof(TrueFalse));
     //不显示的数据类型
     DataType[] dataTypesExclude = new[] { DataType.Unknown, DataType.StandradDate, DataType.StandradDateTime };
 }
@@ -63,20 +62,6 @@
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>是否必填：</label>
-            <div class="formControls col-xs-8 col-sm-9">
-                <span class="select-box">
-                    <select id="isMust" name="isMust" class="select" value="@metaField.IsMust" required>
-                        @foreach (var item in trueFalse)
-                        {
-                            var value = (int)item;
-                            <option value="@value">@TrueFalseTranslator.ToLabel((int)item)</option>
-                        }
-                    </select>
-                </span>
-            </div>
-        </div>
-        <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">分组：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <input type="text" class="input-text" value="@metaField.Group" name="group">
@@ -114,7 +99,6 @@
 <script type="text/javascript">
 
     $("#dataSourceId").val(@metaField.DataSourceId);
-    $("#isMust").val(@metaField.IsMust);
 
     //切换类型
     function fieldTypeSwitch(obj) {

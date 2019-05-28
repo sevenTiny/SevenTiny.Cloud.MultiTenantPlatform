@@ -22,7 +22,6 @@
                     <th>编码</th>
                     <th>描述</th>
                     <th>字段类型</th>
-                    <th>是否必填</th>
                     <th>系统字段</th>
                     <th>排序</th>
                     <th>分组</th>
@@ -44,14 +43,7 @@
                         }
                         <td>@item.Description</td>
                         <td>@DataTypeTranslator.ToLabel(item.FieldType)</td>
-                        @if (item.IsMust == (int)TrueFalse.True)
-                        {
-                            <td style="color:#00CC33">@TrueFalseTranslator.ToLabel(item.IsMust)</td>
-                        }
-                        else
-                        {
-                            <td>@TrueFalseTranslator.ToLabel(item.IsMust)</td>
-                        }@if (item.IsSystem == (int)TrueFalse.True)
+                        @if (item.IsSystem == (int)TrueFalse.True)
                         {
                             <td style="color:#00CC33">@TrueFalseTranslator.ToLabel(item.IsSystem)</td>
                         }
@@ -88,11 +80,11 @@
 <script type="text/javascript">
     $('.table-sort').dataTable({
         "aLengthMenu": [[50, 100, -1], ["50", "100", "All"]],//二组数组，第一组数量，
-        "aaSorting": [[6, "asc"], [7, "asc"]],//默认第几个排序
+        "aaSorting": [[5, "asc"], [6, "asc"]],//默认第几个排序
         "bAutoWidth": false,
         "bStateSave": true,//状态保存
         "aoColumnDefs": [
-            { "orderable": false, "aTargets": [2, 8] }// 不参与排序的列
+            { "orderable": false, "aTargets": [2, 7] }// 不参与排序的列
         ]
     });
 </script>

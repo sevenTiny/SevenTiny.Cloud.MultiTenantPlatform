@@ -100,7 +100,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             return dbContext.Queryable<FieldListMetaField>().Where(t => t.Id == id).ToOne();
         }
 
-        public new Result Update(FieldListMetaField entity)
+        public new Result<FieldListMetaField> Update(FieldListMetaField entity)
         {
             var entityExist = GetById(entity.Id);
             if (entityExist != null)

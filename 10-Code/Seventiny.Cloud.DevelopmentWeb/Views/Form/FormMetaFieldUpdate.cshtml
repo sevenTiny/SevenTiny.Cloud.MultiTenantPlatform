@@ -4,36 +4,61 @@
     ViewData["Title"] = "FormMetaFieldUpdate";
     Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
 
+    Array trueFalse = Enum.GetValues(typeof(TrueFalse));
+
     ResponseModel result = Model as ResponseModel ?? new ResponseModel();
-    FormMetaField fieldListMetaField = result.Data as FormMetaField ?? new FormMetaField();
+    FormMetaField formMetaField = result.Data as FormMetaField ?? new FormMetaField();
 }
 
 <article class="page-container">
     <form class="form form-horizontal validate" id="form-article-add" method="post" action="/Form/FormMetaFieldUpdateLogic">
-        <input type="text" class="input-text" value="@fieldListMetaField.Id" name="id" hidden>
+        <input type="text" class="input-text" value="@formMetaField.Id" name="id" hidden>
         <div class="row cl">
             <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>字段编码：</label>
             <div class="formControls col-xs-10 col-sm-9">
-                <input type="text" class="input-text" style="background-color:#e8e8e8;" value="@fieldListMetaField.Name" name="name" required readonly>
+                <input type="text" class="input-text" style="background-color:#e8e8e8;" value="@formMetaField.Name" name="name" required readonly>
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>显示名称：</label>
             <div class="formControls col-xs-10 col-sm-9">
-                <input type="text" class="input-text" value="@fieldListMetaField.Text" name="Text" required>
+                <input type="text" class="input-text" value="@formMetaField.Text" name="Text" required>
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-2 col-sm-2">是否显示：</label>
+            <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>是否显示：</label>
             <div class="formControls col-xs-10 col-sm-9">
-                <select id="IsVisible" name="IsVisible" class="select" value="@fieldListMetaField.IsVisible" required>
-                    <option value="">--请选择--</option>
-                    @foreach (var item in Enum.GetValues(typeof(TrueFalse)))
-                    {
-                        var value = (int)item;
-                        <option value="@value">@TrueFalseTranslator.ToLabel(value)</option>
-                    }
-                </select>
+                <span class="select-box">
+                    <select id="IsVisible" name="IsVisible" class="select" value="@formMetaField.IsVisible" required>
+                        <option value="">--请选择--</option>
+                        @foreach (var item in Enum.GetValues(typeof(TrueFalse)))
+                        {
+                            var value = (int)item;
+                            <option value="@value">@TrueFalseTranslator.ToLabel(value)</option>
+                        }
+                    </select>
+                </span>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>是否必填：</label>
+            <div class="formControls col-xs-10 col-sm-9">
+                <span class="select-box">
+                    <select id="isMust" name="isMust" class="select" value="@formMetaField.IsMust" required>
+                        <option value="">--请选择--</option>
+                        @foreach (var item in trueFalse)
+                        {
+                            var value = (int)item;
+                            <option value="@value">@TrueFalseTranslator.ToLabel((int)item)</option>
+                        }
+                    </select>
+                </span>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-2 col-sm-2">正则表达式：</label>
+            <div class="formControls col-xs-10 col-sm-9">
+                <input type="text" class="input-text" value="@formMetaField.Regular" name="regular">
             </div>
         </div>
         <div class="row cl">
@@ -61,7 +86,8 @@
         }
     } catch (err) { }
 
-    $("#IsVisible").val(@fieldListMetaField.IsVisible);
+    $("#IsVisible").val(@formMetaField.IsVisible);
+    $("#isMust").val(@formMetaField.IsMust);
 
 </script>
 <!--/请在上方写此页面业务相关的脚本-->

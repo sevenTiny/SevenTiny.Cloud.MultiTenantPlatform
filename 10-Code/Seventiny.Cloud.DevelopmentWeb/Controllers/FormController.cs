@@ -87,11 +87,6 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             {
                 return View("Update", ResponseModel.Error("Code 不能为空", entity));
             }
-            //校验code格式
-            if (!entity.Code.IsAlnum(2, 50))
-            {
-                return View("Update", ResponseModel.Error("编码不合法，2-50位且只能包含字母和数字（字母开头）", entity));
-            }
 
             //检查编码或名称重复
             var checkResult = _formService.CheckSameCodeOrName(CurrentMetaObjectId, entity);
@@ -206,8 +201,8 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
         /// <returns></returns>
         public IActionResult FormMetaFieldUpdate(int id)
         {
-            var fieldListAggregation = _formMetaFieldService.GetById(id);
-            return View(ResponseModel.Success(fieldListAggregation));
+            var formMetaField = _formMetaFieldService.GetById(id);
+            return View(ResponseModel.Success(formMetaField));
         }
         public IActionResult FormMetaFieldUpdateLogic(FormMetaField formMetaField)
         {

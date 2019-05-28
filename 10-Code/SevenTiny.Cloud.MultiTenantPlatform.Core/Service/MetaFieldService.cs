@@ -65,7 +65,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                 myfield.SortNumber = metaField.SortNumber;
                 myfield.Description = metaField.Description;
                 //myfield.FieldType = metaField.FieldType;//字段类型不允许修改
-                myfield.IsMust = metaField.IsMust;
                 myfield.DataSourceId = metaField.DataSourceId;
                 myfield.ModifyBy = -1;
                 myfield.ModifyTime = DateTime.Now;
@@ -87,7 +86,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                     Name ="数据ID",
                     Description="系统字段",
                     IsSystem =(int)TrueFalse.True,
-                    IsMust=(int)TrueFalse.True,
                     FieldType=(int)DataType.Text,
                     SortNumber=-1
                 },
@@ -97,7 +95,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                     Name ="是否删除",
                     Description="系统字段",
                     IsSystem =(int)TrueFalse.True,
-                    IsMust=(int)TrueFalse.True,
                     FieldType=(int)DataType.Boolean,
                     SortNumber=-1
                 },
@@ -107,7 +104,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                     Name ="创建人",
                     Description="系统字段",
                     IsSystem =(int) TrueFalse.True,
-                    IsMust= (int)TrueFalse.True,
                     FieldType= (int)DataType.Int,
                     SortNumber=-1
                 },
@@ -117,7 +113,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                     Name ="创建时间",
                     Description="系统字段",
                     IsSystem =(int) TrueFalse.True,
-                    IsMust= (int)TrueFalse.True,
                     FieldType= (int)DataType.DateTime,
                     SortNumber=-1
                 },
@@ -127,7 +122,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                     Name ="修改人",
                     Description="系统字段",
                     IsSystem =(int) TrueFalse.True,
-                    IsMust= (int)TrueFalse.True,
                     FieldType= (int)DataType.Int,
                     SortNumber=-1
                 },
@@ -137,7 +131,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                     Name ="修改时间",
                     Description="系统字段",
                     IsSystem =(int) TrueFalse.True,
-                    IsMust= (int)TrueFalse.True,
                     FieldType= (int)DataType.DateTime,
                     SortNumber=-1
                 }

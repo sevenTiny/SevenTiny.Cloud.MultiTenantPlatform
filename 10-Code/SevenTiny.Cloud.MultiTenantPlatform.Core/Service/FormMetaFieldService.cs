@@ -1,14 +1,10 @@
-﻿using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
+﻿using SevenTiny.Bantina;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.DataAccess;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
-using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.ListView;
-using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using SevenTiny.Bantina;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.DataAccess;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 {
@@ -74,13 +70,15 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             return dbContext.Queryable<FormMetaField>().Where(t => t.Id == id).ToOne();
         }
 
-        public new Result Update(FormMetaField entity)
+        public new Result<FormMetaField> Update(FormMetaField entity)
         {
             var entityExist = GetById(entity.Id);
             if (entityExist != null)
             {
-                entityExist.IsVisible = entity.IsVisible;
                 entityExist.Text = entity.Text;
+                entityExist.IsVisible = entity.IsVisible;
+                entityExist.IsMust = entity.IsMust;
+                entityExist.Regular = entity.Regular;
             }
             return base.Update(entityExist);
         }

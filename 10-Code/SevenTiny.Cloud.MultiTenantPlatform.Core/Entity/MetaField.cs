@@ -12,8 +12,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Entity
         [Column]
         public int DataSourceId { get; set; } = -1;
         [Column]
-        public int IsMust { get; set; }
-        [Column]
         public int IsSystem { get; set; } = (int)TrueFalse.False;
     }
 }

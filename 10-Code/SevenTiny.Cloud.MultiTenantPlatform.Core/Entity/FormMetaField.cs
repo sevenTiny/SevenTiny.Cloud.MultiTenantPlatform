@@ -45,6 +45,16 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Entity
         [Column]
         public int IsVisible { get; set; } = 1;
         /// <summary>
+        /// 是否必填
+        /// </summary>
+        [Column]
+        public int IsMust { get; set; } = 0;
+        /// <summary>
+        /// 正则表达式
+        /// </summary>
+        [Column]
+        public string Regular { get; set; }
+        /// <summary>
         /// 列表排序值
         /// </summary>
         [Column]
