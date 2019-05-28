@@ -1,15 +1,15 @@
 ﻿@using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 @using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
 @{
-    ViewData["Title"] = "FieldListAggregationUpdate";
+    ViewData["Title"] = "FormMetaFieldUpdate";
     Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
 
     ResponseModel result = Model as ResponseModel ?? new ResponseModel();
-    FieldListMetaField fieldListMetaField = result.Data as FieldListMetaField ?? new FieldListMetaField();
+    FormMetaField fieldListMetaField = result.Data as FormMetaField ?? new FormMetaField();
 }
 
 <article class="page-container">
-    <form class="form form-horizontal validate" id="form-article-add" method="post" action="/FieldList/FieldListMetaFieldUpdateLogic">
+    <form class="form form-horizontal validate" id="form-article-add" method="post" action="/Form/FormMetaFieldUpdateLogic">
         <input type="text" class="input-text" value="@fieldListMetaField.Id" name="id" hidden>
         <div class="row cl">
             <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>字段编码：</label>
@@ -27,19 +27,6 @@
             <label class="form-label col-xs-2 col-sm-2">是否显示：</label>
             <div class="formControls col-xs-10 col-sm-9">
                 <select id="IsVisible" name="IsVisible" class="select" value="@fieldListMetaField.IsVisible" required>
-                    <option value="">--请选择--</option>
-                    @foreach (var item in Enum.GetValues(typeof(TrueFalse)))
-                    {
-                        var value = (int)item;
-                        <option value="@value">@TrueFalseTranslator.ToLabel(value)</option>
-                    }
-                </select>
-            </div>
-        </div>
-        <div class="row cl">
-            <label class="form-label col-xs-2 col-sm-2">是否链接：</label>
-            <div class="formControls col-xs-10 col-sm-9">
-                <select id="IsLink" name="IsLink" class="select" value="@fieldListMetaField.IsLink" required>
                     <option value="">--请选择--</option>
                     @foreach (var item in Enum.GetValues(typeof(TrueFalse)))
                     {
@@ -75,7 +62,6 @@
     } catch (err) { }
 
     $("#IsVisible").val(@fieldListMetaField.IsVisible);
-    $("#IsLink").val(@fieldListMetaField.IsLink);
 
 </script>
 <!--/请在上方写此页面业务相关的脚本-->

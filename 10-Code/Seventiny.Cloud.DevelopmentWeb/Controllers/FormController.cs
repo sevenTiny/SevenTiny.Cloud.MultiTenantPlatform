@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using SevenTiny.Bantina;
+﻿using Microsoft.AspNetCore.Mvc;
 using SevenTiny.Bantina.Validation;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
 using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
@@ -13,34 +10,26 @@ using System.Linq;
 
 namespace Seventiny.Cloud.DevelopmentWeb.Controllers
 {
-    public class FieldListController : ControllerBase
+    public class FormController : ControllerBase
     {
-        readonly IFieldListService fieldListService;
+        readonly IFormService _formService;
         readonly IMetaFieldService metaFieldService;
-        readonly IInterfaceAggregationService interfaceAggregationService;
-        readonly IFieldListMetaFieldService fieldAggregationService;
+        readonly IFormMetaFieldService _formMetaFieldService;
 
-        public FieldListController(
-            IFieldListService _interfaceFieldService,
+        public FormController(
+            IFormService formService,
             IMetaFieldService _metaFieldService,
-            IInterfaceAggregationService _interfaceAggregationService,
-            IFieldListMetaFieldService _fieldAggregationService
+            IFormMetaFieldService formMetaFieldService
             )
         {
-            fieldListService = _interfaceFieldService;
+            _formService = formService;
             metaFieldService = _metaFieldService;
-            interfaceAggregationService = _interfaceAggregationService;
-            fieldAggregationService = _fieldAggregationService;
+            _formMetaFieldService = formMetaFieldService;
         }
 
         public IActionResult List()
         {
-            return View(fieldListService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId));
-        }
-
-        public IActionResult DeleteList()
-        {
-            return View(fieldListService.GetEntitiesDeletedByMetaObjectId(CurrentMetaObjectId));
+            return View(_formService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId));
         }
 
         public IActionResult Add()
@@ -48,7 +37,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             return View();
         }
 
-        public IActionResult AddLogic(FieldList entity)
+        public IActionResult AddLogic(Form entity)
         {
             if (string.IsNullOrEmpty(entity.Name))
             {
@@ -65,7 +54,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             }
 
             //检查编码或名称重复
-            var checkResult = fieldListService.CheckSameCodeOrName(CurrentMetaObjectId, entity);
+            var checkResult = _formService.CheckSameCodeOrName(CurrentMetaObjectId, entity);
             if (!checkResult.IsSuccess)
             {
                 return View("Add", checkResult.ToResponseModel());
@@ -73,30 +62,30 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
 
             entity.MetaObjectId = CurrentMetaObjectId;
             //组合编码
-            entity.Code = $"{CurrentMetaObjectCode}.FieldList.{entity.Code}";
-            fieldListService.Add(entity);
+            entity.Code = $"{CurrentMetaObjectCode}.Form.{entity.Code}";
+            _formService.Add(entity);
             return RedirectToAction("List");
         }
 
         public IActionResult Update(int id)
         {
-            var interfaceField = fieldListService.GetById(id);
-            return View(ResponseModel.Success(interfaceField));
+            var entity = _formService.GetById(id);
+            return View(ResponseModel.Success(entity));
         }
 
-        public IActionResult UpdateLogic(FieldList entity)
+        public IActionResult UpdateLogic(Form entity)
         {
             if (entity.Id == 0)
             {
-                return View("Update", ResponseModel.Error("MetaField Id 不能为空", entity));
+                return View("Update", ResponseModel.Error("Id 不能为空", entity));
             }
             if (string.IsNullOrEmpty(entity.Name))
             {
-                return View("Update", ResponseModel.Error("MetaField Name 不能为空", entity));
+                return View("Update", ResponseModel.Error("Name 不能为空", entity));
             }
             if (string.IsNullOrEmpty(entity.Code))
             {
-                return View("Update", ResponseModel.Error("MetaField Code 不能为空", entity));
+                return View("Update", ResponseModel.Error("Code 不能为空", entity));
             }
             //校验code格式
             if (!entity.Code.IsAlnum(2, 50))
@@ -105,33 +94,33 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             }
 
             //检查编码或名称重复
-            var checkResult = fieldListService.CheckSameCodeOrName(CurrentMetaObjectId, entity);
+            var checkResult = _formService.CheckSameCodeOrName(CurrentMetaObjectId, entity);
             if (!checkResult.IsSuccess)
             {
                 return View("Update", checkResult.ToResponseModel());
             }
 
             //更新操作
-            fieldListService.Update(entity);
+            _formService.Update(entity);
 
             return RedirectToAction("List");
         }
 
         public IActionResult Delete(int id)
         {
-            fieldListService.Delete(id);
+            _formService.Delete(id);
             return JsonResultModel.Success("删除成功");
         }
 
         public IActionResult LogicDelete(int id)
         {
-            fieldListService.LogicDelete(id);
+            _formService.LogicDelete(id);
             return JsonResultModel.Success("删除成功");
         }
 
         public IActionResult Recover(int id)
         {
-            fieldListService.Recover(id);
+            _formService.Recover(id);
             return JsonResultModel.Success("恢复成功");
         }
 
@@ -143,7 +132,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
         public IActionResult AggregateField(int id)
         {
             //获取组织字段里面本字段配置下的所有字段
-            var fieldListAggregations = fieldAggregationService.GetByFieldListId(id) ?? new List<FieldListMetaField>();
+            var fieldListAggregations = _formMetaFieldService.GetByFormId(id) ?? new List<FormMetaField>();
             var aggregateMetaFieldIds = fieldListAggregations.Select(t => t.MetaFieldId).ToArray();
             //获取到本对象的所有字段
             var metaFields = metaFieldService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
@@ -170,7 +159,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
 
             ViewData["AggregateFields"] = aggregateFields;
             ViewData["MetaFields"] = waitingForSelection;
-            ViewData["FieldListId"] = id;
+            ViewData["FormId"] = id;
             return View();
         }
 
@@ -186,26 +175,26 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             var metaFieldIdsSplit = !string.IsNullOrEmpty(metaFieldIdsString) ? metaFieldIdsString.Split(',') : Array.Empty<string>();
 
             int[] metaFieldIds = (metaFieldIdsSplit != null && metaFieldIdsSplit.Any()) ? metaFieldIdsSplit.Select(t => Convert.ToInt32(t)).ToArray() : new int[0];
-            int[] fieldAggregationIds = fieldAggregationService.GetByFieldListId(id)?.Select(t => t.MetaFieldId)?.ToArray() ?? new int[0];
+            int[] fieldAggregationIds = _formMetaFieldService.GetByFormId(id)?.Select(t => t.MetaFieldId)?.ToArray() ?? new int[0];
             IEnumerable<int> addIds = metaFieldIds.Except(fieldAggregationIds); //ids will add
             IEnumerable<int> deleteIds = fieldAggregationIds.Except(metaFieldIds);  //ids will delete
 
-            IList<FieldListMetaField> fieldAggregations = new List<FieldListMetaField>();
+            IList<FormMetaField> formMetaFields = new List<FormMetaField>();
             foreach (var item in addIds)
             {
-                fieldAggregations.Add(new FieldListMetaField { FieldListId = id, MetaFieldId = item });
+                formMetaFields.Add(new FormMetaField { FormId = id, MetaFieldId = item });
             }
 
-            if (fieldAggregations.Any())
-                fieldAggregationService.Add(fieldAggregations);
+            if (formMetaFields.Any())
+                _formMetaFieldService.Add(formMetaFields);
 
             foreach (var item in deleteIds)
             {
-                fieldAggregationService.DeleteByMetaFieldId(item);
+                _formMetaFieldService.DeleteByMetaFieldId(item);
             }
 
             //对当前列表配置的顺序进行重新排序
-            fieldAggregationService.SortFields(id, metaFieldIds);
+            _formMetaFieldService.SortFields(id, metaFieldIds);
 
             return JsonResultModel.Success("保存成功！");
         }
@@ -215,19 +204,19 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public IActionResult FieldListMetaFieldUpdate(int id)
+        public IActionResult FormMetaFieldUpdate(int id)
         {
-            var fieldListAggregation = fieldAggregationService.GetById(id);
+            var fieldListAggregation = _formMetaFieldService.GetById(id);
             return View(ResponseModel.Success(fieldListAggregation));
         }
-        public IActionResult FieldListMetaFieldUpdateLogic(FieldListMetaField fieldListAggregation)
+        public IActionResult FormMetaFieldUpdateLogic(FormMetaField formMetaField)
         {
-            var result = fieldAggregationService.Update(fieldListAggregation);
+            var result = _formMetaFieldService.Update(formMetaField);
             if (result.IsSuccess)
             {
-                return View("FieldListMetaFieldUpdate", ResponseModel.Success(1, "修改成功"));
+                return View("FormMetaFieldUpdate", ResponseModel.Success(1, "修改成功"));
             }
-            return View("FieldListMetaFieldUpdate", result.ToResponseModel());
+            return View("FormMetaFieldUpdate", result.ToResponseModel());
         }
     }
 }
