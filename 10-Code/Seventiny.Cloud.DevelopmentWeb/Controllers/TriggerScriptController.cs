@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SevenTiny.Bantina.Validation;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
 
@@ -21,20 +22,9 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             triggerScriptService = _triggerScriptService;
         }
 
-
-        public IActionResult Index()
-        {
-            return View();
-        }
-
         public IActionResult List()
         {
             return View(triggerScriptService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId));
-        }
-
-        public IActionResult DeleteList()
-        {
-            return View(triggerScriptService.GetEntitiesDeletedByMetaObjectId(CurrentMetaObjectId));
         }
 
         public IActionResult Add()
@@ -96,15 +86,15 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             {
                 if (triggerScript.Id == 0)
                 {
-                    return View("Update", ResponseModel.Error("MetaField Id 不能为空", triggerScript));
+                    return View("Update", ResponseModel.Error("Id 不能为空", triggerScript));
                 }
                 if (string.IsNullOrEmpty(triggerScript.Name))
                 {
-                    return View("Update", ResponseModel.Error("MetaField Name 不能为空", triggerScript));
+                    return View("Update", ResponseModel.Error("Name 不能为空", triggerScript));
                 }
                 if (string.IsNullOrEmpty(triggerScript.Code))
                 {
-                    return View("Update", ResponseModel.Error("MetaField Code 不能为空", triggerScript));
+                    return View("Update", ResponseModel.Error("Code 不能为空", triggerScript));
                 }
 
                 //检查编码或名称重复
@@ -149,15 +139,14 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             return JsonResultModel.Success("恢复成功");
         }
 
-        public IActionResult Detail()
+        public IActionResult GetDefaultTriggerScript(int serviceType, int triggerPoint)
         {
-            return View();
-        }
-
-        public IActionResult GetDefaultTriggerScript(int scriptType)
-        {
-            //string script = triggerScriptService.GetDefaultMetaObjectTriggerScriptByServiceTypeAfter(scriptType);
-            return JsonResultModel.Success("get default trigger script", null /*script*/);
+            string script = string.Empty;
+            if (triggerPoint == (int)TriggerPoint.Before)
+                script = triggerScriptService.GetDefaultMetaObjectTriggerScriptByServiceTypeBefore(serviceType).TrimStart().TrimEnd();
+            else if (triggerPoint == (int)TriggerPoint.After)
+                script = triggerScriptService.GetDefaultMetaObjectTriggerScriptByServiceTypeAfter(serviceType).TrimStart().TrimEnd();
+            return JsonResultModel.Success("get default trigger script", script);
         }
     }
 }

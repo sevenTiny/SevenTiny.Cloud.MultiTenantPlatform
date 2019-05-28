@@ -10,15 +10,6 @@
     }
     public static class FailurePolicyTranslator
     {
-        public static string ToCode(int scriptType)
-        {
-            switch (scriptType)
-            {
-                case (int)OnFailurePolicy.Continue: return "Continue";
-                case (int)OnFailurePolicy.Break: return "Break";
-                default: return "UnKnown";
-            }
-        }
         public static string ToChinese(int scriptType)
         {
             switch (scriptType)

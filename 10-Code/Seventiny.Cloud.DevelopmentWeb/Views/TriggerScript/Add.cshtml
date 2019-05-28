@@ -1,9 +1,11 @@
 ﻿@using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
+@using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 @{
     ViewData["Title"] = "Add";
     Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
 
     ResponseModel result = Model as ResponseModel ?? new ResponseModel();
+    TriggerScript entity = result.Data as TriggerScript ?? new TriggerScript();
 }
 @{
     ViewData["Level_1"] = "对象设置";
@@ -11,25 +13,25 @@
 }
 @await Html.PartialAsync("~/Views/Shared/PartialNav.cshtml")
 
-<article class="page-container">
+<article class="page-container" style="padding-bottom:80px">
     <form class="form form-horizontal validate" method="post" action="/TriggerScript/AddLogic">
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>名称：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" name="name" required minLength="2" maxlength="50">
+                <input type="text" class="input-text" name="name" value="@entity.Name" required minLength="2" maxlength="50">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>编码：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" name="code" required>
+                <input type="text" class="input-text" name="code" value="@entity.Code" required minLength="2" maxlength="50">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>服务类型：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <span class="select-box">
-                    <select id="serviceType" name="serviceType" class="select" onchange="switchTriggerTypeOrTriggerPoint()" required>
+                    <select id="ServiceType" name="ServiceType" class="select" onchange="switchServiceTypeOrTriggerPoint()" required>
                         <option value="">--请选择--</option>
                         @foreach (var item in Enum.GetValues(typeof(ServiceType)))
                         {
@@ -41,15 +43,46 @@
             </div>
         </div>
         <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>失败策略：</label>
-            <div class="formControls col-xs-8 col-sm-9">
+            <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>服务方法：</label>
+            <div class="formControls col-xs-4 col-sm-3">
                 <span class="select-box">
-                    <select id="failurePolicy" name="failurePolicy" class="select" required>
+                    <select id="ServiceMethod" name="ServiceMethod" class="select" required>
+                        <option value="@entity.ServiceMethod">@Enum.GetName(typeof(ServiceMethod), ServiceMethod.Post)</option>
+                    </select>
+                </span>
+            </div>
+            <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>触发点：</label>
+            <div class="formControls col-xs-4 col-sm-4">
+                <span class="select-box">
+                    <select id="TriggerPoint" name="TriggerPoint" class="select" onchange="switchServiceTypeOrTriggerPoint()" required>
+                        <option value="">--请选择--</option>
+                        @foreach (var item in Enum.GetValues(typeof(TriggerPoint)))
+                        {
+                            var value = (int)item;
+                            <option value="@value">@Enum.GetName(typeof(TriggerPoint), value)</option>
+                        }
+                    </select>
+                </span>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>脚本语言：</label>
+            <div class="formControls col-xs-3 col-sm-3  ">
+                <span class="select-box">
+                    <select id="Language" name="Language" class="select" required>
+                        <option value="1">C#</option>
+                    </select>
+                </span>
+            </div>
+            <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>失败策略：</label>
+            <div class="formControls col-xs-4 col-sm-4">
+                <span class="select-box">
+                    <select id="OnFailurePolicy" name="OnFailurePolicy" class="select" required>
                         <option value="">--请选择--</option>
                         @foreach (var item in Enum.GetValues(typeof(OnFailurePolicy)))
                         {
                             var value = (int)item;
-                            <option value="@value">@FailurePolicyTranslator.ToChinese(value)</option>
+                            <option value="@value">@Enum.GetName(typeof(OnFailurePolicy), value)</option>
                         }
                     </select>
                 </span>
@@ -58,26 +91,26 @@
         <div class="row cl">
             <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>触发器脚本：</label>
             <div class="formControls col-xs-9 col-sm-9">
-                <textarea id="codeTextArea" name="script" class="ignore"></textarea>
+                <textarea id="codeTextArea" name="script" class="ignore">@entity.Script</textarea>
                 <span class="c-red">*提示：F11 全屏模式</span>
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">分组：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" name="group">
+                <input type="text" class="input-text" value="@entity.Group" name="group">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">排序值：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <input type="text" class="input-text" name="sortNumber">
+                <input type="text" class="input-text" value="@entity.SortNumber" name="sortNumber">
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2">描述：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                <textarea name="description" class="textarea ignore" placeholder="说点什么..."></textarea>
+                <textarea name="description" class="textarea ignore" placeholder="说点什么...">@entity.Description</textarea>
             </div>
         </div>
         <div class="row cl">
@@ -121,13 +154,19 @@
         spellcheck: true,//拼写检查
     });
 
+    $("#ServiceType").val(@entity.ServiceType);
+    $("#TriggerPoint").val(@entity.TriggerPoint);
+    $("#OnFailurePolicy").val(@entity.OnFailurePolicy);
+
     //切换脚本类型或脚本触发点
-    function switchTriggerTypeOrTriggerPoint() {
-        var scriptType = $("#scriptType").val();
-        if (scriptType != null && scriptType != '') {
+    function switchServiceTypeOrTriggerPoint() {
+        var serviceType = $("#ServiceType").val()
+        var triggerPoint = $("#TriggerPoint").val()
+
+        if (serviceType != null && serviceType != '' && triggerPoint != null && triggerPoint != '') {
             $.ajax({
                 type: 'GET',
-                url: '/TriggerScript/GetDefaultTriggerScript?scriptType=' + scriptType,
+                url: '/TriggerScript/GetDefaultTriggerScript?serviceType=' + serviceType + '&triggerPoint='+triggerPoint,
                 dataType: 'json',
                 success: function (data) {
                     if (data.success) {

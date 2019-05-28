@@ -33,28 +33,63 @@
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>服务类型：</label>
             <div class="formControls col-xs-8 col-sm-9">
                 <span class="select-box">
-                    <select id="serviceType" name="serviceType" class="select" required>
-                        <option value="@entity.ScriptType">@Enum.GetName(typeof(ServiceType), entity.ScriptType)</option>
-                    </select>
-                </span>
-            </div>
-        </div>
-        <div class="row cl">
-            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>失败策略：</label>
-            <div class="formControls col-xs-8 col-sm-9">
-                <span class="select-box">
-                    <select id="failurePolicy" name="failurePolicy" class="select" required>
+                    <select id="ServiceType" name="ServiceType" class="select" style="background-color:#e8e8e8;" readonly="readonly" required>
                         <option value="">--请选择--</option>
-                        @foreach (var item in Enum.GetValues(typeof(OnFailurePolicy)))
+                        @foreach (var item in Enum.GetValues(typeof(ServiceType)))
                         {
                             var value = (int)item;
-                            <option value="@value">@FailurePolicyTranslator.ToChinese(value)</option>
+                            <option value="@value">@Enum.GetName(typeof(ServiceType), value)</option>
                         }
                     </select>
                 </span>
             </div>
         </div>
         <div class="row cl">
+            <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>服务方法：</label>
+            <div class="formControls col-xs-4 col-sm-3">
+                <span class="select-box">
+                    <select id="ServiceMethod" name="ServiceMethod" class="select" style="background-color:#e8e8e8;" readonly="readonly" required>
+                        <option value="@entity.ServiceMethod">@Enum.GetName(typeof(ServiceMethod), ServiceMethod.Post)</option>
+                    </select>
+                </span>
+            </div>
+            <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>触发点：</label>
+            <div class="formControls col-xs-4 col-sm-4">
+                <span class="select-box">
+                    <select id="TriggerPoint" name="TriggerPoint" class="select" style="background-color:#e8e8e8;" readonly="readonly" required>
+                        <option value="">--请选择--</option>
+                        @foreach (var item in Enum.GetValues(typeof(TriggerPoint)))
+                        {
+                            var value = (int)item;
+                            <option value="@value">@Enum.GetName(typeof(TriggerPoint), value)</option>
+                        }
+                    </select>
+                </span>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>脚本语言：</label>
+            <div class="formControls col-xs-3 col-sm-3  ">
+                <span class="select-box">
+                    <select id="Language" name="Language" class="select" style="background-color:#e8e8e8;" readonly="readonly" required>
+                        <option value="1">C#</option>
+                    </select>
+                </span>
+            </div>
+            <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>失败策略：</label>
+            <div class="formControls col-xs-4 col-sm-4">
+                <span class="select-box">
+                    <select id="OnFailurePolicy" name="OnFailurePolicy" class="select" required>
+                        <option value="">--请选择--</option>
+                        @foreach (var item in Enum.GetValues(typeof(OnFailurePolicy)))
+                        {
+                            var value = (int)item;
+                            <option value="@value">@Enum.GetName(typeof(OnFailurePolicy), value)</option>
+                        }
+                    </select>
+                </span>
+            </div>
+        </div>        <div class="row cl">
             <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>触发器脚本：</label>
             <div class="formControls col-xs-9 col-sm-9">
                 <textarea id="codeTextArea" name="script" class="ignore">@entity.Script</textarea>
@@ -120,7 +155,9 @@
         spellcheck: true,//拼写检查
     });
 
-    $("#failurePolicy").val(@entity.OnFailurePolicy);
+    $("#ServiceType").val(@entity.ServiceType);
+    $("#TriggerPoint").val(@entity.TriggerPoint);
+    $("#OnFailurePolicy").val(@entity.OnFailurePolicy);
 
 </script>
 <!--/请在上方写此页面业务相关的脚本-->

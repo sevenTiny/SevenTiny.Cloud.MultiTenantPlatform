@@ -5,20 +5,12 @@
     /// </summary>
     public enum TriggerPoint
     {
-        Before,
-        After
+        Before = 1,
+        After = 2
     }
 
     public static class TriggerPointTranslator
     {
-        public static string ToLabel(int scriptType)
-        {
-            switch ((TriggerPoint)scriptType)
-            {
-                case TriggerPoint.Before: return "Before";
-                case TriggerPoint.After: return "After";
-                default: return "UnKnown";
-            }
-        }
+
     }
 }

@@ -30,6 +30,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         readonly MultiTenantPlatformDbContext _dbContext;
         readonly IScriptEngineProvider _scriptEngineProvider;
 
+        public new Result<TriggerScript> Add(TriggerScript triggerScript)
+        {
+            triggerScript.ScriptType = (int)ScriptType.MetaObject;
+            return base.Add(triggerScript);
+        }
+
         /// <summary>
         /// 更新对象
         /// </summary>
@@ -192,47 +198,35 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         /// 所有脚本默认内置的通用命名空间引用，个性化的引用请写在各自脚本中
         /// </summary>
         private string DefaultCommonUsing
-            => @"
-//命名空间
+=> @"//命名空间
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.DataAccess;
-using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData;
-using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.ListView;
-using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.UserInfo;
-using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.DataAccess;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using logger = SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging.Logger;
-";
+using SevenTiny.Cloud.MultiTenantPlatform.Core.DataAccess;
+using logger = SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging.Logger;";
         /// <summary>
         /// 所有脚本类内方法外内置的通用代码段，个性化请写在各自脚本中
         /// </summary>
         private string DefaultCommonClassInnerCode
-           => @"
-//end using
+=> @"//end using
 //注释：上面的end using注释为using分隔符，请不要删除；
 //注释：输出日志请使用 logger.Error(),logger.Debug(),logger.Info()等
-MultiTenantDataDbContext db = new MultiTenantDataDbContext();
-";
+MultiTenantDataDbContext db = new MultiTenantDataDbContext();";
         /// <summary>
         /// 所有脚本方法内默认内置的通用代码段，个性化请写在各自脚本中
         /// </summary>
         private string DefaultCommonMethodCode
-            => @"
-
-";
+            => @"";
         /// <summary>
         /// 查询条件的脚本可重用
         /// </summary>
         /// <param name="methodName"></param>
         /// <returns></returns>
         private string Get_DefaultScript_MetaObject_Interface_QueryCondition(string methodName)
-=> $@"
-{DefaultCommonUsing}
+=> $@"{DefaultCommonUsing}
 {DefaultCommonClassInnerCode}
 public FilterDefinition<BsonDocument> {methodName}(string interfaceCode,FilterDefinition<BsonDocument> condition)
 {{
@@ -240,8 +234,7 @@ public FilterDefinition<BsonDocument> {methodName}(string interfaceCode,FilterDe
 	//这里写业务逻辑
 	//...
 	return condition;
-}}"
-;
+}}";
 
         const string FunctionName_MetaObject_Interface_Add_Before = "Interface_Add_Before";
         const string FunctionName_MetaObject_Interface_Add_After = "Interface_Add_After";
@@ -262,8 +255,7 @@ public FilterDefinition<BsonDocument> {methodName}(string interfaceCode,FilterDe
         const string FunctionName_DataSource = "TriggerScriptDataSource";
 
         private string DefaultScript_MetaObject_Interface_Add_Before
-=> $@"
-{DefaultCommonUsing}
+=> $@"{DefaultCommonUsing}
 {DefaultCommonClassInnerCode}
 public BsonDocument {FunctionName_MetaObject_Interface_Add_Before}(string interfaceCode,BsonDocument bsonElements)
 {{
@@ -271,11 +263,9 @@ public BsonDocument {FunctionName_MetaObject_Interface_Add_Before}(string interf
 	//这里写业务逻辑
 	//...
 	return bsonElements;
-}}
-";
+}}";
         private string DefaultScript_MetaObject_Interface_Add_After
-=> $@"
-{DefaultCommonUsing}
+=> $@"{DefaultCommonUsing}
 {DefaultCommonClassInnerCode}
 public BsonDocument {FunctionName_MetaObject_Interface_Add_After}(string interfaceCode,BsonDocument bsonElements)
 {{
@@ -283,11 +273,9 @@ public BsonDocument {FunctionName_MetaObject_Interface_Add_After}(string interfa
 	//这里写业务逻辑
 	//...
 	return bsonElements;
-}}
-";
+}}";
         private string DefaultScript_MetaObject_Interface_BatchAdd_Before
-=> $@"
-{DefaultCommonUsing}
+=> $@"{DefaultCommonUsing}
 {DefaultCommonClassInnerCode}
 public List<BsonDocument> {FunctionName_MetaObject_Interface_BatchAdd_Before}(string interfaceCode,List<BsonDocument> bsonElementsList)
 {{
@@ -295,11 +283,9 @@ public List<BsonDocument> {FunctionName_MetaObject_Interface_BatchAdd_Before}(st
 	//这里写业务逻辑
 	//...
 	return bsonElementsList;
-}}
-";
+}}";
         private string DefaultScript_MetaObject_Interface_BatchAdd_After
-            => $@"
-{DefaultCommonUsing}
+            => $@"{DefaultCommonUsing}
 {DefaultCommonClassInnerCode}
 public List<BsonDocument> {FunctionName_MetaObject_Interface_BatchAdd_After}(string interfaceCode,List<BsonDocument> bsonElementsList)
 {{
@@ -307,8 +293,7 @@ public List<BsonDocument> {FunctionName_MetaObject_Interface_BatchAdd_After}(str
 	//这里写业务逻辑
 	//...
 	return bsonElementsList;
-}}
-";
+}}";
         private string DefaultScript_MetaObject_Interface_Update_Before
             => string.Empty;
         private string DefaultScript_MetaObject_Interface_Update_After => string.Empty;
@@ -319,8 +304,10 @@ public List<BsonDocument> {FunctionName_MetaObject_Interface_BatchAdd_After}(str
         private string DefaultScript_MetaObject_Interface_TableList_Before
 => Get_DefaultScript_MetaObject_Interface_QueryCondition("Interface_TableList_Before");
         private string DefaultScript_MetaObject_Interface_TableList_After
-=> $@"
-{DefaultCommonUsing}
+=> $@"{DefaultCommonUsing}
+using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData;
+using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.ListView;
+using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.UserInfo;
 {DefaultCommonClassInnerCode}
 public TableListComponent {FunctionName_MetaObject_Interface_TableList_After}(string interfaceCode, TableListComponent tableListComponent)
 {{
@@ -328,13 +315,14 @@ public TableListComponent {FunctionName_MetaObject_Interface_TableList_After}(st
     //这里写业务逻辑
     //...
     return tableListComponent;
-}}
-";
+}}";
         private string DefaultScript_MetaObject_Interface_SingleObject_Before
 => Get_DefaultScript_MetaObject_Interface_QueryCondition("Interface_SingleObject_Before");
         private string DefaultScript_MetaObject_Interface_SingleObject_After
-=> $@"
-{DefaultCommonUsing}
+=> $@"{DefaultCommonUsing}
+using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData;
+using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.ListView;
+using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.UserInfo;
 {DefaultCommonClassInnerCode}
 public SingleObjectComponent {FunctionName_MetaObject_Interface_SingleObject_After}(string interfaceCode,SingleObjectComponent singleObjectComponent)
 {{
@@ -342,13 +330,11 @@ public SingleObjectComponent {FunctionName_MetaObject_Interface_SingleObject_Aft
 	//这里写业务逻辑
 	//...
 	return singleObjectComponent;
-}}
-";
+}}";
         private string DefaultScript_MetaObject_Interface_Count_Before
 => Get_DefaultScript_MetaObject_Interface_QueryCondition("Interface_Count_Before");
         private string DefaultScript_MetaObject_Interface_Count_After
-        => $@"
-{DefaultCommonUsing}
+=> $@"{DefaultCommonUsing}
 {DefaultCommonClassInnerCode}
 public int {FunctionName_MetaObject_Interface_Count_After}(string interfaceCode,int count)
 {{
@@ -356,12 +342,10 @@ public int {FunctionName_MetaObject_Interface_Count_After}(string interfaceCode,
 	//这里写业务逻辑
 	//...
 	return count;
-}}
-";
+}}";
 
         private string DefaultScript_DataSource
-        => $@"
-{DefaultCommonUsing}
+=> $@"{DefaultCommonUsing}
 {DefaultCommonClassInnerCode}
 public object {FunctionName_DataSource}(string operateCode, Dictionary<string, object> argumentsDic)
 {{
@@ -369,8 +353,7 @@ public object {FunctionName_DataSource}(string operateCode, Dictionary<string, o
 	//这里写业务逻辑
 	//...
 	return null;
-}}
-";
+}}";
         #endregion
     }
 }

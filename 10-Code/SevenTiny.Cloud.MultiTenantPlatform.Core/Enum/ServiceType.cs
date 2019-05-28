@@ -5,14 +5,14 @@
     /// </summary>
     public enum ServiceType
     {
-        UI_ObjectData,
-        Interface_Add,
-        Interface_BatchAdd,
-        Interface_Update,
-        Interface_Put,
-        Interface_Delete,
-        Interface_TableList,
-        Interface_SingleObject,
-        Interface_Count,
+        UI_ObjectData = 1,
+        Interface_Add = 2,
+        Interface_BatchAdd = 3,
+        Interface_Update = 4,
+        Interface_Put = 5,
+        Interface_Delete = 6,
+        Interface_TableList = 7,
+        Interface_SingleObject = 8,
+        Interface_Count = 9,
     }
 }
