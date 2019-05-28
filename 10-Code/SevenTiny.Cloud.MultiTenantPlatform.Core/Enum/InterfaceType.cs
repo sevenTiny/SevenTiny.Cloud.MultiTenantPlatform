@@ -20,7 +20,7 @@
         /// <summary>
         /// 枚举数据源
         /// </summary>
-        EnumeDataSource = 4,
+        JsonDataSource = 4,
         /// <summary>
         /// 触发器脚本数据源
         /// </summary>
@@ -28,7 +28,7 @@
     }
     public static class InterfaceTypeTranslator
     {
-        public static string ToLabel(int datatype)
+        public static string ToChinese(int datatype)
         {
             switch (datatype)
             {
@@ -38,8 +38,8 @@
                     return "数据集合";
                 case (int)InterfaceType.Count:
                     return "数据量";
-                case (int)InterfaceType.EnumeDataSource:
-                    return "枚举数据源";
+                case (int)InterfaceType.JsonDataSource:
+                    return "Json数据源";
                 case (int)InterfaceType.TriggerScriptDataSource:
                     return "触发器数据源";
                 default:
