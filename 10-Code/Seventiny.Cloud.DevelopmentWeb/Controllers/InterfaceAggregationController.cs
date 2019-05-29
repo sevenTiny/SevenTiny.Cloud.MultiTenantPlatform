@@ -12,19 +12,19 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
         private readonly IInterfaceAggregationService interfaceAggregationService;
         private readonly IFieldListService interfaceFieldService;
         private readonly ISearchConditionService searchConditionService;
-        private readonly ITriggerScriptService triggerScriptService;
+        private readonly IFormService _formService;
 
         public InterfaceAggregationController(
             IInterfaceAggregationService _interfaceAggregationService,
             IFieldListService _interfaceFieldService,
             ISearchConditionService _searchConditionService,
-            ITriggerScriptService _triggerScriptService
+            IFormService formService
             )
         {
             this.interfaceAggregationService = _interfaceAggregationService;
             this.interfaceFieldService = _interfaceFieldService;
             this.searchConditionService = _searchConditionService;
-            triggerScriptService = _triggerScriptService;
+            _formService = formService;
         }
 
         public IActionResult List()
@@ -32,29 +32,29 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             return View(interfaceAggregationService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId));
         }
 
-        public IActionResult InterfaceList()
-        {
-            ViewData["InterfaceAggregationList"] = interfaceAggregationService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
-            ViewData["MetaObjectCode"] = CurrentMetaObjectCode;
-            return View();
-        }
-
         public IActionResult DeleteList()
         {
             return View(interfaceAggregationService.GetEntitiesDeletedByMetaObjectId(CurrentMetaObjectId));
         }
 
-        public IActionResult Add()
+        private void SetDataSource()
         {
             ViewData["InterfaceFields"] = interfaceFieldService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
             ViewData["SearchConditions"] = searchConditionService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
-            return View(ResponseModel.Success(new InterfaceAggregation {  }));
+            ViewData["Forms"] = _formService.GetEntitiesByMetaObjectId(CurrentMetaObjectId);
+            ViewData["ScriptDataSources"] = null;
+            ViewData["JsonDataSources"] = null;
+        }
+
+        public IActionResult Add()
+        {
+            SetDataSource();
+            return View(ResponseModel.Success(new InterfaceAggregation { }));
         }
 
         public IActionResult AddLogic(InterfaceAggregation entity)
         {
-            ViewData["InterfaceFields"] = interfaceFieldService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
-            ViewData["SearchConditions"] = searchConditionService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
+            SetDataSource();
 
             if (string.IsNullOrEmpty(entity.Name))
             {
@@ -71,41 +71,17 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
                 return View("Add", ResponseModel.Error("编码不合法，2-50位且只能包含字母和数字（字母开头）", entity));
             }
 
+            string tempCode = entity.Code;
+            entity.MetaObjectId = CurrentMetaObjectId;
+            entity.Code = $"{CurrentMetaObjectCode}.Interface.{entity.Code}";
             //检查编码或名称重复
             var checkResult = interfaceAggregationService.CheckSameCodeOrName(CurrentMetaObjectId, entity);
             if (!checkResult.IsSuccess)
             {
+                entity.Code = tempCode;
                 return View("Add", checkResult.ToResponseModel());
             }
 
-            if (entity.InterfaceType == (int)InterfaceType.TriggerScriptDataSource)
-            {
-                //if (string.IsNullOrEmpty(entity.Script))
-                //{
-                //    return View("Add", ResponseModel.Error("触发器脚本不能为空", entity));
-                //}
-                ////检查脚本正确性
-                //var triggerScriptCheckResult = triggerScriptCheckService.CompilationAndCheckScript(entity.Script);
-                //if (!triggerScriptCheckResult.Item1)
-                //{
-                //    return View("Add", ResponseModel.Error($"脚本存在错误：\r\n{triggerScriptCheckResult.Item2}", entity));
-                //}
-            }
-            else
-            {
-                if (entity.FieldListId == default(int))
-                {
-                    return View("Add", ResponseModel.Error("接口字段不能为空", entity));
-                }
-                if (entity.SearchConditionId == default(int))
-                {
-                    return View("Add", ResponseModel.Error("条件不能为空", entity));
-                }
-            }
-
-            entity.MetaObjectId = CurrentMetaObjectId;
-            //组合编码
-            entity.Code = $"{CurrentMetaObjectCode}.Interface.{entity.Code}";
             interfaceAggregationService.Add(entity);
 
             return RedirectToAction("List");
@@ -113,8 +89,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
 
         public IActionResult Update(int id)
         {
-            ViewData["InterfaceFields"] = interfaceFieldService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
-            ViewData["SearchConditions"] = searchConditionService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
+            SetDataSource();
 
             var metaObject = interfaceAggregationService.GetById(id);
             return View(ResponseModel.Success(metaObject));
@@ -122,8 +97,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
 
         public IActionResult UpdateLogic(InterfaceAggregation entity)
         {
-            ViewData["InterfaceFields"] = interfaceFieldService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
-            ViewData["SearchConditions"] = searchConditionService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
+            SetDataSource();
 
             if (entity.Id == 0)
             {
@@ -143,31 +117,6 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             if (!checkResult.IsSuccess)
             {
                 return View("Update", checkResult.ToResponseModel());
-            }
-
-            if (entity.InterfaceType == (int)InterfaceType.TriggerScriptDataSource)
-            {
-                //if (string.IsNullOrEmpty(entity.Script))
-                //{
-                //    return View("Update", ResponseModel.Error("触发器脚本不能为空", entity));
-                //}
-                ////检查脚本正确性
-                //var triggerScriptCheckResult = triggerScriptCheckService.CompilationAndCheckScript(entity.Script);
-                //if (!triggerScriptCheckResult.Item1)
-                //{
-                //    return View("Update", ResponseModel.Error($"脚本存在错误：\r\n{triggerScriptCheckResult.Item2}", entity));
-                //}
-            }
-            else
-            {
-                if (entity.FieldListId == default(int))
-                {
-                    return View("Update", ResponseModel.Error("接口字段不能为空", entity));
-                }
-                if (entity.SearchConditionId == default(int))
-                {
-                    return View("Update", ResponseModel.Error("条件不能为空", entity));
-                }
             }
 
             interfaceAggregationService.Update(entity);

@@ -6,41 +6,65 @@
     public enum InterfaceType : int
     {
         /// <summary>
+        /// 新增
+        /// </summary>
+        Add = 1,
+        /// <summary>
+        /// 批量新增
+        /// </summary>
+        BatchAdd = 2,
+        /// <summary>
+        /// 修改
+        /// </summary>
+        Update = 3,
+        /// <summary>
+        /// 删除
+        /// </summary>
+        Delete = 4,
+        /// <summary>
         /// 单对象
         /// </summary>
-        SingleObject = 1,
+        SingleObject = 5,
         /// <summary>
         /// 对象列表
         /// </summary>
-        TableList = 2,
+        TableList = 6,
         /// <summary>
         /// 数量
         /// </summary>
-        Count = 3,
+        Count = 7,
         /// <summary>
         /// 枚举数据源
         /// </summary>
-        JsonDataSource = 4,
+        JsonDataSource = 8,
         /// <summary>
         /// 触发器脚本数据源
         /// </summary>
-        TriggerScriptDataSource = 5
+        TriggerScriptDataSource = 9
     }
     public static class InterfaceTypeTranslator
     {
         public static string ToChinese(int datatype)
         {
-            switch (datatype)
+            switch ((InterfaceType)datatype)
             {
-                case (int)InterfaceType.SingleObject:
+                case InterfaceType.Add:
+                    return "新增";
+                case InterfaceType.BatchAdd:
+                    return "新增（批量）";
+                case InterfaceType.Update:
+                    return "修改";
+                case InterfaceType.Delete:
+                    return "删除";
+                case InterfaceType.SingleObject:
                     return "单对象";
-                case (int)InterfaceType.TableList:
+                case InterfaceType.TableList:
                     return "数据集合";
-                case (int)InterfaceType.Count:
+                case InterfaceType.Count:
                     return "数据量";
-                case (int)InterfaceType.JsonDataSource:
+                case InterfaceType.JsonDataSource:
                     return "Json数据源";
-                case (int)InterfaceType.TriggerScriptDataSource:
+                case InterfaceType.TriggerScriptDataSource:
                     return "触发器数据源";
                 default:
                     return string.Empty;

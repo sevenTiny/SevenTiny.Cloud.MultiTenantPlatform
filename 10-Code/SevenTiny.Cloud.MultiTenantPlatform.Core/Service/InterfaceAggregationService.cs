@@ -1,14 +1,10 @@
-﻿using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
+﻿using SevenTiny.Bantina;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.DataAccess;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
-using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
-using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Caching;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using SevenTiny.Bantina;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.DataAccess;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 {
@@ -16,36 +12,60 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
     {
         public InterfaceAggregationService(
             MultiTenantPlatformDbContext multiTenantPlatformDbContext,
-            IFieldListService _interfaceFieldService,
-            ISearchConditionService _searchConditionService
+            IFieldListService fieldListService,
+            ISearchConditionService _searchConditionService,
+            IFormService formService
             ) : base(multiTenantPlatformDbContext)
         {
             dbContext = multiTenantPlatformDbContext;
-            this.interfaceFieldService = _interfaceFieldService;
+            this._fieldListService = fieldListService;
             this.searchConditionService = _searchConditionService;
+            _formService = formService;
         }
 
         readonly MultiTenantPlatformDbContext dbContext;
-        readonly IFieldListService interfaceFieldService;
+        readonly IFieldListService _fieldListService;
         readonly ISearchConditionService searchConditionService;
+        readonly IFormService _formService;
+
+        private void SetInterfacePropertyNameByPropertyId(ref InterfaceAggregation entity)
+        {
+            switch ((InterfaceType)entity.InterfaceType)
+            {
+                case InterfaceType.Add:
+                case InterfaceType.BatchAdd:
+                    entity.FormName = _formService.GetById(entity.FormId)?.Name;
+                    break;
+                case InterfaceType.Update:
+                    entity.FormName = _formService.GetById(entity.FormId)?.Name;
+                    entity.SearchConditionName = searchConditionService.GetById(entity.SearchConditionId)?.Name;
+                    break;
+                case InterfaceType.Delete:
+                    entity.SearchConditionName = searchConditionService.GetById(entity.SearchConditionId)?.Name;
+                    break;
+                case InterfaceType.SingleObject:
+                case InterfaceType.TableList:
+                    entity.FieldListName = _fieldListService.GetById(entity.FieldListId)?.Name;
+                    entity.SearchConditionName = searchConditionService.GetById(entity.SearchConditionId)?.Name;
+                    break;
+                case InterfaceType.Count:
+                    entity.SearchConditionName = searchConditionService.GetById(entity.SearchConditionId)?.Name;
+                    break;
+                case InterfaceType.JsonDataSource:
+                    throw new InvalidOperationException("这里补充数据源");
+                    break;
+                case InterfaceType.TriggerScriptDataSource:
+                    throw new InvalidOperationException("这里补充数据源");
+                    break;
+                default:
+                    break;
+            }
+        }
 
         //新增组织接口
         public new Result<InterfaceAggregation> Add(InterfaceAggregation entity)
         {
-            if (entity.InterfaceType == (int)InterfaceType.TriggerScriptDataSource)
-            {
-                entity.FieldListName = "-";
-                entity.SearchConditionName = "-";
-            }
-            else
-            {
-                //查询并将名字赋予接口的字段
-                var interfaceField = interfaceFieldService.GetById(entity.FieldListId);
-                var searchCondition = searchConditionService.GetById(entity.SearchConditionId);
-                entity.FieldListName = interfaceField.Name;
-                entity.SearchConditionName = searchCondition.Name;
-            }
-
+            SetInterfacePropertyNameByPropertyId(ref entity);
             base.Add(entity);
             return Result<InterfaceAggregation>.Success();
         }
@@ -59,24 +79,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             InterfaceAggregation myEntity = GetById(interfaceAggregation.Id);
             if (myEntity != null)
             {
-                if (interfaceAggregation.InterfaceType != (int)InterfaceType.TriggerScriptDataSource)
-                {
-                    var interfaceField = interfaceFieldService.GetById(interfaceAggregation.FieldListId);
-                    var searchCondition = searchConditionService.GetById(interfaceAggregation.SearchConditionId);
-
-                    myEntity.FieldListId = interfaceAggregation.FieldListId;
-                    myEntity.FieldListName = interfaceField.Name;
-
-                    myEntity.SearchConditionId = interfaceAggregation.SearchConditionId;
-                    myEntity.SearchConditionName = searchCondition.Name;
-                }
-
                 myEntity.InterfaceType = interfaceAggregation.InterfaceType;
-
-                //如果脚本有改动，则清空脚本缓存
-                //if (myEntity.Script != null && !myEntity.Script.Equals(interfaceAggregation.Script))
-                //    TriggerScriptCache.ClearCache(interfaceAggregation.Script);
-                //myEntity.Script = interfaceAggregation.Script;
+                SetInterfacePropertyNameByPropertyId(ref myEntity);
 
                 //编码不允许修改
                 myEntity.Name = interfaceAggregation.Name;

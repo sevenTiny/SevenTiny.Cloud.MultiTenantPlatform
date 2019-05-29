@@ -165,7 +165,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                 case ServiceType.Interface_Add: return DefaultScript_MetaObject_Interface_Add_Before;
                 case ServiceType.Interface_BatchAdd: return DefaultScript_MetaObject_Interface_BatchAdd_Before;
                 case ServiceType.Interface_Update: return DefaultScript_MetaObject_Interface_Update_Before;
-                case ServiceType.Interface_Put: return DefaultScript_MetaObject_Interface_Put_Before;
                 case ServiceType.Interface_Delete: return DefaultScript_MetaObject_Interface_Delete_Before;
                 case ServiceType.Interface_TableList: return DefaultScript_MetaObject_Interface_TableList_Before;
                 case ServiceType.Interface_SingleObject: return DefaultScript_MetaObject_Interface_SingleObject_Before;
@@ -183,7 +182,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                 case ServiceType.Interface_Add: return DefaultScript_MetaObject_Interface_Add_After;
                 case ServiceType.Interface_BatchAdd: return DefaultScript_MetaObject_Interface_BatchAdd_After;
                 case ServiceType.Interface_Update: return DefaultScript_MetaObject_Interface_Update_After;
-                case ServiceType.Interface_Put: return DefaultScript_MetaObject_Interface_Put_After;
                 case ServiceType.Interface_Delete: return DefaultScript_MetaObject_Interface_Delete_After;
                 case ServiceType.Interface_TableList: return DefaultScript_MetaObject_Interface_TableList_After;
                 case ServiceType.Interface_SingleObject: return DefaultScript_MetaObject_Interface_SingleObject_After;
@@ -299,8 +297,6 @@ public List<BsonDocument> {FunctionName_MetaObject_Interface_BatchAdd_After}(str
         private string DefaultScript_MetaObject_Interface_Update_Before
             => string.Empty;
         private string DefaultScript_MetaObject_Interface_Update_After => string.Empty;
-        private string DefaultScript_MetaObject_Interface_Put_Before => string.Empty;
-        private string DefaultScript_MetaObject_Interface_Put_After => string.Empty;
         private string DefaultScript_MetaObject_Interface_Delete_Before => string.Empty;
         private string DefaultScript_MetaObject_Interface_Delete_After => string.Empty;
         private string DefaultScript_MetaObject_Interface_TableList_Before
