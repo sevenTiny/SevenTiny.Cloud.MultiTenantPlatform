@@ -33,7 +33,7 @@
                 @foreach (var item in entities)
                 {
                     <tr class="text-c">
-                        <td><a class="ml-5" href="/InterfaceAggregation/Description/@item.Id" title="@item.Description" style="font-weight:bold;color:dodgerblue">@item.Name</a></td>
+                        <td><a class="ml-5" href="javascript:showDescription(@item.Id)" title="@item.Description" style="font-weight:bold;color:dodgerblue">@item.Name</a></td>
                         <td style="color:#d72323;font-weight:bold">@item.Code</td>
                         <th style="color:#00CC33">@InterfaceTypeTranslator.ToChinese(item.InterfaceType)</th>
                         <td><a class="ml-5" href="/Form/AggregateField/@item.FormId" style="font-weight:bold;color:dodgerblue">@item.FormName</a></td>
@@ -65,5 +65,9 @@
             { "orderable": false, "aTargets": [8] }// 不参与排序的列
         ]
     });
+
+    function showDescription(item) {
+        layer_show('接口详情', '/InterfaceAggregation/Description/' + item, window.innerWidth / 1.5, window.innerHeight / 1.5);
+    }
 </script>
 <!--/请在上方写此页面业务相关的脚本-->

@@ -5,28 +5,65 @@
     Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
 
     InterfaceAggregation entity = Model as InterfaceAggregation ?? new InterfaceAggregation();
+    InterfaceType interfaceType = (InterfaceType)entity.InterfaceType;
 }
-
-<h1>Description</h1>
-
-_condition
-_form
-_interface
-...
-
-<div class="panel panel-default mt-10">
-    <div class="panel-header" style="background-color:#cbe7fc">接口使用说明</div>
-    <div class="panel-body pd-20">
-        <div>
-            <span>查询接口：/api/CloudData?interfaceCode=接口编码&参数=值&参数=值...</span><br />
-            <span>可选参数：pageIndex（页码），pageSize（页大小）</span>
-            <hr class="mt-10 mb-10" />
-            <span>插入接口：/api/CloudData?metaObjectCode=对象编码（字段值request body json格式传递）</span><br />
-            <hr class="mt-10 mb-10" />
-            <span>编辑接口：/api/CloudData?conditionCode=搜索条件编码&参数=值&参数=值...（字段值request body json格式传递）</span><br />
-            <hr class="mt-10 mb-10" />
-            <span>删除接口：/api/CloudData?conditionCode=搜索条件编码&参数=值&参数=值...</span><br />
+<article class="page-container">
+    <div class="panel panel-default mt-10">
+        <div class="panel-header" style="background-color:#cbe7fc">@entity.Code</div>
+        <div class="panel-body pd-20">
+            <div>
+                <span>接口名称：@entity.Name</span><br />
+                <hr class="mt-10 mb-10" />
+                <span>接口类型：@InterfaceTypeTranslator.ToChinese(entity.InterfaceType)</span><br />
+                <hr class="mt-10 mb-10" />
+                @if (InterfaceType.Add == interfaceType)
+                {
+                    <span>接口地址：/api/CloudData?_interface=@entity.Code</span><br />
+                    <hr class="mt-10 mb-10" />
+                    <span>字段值：request body json格式传递</span>
+                }
+                else if (InterfaceType.BatchAdd == interfaceType)
+                {
+                    <span>接口地址：/api/CloudData?_interface=@entity.Code</span><br />
+                    <hr class="mt-10 mb-10" />
+                    <span>字段值：request body json格式传递</span>
+                }
+                else if (InterfaceType.Update == interfaceType)
+                {
+                    <span>接口地址：/api/CloudData?_interface=@entity.Code</span><br />
+                    <hr class="mt-10 mb-10" />
+                    <span>字段值：request body json格式传递</span>
+                }
+                else if (InterfaceType.Delete == interfaceType)
+                {
+                    <span>接口地址：/api/CloudData?_interface=@entity.Code</span><br />
+                }
+                else if (InterfaceType.SingleObject == interfaceType)
+                {
+                    <span>接口地址：/api/CloudData?_interface=@entity.Code&参数1=值&参数2=值...</span><br />
+                }
+                else if (InterfaceType.TableList == interfaceType)
+                {
+                    <span>接口地址：/api/CloudData?_interface=@entity.Code&参数1=值&参数2=值...</span><br />
+                    <hr class="mt-10 mb-10" />
+                    <span>可选参数：_pageIndex（页码），_pageSize（页大小）</span>
+                }
+                else if (InterfaceType.Count == interfaceType)
+                {
+                    <span>接口地址：/api/CloudData?_interface=@entity.Code&参数1=值&参数2=值...</span><br />
+                }
+                else if (InterfaceType.TriggerScriptDataSource == interfaceType)
+                {
+                    <span>接口地址：/api/CloudData?_interface=@entity.Code</span><br />
+                }
+                else if (InterfaceType.JsonDataSource == interfaceType)
+                {
+                    <span>接口地址：/api/CloudData?_interface=@entity.Code</span><br />
+                }
+                <hr class="mt-10 mb-10" />
+                <span>接口描述：@entity.Description</span><br />
+            </div>
         </div>
     </div>
-</div>
+</article>
 
