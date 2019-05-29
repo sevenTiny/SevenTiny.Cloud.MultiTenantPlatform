@@ -141,5 +141,11 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             interfaceAggregationService.Recover(id);
             return JsonResultModel.Success("恢复成功");
         }
+
+        public IActionResult Description(int id)
+        {
+            var interfaceInfo = interfaceAggregationService.GetById(id);
+            return View(interfaceInfo);
+        }
     }
 }
