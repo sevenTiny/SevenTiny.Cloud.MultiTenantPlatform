@@ -47,7 +47,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             {
                 return View("Add", ResponseModel.Error("编码不合法，2-50位且只能包含字母和数字（字母开头）", triggerScript));
             }
-            if (string.IsNullOrEmpty(triggerScript.Code))
+            if (string.IsNullOrEmpty(triggerScript.Script))
             {
                 return View("Add", ResponseModel.Error("脚本不能为空", triggerScript));
             }
@@ -94,13 +94,6 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
                 if (string.IsNullOrEmpty(triggerScript.Code))
                 {
                     return View("Update", ResponseModel.Error("Code 不能为空", triggerScript));
-                }
-
-                //检查编码或名称重复
-                var checkResult = triggerScriptService.CheckSameCodeOrName(CurrentMetaObjectId, triggerScript);
-                if (!checkResult.IsSuccess)
-                {
-                    return View("Update", checkResult.ToResponseModel());
                 }
 
                 //check script

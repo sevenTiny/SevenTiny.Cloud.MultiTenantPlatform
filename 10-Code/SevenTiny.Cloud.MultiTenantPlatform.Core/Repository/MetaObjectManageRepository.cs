@@ -43,7 +43,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Repository
                 if (obj.Code.Equals(entity.Code))
                     return Result<TEntity>.Error($"编码[{obj.Code}]已存在", entity);
                 else if (obj.Name.Equals(entity.Name))
-                    return Result<TEntity>.Error($"名称[{obj.Name}]已存", entity);
+                    return Result<TEntity>.Error($"名称[{obj.Name}]已存在", entity);
             }
             return Result<TEntity>.Success();
         }

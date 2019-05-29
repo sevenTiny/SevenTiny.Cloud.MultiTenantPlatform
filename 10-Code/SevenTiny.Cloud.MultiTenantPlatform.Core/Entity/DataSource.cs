@@ -5,6 +5,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Entity
     public class DataSource : CommonInfo
     {
         /// <summary>
+        /// 应用Id
+        /// </summary>
+        [Column]
+        public int ApplicationId { get; set; }
+        /// <summary>
         /// 触发器类型
         /// </summary>
         [Column]

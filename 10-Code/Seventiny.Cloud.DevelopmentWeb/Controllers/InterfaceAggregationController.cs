@@ -13,11 +13,13 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
         private readonly IFieldListService interfaceFieldService;
         private readonly ISearchConditionService searchConditionService;
         private readonly IFormService _formService;
+        private readonly IDataSourceService _dataSourceService;
 
         public InterfaceAggregationController(
             IInterfaceAggregationService _interfaceAggregationService,
             IFieldListService _interfaceFieldService,
             ISearchConditionService _searchConditionService,
+            IDataSourceService dataSourceService,
             IFormService formService
             )
         {
@@ -25,6 +27,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             this.interfaceFieldService = _interfaceFieldService;
             this.searchConditionService = _searchConditionService;
             _formService = formService;
+            _dataSourceService = dataSourceService;
         }
 
         public IActionResult List()
@@ -42,8 +45,8 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             ViewData["InterfaceFields"] = interfaceFieldService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
             ViewData["SearchConditions"] = searchConditionService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
             ViewData["Forms"] = _formService.GetEntitiesByMetaObjectId(CurrentMetaObjectId);
-            ViewData["ScriptDataSources"] = null;
-            ViewData["JsonDataSources"] = null;
+            ViewData["ScriptDataSources"] = _dataSourceService.GetListByAppIdAndDataSourceType(CurrentApplicationId,DataSourceType.Script);
+            ViewData["JsonDataSources"] = _dataSourceService.GetListByAppIdAndDataSourceType(CurrentApplicationId, DataSourceType.Json);
         }
 
         public IActionResult Add()

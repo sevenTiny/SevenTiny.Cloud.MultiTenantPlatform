@@ -10,23 +10,26 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 {
     public class InterfaceAggregationService : MetaObjectManageRepository<InterfaceAggregation>, IInterfaceAggregationService
     {
+        readonly MultiTenantPlatformDbContext dbContext;
+        readonly IFieldListService _fieldListService;
+        readonly ISearchConditionService searchConditionService;
+        readonly IFormService _formService;
+        readonly IDataSourceService _dataSourceService;
+
         public InterfaceAggregationService(
             MultiTenantPlatformDbContext multiTenantPlatformDbContext,
             IFieldListService fieldListService,
             ISearchConditionService _searchConditionService,
-            IFormService formService
+            IFormService formService,
+            IDataSourceService dataSourceService
             ) : base(multiTenantPlatformDbContext)
         {
             dbContext = multiTenantPlatformDbContext;
             this._fieldListService = fieldListService;
             this.searchConditionService = _searchConditionService;
             _formService = formService;
+            _dataSourceService = dataSourceService;
         }
-
-        readonly MultiTenantPlatformDbContext dbContext;
-        readonly IFieldListService _fieldListService;
-        readonly ISearchConditionService searchConditionService;
-        readonly IFormService _formService;
 
         private void SetInterfacePropertyNameByPropertyId(ref InterfaceAggregation entity)
         {
@@ -52,10 +55,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                     entity.SearchConditionName = searchConditionService.GetById(entity.SearchConditionId)?.Name;
                     break;
                 case InterfaceType.JsonDataSource:
-                    throw new InvalidOperationException("这里补充数据源");
-                    break;
                 case InterfaceType.TriggerScriptDataSource:
-                    throw new InvalidOperationException("这里补充数据源");
+                    entity.DataSourceName = _dataSourceService.GetById(entity.DataSourceId)?.Name;
                     break;
                 default:
                     break;
