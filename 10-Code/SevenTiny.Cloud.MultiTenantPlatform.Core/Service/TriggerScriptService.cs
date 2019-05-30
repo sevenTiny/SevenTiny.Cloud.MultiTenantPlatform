@@ -242,8 +242,6 @@ public FilterDefinition<BsonDocument> {methodName}(string interfaceCode,FilterDe
         const string FunctionName_MetaObject_Interface_BatchAdd_After = "Interface_BatchAdd_After";
         const string FunctionName_MetaObject_Interface_Update_Before = "Interface_Update_Before";
         const string FunctionName_MetaObject_Interface_Update_After = "Interface_Update_After";
-        const string FunctionName_MetaObject_Interface_Put_Before = "Interface_Put_Before";
-        const string FunctionName_MetaObject_Interface_Put_After = "Interface_Put_After";
         const string FunctionName_MetaObject_Interface_Delete_Before = "Interface_Delete_Before";
         const string FunctionName_MetaObject_Interface_Delete_After = "Interface_Delete_After";
         const string FunctionName_MetaObject_Interface_TableList_Before = "Interface_TableList_Before";
@@ -295,12 +293,37 @@ public List<BsonDocument> {FunctionName_MetaObject_Interface_BatchAdd_After}(str
 	return bsonElementsList;
 }}";
         private string DefaultScript_MetaObject_Interface_Update_Before
-            => string.Empty;
-        private string DefaultScript_MetaObject_Interface_Update_After => string.Empty;
-        private string DefaultScript_MetaObject_Interface_Delete_Before => string.Empty;
-        private string DefaultScript_MetaObject_Interface_Delete_After => string.Empty;
+=> $@"{DefaultCommonUsing}
+{DefaultCommonClassInnerCode}
+public FilterDefinition<BsonDocument> {FunctionName_MetaObject_Interface_Update_Before}(string interfaceCode,FilterDefinition<BsonDocument> condition,BsonDocument bsonElements)
+{{
+    {DefaultCommonMethodCode}
+	//这里写业务逻辑
+	//...
+	return condition;
+}}";
+        private string DefaultScript_MetaObject_Interface_Update_After
+=> $@"{DefaultCommonUsing}
+{DefaultCommonClassInnerCode}
+public void {FunctionName_MetaObject_Interface_Update_After}(string interfaceCode,FilterDefinition<BsonDocument> condition,BsonDocument bsonElements)
+{{
+    {DefaultCommonMethodCode}
+	//这里写业务逻辑
+	//...
+}}";
+        private string DefaultScript_MetaObject_Interface_Delete_Before
+=> Get_DefaultScript_MetaObject_Interface_QueryCondition(FunctionName_MetaObject_Interface_Delete_Before);
+        private string DefaultScript_MetaObject_Interface_Delete_After
+=> $@"{DefaultCommonUsing}
+{DefaultCommonClassInnerCode}
+public void {FunctionName_MetaObject_Interface_Delete_After}(string interfaceCode,List<BsonDocument> bsonElementsList)
+{{
+    {DefaultCommonMethodCode}
+	//这里写业务逻辑
+	//...
+}}";
         private string DefaultScript_MetaObject_Interface_TableList_Before
-=> Get_DefaultScript_MetaObject_Interface_QueryCondition("Interface_TableList_Before");
+=> Get_DefaultScript_MetaObject_Interface_QueryCondition(FunctionName_MetaObject_Interface_TableList_Before);
         private string DefaultScript_MetaObject_Interface_TableList_After
 => $@"{DefaultCommonUsing}
 using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData;
@@ -315,7 +338,7 @@ public TableListComponent {FunctionName_MetaObject_Interface_TableList_After}(st
     return tableListComponent;
 }}";
         private string DefaultScript_MetaObject_Interface_SingleObject_Before
-=> Get_DefaultScript_MetaObject_Interface_QueryCondition("Interface_SingleObject_Before");
+=> Get_DefaultScript_MetaObject_Interface_QueryCondition(FunctionName_MetaObject_Interface_SingleObject_Before);
         private string DefaultScript_MetaObject_Interface_SingleObject_After
 => $@"{DefaultCommonUsing}
 using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData;
@@ -330,11 +353,11 @@ public SingleObjectComponent {FunctionName_MetaObject_Interface_SingleObject_Aft
 	return singleObjectComponent;
 }}";
         private string DefaultScript_MetaObject_Interface_Count_Before
-=> Get_DefaultScript_MetaObject_Interface_QueryCondition("Interface_Count_Before");
+=> Get_DefaultScript_MetaObject_Interface_QueryCondition(FunctionName_MetaObject_Interface_Count_Before);
         private string DefaultScript_MetaObject_Interface_Count_After
 => $@"{DefaultCommonUsing}
 {DefaultCommonClassInnerCode}
-public int {FunctionName_MetaObject_Interface_Count_After}(string interfaceCode,int count)
+public int {FunctionName_MetaObject_Interface_Count_After}(string interfaceCode,FilterDefinition<BsonDocument> condition,int count)
 {{
     {DefaultCommonMethodCode}
 	//这里写业务逻辑
@@ -345,7 +368,7 @@ public int {FunctionName_MetaObject_Interface_Count_After}(string interfaceCode,
         private string DefaultScript_DataSource
 => $@"{DefaultCommonUsing}
 {DefaultCommonClassInnerCode}
-public object {FunctionName_DataSource}(string operateCode, Dictionary<string, object> argumentsDic)
+public object {FunctionName_DataSource}(string interfaceCode, Dictionary<string, object> argumentsDic)
 {{
     {DefaultCommonMethodCode}
 	//这里写业务逻辑
