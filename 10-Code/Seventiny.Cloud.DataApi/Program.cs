@@ -19,6 +19,7 @@ namespace Seventiny.Cloud.DataApi
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .UseUrls("http://*:39011")
                 .UseStartup<Startup>();
     }
 }
