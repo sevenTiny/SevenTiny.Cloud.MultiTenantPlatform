@@ -95,7 +95,7 @@ namespace Seventiny.Cloud.DataApi.Controllers
                 }
 
                 //trigger before
-                documents = _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_BatchAdd, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_BatchAdd_Before, ref documents, interfaceAggregation.Code, documents);
+                documents = _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_BatchAdd, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_BatchAdd_Before, documents, interfaceAggregation.Code, documents);
 
                 //check data by form
                 if (interfaceAggregation.FormId != default(int))
@@ -109,7 +109,7 @@ namespace Seventiny.Cloud.DataApi.Controllers
                 var addResult = dataAccessService.BatchAdd(metaObject, documents);
 
                 //trigger after
-                _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_BatchAdd, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_BatchAdd_After, ref documents, interfaceAggregation.Code, documents);
+                _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_BatchAdd, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_BatchAdd_After, documents, interfaceAggregation.Code, documents);
 
                 return addResult.ToJsonResultModel();
             }

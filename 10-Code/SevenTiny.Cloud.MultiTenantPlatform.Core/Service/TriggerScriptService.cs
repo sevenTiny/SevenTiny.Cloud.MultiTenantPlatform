@@ -85,7 +85,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         }
 
         #region Execute Script
-        public T RunTriggerScript<T>(int metaObjectId, string applicationCode, ServiceType serviceType, TriggerPoint triggerPoint, string functionName, ref T result, params object[] parameters)
+        public T RunTriggerScript<T>(int metaObjectId, string applicationCode, ServiceType serviceType, TriggerPoint triggerPoint, string functionName, T result, params object[] parameters)
         {
             var triggerScripts = GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(metaObjectId, (int)serviceType)?.Where(t => t.TriggerPoint == (int)triggerPoint).ToList();
             if (triggerScripts != null && triggerScripts.Any())

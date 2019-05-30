@@ -18,7 +18,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract
         string GetDefaultDataSourceTriggerScript();
 
         #region Execute Script
-        T RunTriggerScript<T>(int metaObjectId, string applicationCode, ServiceType serviceType, TriggerPoint triggerPoint, string functionName, ref T result, params object[] parameters);
+        T RunTriggerScript<T>(int metaObjectId, string applicationCode, ServiceType serviceType, TriggerPoint triggerPoint, string functionName, T result, params object[] parameters);
         object RunDataSourceScript(string applicationCode, int dataSourceId, params object[] parameters);
         #endregion
     }

@@ -82,22 +82,22 @@ namespace Seventiny.Cloud.DataApi.Controllers
                 {
                     case InterfaceType.SingleObject:
                         filter = conditionAggregationService.AnalysisConditionToFilterDefinitionByConditionId(interfaceAggregation.MetaObjectId, interfaceAggregation.SearchConditionId, argumentsDic);
-                        filter = _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_SingleObject, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_SingleObject_Before, ref filter, interfaceAggregation.Code, filter);
+                        filter = _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_SingleObject, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_SingleObject_Before, filter, interfaceAggregation.Code, filter);
                         var singleObjectComponent = dataAccessService.GetSingleObjectComponent(interfaceAggregation.MetaObjectId, interfaceAggregation.FieldListId, filter);
-                        singleObjectComponent = _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_SingleObject, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_SingleObject_After, ref singleObjectComponent, interfaceAggregation.Code, singleObjectComponent);
+                        singleObjectComponent = _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_SingleObject, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_SingleObject_After, singleObjectComponent, interfaceAggregation.Code, singleObjectComponent);
                         return JsonResultModel.Success("get single data success", singleObjectComponent);
                     case InterfaceType.TableList:
                         filter = conditionAggregationService.AnalysisConditionToFilterDefinitionByConditionId(interfaceAggregation.MetaObjectId, interfaceAggregation.SearchConditionId, argumentsDic);
-                        filter = _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_TableList, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_TableList_Before, ref filter, interfaceAggregation.Code, filter);
+                        filter = _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_TableList, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_TableList_Before, filter, interfaceAggregation.Code, filter);
                         var sort = metaFieldService.GetSortDefinitionBySortFields(interfaceAggregation.MetaObjectId, null);
                         var tableListComponent = dataAccessService.GetTableListComponent(interfaceAggregation.MetaObjectId, interfaceAggregation.FieldListId, filter, queryArgs._pageIndex, queryArgs._pageSize, sort, out int totalCount);
-                        tableListComponent = _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_TableList, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_TableList_After, ref tableListComponent, interfaceAggregation.Code, tableListComponent);
+                        tableListComponent = _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_TableList, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_TableList_After, tableListComponent, interfaceAggregation.Code, tableListComponent);
                         return JsonResultModel.Success("get data list success", tableListComponent);
                     case InterfaceType.Count:
                         filter = conditionAggregationService.AnalysisConditionToFilterDefinitionByConditionId(interfaceAggregation.MetaObjectId, interfaceAggregation.SearchConditionId, argumentsDic);
-                        filter = _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_Count, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_Count_Before, ref filter, interfaceAggregation.Code, filter);
+                        filter = _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_Count, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_Count_Before, filter, interfaceAggregation.Code, filter);
                         var count = dataAccessService.GetCount(interfaceAggregation.MetaObjectId, filter);
-                        count = _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_Count, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_Count_After, ref count, interfaceAggregation.Code, filter, count);
+                        count = _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_Count, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_Count_After, count, interfaceAggregation.Code, filter, count);
                         return JsonResultModel.Success("get data count success", count);
                     case InterfaceType.JsonDataSource:
                         return new JsonResult(Newtonsoft.Json.JsonConvert.DeserializeObject(_dataSourceService.GetById(interfaceAggregation.DataSourceId).Script));
@@ -159,7 +159,7 @@ namespace Seventiny.Cloud.DataApi.Controllers
                     return JsonResultModel.Error($"未能找到对象Id为[{interfaceAggregation.MetaObjectId}]对应的对象信息");
 
                 //trigger before
-                bson = _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_Add, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_Add_Before, ref bson, interfaceAggregation.Code, bson);
+                bson = _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_Add, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_Add_Before, bson, interfaceAggregation.Code, bson);
 
                 //check data by form
                 if (interfaceAggregation.FormId != default(int))
@@ -173,7 +173,7 @@ namespace Seventiny.Cloud.DataApi.Controllers
                 var addResult = dataAccessService.Add(metaObject, bson);
 
                 //trigger after
-                _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_Add, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_Add_After, ref bson, interfaceAggregation.Code, bson);
+                _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_Add, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_Add_After, bson, interfaceAggregation.Code, bson);
 
                 return addResult.ToJsonResultModel();
             }
@@ -230,7 +230,7 @@ namespace Seventiny.Cloud.DataApi.Controllers
                 filter = conditionAggregationService.AnalysisConditionToFilterDefinitionByConditionId(interfaceAggregation.MetaObjectId, interfaceAggregation.SearchConditionId, argumentsDic);
 
                 //trigger before
-                bson = _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_Update, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_Update_Before, ref bson, interfaceAggregation.Code, bson, filter);
+                bson = _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_Update, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_Update_Before, bson, interfaceAggregation.Code, bson, filter);
 
                 //check data by form
                 if (interfaceAggregation.FormId != default(int))
@@ -244,7 +244,7 @@ namespace Seventiny.Cloud.DataApi.Controllers
                 dataAccessService.Update(interfaceAggregation.MetaObjectId, filter, bson);
 
                 //trigger after
-                _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_Update, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_Update_After, ref bson, interfaceAggregation.Code, bson);
+                _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_Update, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_Update_After, bson, interfaceAggregation.Code, bson);
 
                 return JsonResultModel.Success("success");
             }
@@ -293,7 +293,7 @@ namespace Seventiny.Cloud.DataApi.Controllers
                 filter = conditionAggregationService.AnalysisConditionToFilterDefinitionByConditionId(interfaceAggregation.MetaObjectId, interfaceAggregation.SearchConditionId, argumentsDic);
 
                 //trigger before
-                filter = _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_Delete, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_Delete_Before, ref filter, interfaceAggregation.Code, filter);
+                filter = _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_Delete, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_Delete_Before, filter, interfaceAggregation.Code, filter);
 
                 //queryResult
                 var sort = metaFieldService.GetSortDefinitionBySortFields(interfaceAggregation.MetaObjectId, null);
@@ -303,7 +303,7 @@ namespace Seventiny.Cloud.DataApi.Controllers
                 dataAccessService.Delete(interfaceAggregation.MetaObjectId, filter);
 
                 //trigger after
-                _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_Delete, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_Delete_After, ref filter, interfaceAggregation.Code, queryDatas);
+                _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_Delete, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_Delete_After, filter, interfaceAggregation.Code, queryDatas);
 
                 return JsonResultModel.Success("success");
             }
