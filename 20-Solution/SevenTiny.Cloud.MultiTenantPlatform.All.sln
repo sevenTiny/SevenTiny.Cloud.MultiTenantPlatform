@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{96B1B369-C366-4046-95BD-478CB3145B74}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenantPlatform.DataApi", "..\10-Code\SevenTiny.Cloud.MultiTenantPlatform.DataApi\SevenTiny.Cloud.MultiTenantPlatform.DataApi.csproj", "{95AC3ADD-FF94-4753-930B-B925A3F3F325}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{C2B695A9-F5A6-4B33-A156-1EE934683EC7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenantPlatform.Infrastructure", "..\10-Code\SevenTiny.Cloud.MultiTenantPlatform.Infrastructure\SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.csproj", "{087F46A9-1D6C-42E1-99ED-5BB5BAD18FEB}"
@@ -31,10 +29,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{95AC3ADD-FF94-4753-930B-B925A3F3F325}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{95AC3ADD-FF94-4753-930B-B925A3F3F325}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{95AC3ADD-FF94-4753-930B-B925A3F3F325}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{95AC3ADD-FF94-4753-930B-B925A3F3F325}.Release|Any CPU.Build.0 = Release|Any CPU
 		{087F46A9-1D6C-42E1-99ED-5BB5BAD18FEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{087F46A9-1D6C-42E1-99ED-5BB5BAD18FEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{087F46A9-1D6C-42E1-99ED-5BB5BAD18FEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -72,7 +66,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{95AC3ADD-FF94-4753-930B-B925A3F3F325} = {C2B695A9-F5A6-4B33-A156-1EE934683EC7}
 		{EBA08CD1-F2D2-45CD-B1C2-BAA73CE7885D} = {96B1B369-C366-4046-95BD-478CB3145B74}
 		{4F393564-7250-4BA3-86AC-B63AE6A4F619} = {96B1B369-C366-4046-95BD-478CB3145B74}
 		{D0688BB0-4659-42AC-A587-75A7AC584D31} = {C2B695A9-F5A6-4B33-A156-1EE934683EC7}
