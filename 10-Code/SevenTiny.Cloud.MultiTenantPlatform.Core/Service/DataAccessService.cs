@@ -334,6 +334,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.In("_id", _ids);
             return GetList(metaObjectCode, filter, sort);
         }
+        public List<BsonDocument> GetList(int metaObjectId, FilterDefinition<BsonDocument> condition, SortDefinition<BsonDocument> sort)
+        {
+            return GetList(metaObjectId, condition, 0, 0, sort);
+        }
         public List<BsonDocument> GetList(string metaObjectCode, FilterDefinition<BsonDocument> condition, SortDefinition<BsonDocument> sort)
         {
             return GetList(metaObjectCode, condition, 0, 0, sort);

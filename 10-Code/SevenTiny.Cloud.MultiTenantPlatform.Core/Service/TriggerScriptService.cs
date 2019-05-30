@@ -20,15 +20,18 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
     {
         public TriggerScriptService(
             MultiTenantPlatformDbContext multiTenantPlatformDbContext,
-            IScriptEngineProvider scriptEngineProvider
+            IScriptEngineProvider scriptEngineProvider,
+            IDataSourceService dataSourceService
             ) : base(multiTenantPlatformDbContext)
         {
             _dbContext = multiTenantPlatformDbContext;
             _scriptEngineProvider = scriptEngineProvider;
+            _dataSourceService = dataSourceService;
         }
 
         readonly MultiTenantPlatformDbContext _dbContext;
         readonly IScriptEngineProvider _scriptEngineProvider;
+        readonly IDataSourceService _dataSourceService;
 
         public new Result<TriggerScript> Add(TriggerScript triggerScript)
         {
@@ -82,76 +85,41 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         }
 
         #region Execute Script
-        public BsonDocument Run_MetaObject_Interface_Add_Before(int metaObjectId, string interfaceCode, BsonDocument bsonElements)
+        public T RunTriggerScript<T>(int metaObjectId, string applicationCode, ServiceType serviceType, TriggerPoint triggerPoint, string functionName, ref T result, params object[] parameters)
         {
-            string applicationCode = interfaceCode.Split('.')[0];
-            var triggerScripts = GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(metaObjectId, (int)ServiceType.Interface_Add)?.Where(t => t.TriggerPoint == (int)TriggerPoint.Before).ToList();
+            var triggerScripts = GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(metaObjectId, (int)serviceType)?.Where(t => t.TriggerPoint == (int)triggerPoint).ToList();
             if (triggerScripts != null && triggerScripts.Any())
             {
                 foreach (var script in triggerScripts)
                 {
                     var dynamicScript = script.ToDynamicScript();
-                    dynamicScript.FunctionName = FunctionName_MetaObject_Interface_Add_Before;
+                    dynamicScript.FunctionName = functionName;
                     dynamicScript.ProjectName = applicationCode;
-                    dynamicScript.Parameters = new[] { bsonElements };
-                    var result = _scriptEngineProvider.RunScript<BsonDocument>(dynamicScript);
-                    if (!result.IsSuccess && (OnFailurePolicy)script.OnFailurePolicy == OnFailurePolicy.Break)
-                        throw new Exception(result.Message);
+                    dynamicScript.Parameters = parameters;
+                    var executeResult = _scriptEngineProvider.RunScript<T>(dynamicScript);
+                    if (!executeResult.IsSuccess && (OnFailurePolicy)script.OnFailurePolicy == OnFailurePolicy.Break)
+                        throw new Exception(executeResult.Message);
+                    else
+                        result = executeResult.Data;
                 }
             }
-            return bsonElements;
-        }
-        public BsonDocument Run_MetaObject_Interface_Add_After(int metaObjectId, string interfaceCode, BsonDocument bsonElements)
-        {
-            throw new NotImplementedException();
-        }
-        public List<BsonDocument> Run_MetaObject_Interface_BatchAdd_Before(int metaObjectId, string interfaceCode, List<BsonDocument> bsonElementsList)
-        {
-            throw new NotImplementedException();
-        }
-        public List<BsonDocument> Run_MetaObject_Interface_BatchAdd_After(int metaObjectId, string interfaceCode, List<BsonDocument> bsonElementsList)
-        {
-            throw new NotImplementedException();
-        }
-        public FilterDefinition<BsonDocument> Run_MetaObject_Interface_Update_Before(int metaObjectId, string interfaceCode, FilterDefinition<BsonDocument> condition)
-        {
-            throw new NotImplementedException();
-        }
-        public FilterDefinition<BsonDocument> Run_MetaObject_Interface_Delete_Before(int metaObjectId, string interfaceCode, FilterDefinition<BsonDocument> condition)
-        {
-            throw new NotImplementedException();
+            return result;
         }
 
-        public FilterDefinition<BsonDocument> Run_MetaObject_Interface_TableList_Before(int metaObjectId, string interfaceCode, FilterDefinition<BsonDocument> condition)
+        public object RunDataSourceScript(string applicationCode, int dataSourceId, params object[] parameters)
         {
-            throw new NotImplementedException();
-        }
-        public TableListComponent Run_MetaObject_Interface_TableList_After(int metaObjectId, string interfaceCode, TableListComponent tableListComponent)
-        {
-            throw new NotImplementedException();
-        }
-
-        public FilterDefinition<BsonDocument> Run_MetaObject_Interface_SingleObject_Before(int metaObjectId, string interfaceCode, FilterDefinition<BsonDocument> condition)
-        {
-            throw new NotImplementedException();
-        }
-        public SingleObjectComponent Run_MetaObject_Interface_SingleObject_After(int metaObjectId, string interfaceCode, SingleObjectComponent singleObjectComponent)
-        {
-            throw new NotImplementedException();
-        }
-
-        public FilterDefinition<BsonDocument> Run_MetaObject_Interface_Count_Before(int metaObjectId, string interfaceCode, FilterDefinition<BsonDocument> condition)
-        {
-            throw new NotImplementedException();
-        }
-        public int Run_MetaObject_Interface_Count_After(int metaObjectId, string interfaceCode, int count)
-        {
-            throw new NotImplementedException();
-        }
-
-        public object Run_DataSource(string interfaceCode, Dictionary<string, object> argumentsDic)
-        {
-            throw new NotImplementedException();
+            var dataSource = _dataSourceService.GetById(dataSourceId);
+            if (dataSource != null)
+            {
+                var dynamicScript = new DynamicScript();
+                dynamicScript.Script = dataSource.Script;
+                dynamicScript.Language = DynamicScriptLanguage.CSharp;
+                dynamicScript.FunctionName = FunctionName_DataSource;
+                dynamicScript.ProjectName = applicationCode;
+                dynamicScript.Parameters = parameters;
+                var executeResult = _scriptEngineProvider.RunScript<object>(dynamicScript);
+            }
+            return null;
         }
         #endregion
 
@@ -220,6 +188,23 @@ MultiTenantDataDbContext db = new MultiTenantDataDbContext();";
         /// </summary>
         private string DefaultCommonMethodCode
             => @"";
+
+        public const string FunctionName_MetaObject_Interface_Add_Before = "Interface_Add_Before";
+        public const string FunctionName_MetaObject_Interface_Add_After = "Interface_Add_After";
+        public const string FunctionName_MetaObject_Interface_BatchAdd_Before = "Interface_BatchAdd_Before";
+        public const string FunctionName_MetaObject_Interface_BatchAdd_After = "Interface_BatchAdd_After";
+        public const string FunctionName_MetaObject_Interface_Update_Before = "Interface_Update_Before";
+        public const string FunctionName_MetaObject_Interface_Update_After = "Interface_Update_After";
+        public const string FunctionName_MetaObject_Interface_Delete_Before = "Interface_Delete_Before";
+        public const string FunctionName_MetaObject_Interface_Delete_After = "Interface_Delete_After";
+        public const string FunctionName_MetaObject_Interface_TableList_Before = "Interface_TableList_Before";
+        public const string FunctionName_MetaObject_Interface_TableList_After = "Interface_TableList_After";
+        public const string FunctionName_MetaObject_Interface_SingleObject_Before = "Interface_SingleObject_Before";
+        public const string FunctionName_MetaObject_Interface_SingleObject_After = "Interface_SingleObject_After";
+        public const string FunctionName_MetaObject_Interface_Count_Before = "Interface_Count_Before";
+        public const string FunctionName_MetaObject_Interface_Count_After = "Interface_Count_After";
+        public const string FunctionName_DataSource = "TriggerScriptDataSource";
+
         /// <summary>
         /// 查询条件的脚本可重用
         /// </summary>
@@ -235,22 +220,6 @@ public FilterDefinition<BsonDocument> {methodName}(string interfaceCode,FilterDe
 	//...
 	return condition;
 }}";
-
-        const string FunctionName_MetaObject_Interface_Add_Before = "Interface_Add_Before";
-        const string FunctionName_MetaObject_Interface_Add_After = "Interface_Add_After";
-        const string FunctionName_MetaObject_Interface_BatchAdd_Before = "Interface_BatchAdd_Before";
-        const string FunctionName_MetaObject_Interface_BatchAdd_After = "Interface_BatchAdd_After";
-        const string FunctionName_MetaObject_Interface_Update_Before = "Interface_Update_Before";
-        const string FunctionName_MetaObject_Interface_Update_After = "Interface_Update_After";
-        const string FunctionName_MetaObject_Interface_Delete_Before = "Interface_Delete_Before";
-        const string FunctionName_MetaObject_Interface_Delete_After = "Interface_Delete_After";
-        const string FunctionName_MetaObject_Interface_TableList_Before = "Interface_TableList_Before";
-        const string FunctionName_MetaObject_Interface_TableList_After = "Interface_TableList_After";
-        const string FunctionName_MetaObject_Interface_SingleObject_Before = "Interface_SingleObject_Before";
-        const string FunctionName_MetaObject_Interface_SingleObject_After = "Interface_SingleObject_After";
-        const string FunctionName_MetaObject_Interface_Count_Before = "Interface_Count_Before";
-        const string FunctionName_MetaObject_Interface_Count_After = "Interface_Count_After";
-        const string FunctionName_DataSource = "TriggerScriptDataSource";
 
         private string DefaultScript_MetaObject_Interface_Add_Before
 => $@"{DefaultCommonUsing}

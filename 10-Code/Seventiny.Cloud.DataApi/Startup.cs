@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using SevenTiny.Cloud.MultiTenantPlatform.Core;
 
 namespace Seventiny.Cloud.DataApi
 {
@@ -25,6 +26,20 @@ namespace Seventiny.Cloud.DataApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //start 7tiny ---
+            string[] urls = new[] { "http://localhost:4444" };
+            services.AddCors(options =>
+            options.AddPolicy("AllowSameDomain",
+            builder => builder.WithOrigins(urls).AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin().AllowCredentials())
+            );
+
+            //session support
+            services.AddDistributedMemoryCache();
+            services.AddSession();
+            //DI
+            services.InjectCore();
+            //end 7tiny ---
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
