@@ -14,7 +14,7 @@
 }
 @await Html.PartialAsync("~/Views/Shared/PartialNav.cshtml")
 
-<article class="page-container" style="padding-bottom:80px">
+<article class="page-container">
     <form class="form form-horizontal validate" id="form-article-add" method="post" action="/DataSource/UpdateJsonDataSourceLogic">
         <input type="text" class="input-text" value="@entity.Id" name="id" hidden>
         <div class="row cl">
