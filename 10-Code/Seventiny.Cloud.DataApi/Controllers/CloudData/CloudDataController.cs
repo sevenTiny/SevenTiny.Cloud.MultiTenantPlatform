@@ -10,6 +10,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
 using Seventiny.Cloud.DataApi.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Seventiny.Cloud.DataApi.Controllers
 {
@@ -26,7 +27,8 @@ namespace Seventiny.Cloud.DataApi.Controllers
             ITriggerScriptService triggerScriptService,
             IDataSourceService dataSourceService,
             IMetaObjectService _metaObjectService,
-            IMetaFieldService _metaFieldService
+            IMetaFieldService _metaFieldService,
+            IFormMetaFieldService formMetaFieldService
             )
         {
             dataAccessService = _dataAccessService;
@@ -36,6 +38,7 @@ namespace Seventiny.Cloud.DataApi.Controllers
             metaObjectService = _metaObjectService;
             metaFieldService = _metaFieldService;
             _dataSourceService = dataSourceService;
+            _formMetaFieldService = formMetaFieldService;
         }
 
         readonly IDataAccessService dataAccessService;
@@ -45,6 +48,7 @@ namespace Seventiny.Cloud.DataApi.Controllers
         readonly IDataSourceService _dataSourceService;
         readonly IMetaObjectService metaObjectService;
         readonly IMetaFieldService metaFieldService;
+        readonly IFormMetaFieldService _formMetaFieldService;
 
         [HttpGet]
         public IActionResult Get([FromQuery]QueryArgs queryArgs)
@@ -67,9 +71,7 @@ namespace Seventiny.Cloud.DataApi.Controllers
                 //get interface info
                 var interfaceAggregation = interfaceAggregationService.GetByInterfaceAggregationCode(queryArgs._interface);
                 if (interfaceAggregation == null)
-                {
                     return JsonResultModel.Error($"未能找到接口编码为[{queryArgs._interface}]对应的接口信息");
-                }
 
                 //查询条件
                 FilterDefinition<BsonDocument> filter;
@@ -138,6 +140,11 @@ namespace Seventiny.Cloud.DataApi.Controllers
                 if (!checkResult.IsSuccess)
                     return checkResult.ToJsonResultModel();
 
+                var json = jObj.ToString();
+                var bson = BsonDocument.Parse(json);
+                if (bson == null || !bson.Any())
+                    return JsonResultModel.Error("Parameter invalid:jObj = null 业务数据为空");
+
                 //argumentsDic generate
                 Dictionary<string, object> argumentsDic = new Dictionary<string, object>();
                 foreach (var item in Request.Query)
@@ -151,9 +158,6 @@ namespace Seventiny.Cloud.DataApi.Controllers
                 //应用编码
                 string applicationCode = interfaceAggregation.Code.Split('.')[0];
 
-                var json = jObj.ToString();
-                var bson = BsonDocument.Parse(json);
-
                 //get metaObject
                 var metaObject = metaObjectService.GetById(interfaceAggregation.MetaObjectId);
                 if (metaObject == null)
@@ -165,7 +169,9 @@ namespace Seventiny.Cloud.DataApi.Controllers
                 //check data by form
                 if (interfaceAggregation.FormId != default(int))
                 {
-                    throw new NotImplementedException("补充校验逻辑");
+                    var formCheckResult = _formMetaFieldService.ValidateFormData(interfaceAggregation.FormId, bson);
+                    if (!formCheckResult.IsSuccess)
+                        return formCheckResult.ToJsonResultModel();
                 }
 
                 //add data
@@ -206,6 +212,11 @@ namespace Seventiny.Cloud.DataApi.Controllers
                 if (!checkResult.IsSuccess)
                     return checkResult.ToJsonResultModel();
 
+                var json = jObj.ToString();
+                var bson = BsonDocument.Parse(json);
+                if (bson == null || !bson.Any())
+                    return JsonResultModel.Error("Parameter invalid:jObj = null 业务数据为空");
+
                 //argumentsDic generate
                 Dictionary<string, object> argumentsDic = new Dictionary<string, object>();
                 foreach (var item in Request.Query)
@@ -223,17 +234,15 @@ namespace Seventiny.Cloud.DataApi.Controllers
 
                 filter = conditionAggregationService.AnalysisConditionToFilterDefinitionByConditionId(interfaceAggregation.MetaObjectId, interfaceAggregation.SearchConditionId, argumentsDic);
 
-                //get object
-                var json = jObj.ToString();
-                var bson = BsonDocument.Parse(json);
-
                 //trigger before
                 bson = _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_Update, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_Update_Before, ref bson, interfaceAggregation.Code, bson, filter);
 
                 //check data by form
                 if (interfaceAggregation.FormId != default(int))
                 {
-                    throw new NotImplementedException("补充校验逻辑");
+                    var formCheckResult = _formMetaFieldService.ValidateFormData(interfaceAggregation.FormId, bson);
+                    if (!formCheckResult.IsSuccess)
+                        return formCheckResult.ToJsonResultModel();
                 }
 
                 //update data
@@ -300,7 +309,6 @@ namespace Seventiny.Cloud.DataApi.Controllers
 
                 //trigger after
                 _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_Delete, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_Delete_After, ref filter, interfaceAggregation.Code, queryDatas);
-
 
                 return JsonResultModel.Success("success");
             }

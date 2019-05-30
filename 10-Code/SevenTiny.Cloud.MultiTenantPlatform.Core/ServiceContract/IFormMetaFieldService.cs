@@ -1,4 +1,6 @@
-﻿using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
+﻿using MongoDB.Bson;
+using SevenTiny.Bantina;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Repository;
 using System.Collections.Generic;
 
@@ -17,5 +19,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract
         /// <param name="formId">父对象id</param>
         /// <param name="currentOrderIds">当前需要保存的元数据id顺序，这里定位具体数据id要配合接口字段id条件</param>
         void SortFields(int formId, int[] currentOrderIds);
+        /// <summary>
+        /// 通过Form配置进行数据校验
+        /// </summary>
+        /// <param name="formId"></param>
+        /// <param name="bsonElements"></param>
+        /// <returns></returns>
+        Result ValidateFormData(int formId, BsonDocument bsonElements);
     }
 }

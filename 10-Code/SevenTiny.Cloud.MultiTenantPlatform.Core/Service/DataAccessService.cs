@@ -77,8 +77,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                     }
                     else
                     {
-                        bsons.RemoveElement(item);
-                        ErrorInfo.Add($"字段[{item.Name}]传递的值[{item.Value}]不符合字段定义的类型");
+                        return Result.Error($"字段[{item.Name}]传递的值[{item.Value}]不符合字段定义的类型");
                     }
                 }
                 else
@@ -129,8 +128,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                 //获取到字段列表
                 var metaFields = metaFieldService.GetMetaFieldUpperKeyDicUnDeleted(metaObject.Id);
 
+                bool checkAllFieldPassed = true;
                 for (int j = 0; j < bsonsList.Count; j++)
                 {
+                    checkAllFieldPassed = true;
                     var bsons = bsonsList[j];
                     for (int i = bsons.ElementCount - 1; i >= 0; i--)
                     {
@@ -156,7 +157,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                             }
                             else
                             {
-                                bsons.RemoveElement(item);
+                                checkAllFieldPassed = false;
+                                break;
+                                //bsons.RemoveElement(item);
                             }
                         }
                         else
@@ -166,25 +169,34 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                         }
                     }
 
-                    //预置字段及其默认值
-                    foreach (var item in metaFieldService.GetPresetFieldBsonElements())
+                    //如果字段校验都通过，则进行预添加
+                    if (checkAllFieldPassed)
                     {
-                        //如果传入的字段已经有了，那么这里就不预置了
-                        if (!bsons.Contains(item.Name))
+                        //预置字段及其默认值
+                        foreach (var item in metaFieldService.GetPresetFieldBsonElements())
                         {
-                            bsons.Add(item);
+                            //如果传入的字段已经有了，那么这里就不预置了
+                            if (!bsons.Contains(item.Name))
+                            {
+                                bsons.Add(item);
+                            }
                         }
+
+                        //补充字段
+                        //bsons.SetElement(new BsonElement("_id", Guid.NewGuid().ToString()));//id已经补充到预置字段
+                        bsons.SetElement(new BsonElement("MetaObjectCode", metaObject.Code));
+
+                        insertBsonsList.Add(bsons);
                     }
-
-                    //补充字段
-                    //bsons.SetElement(new BsonElement("_id", Guid.NewGuid().ToString()));//id已经补充到预置字段
-                    bsons.SetElement(new BsonElement("MetaObjectCode", metaObject.Code));
-
-                    insertBsonsList.Add(bsons);
                 }
-                db.GetCollectionBson(metaObject.Code).InsertMany(insertBsonsList);
+
+                if (insertBsonsList.Any())
+                {
+                    db.GetCollectionBson(metaObject.Code).InsertMany(insertBsonsList);
+                }
+                return Result.Success($"插入成功! 成功{insertBsonsList.Count}条，失败{bsonsList.Count - insertBsonsList.Count}条.");
             }
-            return Result.Success($"插入成功");
+            return Result.Success($"插入失败! 失败原因：没有任何数据需要插入.");
         }
 
         public Result Update(string metaObjectCode, FilterDefinition<BsonDocument> condition, BsonDocument bsons)
