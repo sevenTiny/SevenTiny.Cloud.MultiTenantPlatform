@@ -128,10 +128,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                 //获取到字段列表
                 var metaFields = metaFieldService.GetMetaFieldUpperKeyDicUnDeleted(metaObject.Id);
 
-                bool checkAllFieldPassed = true;
                 for (int j = 0; j < bsonsList.Count; j++)
                 {
-                    checkAllFieldPassed = true;
                     var bsons = bsonsList[j];
                     for (int i = bsons.ElementCount - 1; i >= 0; i--)
                     {
@@ -157,8 +155,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                             }
                             else
                             {
-                                checkAllFieldPassed = false;
-                                break;
+                                return Result.Error($"字段[{item.Name}]传递的值[{item.Value}]不符合字段定义的类型");
                                 //bsons.RemoveElement(item);
                             }
                         }
@@ -169,25 +166,21 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                         }
                     }
 
-                    //如果字段校验都通过，则进行预添加
-                    if (checkAllFieldPassed)
+                    //预置字段及其默认值
+                    foreach (var item in metaFieldService.GetPresetFieldBsonElements())
                     {
-                        //预置字段及其默认值
-                        foreach (var item in metaFieldService.GetPresetFieldBsonElements())
+                        //如果传入的字段已经有了，那么这里就不预置了
+                        if (!bsons.Contains(item.Name))
                         {
-                            //如果传入的字段已经有了，那么这里就不预置了
-                            if (!bsons.Contains(item.Name))
-                            {
-                                bsons.Add(item);
-                            }
+                            bsons.Add(item);
                         }
-
-                        //补充字段
-                        //bsons.SetElement(new BsonElement("_id", Guid.NewGuid().ToString()));//id已经补充到预置字段
-                        bsons.SetElement(new BsonElement("MetaObjectCode", metaObject.Code));
-
-                        insertBsonsList.Add(bsons);
                     }
+
+                    //补充字段
+                    //bsons.SetElement(new BsonElement("_id", Guid.NewGuid().ToString()));//id已经补充到预置字段
+                    bsons.SetElement(new BsonElement("MetaObjectCode", metaObject.Code));
+
+                    insertBsonsList.Add(bsons);
                 }
 
                 if (insertBsonsList.Any())

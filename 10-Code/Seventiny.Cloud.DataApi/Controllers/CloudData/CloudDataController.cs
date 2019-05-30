@@ -145,11 +145,6 @@ namespace Seventiny.Cloud.DataApi.Controllers
                 if (bson == null || !bson.Any())
                     return JsonResultModel.Error("Parameter invalid:jObj = null 业务数据为空");
 
-                //argumentsDic generate
-                Dictionary<string, object> argumentsDic = new Dictionary<string, object>();
-                foreach (var item in Request.Query)
-                    argumentsDic.AddOrUpdate(item.Key.ToUpperInvariant(), item.Value);
-
                 //get interface info
                 var interfaceAggregation = interfaceAggregationService.GetByInterfaceAggregationCode(queryArgs._interface);
                 if (interfaceAggregation == null)

@@ -112,17 +112,13 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             //});
         }
 
-        public Result ValidateFormData(int formId, BsonDocument bsonElements)
+        private Result ValidateFormData(List<FormMetaField> formMetaFields, BsonDocument bsonElements)
         {
-            if (bsonElements == null || !bsonElements.Any())
-                return Result.Error("业务数据为空");
-
             //提取出所有的Name和Name大写
             Dictionary<string, string> bsonDic = new Dictionary<string, string>();
             foreach (var item in bsonElements)
                 bsonDic.AddOrUpdate(item.Name.ToUpperInvariant(), item.Name);
 
-            var formMetaFields = GetByFormId(formId);
             if (formMetaFields != null && formMetaFields.Any())
             {
                 foreach (var item in formMetaFields)
@@ -152,7 +148,33 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                     }
                 }
             }
+            return Result.Success();
+        }
 
+        public Result ValidateFormData(int formId, BsonDocument bsonElements)
+        {
+            if (bsonElements == null || !bsonElements.Any())
+                return Result.Error("业务数据为空");
+
+            var formMetaFields = GetByFormId(formId);
+
+            return ValidateFormData(formMetaFields, bsonElements);
+        }
+
+        public Result ValidateFormData(int formId, List<BsonDocument> bsonElementsList)
+        {
+            if (bsonElementsList == null || !bsonElementsList.Any())
+                return Result.Error("业务数据为空");
+
+            var formMetaFields = GetByFormId(formId);
+
+            foreach (var bsonElements in bsonElementsList)
+            {
+                var re = ValidateFormData(formMetaFields, bsonElements);
+                if (re.IsSuccess)
+                    continue;
+                return re;
+            }
             return Result.Success();
         }
     }

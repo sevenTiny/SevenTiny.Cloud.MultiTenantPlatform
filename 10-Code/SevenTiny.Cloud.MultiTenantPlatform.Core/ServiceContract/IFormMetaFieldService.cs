@@ -26,5 +26,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract
         /// <param name="bsonElements"></param>
         /// <returns></returns>
         Result ValidateFormData(int formId, BsonDocument bsonElements);
+        Result ValidateFormData(int formId, List<BsonDocument> bsonElements);
     }
 }
