@@ -118,6 +118,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                 dynamicScript.ProjectName = applicationCode;
                 dynamicScript.Parameters = parameters;
                 var executeResult = _scriptEngineProvider.RunScript<object>(dynamicScript);
+                if (executeResult.IsSuccess)
+                    return executeResult.Data;
+                else
+                    throw new Exception(executeResult.Message);
             }
             return null;
         }

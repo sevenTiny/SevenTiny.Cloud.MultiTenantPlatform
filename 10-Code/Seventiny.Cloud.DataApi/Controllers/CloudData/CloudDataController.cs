@@ -65,10 +65,10 @@ namespace Seventiny.Cloud.DataApi.Controllers
                     argumentsDic.AddOrUpdate(item.Key.ToUpperInvariant(), item.Value);
 
                 //get interface info
-                var interfaceAggregation = interfaceAggregationService.GetByInterfaceAggregationCode(queryArgs._interfaceCode);
+                var interfaceAggregation = interfaceAggregationService.GetByInterfaceAggregationCode(queryArgs._interface);
                 if (interfaceAggregation == null)
                 {
-                    return JsonResultModel.Error($"未能找到接口编码为[{queryArgs._interfaceCode}]对应的接口信息");
+                    return JsonResultModel.Error($"未能找到接口编码为[{queryArgs._interface}]对应的接口信息");
                 }
 
                 //查询条件
@@ -98,7 +98,7 @@ namespace Seventiny.Cloud.DataApi.Controllers
                         count = _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_Count, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_Count_After, ref count, interfaceAggregation.Code, filter, count);
                         return JsonResultModel.Success("get data count success", count);
                     case InterfaceType.JsonDataSource:
-                        return new JsonResult(_dataSourceService.GetById(interfaceAggregation.DataSourceId).Script);
+                        return new JsonResult(Newtonsoft.Json.JsonConvert.DeserializeObject(_dataSourceService.GetById(interfaceAggregation.DataSourceId).Script));
                     case InterfaceType.TriggerScriptDataSource:
                         object triggerScriptDataSourceResult = _triggerScriptService.RunDataSourceScript(applicationCode, interfaceAggregation.DataSourceId, interfaceAggregation.Code, argumentsDic);
                         return JsonResultModel.Success("get trigger script result success", triggerScriptDataSourceResult);
@@ -144,9 +144,9 @@ namespace Seventiny.Cloud.DataApi.Controllers
                     argumentsDic.AddOrUpdate(item.Key.ToUpperInvariant(), item.Value);
 
                 //get interface info
-                var interfaceAggregation = interfaceAggregationService.GetByInterfaceAggregationCode(queryArgs._interfaceCode);
+                var interfaceAggregation = interfaceAggregationService.GetByInterfaceAggregationCode(queryArgs._interface);
                 if (interfaceAggregation == null)
-                    return JsonResultModel.Error($"未能找到接口编码为[{queryArgs._interfaceCode}]对应的接口信息");
+                    return JsonResultModel.Error($"未能找到接口编码为[{queryArgs._interface}]对应的接口信息");
 
                 //应用编码
                 string applicationCode = interfaceAggregation.Code.Split('.')[0];
@@ -212,9 +212,9 @@ namespace Seventiny.Cloud.DataApi.Controllers
                     argumentsDic.AddOrUpdate(item.Key.ToUpperInvariant(), item.Value);
 
                 //get interface info
-                var interfaceAggregation = interfaceAggregationService.GetByInterfaceAggregationCode(queryArgs._interfaceCode);
+                var interfaceAggregation = interfaceAggregationService.GetByInterfaceAggregationCode(queryArgs._interface);
                 if (interfaceAggregation == null)
-                    return JsonResultModel.Error($"未能找到接口编码为[{queryArgs._interfaceCode}]对应的接口信息");
+                    return JsonResultModel.Error($"未能找到接口编码为[{queryArgs._interface}]对应的接口信息");
 
                 //查询条件
                 FilterDefinition<BsonDocument> filter;
@@ -277,9 +277,9 @@ namespace Seventiny.Cloud.DataApi.Controllers
                     argumentsDic.AddOrUpdate(item.Key.ToUpperInvariant(), item.Value);
 
                 //get interface info
-                var interfaceAggregation = interfaceAggregationService.GetByInterfaceAggregationCode(queryArgs._interfaceCode);
+                var interfaceAggregation = interfaceAggregationService.GetByInterfaceAggregationCode(queryArgs._interface);
                 if (interfaceAggregation == null)
-                    return JsonResultModel.Error($"未能找到接口编码为[{queryArgs._interfaceCode}]对应的接口信息");
+                    return JsonResultModel.Error($"未能找到接口编码为[{queryArgs._interface}]对应的接口信息");
 
                 //查询条件
                 FilterDefinition<BsonDocument> filter;

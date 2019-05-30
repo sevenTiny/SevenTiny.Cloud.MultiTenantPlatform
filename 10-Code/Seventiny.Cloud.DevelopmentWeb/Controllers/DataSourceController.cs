@@ -111,6 +111,18 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             var result = CommonAddCheck("JsonDataSource", entity)
                 .Continue(re =>
                 {
+                    try
+                    {
+                        Newtonsoft.Json.JsonConvert.DeserializeObject(entity.Script);
+                    }
+                    catch (System.Exception)
+                    {
+                        return Result.Error("非法的Json格式.");
+                    }
+                    return re;
+                })
+                .Continue(re =>
+                {
                     entity.Code = $"{CurrentApplicationCode}.JsonDataSource.{entity.Code}";
                     entity.DataSourceType = (int)DataSourceType.Json;
                     return re;

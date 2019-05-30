@@ -4,13 +4,13 @@ namespace Seventiny.Cloud.DataApi.Models
 {
     public class QueryArgs
     {
-        public string _interfaceCode { get; set; }
+        public string _interface { get; set; }
         public int _pageIndex { get; set; }
         public int _pageSize { get; set; }
 
         public Result QueryArgsCheck()
         {
-            if (string.IsNullOrEmpty(_interfaceCode))
+            if (string.IsNullOrEmpty(_interface))
             {
                 return Result.Error("interfaceCode can not be null!");
             }
