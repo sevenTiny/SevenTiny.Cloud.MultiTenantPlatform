@@ -142,7 +142,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                     {
                         if (bsonDic.TryGetValue(nameUpper, out string bsonValue))
                         {
-                            if (Regex.IsMatch(Convert.ToString(bsonElements[bsonValue]), item.Regular))
+                            if (!Regex.IsMatch(Convert.ToString(bsonElements[bsonValue]), item.Regular))
                                 return Result.Error($"字段[{item.Name}]不符合校验规则.");
                         }
                     }

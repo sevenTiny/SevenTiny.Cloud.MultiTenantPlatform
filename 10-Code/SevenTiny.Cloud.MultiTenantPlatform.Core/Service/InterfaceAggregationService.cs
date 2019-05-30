@@ -81,6 +81,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             if (myEntity != null)
             {
                 myEntity.InterfaceType = interfaceAggregation.InterfaceType;
+                myEntity.FormId = interfaceAggregation.FormId;
+                myEntity.SearchConditionId = interfaceAggregation.SearchConditionId;
+                myEntity.FieldListId = interfaceAggregation.FieldListId;
+                myEntity.DataSourceId = interfaceAggregation.DataSourceId;
                 SetInterfacePropertyNameByPropertyId(ref myEntity);
 
                 //编码不允许修改
