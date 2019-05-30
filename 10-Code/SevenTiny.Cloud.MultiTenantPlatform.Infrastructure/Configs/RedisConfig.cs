@@ -1,29 +1,32 @@
-﻿using SevenTiny.Bantina.Bankinate.Attributes;
-using SevenTiny.Bantina.Bankinate.Helpers;
-using SevenTiny.Bantina.Configuration;
+﻿using SevenTiny.Bantina.Configuration;
+using SevenTiny.Bantina.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Configs
 {
-    [ConfigName(Name = "Redis")]
-    public class RedisConfig : ConfigBase<RedisConfig>
+    [ConfigName("Redis")]
+    public class RedisConfig : MySqlRowConfigBase<RedisConfig>
     {
-        [Column]
+        private static RedisConfig Instance = new RedisConfig();
+
+        [ConfigProperty]
         public string KeySpace { get; set; }
-        [Column]
+        [ConfigProperty]
         public string Key { get; set; }
-        [Column]
+        [ConfigProperty]
         public string Value { get; set; }
-        [Column]
+        [ConfigProperty]
         public string Description { get; set; }
+
+        protected override string _ConnectionString => GetConnectionStringFromAppSettings("SeventinyConfig");
 
         private static Dictionary<string, Dictionary<string, string>> dictionary;
 
         private static void Initial()
         {
-            var group = Configs.GroupBy(t => t.KeySpace).Select(t => new { KeySpace = t.Key, RedisConfig = t }).ToList();
+            var group = Instance.Config.GroupBy(t => t.KeySpace).Select(t => new { KeySpace = t.Key, RedisConfig = t }).ToList();
             dictionary = new Dictionary<string, Dictionary<string, string>>();
             foreach (var item in group)
             {
