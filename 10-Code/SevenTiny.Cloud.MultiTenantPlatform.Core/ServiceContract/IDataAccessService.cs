@@ -23,24 +23,24 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract
         Result Delete(string metaObjectCode, FilterDefinition<BsonDocument> condition);
         Result Delete(MetaObject metaObject, FilterDefinition<BsonDocument> condition);
 
-        BsonDocument Get(string metaObjectCode, FilterDefinition<BsonDocument> condition);
-        BsonDocument Get(int metaObjectId, FilterDefinition<BsonDocument> condition);
-        BsonDocument Get(MetaObject metaObject, FilterDefinition<BsonDocument> condition);
+        BsonDocument Get(string metaObjectCode, FilterDefinition<BsonDocument> condition, string[] columns = null);
+        BsonDocument Get(int metaObjectId, FilterDefinition<BsonDocument> condition, string[] columns = null);
+        BsonDocument Get(MetaObject metaObject, FilterDefinition<BsonDocument> condition, string[] columns = null);
         SingleObjectComponent GetSingleObjectComponent(int metaObjectId, int InterfaceFieldId, FilterDefinition<BsonDocument> condition);
 
         BsonDocument GetById(string metaObjectCode, string _id);
-        List<BsonDocument> GetByIds(string metaObjectCode, string[] _ids, SortDefinition<BsonDocument> sort);
+        List<BsonDocument> GetByIds(string metaObjectCode, string[] _ids, SortDefinition<BsonDocument> sort, string[] columns = null);
 
-        List<BsonDocument> GetList(int metaObjectId, FilterDefinition<BsonDocument> condition, SortDefinition<BsonDocument> sort);
-        List<BsonDocument> GetList(string metaObjectCode, FilterDefinition<BsonDocument> condition, SortDefinition<BsonDocument> sort);
+        List<BsonDocument> GetList(int metaObjectId, FilterDefinition<BsonDocument> condition, SortDefinition<BsonDocument> sort, string[] columns = null);
+        List<BsonDocument> GetList(string metaObjectCode, FilterDefinition<BsonDocument> condition, SortDefinition<BsonDocument> sort, string[] columns = null);
 
-        List<BsonDocument> GetList(string metaObjectCode, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort);
-        List<BsonDocument> GetList(int metaObjectId, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort);
-        List<BsonDocument> GetList(MetaObject metaObject, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort);
+        List<BsonDocument> GetList(string metaObjectCode, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort, string[] columns = null);
+        List<BsonDocument> GetList(int metaObjectId, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort, string[] columns = null);
+        List<BsonDocument> GetList(MetaObject metaObject, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort, string[] columns = null);
 
-        List<BsonDocument> GetList(int metaObjectId, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort, out int count);
-        List<BsonDocument> GetList(string metaObjectCode, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort, out int count);
-        List<BsonDocument> GetList(MetaObject metaObject, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort, out int count);
+        List<BsonDocument> GetList(int metaObjectId, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort, out int count, string[] columns = null);
+        List<BsonDocument> GetList(string metaObjectCode, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort, out int count, string[] columns = null);
+        List<BsonDocument> GetList(MetaObject metaObject, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort, out int count, string[] columns = null);
         TableListComponent GetTableListComponent(int metaObjectId, int InterfaceFieldId, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort, out int count);
 
         int GetCount(int metaObjectId, FilterDefinition<BsonDocument> condition);
