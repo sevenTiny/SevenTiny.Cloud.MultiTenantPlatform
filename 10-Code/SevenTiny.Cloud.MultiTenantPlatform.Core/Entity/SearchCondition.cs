@@ -8,6 +8,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Entity
     /// 接口搜索条件
     /// </summary>
     [Table]
+    [TableCaching]
     public class SearchCondition : MetaObjectManageInfo
     {
         public List<SearchConditionNode> ConditionFields { get; set; }

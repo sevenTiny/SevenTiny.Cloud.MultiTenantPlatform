@@ -6,6 +6,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Entity
     /// 组织接口
     /// </summary>
     [Table]
+    [TableCaching]
     public class InterfaceAggregation : MetaObjectManageInfo
     {
         /// <summary>
