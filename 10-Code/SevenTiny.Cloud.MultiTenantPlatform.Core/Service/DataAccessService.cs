@@ -330,7 +330,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             var document = Get(metaObjectId, condition, fieldMetas?.Select(t => t.CmpData.Name)?.ToArray());
             SingleObjectComponent singleObjectComponent = new SingleObjectComponent
             {
-                BizData = fieldBizDataService.ToBizDataDictionary(InterfaceFieldId, document),
+                BizData = fieldBizDataService.ToBizDataDictionary(metaObjectId, InterfaceFieldId, document),
                 ColunmDatas = fieldMetas?.OrderBy(t => t.CmpData.ShowIndex)?.ToList()
             };
             return singleObjectComponent;
@@ -411,7 +411,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         }
         public List<BsonDocument> GetList(MetaObject metaObject, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort, out int count, string[] columns = null)
         {
-            List<BsonDocument> bson = GetList(metaObject.Code, condition, pageIndex, pageSize, sort, columns);
+            List<BsonDocument> bson = GetList(metaObject, condition, pageIndex, pageSize, sort, columns);
 
             if (pageSize == 0)
                 count = bson?.Count ?? 0;
@@ -426,7 +426,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             var documents = GetList(metaObjectId, condition, pageIndex, pageSize, sort, out count, fieldMetas?.Select(t => t.CmpData.Name)?.ToArray());
             TableListComponent tableListComponent = new TableListComponent
             {
-                BizData = fieldBizDataService.ToBizDataDictionaryList(InterfaceFieldId, documents),
+                BizData = fieldBizDataService.ToBizDataDictionaryList(metaObjectId, InterfaceFieldId, documents),
                 BizDataTotalCount = count,
                 Columns = fieldMetas?.OrderBy(t => t.CmpData.ShowIndex)?.ToList()
             };

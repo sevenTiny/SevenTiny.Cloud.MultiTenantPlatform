@@ -8,11 +8,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract
 {
     public interface IFormMetaFieldService : IRepository<FormMetaField>
     {
+        Result<IList<FormMetaField>> Add(int metaObjectId, IList<FormMetaField> entities);
         FormMetaField GetById(int id);
         List<FormMetaField> GetByFormId(int formId);
         void DeleteByMetaFieldId(int metaFieldId);
-        List<MetaField> GetMetaFieldsByFormId(int formId);
-        Dictionary<string, MetaField> GetMetaFieldsDicByFormId(int formId);
+        List<MetaField> GetMetaFieldsByFormId(int metaObjectId, int formId);
         /// <summary>
         /// 字段排序
         /// </summary>

@@ -26,10 +26,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         readonly MultiTenantPlatformDbContext dbContext;
         readonly IMetaFieldService metaFieldService;
 
-        public new Result<IList<FieldListMetaField>> Add(IList<FieldListMetaField> entities)
+        public Result<IList<FieldListMetaField>> Add(int metaObjectId, IList<FieldListMetaField> entities)
         {
             var metaFieldIds = entities.Select(t => t.MetaFieldId).ToArray();
-            var metaFields = metaFieldService.GetByIds(metaFieldIds);
+            var metaFields = metaFieldService.GetByIds(metaObjectId, metaFieldIds);
             foreach (var item in entities)
             {
                 var meta = metaFields.FirstOrDefault(t => t.Id == item.MetaFieldId);
@@ -53,20 +53,20 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             dbContext.Delete<FieldListMetaField>(t => t.MetaFieldId == metaFieldId);
         }
 
-        public List<MetaField> GetMetaFieldsByFieldListId(int fieldListId)
+        public List<MetaField> GetMetaFieldsByFieldListId(int metaObjectId, int fieldListId)
         {
             var fieldAggregationList = GetByFieldListId(fieldListId);
             if (fieldAggregationList != null && fieldAggregationList.Any())
             {
                 var fieldIds = fieldAggregationList.Select(t => t.MetaFieldId).ToArray();
-                return metaFieldService.GetByIds(fieldIds);
+                return metaFieldService.GetByIds(metaObjectId, fieldIds);
             }
             return null;
         }
 
-        public Dictionary<string, MetaField> GetMetaFieldsDicByFieldListId(int fieldListId)
+        public Dictionary<string, MetaField> GetMetaFieldsDicByFieldListId(int metaObjectId, int fieldListId)
         {
-            return GetMetaFieldsByFieldListId(fieldListId)?.ToDictionary(t => t.Code, t => t);
+            return GetMetaFieldsByFieldListId(metaObjectId, fieldListId)?.ToDictionary(t => t.Code, t => t);
         }
 
         public List<Column> GetColumnDataByFieldListId(int interfaceFieldId)

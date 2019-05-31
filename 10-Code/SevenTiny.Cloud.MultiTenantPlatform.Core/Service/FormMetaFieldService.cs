@@ -27,10 +27,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         readonly MultiTenantPlatformDbContext dbContext;
         readonly IMetaFieldService metaFieldService;
 
-        public new Result<IList<FormMetaField>> Add(IList<FormMetaField> entities)
+        public Result<IList<FormMetaField>> Add(int metaObjectId, IList<FormMetaField> entities)
         {
             var metaFieldIds = entities.Select(t => t.MetaFieldId).ToArray();
-            var metaFields = metaFieldService.GetByIds(metaFieldIds);
+            var metaFields = metaFieldService.GetByIds(metaObjectId, metaFieldIds);
             foreach (var item in entities)
             {
                 var meta = metaFields.FirstOrDefault(t => t.Id == item.MetaFieldId);
@@ -54,20 +54,15 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             dbContext.Delete<FormMetaField>(t => t.MetaFieldId == metaFieldId);
         }
 
-        public List<MetaField> GetMetaFieldsByFormId(int fieldListId)
+        public List<MetaField> GetMetaFieldsByFormId(int metaObjectId, int fieldListId)
         {
             var fieldAggregationList = GetByFormId(fieldListId);
             if (fieldAggregationList != null && fieldAggregationList.Any())
             {
                 var fieldIds = fieldAggregationList.Select(t => t.MetaFieldId).ToArray();
-                return metaFieldService.GetByIds(fieldIds);
+                return metaFieldService.GetByIds(metaObjectId, fieldIds);
             }
             return null;
-        }
-
-        public Dictionary<string, MetaField> GetMetaFieldsDicByFormId(int fieldListId)
-        {
-            return GetMetaFieldsByFormId(fieldListId)?.ToDictionary(t => t.Code, t => t);
         }
 
         public FormMetaField GetById(int id)

@@ -54,7 +54,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract
         /// </summary>
         /// <param name="ids"></param>
         /// <returns></returns>
-        List<MetaField> GetByIds(int[] ids);
+        List<MetaField> GetByIds(int metaObjectId, int[] ids);
         /// <summary>
         /// 生成mongodb的排序字段配置
         /// </summary>

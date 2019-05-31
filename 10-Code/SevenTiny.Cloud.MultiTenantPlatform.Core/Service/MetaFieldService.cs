@@ -213,33 +213,20 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             return result;
         }
 
-        public List<MetaField> GetByIds(int[] ids)
+        public List<MetaField> GetByIds(int metaObjectId, int[] ids)
         {
+            List<MetaField> metaFields = new List<MetaField>();
+
+            if (ids == null || !ids.Any())
+                return metaFields;
+
             //Sql直接查询是没有缓存的
-            //StringBuilder builder = new StringBuilder();
-            //builder.Append("SELECT * FROM ");
-            //builder.Append(dbContext.GetTableName<MetaField>());
-            //builder.Append(" WHERE ");
-            //for (int i = 0; i < ids.Length; i++)
-            //{
-            //    if (i == 0)
-            //        builder.Append(" Id=" + ids[i]);
-            //    else
-            //        builder.Append(" OR Id=" + ids[i]);
-            //}
-            //return dbContext.ExecuteQueryListSql<MetaField>(builder.ToString());
+            //metaFields = dbContext.Queryable($"SELECT * FROM {dbContext.GetTableName<MetaField>()} WHERE Id IN ({string.Join(",", ids)})").ToList<MetaField>();
 
             //直接通过id查询的方案，配合二级缓存性能高
             //这里需要orm支持in操作性能会提高
-            List<MetaField> metaFields = new List<MetaField>();
-            foreach (var item in ids)
-            {
-                var metaField = GetById(item);
-                if (metaField != null)
-                {
-                    metaFields.Add(metaField);
-                }
-            }
+            metaFields = dbContext.Queryable<MetaField>().Where(t => t.MetaObjectId == metaObjectId || t.MetaObjectId == -1).ToList().Where(t => ids.Contains(t.Id)).ToList();
+
             return metaFields;
         }
 

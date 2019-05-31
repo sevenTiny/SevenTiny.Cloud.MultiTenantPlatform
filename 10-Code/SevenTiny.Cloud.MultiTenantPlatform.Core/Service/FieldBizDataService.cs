@@ -16,12 +16,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             fieldAggregationService = _fieldAggregationService;
         }
 
-        public Dictionary<string, FieldBizData> ToBizDataDictionary(int InterfaceFieldId, BsonDocument bsonElement)
+        public Dictionary<string, FieldBizData> ToBizDataDictionary(int metaObjectId, int InterfaceFieldId, BsonDocument bsonElement)
         {
             if (bsonElement != null && bsonElement.Any())
             {
                 //接口配置的字段字典
-                var interfaceMetaFieldsDic = fieldAggregationService.GetMetaFieldsDicByFieldListId(InterfaceFieldId);
+                var interfaceMetaFieldsDic = fieldAggregationService.GetMetaFieldsDicByFieldListId(metaObjectId,InterfaceFieldId);
                 Dictionary<string, FieldBizData> keyValuePairs = new Dictionary<string, FieldBizData>();
                 foreach (var field in interfaceMetaFieldsDic)
                 {
@@ -41,10 +41,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             return null;
         }
 
-        public List<Dictionary<string, FieldBizData>> ToBizDataDictionaryList(int InterfaceFieldId, List<BsonDocument> bsonElements)
+        public List<Dictionary<string, FieldBizData>> ToBizDataDictionaryList(int metaObjectId, int InterfaceFieldId, List<BsonDocument> bsonElements)
         {
             //接口配置的字段字典
-            var interfaceMetaFieldsDic = fieldAggregationService.GetMetaFieldsDicByFieldListId(InterfaceFieldId);
+            var interfaceMetaFieldsDic = fieldAggregationService.GetMetaFieldsDicByFieldListId(metaObjectId,InterfaceFieldId);
             List<Dictionary<string, FieldBizData>> resultList = new List<Dictionary<string, FieldBizData>>();
             if (bsonElements != null && bsonElements.Any())
             {

@@ -181,7 +181,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             }
 
             if (formMetaFields.Any())
-                _formMetaFieldService.Add(formMetaFields);
+                _formMetaFieldService.Add(CurrentMetaObjectId, formMetaFields);
 
             foreach (var item in deleteIds)
             {
