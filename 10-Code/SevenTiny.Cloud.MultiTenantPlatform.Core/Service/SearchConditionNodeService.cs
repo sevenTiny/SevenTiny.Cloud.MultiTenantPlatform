@@ -38,6 +38,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             return dbContext.Queryable<SearchConditionNode>().Where(t => t.SearchConditionId == searchConditionId && t.FieldId != -1).ToList();
         }
 
+        public List<SearchConditionNode> GetParametersConditionItemsBySearchConditionId(int searchConditionId)
+        {
+            int valueType = (int)ConditionValueType.Parameter;
+            return dbContext.Queryable<SearchConditionNode>().Where(t => t.SearchConditionId == searchConditionId && t.FieldId != -1 && t.ValueType == valueType).ToList();
+        }
+
         public Result<SearchConditionNode> Delete(int id)
         {
             dbContext.Delete<SearchConditionNode>(t => t.Id == id);

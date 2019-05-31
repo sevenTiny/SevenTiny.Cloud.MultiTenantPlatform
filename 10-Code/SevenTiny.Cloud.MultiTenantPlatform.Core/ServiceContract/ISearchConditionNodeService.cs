@@ -17,6 +17,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract
         /// <returns></returns>
         List<SearchConditionNode> GetConditionItemsBySearchConditionId(int searchConditionId);
         List<SearchConditionNode> GetListBySearchConditionId(int searchConditionId);
+        List<SearchConditionNode> GetParametersConditionItemsBySearchConditionId(int searchConditionId);
         Result<SearchConditionNode> AggregateCondition(int interfaceConditionId, int brotherNodeId, int conditionJointTypeId, int fieldId, int conditionTypeId, string conditionValue, int conditionValueTypeId);
 
         Result<SearchConditionNode> DeleteAggregateCondition(int nodeId, int searchConditionId);

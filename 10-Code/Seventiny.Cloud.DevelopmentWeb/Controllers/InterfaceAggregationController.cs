@@ -3,6 +3,7 @@ using SevenTiny.Bantina.Validation;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
+using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Configs;
 using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
 
 namespace Seventiny.Cloud.DevelopmentWeb.Controllers
@@ -12,6 +13,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
         private readonly IInterfaceAggregationService interfaceAggregationService;
         private readonly IFieldListService interfaceFieldService;
         private readonly ISearchConditionService searchConditionService;
+        private readonly ISearchConditionNodeService _searchConditionNodeService;
         private readonly IFormService _formService;
         private readonly IDataSourceService _dataSourceService;
 
@@ -19,6 +21,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             IInterfaceAggregationService _interfaceAggregationService,
             IFieldListService _interfaceFieldService,
             ISearchConditionService _searchConditionService,
+             ISearchConditionNodeService searchConditionNodeService,
             IDataSourceService dataSourceService,
             IFormService formService
             )
@@ -26,6 +29,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             this.interfaceAggregationService = _interfaceAggregationService;
             this.interfaceFieldService = _interfaceFieldService;
             this.searchConditionService = _searchConditionService;
+            _searchConditionNodeService = searchConditionNodeService;
             _formService = formService;
             _dataSourceService = dataSourceService;
         }
@@ -45,7 +49,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             ViewData["InterfaceFields"] = interfaceFieldService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
             ViewData["SearchConditions"] = searchConditionService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
             ViewData["Forms"] = _formService.GetEntitiesByMetaObjectId(CurrentMetaObjectId);
-            ViewData["ScriptDataSources"] = _dataSourceService.GetListByAppIdAndDataSourceType(CurrentApplicationId,DataSourceType.Script);
+            ViewData["ScriptDataSources"] = _dataSourceService.GetListByAppIdAndDataSourceType(CurrentApplicationId, DataSourceType.Script);
             ViewData["JsonDataSources"] = _dataSourceService.GetListByAppIdAndDataSourceType(CurrentApplicationId, DataSourceType.Json);
         }
 
@@ -148,6 +152,11 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
         public IActionResult Description(int id)
         {
             var interfaceInfo = interfaceAggregationService.GetById(id);
+
+            if (interfaceInfo.SearchConditionId != default(int))
+                ViewData["ParametersConditionItems"] = _searchConditionNodeService.GetParametersConditionItemsBySearchConditionId(interfaceInfo.SearchConditionId);
+
+            ViewData["DataApiUrl"] = CommonConfig.Instance.Config.DataApiUrl;
             return View(interfaceInfo);
         }
     }
