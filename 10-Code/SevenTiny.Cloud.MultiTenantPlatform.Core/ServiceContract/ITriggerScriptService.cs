@@ -4,6 +4,7 @@ using SevenTiny.Bantina;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Repository;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
 using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.ListView;
 using System.Collections.Generic;
 
@@ -18,8 +19,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract
         string GetDefaultDataSourceTriggerScript();
 
         #region Execute Script
-        T RunTriggerScript<T>(int metaObjectId, string applicationCode, ServiceType serviceType, TriggerPoint triggerPoint, string functionName, T result, params object[] parameters);
-        object RunDataSourceScript(string applicationCode, int dataSourceId, params object[] parameters);
+        T RunTriggerScript<T>(QueryPiplineContext queryPiplineContext, TriggerPoint triggerPoint, string functionName, T result, params object[] parameters);
+        object RunDataSourceScript(QueryPiplineContext queryPiplineContext, params object[] parameters);
         #endregion
     }
 }

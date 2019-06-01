@@ -9,6 +9,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Entity
     /// 每个Form表单包含的字段（一个Form对应多个FormMetaField以FormId区分）
     /// </summary>
     [Table]
+    [TableCaching]
     public class FormMetaField
     {
         [Key]

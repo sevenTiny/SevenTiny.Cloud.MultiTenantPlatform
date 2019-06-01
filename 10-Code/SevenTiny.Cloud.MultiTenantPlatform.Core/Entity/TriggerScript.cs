@@ -3,6 +3,8 @@ using SevenTiny.Bantina.Bankinate.Attributes;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Entity
 {
+    [Table]
+    [TableCaching]
     public class TriggerScript : MetaObjectManageInfo
     {
         /// <summary>

@@ -8,6 +8,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Entity
     /// 每一个大条件里面会包含很多子条件，以SearchConditionId字段区分
     /// </summary>
     [Table]
+    [TableCaching]
     public class SearchConditionNode
     {
         [Key]

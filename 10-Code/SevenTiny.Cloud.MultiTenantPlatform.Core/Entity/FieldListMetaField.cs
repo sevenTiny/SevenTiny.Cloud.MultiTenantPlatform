@@ -6,6 +6,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Entity
     /// 
     /// </summary>
     [Table]
+    [TableCaching]
     public class FieldListMetaField
     {
         [Key]

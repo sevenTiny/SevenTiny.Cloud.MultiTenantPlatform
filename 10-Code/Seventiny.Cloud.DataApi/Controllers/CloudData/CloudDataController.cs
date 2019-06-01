@@ -11,6 +11,8 @@ using Seventiny.Cloud.DataApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
+using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
 
 namespace Seventiny.Cloud.DataApi.Controllers
 {
@@ -28,7 +30,8 @@ namespace Seventiny.Cloud.DataApi.Controllers
             IDataSourceService dataSourceService,
             IMetaObjectService _metaObjectService,
             IMetaFieldService _metaFieldService,
-            IFormMetaFieldService formMetaFieldService
+            IFormMetaFieldService formMetaFieldService,
+            IFieldListMetaFieldService fieldListMetaFieldService
             )
         {
             dataAccessService = _dataAccessService;
@@ -39,6 +42,7 @@ namespace Seventiny.Cloud.DataApi.Controllers
             metaFieldService = _metaFieldService;
             _dataSourceService = dataSourceService;
             _formMetaFieldService = formMetaFieldService;
+            _fieldListMetaFieldService = fieldListMetaFieldService;
         }
 
         readonly IDataAccessService dataAccessService;
@@ -49,60 +53,99 @@ namespace Seventiny.Cloud.DataApi.Controllers
         readonly IMetaObjectService metaObjectService;
         readonly IMetaFieldService metaFieldService;
         readonly IFormMetaFieldService _formMetaFieldService;
+        readonly IFieldListMetaFieldService _fieldListMetaFieldService;
+
+        /// <summary>
+        /// 1.预处理统一的参数验证逻辑
+        /// 2.根据接口信息创建查询管道上下文
+        /// </summary>
+        /// <param name="queryArgs"></param>
+        /// <returns></returns>
+        private QueryPiplineContext PretreatmentAndCreateQueryPiplineContext(QueryArgs queryArgs)
+        {
+            //args check
+            if (queryArgs == null)
+                throw new Exception($"Parameter invalid:queryArgs = null");
+
+            queryArgs.QueryArgsCheck();
+
+            //argumentsDic generate
+            Dictionary<string, object> argumentsDic = new Dictionary<string, object>();
+            foreach (var item in Request.Query)
+                argumentsDic.AddOrUpdate(item.Key.ToUpperInvariant(), item.Value);
+
+            //get interface info
+            var interfaceAggregation = interfaceAggregationService.GetByInterfaceAggregationCode(queryArgs._interface);
+            if (interfaceAggregation == null)
+                throw new Exception($"未能找到接口编码为[{queryArgs._interface}]对应的接口信息");
+
+            //create queryContext
+            QueryPiplineContext queryContext = new QueryPiplineContext();
+            queryContext.InterfaceCode = queryArgs._interface;
+            queryContext.ArgumentsDic = argumentsDic;
+            queryContext.ApplicationCode = interfaceAggregation.Code.Split('.')[0];
+            queryContext.MetaObjectId = interfaceAggregation.MetaObjectId;
+            queryContext.SearchConditionId = interfaceAggregation.SearchConditionId;
+            queryContext.FieldListId = interfaceAggregation.FieldListId;
+            queryContext.DataSourceId = interfaceAggregation.DataSourceId;
+            queryContext.InterfaceType = (InterfaceType)interfaceAggregation.InterfaceType;
+
+            return queryContext;
+        }
 
         [HttpGet]
         public IActionResult Get([FromQuery]QueryArgs queryArgs)
         {
             try
             {
-                //args check
-                if (queryArgs == null)
-                    return JsonResultModel.Error($"Parameter invalid:queryArgs = null");
-
-                var checkResult = queryArgs.QueryArgsCheck();
-                if (!checkResult.IsSuccess)
-                    return checkResult.ToJsonResultModel();
-
-                //argumentsDic generate
-                Dictionary<string, object> argumentsDic = new Dictionary<string, object>();
-                foreach (var item in Request.Query)
-                    argumentsDic.AddOrUpdate(item.Key.ToUpperInvariant(), item.Value);
-
-                //get interface info
-                var interfaceAggregation = interfaceAggregationService.GetByInterfaceAggregationCode(queryArgs._interface);
-                if (interfaceAggregation == null)
-                    return JsonResultModel.Error($"未能找到接口编码为[{queryArgs._interface}]对应的接口信息");
+                //Pretreatment create queryContext
+                QueryPiplineContext queryContext = PretreatmentAndCreateQueryPiplineContext(queryArgs);
 
                 //查询条件
-                FilterDefinition<BsonDocument> filter;
-                //应用编码
-                string applicationCode = interfaceAggregation.Code.Split('.')[0];
+                FilterDefinition<BsonDocument> filter = FilterDefinition<BsonDocument>.Empty;
 
-                switch ((InterfaceType)interfaceAggregation.InterfaceType)
+                //【SingleObject,TableList,Count】预处理一些逻辑
+                if (new InterfaceType[] { InterfaceType.SingleObject, InterfaceType.TableList, InterfaceType.Count }.Contains(queryContext.InterfaceType))
+                {
+                    //缓存对象下的全部未删除字段信息
+                    queryContext.MetaFieldsUnDeleted = metaFieldService.GetEntitiesUnDeletedByMetaObjectId(queryContext.MetaObjectId);
+                    //组织查询条件
+                    filter = conditionAggregationService.AnalysisConditionToFilterDefinitionByConditionId(queryContext, queryContext.ArgumentsDic);
+                    //缓存列字段信息
+                    if (queryContext.InterfaceType == InterfaceType.SingleObject || queryContext.InterfaceType == InterfaceType.TableList)
+                    {
+                        queryContext.FieldListMetaFieldsOfFieldListId = _fieldListMetaFieldService.GetByFieldListId(queryContext.FieldListId);
+                    }
+                }
+
+                switch (queryContext.InterfaceType)
                 {
                     case InterfaceType.SingleObject:
-                        filter = conditionAggregationService.AnalysisConditionToFilterDefinitionByConditionId(interfaceAggregation.MetaObjectId, interfaceAggregation.SearchConditionId, argumentsDic);
-                        filter = _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_SingleObject, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_SingleObject_Before, filter, interfaceAggregation.Code, filter);
-                        var singleObjectComponent = dataAccessService.GetSingleObjectComponent(interfaceAggregation.MetaObjectId, interfaceAggregation.FieldListId, filter);
-                        singleObjectComponent = _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_SingleObject, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_SingleObject_After, singleObjectComponent, interfaceAggregation.Code, singleObjectComponent);
+                        //缓存某个服务下的全部触发器脚本，包括before和after
+                        queryContext.TriggerScriptsOfOneServiceType = _triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(queryContext.MetaObjectId, (int)ServiceType.Interface_SingleObject);
+                        filter = _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_SingleObject_Before, filter, queryContext.InterfaceCode, filter);
+                        var singleObjectComponent = dataAccessService.GetSingleObjectComponent(queryContext, filter);
+                        singleObjectComponent = _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_SingleObject_After, singleObjectComponent, queryContext.InterfaceCode, singleObjectComponent);
                         return JsonResultModel.Success("get single data success", singleObjectComponent);
                     case InterfaceType.TableList:
-                        filter = conditionAggregationService.AnalysisConditionToFilterDefinitionByConditionId(interfaceAggregation.MetaObjectId, interfaceAggregation.SearchConditionId, argumentsDic);
-                        filter = _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_TableList, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_TableList_Before, filter, interfaceAggregation.Code, filter);
-                        var sort = metaFieldService.GetSortDefinitionBySortFields(interfaceAggregation.MetaObjectId, null);
-                        var tableListComponent = dataAccessService.GetTableListComponent(interfaceAggregation.MetaObjectId, interfaceAggregation.FieldListId, filter, queryArgs._pageIndex, queryArgs._pageSize, sort, out int totalCount);
-                        tableListComponent = _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_TableList, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_TableList_After, tableListComponent, interfaceAggregation.Code, tableListComponent);
+                        //缓存某个服务下的全部触发器脚本，包括before和after
+                        queryContext.TriggerScriptsOfOneServiceType = _triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(queryContext.MetaObjectId, (int)ServiceType.Interface_TableList);
+                        filter = _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_TableList_Before, filter, queryContext.InterfaceCode, filter);
+                        var sort = metaFieldService.GetSortDefinitionBySortFields(queryContext, new[] { new SortField { Column = "ModifyTime", IsDesc = true } });
+                        var tableListComponent = dataAccessService.GetTableListComponent(queryContext, filter, queryArgs._pageIndex, queryArgs._pageSize, sort, out int totalCount);
+                        tableListComponent = _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_TableList_After, tableListComponent, queryContext.InterfaceCode, tableListComponent);
                         return JsonResultModel.Success("get data list success", tableListComponent);
                     case InterfaceType.Count:
-                        filter = conditionAggregationService.AnalysisConditionToFilterDefinitionByConditionId(interfaceAggregation.MetaObjectId, interfaceAggregation.SearchConditionId, argumentsDic);
-                        filter = _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_Count, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_Count_Before, filter, interfaceAggregation.Code, filter);
-                        var count = dataAccessService.GetCount(interfaceAggregation.MetaObjectId, filter);
-                        count = _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_Count, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_Count_After, count, interfaceAggregation.Code, filter, count);
+                        //缓存某个服务下的全部触发器脚本，包括before和after
+                        queryContext.TriggerScriptsOfOneServiceType = _triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(queryContext.MetaObjectId, (int)ServiceType.Interface_Count);
+                        filter = _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_Count_Before, filter, queryContext.InterfaceCode, filter);
+                        var count = dataAccessService.GetCount(queryContext.MetaObjectId, filter);
+                        count = _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_Count_After, count, queryContext.InterfaceCode, filter, count);
                         return JsonResultModel.Success("get data count success", count);
                     case InterfaceType.JsonDataSource:
-                        return new JsonResult(Newtonsoft.Json.JsonConvert.DeserializeObject(_dataSourceService.GetById(interfaceAggregation.DataSourceId).Script));
+                        return new JsonResult(Newtonsoft.Json.JsonConvert.DeserializeObject(_dataSourceService.GetById(queryContext.DataSourceId).Script));
                     case InterfaceType.TriggerScriptDataSource:
-                        object triggerScriptDataSourceResult = _triggerScriptService.RunDataSourceScript(applicationCode, interfaceAggregation.DataSourceId, interfaceAggregation.Code, argumentsDic);
+                        object triggerScriptDataSourceResult = _triggerScriptService.RunDataSourceScript(queryContext, queryContext.ArgumentsDic);
                         return JsonResultModel.Success("get trigger script result success", triggerScriptDataSourceResult);
                     default:
                         break;
@@ -132,48 +175,37 @@ namespace Seventiny.Cloud.DataApi.Controllers
         {
             try
             {
-                //args check
-                if (queryArgs == null)
-                    return JsonResultModel.Error($"Parameter invalid:queryArgs = null");
-
-                var checkResult = queryArgs.QueryArgsCheck();
-                if (!checkResult.IsSuccess)
-                    return checkResult.ToJsonResultModel();
-
                 var json = jObj.ToString();
                 var bson = BsonDocument.Parse(json);
                 if (bson == null || !bson.Any())
                     return JsonResultModel.Error("Parameter invalid:jObj = null 业务数据为空");
 
-                //get interface info
-                var interfaceAggregation = interfaceAggregationService.GetByInterfaceAggregationCode(queryArgs._interface);
-                if (interfaceAggregation == null)
-                    return JsonResultModel.Error($"未能找到接口编码为[{queryArgs._interface}]对应的接口信息");
+                //Pretreatment create queryContext
+                QueryPiplineContext queryContext = PretreatmentAndCreateQueryPiplineContext(queryArgs);
+                queryContext.MetaObject = metaObjectService.GetById(queryContext.MetaObjectId);
 
-                //应用编码
-                string applicationCode = interfaceAggregation.Code.Split('.')[0];
+                if (queryContext.MetaObject == null)
+                    return JsonResultModel.Error($"未能找到对象Id为[{queryContext.MetaObjectId}]对应的对象信息");
 
-                //get metaObject
-                var metaObject = metaObjectService.GetById(interfaceAggregation.MetaObjectId);
-                if (metaObject == null)
-                    return JsonResultModel.Error($"未能找到对象Id为[{interfaceAggregation.MetaObjectId}]对应的对象信息");
+                //缓存某个服务下的全部触发器脚本，包括before和after
+                queryContext.TriggerScriptsOfOneServiceType = _triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(queryContext.MetaObjectId, (int)ServiceType.Interface_Add);
 
                 //trigger before
-                bson = _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_Add, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_Add_Before, bson, interfaceAggregation.Code, bson);
+                bson = _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_Add_Before, bson, queryContext.InterfaceCode, bson);
 
                 //check data by form
-                if (interfaceAggregation.FormId != default(int))
+                if (queryContext.FormId != default(int))
                 {
-                    var formCheckResult = _formMetaFieldService.ValidateFormData(interfaceAggregation.FormId, bson);
+                    var formCheckResult = _formMetaFieldService.ValidateFormData(queryContext.FormId, bson);
                     if (!formCheckResult.IsSuccess)
                         return formCheckResult.ToJsonResultModel();
                 }
 
                 //add data
-                var addResult = dataAccessService.Add(metaObject, bson);
+                var addResult = dataAccessService.Add(queryContext.MetaObject, bson);
 
                 //trigger after
-                _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_Add, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_Add_After, bson, interfaceAggregation.Code, bson);
+                _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_Add_After, bson, queryContext.InterfaceCode, bson);
 
                 return addResult.ToJsonResultModel();
             }
@@ -199,52 +231,36 @@ namespace Seventiny.Cloud.DataApi.Controllers
         {
             try
             {
-                //args check
-                if (queryArgs == null)
-                    return JsonResultModel.Error($"Parameter invalid:queryArgs = null");
-
-                var checkResult = queryArgs.QueryArgsCheck();
-                if (!checkResult.IsSuccess)
-                    return checkResult.ToJsonResultModel();
-
                 var json = jObj.ToString();
                 var bson = BsonDocument.Parse(json);
                 if (bson == null || !bson.Any())
                     return JsonResultModel.Error("Parameter invalid:jObj = null 业务数据为空");
 
-                //argumentsDic generate
-                Dictionary<string, object> argumentsDic = new Dictionary<string, object>();
-                foreach (var item in Request.Query)
-                    argumentsDic.AddOrUpdate(item.Key.ToUpperInvariant(), item.Value);
+                //Pretreatment create queryContext
+                QueryPiplineContext queryContext = PretreatmentAndCreateQueryPiplineContext(queryArgs);
 
-                //get interface info
-                var interfaceAggregation = interfaceAggregationService.GetByInterfaceAggregationCode(queryArgs._interface);
-                if (interfaceAggregation == null)
-                    return JsonResultModel.Error($"未能找到接口编码为[{queryArgs._interface}]对应的接口信息");
+                //缓存某个服务下的全部触发器脚本，包括before和after
+                queryContext.TriggerScriptsOfOneServiceType = _triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(queryContext.MetaObjectId, (int)ServiceType.Interface_Update);
 
                 //查询条件
-                FilterDefinition<BsonDocument> filter;
-                //应用编码
-                string applicationCode = interfaceAggregation.Code.Split('.')[0];
-
-                filter = conditionAggregationService.AnalysisConditionToFilterDefinitionByConditionId(interfaceAggregation.MetaObjectId, interfaceAggregation.SearchConditionId, argumentsDic);
+                FilterDefinition<BsonDocument> filter = conditionAggregationService.AnalysisConditionToFilterDefinitionByConditionId(queryContext, queryContext.ArgumentsDic);
 
                 //trigger before
-                bson = _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_Update, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_Update_Before, bson, interfaceAggregation.Code, bson, filter);
+                bson = _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_Update_Before, bson, queryContext.InterfaceCode, bson, filter);
 
                 //check data by form
-                if (interfaceAggregation.FormId != default(int))
+                if (queryContext.FormId != default(int))
                 {
-                    var formCheckResult = _formMetaFieldService.ValidateFormData(interfaceAggregation.FormId, bson);
+                    var formCheckResult = _formMetaFieldService.ValidateFormData(queryContext.FormId, bson);
                     if (!formCheckResult.IsSuccess)
                         return formCheckResult.ToJsonResultModel();
                 }
 
                 //update data
-                dataAccessService.Update(interfaceAggregation.MetaObjectId, filter, bson);
+                dataAccessService.Update(queryContext.MetaObjectId, filter, bson);
 
                 //trigger after
-                _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_Update, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_Update_After, bson, interfaceAggregation.Code, bson);
+                _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_Update_After, bson, queryContext.InterfaceCode, bson);
 
                 return JsonResultModel.Success("success");
             }
@@ -267,43 +283,26 @@ namespace Seventiny.Cloud.DataApi.Controllers
         {
             try
             {
-                //args check
-                if (queryArgs == null)
-                    return JsonResultModel.Error($"Parameter invalid:queryArgs = null");
+                //Pretreatment create queryContext
+                QueryPiplineContext queryContext = PretreatmentAndCreateQueryPiplineContext(queryArgs);
 
-                var checkResult = queryArgs.QueryArgsCheck();
-                if (!checkResult.IsSuccess)
-                    return checkResult.ToJsonResultModel();
-
-                //argumentsDic generate
-                Dictionary<string, object> argumentsDic = new Dictionary<string, object>();
-                foreach (var item in Request.Query)
-                    argumentsDic.AddOrUpdate(item.Key.ToUpperInvariant(), item.Value);
-
-                //get interface info
-                var interfaceAggregation = interfaceAggregationService.GetByInterfaceAggregationCode(queryArgs._interface);
-                if (interfaceAggregation == null)
-                    return JsonResultModel.Error($"未能找到接口编码为[{queryArgs._interface}]对应的接口信息");
+                //缓存某个服务下的全部触发器脚本，包括before和after
+                queryContext.TriggerScriptsOfOneServiceType = _triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(queryContext.MetaObjectId, (int)ServiceType.Interface_Delete);
 
                 //查询条件
-                FilterDefinition<BsonDocument> filter;
-                //应用编码
-                string applicationCode = interfaceAggregation.Code.Split('.')[0];
-
-                filter = conditionAggregationService.AnalysisConditionToFilterDefinitionByConditionId(interfaceAggregation.MetaObjectId, interfaceAggregation.SearchConditionId, argumentsDic);
+                FilterDefinition<BsonDocument> filter = conditionAggregationService.AnalysisConditionToFilterDefinitionByConditionId(queryContext, queryContext.ArgumentsDic);
 
                 //trigger before
-                filter = _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_Delete, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_Delete_Before, filter, interfaceAggregation.Code, filter);
+                filter = _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_Delete_Before, filter, queryContext.InterfaceCode, filter);
 
-                //queryResult
-                var sort = metaFieldService.GetSortDefinitionBySortFields(interfaceAggregation.MetaObjectId, null);
-                var queryDatas = dataAccessService.GetList(interfaceAggregation.MetaObjectId, filter, sort);
+                //queryResult       
+                var queryDatas = dataAccessService.GetList(queryContext.MetaObjectId, filter, null);
 
                 //delete
-                dataAccessService.Delete(interfaceAggregation.MetaObjectId, filter);
+                dataAccessService.Delete(queryContext.MetaObjectId, filter);
 
                 //trigger after
-                _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_Delete, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_Delete_After, filter, interfaceAggregation.Code, queryDatas);
+                _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_Delete_After, filter, queryContext.InterfaceCode, queryDatas);
 
                 return JsonResultModel.Success("success");
             }

@@ -2,6 +2,7 @@
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Entity
 {
+    [TableCaching]
     public class DataSource : CommonInfo
     {
         /// <summary>

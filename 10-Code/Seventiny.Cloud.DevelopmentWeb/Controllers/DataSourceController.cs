@@ -145,13 +145,25 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
                 .ContinueAssert(!string.IsNullOrEmpty(entity.Name), "名称不能为空")
                 .ContinueAssert(!string.IsNullOrEmpty(entity.Code), "编码不能为空")
                 .ContinueAssert(!string.IsNullOrEmpty(entity.Script), "数据源内容不能为空")
+                .Continue(re =>
+                {
+                    try
+                    {
+                        Newtonsoft.Json.JsonConvert.DeserializeObject(entity.Script);
+                    }
+                    catch (System.Exception)
+                    {
+                        return Result.Error("非法的Json格式.");
+                    }
+                    return re;
+                })
                 .Continue(re => _dataSourceService.CheckSameCodeOrName(entity))
                 .Continue(re => _dataSourceService.Update(entity));
 
             if (result.IsSuccess)
                 return RedirectToAction("JsonDataSourceList");
             else
-                return View("UpdateScriptDataSource", ResponseModel.Error(result.Message, entity));
+                return View("UpdateJsonDataSource", ResponseModel.Error(result.Message, entity));
         }
 
         public IActionResult JsonDataSourceList()

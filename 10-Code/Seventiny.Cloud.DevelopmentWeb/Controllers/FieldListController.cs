@@ -98,7 +98,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             {
                 return View("Update", ResponseModel.Error("MetaField Code 不能为空", entity));
             }
-            
+
             //检查编码或名称重复
             var checkResult = fieldListService.CheckSameCodeOrName(CurrentMetaObjectId, entity);
             if (!checkResult.IsSuccess)
@@ -192,7 +192,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             }
 
             if (fieldAggregations.Any())
-                fieldAggregationService.Add(fieldAggregations);
+                fieldAggregationService.Add(CurrentMetaObjectId, fieldAggregations);
 
             foreach (var item in deleteIds)
             {

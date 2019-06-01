@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using Newtonsoft.Json.Linq;
 using Seventiny.Cloud.DataApi.Models;
+using SevenTiny.Bantina.Extensions;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Service;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,34 +49,58 @@ namespace Seventiny.Cloud.DataApi.Controllers
         readonly ITriggerScriptService _triggerScriptService;
         readonly IFormMetaFieldService _formMetaFieldService;
 
+        /// <summary>
+        /// 1.预处理统一的参数验证逻辑
+        /// 2.根据接口信息创建查询管道上下文
+        /// </summary>
+        /// <param name="queryArgs"></param>
+        /// <returns></returns>
+        private QueryPiplineContext PretreatmentAndCreateQueryPiplineContext(QueryArgs queryArgs)
+        {
+            //args check
+            if (queryArgs == null)
+                throw new Exception($"Parameter invalid:queryArgs = null");
+
+            queryArgs.QueryArgsCheck();
+
+            //argumentsDic generate
+            Dictionary<string, object> argumentsDic = new Dictionary<string, object>();
+            foreach (var item in Request.Query)
+                argumentsDic.AddOrUpdate(item.Key.ToUpperInvariant(), item.Value);
+
+            //get interface info
+            var interfaceAggregation = interfaceAggregationService.GetByInterfaceAggregationCode(queryArgs._interface);
+            if (interfaceAggregation == null)
+                throw new Exception($"未能找到接口编码为[{queryArgs._interface}]对应的接口信息");
+
+            //create queryContext
+            QueryPiplineContext queryContext = new QueryPiplineContext();
+            queryContext.InterfaceCode = queryArgs._interface;
+            queryContext.ArgumentsDic = argumentsDic;
+            queryContext.ApplicationCode = interfaceAggregation.Code.Split('.')[0];
+            queryContext.MetaObjectId = interfaceAggregation.MetaObjectId;
+            queryContext.SearchConditionId = interfaceAggregation.SearchConditionId;
+            queryContext.FieldListId = interfaceAggregation.FieldListId;
+            queryContext.DataSourceId = interfaceAggregation.DataSourceId;
+            queryContext.InterfaceType = (InterfaceType)interfaceAggregation.InterfaceType;
+
+            return queryContext;
+        }
+
         [HttpPost]
         public IActionResult Post([FromQuery]QueryArgs queryArgs, [FromBody]JArray jArray)
         {
             try
             {
-                //args check
-                if (queryArgs == null)
-                    return JsonResultModel.Error($"Parameter invalid:queryArgs = null");
-
-                var checkResult = queryArgs.QueryArgsCheck();
-                if (!checkResult.IsSuccess)
-                    return checkResult.ToJsonResultModel();
-
                 if (jArray == null || !jArray.Any())
                     return JsonResultModel.Error($"Parameter invalid:data = null");
 
-                //get interface info
-                var interfaceAggregation = interfaceAggregationService.GetByInterfaceAggregationCode(queryArgs._interface);
-                if (interfaceAggregation == null)
-                    return JsonResultModel.Error($"未能找到接口编码为[{queryArgs._interface}]对应的接口信息");
+                //Pretreatment create queryContext
+                QueryPiplineContext queryContext = PretreatmentAndCreateQueryPiplineContext(queryArgs);
+                queryContext.MetaObject = metaObjectService.GetById(queryContext.MetaObjectId);
 
-                //应用编码
-                string applicationCode = interfaceAggregation.Code.Split('.')[0];
-
-                //get metaObject
-                var metaObject = metaObjectService.GetById(interfaceAggregation.MetaObjectId);
-                if (metaObject == null)
-                    return JsonResultModel.Error($"未能找到对象Id为[{interfaceAggregation.MetaObjectId}]对应的对象信息");
+                if (queryContext.MetaObject == null)
+                    return JsonResultModel.Error($"未能找到对象Id为[{queryContext.MetaObjectId}]对应的对象信息");
 
                 int successCount = 0;
                 int errorCount = 0;
@@ -94,22 +120,25 @@ namespace Seventiny.Cloud.DataApi.Controllers
                     }
                 }
 
+                //缓存某个服务下的全部触发器脚本，包括before和after
+                queryContext.TriggerScriptsOfOneServiceType = _triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(queryContext.MetaObjectId, (int)ServiceType.Interface_BatchAdd);
+
                 //trigger before
-                documents = _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_BatchAdd, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_BatchAdd_Before, documents, interfaceAggregation.Code, documents);
+                documents = _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_BatchAdd_Before, documents, queryContext.InterfaceCode, documents);
 
                 //check data by form
-                if (interfaceAggregation.FormId != default(int))
+                if (queryContext.FormId != default(int))
                 {
-                    var formCheckResult = _formMetaFieldService.ValidateFormData(interfaceAggregation.FormId, documents);
+                    var formCheckResult = _formMetaFieldService.ValidateFormData(queryContext.FormId, documents);
                     if (!formCheckResult.IsSuccess)
                         return formCheckResult.ToJsonResultModel();
                 }
 
                 //add data
-                var addResult = dataAccessService.BatchAdd(metaObject, documents);
+                var addResult = dataAccessService.BatchAdd(queryContext.MetaObject, documents);
 
                 //trigger after
-                _triggerScriptService.RunTriggerScript(interfaceAggregation.MetaObjectId, applicationCode, ServiceType.Interface_BatchAdd, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_BatchAdd_After, documents, interfaceAggregation.Code, documents);
+                _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_BatchAdd_After, documents, queryContext.InterfaceCode, documents);
 
                 return addResult.ToJsonResultModel();
             }

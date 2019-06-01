@@ -13,6 +13,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.ListView;
 using System.Linq;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 {
@@ -85,16 +86,16 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         }
 
         #region Execute Script
-        public T RunTriggerScript<T>(int metaObjectId, string applicationCode, ServiceType serviceType, TriggerPoint triggerPoint, string functionName, T result, params object[] parameters)
+        public T RunTriggerScript<T>(QueryPiplineContext queryPiplineContext, TriggerPoint triggerPoint, string functionName, T result, params object[] parameters)
         {
-            var triggerScripts = GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(metaObjectId, (int)serviceType)?.Where(t => t.TriggerPoint == (int)triggerPoint).ToList();
+            var triggerScripts = queryPiplineContext.TriggerScriptsOfOneServiceType?.Where(t => t.TriggerPoint == (int)triggerPoint).ToList();
             if (triggerScripts != null && triggerScripts.Any())
             {
                 foreach (var script in triggerScripts)
                 {
                     var dynamicScript = script.ToDynamicScript();
                     dynamicScript.FunctionName = functionName;
-                    dynamicScript.ProjectName = applicationCode;
+                    dynamicScript.ProjectName = queryPiplineContext.ApplicationCode;
                     dynamicScript.Parameters = parameters;
                     var executeResult = _scriptEngineProvider.RunScript<T>(dynamicScript);
                     if (!executeResult.IsSuccess && (OnFailurePolicy)script.OnFailurePolicy == OnFailurePolicy.Break)
@@ -106,16 +107,16 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             return result;
         }
 
-        public object RunDataSourceScript(string applicationCode, int dataSourceId, params object[] parameters)
+        public object RunDataSourceScript(QueryPiplineContext queryPiplineContext, params object[] parameters)
         {
-            var dataSource = _dataSourceService.GetById(dataSourceId);
+            var dataSource = _dataSourceService.GetById(queryPiplineContext.DataSourceId);
             if (dataSource != null)
             {
                 var dynamicScript = new DynamicScript();
                 dynamicScript.Script = dataSource.Script;
                 dynamicScript.Language = DynamicScriptLanguage.CSharp;
                 dynamicScript.FunctionName = FunctionName_DataSource;
-                dynamicScript.ProjectName = applicationCode;
+                dynamicScript.ProjectName = queryPiplineContext.ApplicationCode;
                 dynamicScript.Parameters = parameters;
                 var executeResult = _scriptEngineProvider.RunScript<object>(dynamicScript);
                 if (executeResult.IsSuccess)
@@ -177,16 +178,17 @@ using System.Linq;
 using System.Text;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.DataAccess;
-using logger = SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging.Logger;";
+using logger = SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging.Logger;
+using SevenTiny.Cloud.MultiTenantPlatform.UIModel.DataAccess;";
         /// <summary>
         /// 所有脚本类内方法外内置的通用代码段，个性化请写在各自脚本中
         /// </summary>
         private string DefaultCommonClassInnerCode
 => @"//EndUsing
 //注释：上面的 EndUsing 注释为using分隔符，请不要删除；
-//注释：输出日志请使用 logger.Error(),logger.Debug(),logger.Info()等
-MultiTenantDataDbContext db = new MultiTenantDataDbContext();";
+//注释：输出日志请使用 logger.Error(),logger.Debug(),logger.Info()；
+//注释：查询数据请使用下面的db；
+var db = new MultiTenantDataDbContext();";
         /// <summary>
         /// 所有脚本方法内默认内置的通用代码段，个性化请写在各自脚本中
         /// </summary>
@@ -220,8 +222,6 @@ MultiTenantDataDbContext db = new MultiTenantDataDbContext();";
 public FilterDefinition<BsonDocument> {methodName}(string interfaceCode,FilterDefinition<BsonDocument> condition)
 {{
     {DefaultCommonMethodCode}
-	//这里写业务逻辑
-	//...
 	return condition;
 }}";
 
@@ -231,8 +231,6 @@ public FilterDefinition<BsonDocument> {methodName}(string interfaceCode,FilterDe
 public BsonDocument {FunctionName_MetaObject_Interface_Add_Before}(string interfaceCode,BsonDocument bsonElements)
 {{
     {DefaultCommonMethodCode}
-	//这里写业务逻辑
-	//...
 	return bsonElements;
 }}";
         private string DefaultScript_MetaObject_Interface_Add_After
@@ -241,8 +239,6 @@ public BsonDocument {FunctionName_MetaObject_Interface_Add_Before}(string interf
 public BsonDocument {FunctionName_MetaObject_Interface_Add_After}(string interfaceCode,BsonDocument bsonElements)
 {{
     {DefaultCommonMethodCode}
-	//这里写业务逻辑
-	//...
 	return bsonElements;
 }}";
         private string DefaultScript_MetaObject_Interface_BatchAdd_Before
@@ -251,8 +247,6 @@ public BsonDocument {FunctionName_MetaObject_Interface_Add_After}(string interfa
 public List<BsonDocument> {FunctionName_MetaObject_Interface_BatchAdd_Before}(string interfaceCode,List<BsonDocument> bsonElementsList)
 {{
     {DefaultCommonMethodCode}
-	//这里写业务逻辑
-	//...
 	return bsonElementsList;
 }}";
         private string DefaultScript_MetaObject_Interface_BatchAdd_After
@@ -261,8 +255,6 @@ public List<BsonDocument> {FunctionName_MetaObject_Interface_BatchAdd_Before}(st
 public List<BsonDocument> {FunctionName_MetaObject_Interface_BatchAdd_After}(string interfaceCode,List<BsonDocument> bsonElementsList)
 {{
     {DefaultCommonMethodCode}
-	//这里写业务逻辑
-	//...
 	return bsonElementsList;
 }}";
         private string DefaultScript_MetaObject_Interface_Update_Before
@@ -271,8 +263,6 @@ public List<BsonDocument> {FunctionName_MetaObject_Interface_BatchAdd_After}(str
 public FilterDefinition<BsonDocument> {FunctionName_MetaObject_Interface_Update_Before}(string interfaceCode,FilterDefinition<BsonDocument> condition,BsonDocument bsonElements)
 {{
     {DefaultCommonMethodCode}
-	//这里写业务逻辑
-	//...
 	return condition;
 }}";
         private string DefaultScript_MetaObject_Interface_Update_After
@@ -281,8 +271,6 @@ public FilterDefinition<BsonDocument> {FunctionName_MetaObject_Interface_Update_
 public void {FunctionName_MetaObject_Interface_Update_After}(string interfaceCode,FilterDefinition<BsonDocument> condition,BsonDocument bsonElements)
 {{
     {DefaultCommonMethodCode}
-	//这里写业务逻辑
-	//...
 }}";
         private string DefaultScript_MetaObject_Interface_Delete_Before
 => Get_DefaultScript_MetaObject_Interface_QueryCondition(FunctionName_MetaObject_Interface_Delete_Before);
@@ -292,8 +280,6 @@ public void {FunctionName_MetaObject_Interface_Update_After}(string interfaceCod
 public void {FunctionName_MetaObject_Interface_Delete_After}(string interfaceCode,List<BsonDocument> bsonElementsList)
 {{
     {DefaultCommonMethodCode}
-	//这里写业务逻辑
-	//...
 }}";
         private string DefaultScript_MetaObject_Interface_TableList_Before
 => Get_DefaultScript_MetaObject_Interface_QueryCondition(FunctionName_MetaObject_Interface_TableList_Before);
@@ -306,8 +292,6 @@ using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.UserInfo;
 public TableListComponent {FunctionName_MetaObject_Interface_TableList_After}(string interfaceCode, TableListComponent tableListComponent)
 {{
     { DefaultCommonMethodCode}
-    //这里写业务逻辑
-    //...
     return tableListComponent;
 }}";
         private string DefaultScript_MetaObject_Interface_SingleObject_Before
@@ -321,8 +305,6 @@ using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.UserInfo;
 public SingleObjectComponent {FunctionName_MetaObject_Interface_SingleObject_After}(string interfaceCode,SingleObjectComponent singleObjectComponent)
 {{
     {DefaultCommonMethodCode}
-	//这里写业务逻辑
-	//...
 	return singleObjectComponent;
 }}";
         private string DefaultScript_MetaObject_Interface_Count_Before
@@ -333,8 +315,6 @@ public SingleObjectComponent {FunctionName_MetaObject_Interface_SingleObject_Aft
 public int {FunctionName_MetaObject_Interface_Count_After}(string interfaceCode,FilterDefinition<BsonDocument> condition,int count)
 {{
     {DefaultCommonMethodCode}
-	//这里写业务逻辑
-	//...
 	return count;
 }}";
 
@@ -344,8 +324,6 @@ public int {FunctionName_MetaObject_Interface_Count_After}(string interfaceCode,
 public object {FunctionName_DataSource}(string interfaceCode, Dictionary<string, object> argumentsDic)
 {{
     {DefaultCommonMethodCode}
-	//这里写业务逻辑
-	//...
 	return null;
 }}";
         #endregion
