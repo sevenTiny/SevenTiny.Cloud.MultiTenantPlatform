@@ -3,6 +3,7 @@ using MongoDB.Driver;
 using SevenTiny.Bantina;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
 using SevenTiny.Cloud.MultiTenantPlatform.UIModel.DataAccess;
 using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.ListView;
 using System;
@@ -324,13 +325,13 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 
             return db.GetCollectionBson(metaObject.Code).Find<BsonDocument>(condition).Project(projection).Limit(1)?.FirstOrDefault();
         }
-        public SingleObjectComponent GetSingleObjectComponent(int metaObjectId, int InterfaceFieldId, FilterDefinition<BsonDocument> condition)
+        public SingleObjectComponent GetSingleObjectComponent(QueryPiplineContext queryPiplineContext, FilterDefinition<BsonDocument> condition)
         {
-            var fieldMetas = fieldListAggregationService.GetColumnDataByFieldListId(InterfaceFieldId);
-            var document = Get(metaObjectId, condition, fieldMetas?.Select(t => t.CmpData.Name)?.ToArray());
+            var fieldMetas = fieldListAggregationService.GetColumnDataByFieldListId(queryPiplineContext);
+            var document = Get(queryPiplineContext.MetaObjectId, condition, fieldMetas?.Select(t => t.CmpData.Name)?.ToArray());
             SingleObjectComponent singleObjectComponent = new SingleObjectComponent
             {
-                BizData = fieldBizDataService.ToBizDataDictionary(metaObjectId, InterfaceFieldId, document),
+                BizData = fieldBizDataService.ToBizDataDictionary(queryPiplineContext, document),
                 ColunmDatas = fieldMetas?.OrderBy(t => t.CmpData.ShowIndex)?.ToList()
             };
             return singleObjectComponent;
@@ -389,6 +390,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                     projection = projection.Include(item);
 
             int skipSize = (pageIndex - 1) > 0 ? ((pageIndex - 1) * pageSize) : 0;
+
+            if (sort == null)
+                sort = new SortDefinitionBuilder<BsonDocument>().Ascending("_id");
+
             bson = db.GetCollectionBson(metaObject.Code).Find(condition).Skip(skipSize).Limit(pageSize).Sort(sort).Project(projection).ToList();
             return bson;
         }
@@ -420,13 +425,13 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 
             return bson;
         }
-        public TableListComponent GetTableListComponent(int metaObjectId, int InterfaceFieldId, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort, out int count)
+        public TableListComponent GetTableListComponent(QueryPiplineContext queryPiplineContext, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort, out int count)
         {
-            var fieldMetas = fieldListAggregationService.GetColumnDataByFieldListId(InterfaceFieldId);
-            var documents = GetList(metaObjectId, condition, pageIndex, pageSize, sort, out count, fieldMetas?.Select(t => t.CmpData.Name)?.ToArray());
+            var fieldMetas = fieldListAggregationService.GetColumnDataByFieldListId(queryPiplineContext);
+            var documents = GetList(queryPiplineContext.MetaObjectId, condition, pageIndex, pageSize, sort, out count, fieldMetas?.Select(t => t.CmpData.Name)?.ToArray());
             TableListComponent tableListComponent = new TableListComponent
             {
-                BizData = fieldBizDataService.ToBizDataDictionaryList(metaObjectId, InterfaceFieldId, documents),
+                BizData = fieldBizDataService.ToBizDataDictionaryList(queryPiplineContext, documents),
                 BizDataTotalCount = count,
                 Columns = fieldMetas?.OrderBy(t => t.CmpData.ShowIndex)?.ToList()
             };

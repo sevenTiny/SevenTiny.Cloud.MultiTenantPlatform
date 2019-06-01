@@ -1,14 +1,13 @@
-﻿using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
+﻿using SevenTiny.Bantina;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.DataAccess;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
 using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.ListView;
-using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using SevenTiny.Bantina;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.DataAccess;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 {
@@ -53,29 +52,13 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             dbContext.Delete<FieldListMetaField>(t => t.MetaFieldId == metaFieldId);
         }
 
-        public List<MetaField> GetMetaFieldsByFieldListId(int metaObjectId, int fieldListId)
+        public List<Column> GetColumnDataByFieldListId(QueryPiplineContext queryPiplineContext)
         {
-            var fieldAggregationList = GetByFieldListId(fieldListId);
-            if (fieldAggregationList != null && fieldAggregationList.Any())
-            {
-                var fieldIds = fieldAggregationList.Select(t => t.MetaFieldId).ToArray();
-                return metaFieldService.GetByIds(metaObjectId, fieldIds);
-            }
-            return null;
-        }
-
-        public Dictionary<string, MetaField> GetMetaFieldsDicByFieldListId(int metaObjectId, int fieldListId)
-        {
-            return GetMetaFieldsByFieldListId(metaObjectId, fieldListId)?.ToDictionary(t => t.Code, t => t);
-        }
-
-        public List<Column> GetColumnDataByFieldListId(int interfaceFieldId)
-        {
-            var fieldList = GetByFieldListId(interfaceFieldId);
-            if (fieldList != null && fieldList.Any())
+            var fieldListMetaFields = queryPiplineContext.FieldListMetaFieldsOfFieldListId;
+            if (fieldListMetaFields != null && fieldListMetaFields.Any())
             {
                 List<Column> columns = new List<Column>();
-                foreach (var item in fieldList)
+                foreach (var item in fieldListMetaFields)
                 {
                     columns.Add(new Column
                     {

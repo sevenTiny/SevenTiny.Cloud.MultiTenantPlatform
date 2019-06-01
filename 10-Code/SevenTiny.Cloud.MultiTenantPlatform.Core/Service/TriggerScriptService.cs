@@ -13,6 +13,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.ListView;
 using System.Linq;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 {
@@ -85,16 +86,16 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         }
 
         #region Execute Script
-        public T RunTriggerScript<T>(int metaObjectId, string applicationCode, ServiceType serviceType, TriggerPoint triggerPoint, string functionName, T result, params object[] parameters)
+        public T RunTriggerScript<T>(QueryPiplineContext queryPiplineContext, TriggerPoint triggerPoint, string functionName, T result, params object[] parameters)
         {
-            var triggerScripts = GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(metaObjectId, (int)serviceType)?.Where(t => t.TriggerPoint == (int)triggerPoint).ToList();
+            var triggerScripts = queryPiplineContext.TriggerScriptsOfOneServiceType?.Where(t => t.TriggerPoint == (int)triggerPoint).ToList();
             if (triggerScripts != null && triggerScripts.Any())
             {
                 foreach (var script in triggerScripts)
                 {
                     var dynamicScript = script.ToDynamicScript();
                     dynamicScript.FunctionName = functionName;
-                    dynamicScript.ProjectName = applicationCode;
+                    dynamicScript.ProjectName = queryPiplineContext.ApplicationCode;
                     dynamicScript.Parameters = parameters;
                     var executeResult = _scriptEngineProvider.RunScript<T>(dynamicScript);
                     if (!executeResult.IsSuccess && (OnFailurePolicy)script.OnFailurePolicy == OnFailurePolicy.Break)
@@ -106,16 +107,16 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             return result;
         }
 
-        public object RunDataSourceScript(string applicationCode, int dataSourceId, params object[] parameters)
+        public object RunDataSourceScript(QueryPiplineContext queryPiplineContext, params object[] parameters)
         {
-            var dataSource = _dataSourceService.GetById(dataSourceId);
+            var dataSource = _dataSourceService.GetById(queryPiplineContext.DataSourceId);
             if (dataSource != null)
             {
                 var dynamicScript = new DynamicScript();
                 dynamicScript.Script = dataSource.Script;
                 dynamicScript.Language = DynamicScriptLanguage.CSharp;
                 dynamicScript.FunctionName = FunctionName_DataSource;
-                dynamicScript.ProjectName = applicationCode;
+                dynamicScript.ProjectName = queryPiplineContext.ApplicationCode;
                 dynamicScript.Parameters = parameters;
                 var executeResult = _scriptEngineProvider.RunScript<object>(dynamicScript);
                 if (executeResult.IsSuccess)

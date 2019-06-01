@@ -1,4 +1,5 @@
 ﻿using SevenTiny.Bantina;
+using System;
 
 namespace Seventiny.Cloud.DataApi.Models
 {
@@ -8,13 +9,12 @@ namespace Seventiny.Cloud.DataApi.Models
         public int _pageIndex { get; set; }
         public int _pageSize { get; set; }
 
-        public Result QueryArgsCheck()
+        public void QueryArgsCheck()
         {
             if (string.IsNullOrEmpty(_interface))
             {
-                return Result.Error("interfaceCode can not be null!");
+                throw new Exception("interfaceCode can not be null!");
             }
-            return Result.Success();
         }
     }
 }

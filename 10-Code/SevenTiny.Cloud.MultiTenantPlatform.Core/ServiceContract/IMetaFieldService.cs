@@ -3,6 +3,7 @@ using MongoDB.Driver;
 using SevenTiny.Bantina;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Repository;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
 using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
 using System.Collections.Generic;
 
@@ -61,6 +62,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract
         /// <param name="metaObjectId"></param>
         /// <param name="sortFields"></param>
         /// <returns></returns>
-        SortDefinition<BsonDocument> GetSortDefinitionBySortFields(int metaObjectId, SortField[] sortFields);
+        SortDefinition<BsonDocument> GetSortDefinitionBySortFields(QueryPiplineContext queryPiplineContext, SortField[] sortFields);
     }
 }

@@ -2,6 +2,7 @@
 using MongoDB.Driver;
 using SevenTiny.Bantina;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
 using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.ListView;
 using System.Collections.Generic;
 
@@ -26,7 +27,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract
         BsonDocument Get(string metaObjectCode, FilterDefinition<BsonDocument> condition, string[] columns = null);
         BsonDocument Get(int metaObjectId, FilterDefinition<BsonDocument> condition, string[] columns = null);
         BsonDocument Get(MetaObject metaObject, FilterDefinition<BsonDocument> condition, string[] columns = null);
-        SingleObjectComponent GetSingleObjectComponent(int metaObjectId, int InterfaceFieldId, FilterDefinition<BsonDocument> condition);
+        SingleObjectComponent GetSingleObjectComponent(QueryPiplineContext queryPiplineContext, FilterDefinition<BsonDocument> condition);
 
         BsonDocument GetById(string metaObjectCode, string _id);
         List<BsonDocument> GetByIds(string metaObjectCode, string[] _ids, SortDefinition<BsonDocument> sort, string[] columns = null);
@@ -41,7 +42,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract
         List<BsonDocument> GetList(int metaObjectId, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort, out int count, string[] columns = null);
         List<BsonDocument> GetList(string metaObjectCode, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort, out int count, string[] columns = null);
         List<BsonDocument> GetList(MetaObject metaObject, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort, out int count, string[] columns = null);
-        TableListComponent GetTableListComponent(int metaObjectId, int InterfaceFieldId, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort, out int count);
+        TableListComponent GetTableListComponent(QueryPiplineContext queryPiplineContext, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort, out int count);
 
         int GetCount(int metaObjectId, FilterDefinition<BsonDocument> condition);
         int GetCount(string metaObjectCode, FilterDefinition<BsonDocument> condition);

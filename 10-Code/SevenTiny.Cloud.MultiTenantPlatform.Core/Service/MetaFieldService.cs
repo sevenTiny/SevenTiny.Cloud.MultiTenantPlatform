@@ -6,6 +6,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
 using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
 using System;
 using System.Collections.Generic;
@@ -254,17 +255,15 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             return Result.Success("删除成功");
         }
 
-        public SortDefinition<BsonDocument> GetSortDefinitionBySortFields(int metaObjectId, SortField[] sortFields)
+        public SortDefinition<BsonDocument> GetSortDefinitionBySortFields(QueryPiplineContext queryPiplineContext, SortField[] sortFields)
         {
             var builder = new SortDefinitionBuilder<BsonDocument>();
             if (sortFields == null || !sortFields.Any())
-            {
-                //默认给更新时间倒序排列
-                sortFields = new[] { new SortField { Column = "ModifyTime", IsDesc = true } };
-            }
+                return builder.Ascending("_id");
+
             //获取全部字段
-            var metaFieldDic = GetMetaFieldDicUnDeleted(metaObjectId);
             SortDefinition<BsonDocument> sort = null;
+            var metaFieldDic = queryPiplineContext.MetaFieldsUnDeletedCodeDic;
             foreach (var item in sortFields)
             {
                 if (!metaFieldDic.ContainsKey(item.Column))

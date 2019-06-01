@@ -13,7 +13,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
     <PackageReference Include="SevenTiny.Bantina" Version="1.0.16" />
-    <PackageReference Include="SevenTiny.Bantina.Bankinate.MySql" Version="1.0.17" />
+    <PackageReference Include="SevenTiny.Bantina.Bankinate.MySql" Version="1.0.18" />
     <PackageReference Include="Seventiny.Cloud.ScriptEngine" Version="1.0.10" />
   </ItemGroup>
 

@@ -7,6 +7,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -225,17 +226,17 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         /// <param name="conditionValueDic">参数</param>
         /// <param name="isIgnoreArgumentsCheck">是否忽略参数校验,如果为true，需要的参数未传递会抛出异常；如果为false，需要的参数不存在条件返回null</param>
         /// <returns></returns>
-        public FilterDefinition<BsonDocument> AnalysisConditionToFilterDefinitionByConditionId(int metaObjectId, int searchConditionId, Dictionary<string, object> conditionValueDic, bool isIgnoreArgumentsCheck = false)
+        public FilterDefinition<BsonDocument> AnalysisConditionToFilterDefinitionByConditionId(QueryPiplineContext queryPiplineContext, Dictionary<string, object> conditionValueDic, bool isIgnoreArgumentsCheck = false)
         {
-            List<SearchConditionNode> conditions = GetListBySearchConditionId(searchConditionId);
-            return AnalysisConditionToFilterDefinition(metaObjectId, conditions, conditionValueDic, isIgnoreArgumentsCheck);
+            List<SearchConditionNode> conditions = GetListBySearchConditionId(queryPiplineContext.SearchConditionId);
+            return AnalysisConditionToFilterDefinition(queryPiplineContext, conditions, conditionValueDic, isIgnoreArgumentsCheck);
         }
 
-        private FilterDefinition<BsonDocument> AnalysisConditionToFilterDefinition(int metaObjectId, List<SearchConditionNode> conditions, Dictionary<string, object> conditionValueDic, bool isIgnoreArgumentsCheck = false)
+        private FilterDefinition<BsonDocument> AnalysisConditionToFilterDefinition(QueryPiplineContext queryPiplineContext, List<SearchConditionNode> conditions, Dictionary<string, object> conditionValueDic, bool isIgnoreArgumentsCheck = false)
         {
             var bf = Builders<BsonDocument>.Filter;
             //全部字段字典缓存
-            Dictionary<int, MetaField> metaFieldIdDic = metaFieldService.GetMetaFieldDicIdObjUnDeleted(metaObjectId);
+            Dictionary<int, MetaField> metaFieldIdDic = queryPiplineContext.MetaFieldsUnDeletedIdDic;
 
             //获取全部条件表达式
             if (conditions == null || !conditions.Any())
