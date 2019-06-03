@@ -2,6 +2,8 @@
 @{
     ViewData["Title"] = "Detail";
     Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
+    string applicationCode = Convert.ToString(ViewData["Application"]);
+    int applicationId = Convert.ToInt32(ViewData["ApplicationId"]);
 }
 
 <!--_header 作为公共模版分离出去-->
@@ -11,7 +13,7 @@
             <a aria-hidden="false" class="nav-toggle Hui-iconfont visible-xs" href="javascript:;">&#xe667;</a>
             <nav class="nav navbar-nav">
                 <ul class="cl">
-                    <li><a href="/Application/Select" class="dropDown_A">应用：@ViewData["Application"] </a></li>
+                    <li><a href="/Application/Select" class="dropDown_A">应用：@applicationCode </a></li>
                     <li class="navbar-levelone"><a href="javascript:applicationDetailFrameOpen('/Application/Setting')">应用设置</a></li>
                     <li class="navbar-levelone current"><a href="javascript:applicationDetailFrameOpen('/MetaObject/Setting')">对象管理</a></li>
                 </ul>
@@ -48,7 +50,7 @@
 <section class="Hui-article-box" style="top:0;left:0">
     <div class="show_iframe" tyle="margin-bottom:50px;">
         <div style="display:none" class="loading"></div>
-        <iframe id="application_detail_iframe" scrolling="no" frameborder="0" src="/MetaObject/Setting"></iframe>
+        <iframe id="application_detail_iframe" scrolling="no" frameborder="0" src="/MetaObject/Setting?applicationId=@applicationId&applicationCode=@applicationCode"></iframe>
     </div>
 </section>
 
