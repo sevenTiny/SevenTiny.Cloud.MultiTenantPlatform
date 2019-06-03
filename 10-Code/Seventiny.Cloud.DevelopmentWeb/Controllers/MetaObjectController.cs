@@ -17,15 +17,25 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             metaObjectService = _metaObjectService;
         }
 
-        public IActionResult Setting()
+        public IActionResult Setting(int applicationId, string applicationCode)
         {
-            ViewData["MetaObjects"] = metaObjectService.GetMetaObjectsUnDeletedByApplicationId(CurrentApplicationId);
+            if (applicationId == 0 || string.IsNullOrEmpty(applicationCode))
+                return Redirect("/Application/Select");
 
+            ViewData["MetaObjects"] = metaObjectService.GetMetaObjectsUnDeletedByApplicationId(applicationId);
+
+            ViewData["Application"] = applicationCode;
+            ViewData["ApplicationId"] = applicationId;
             return View();
         }
 
-        public IActionResult List()
+        public IActionResult List(int applicationId, string applicationCode)
         {
+            if (applicationId == 0 || string.IsNullOrEmpty(applicationCode))
+                return Redirect("/Application/Select");
+
+            HttpContext.Session.SetInt32("ApplicationId", applicationId);
+            HttpContext.Session.SetString("ApplicationCode", applicationCode);
             return View(metaObjectService.GetMetaObjectsUnDeletedByApplicationId(CurrentApplicationId));
         }
 

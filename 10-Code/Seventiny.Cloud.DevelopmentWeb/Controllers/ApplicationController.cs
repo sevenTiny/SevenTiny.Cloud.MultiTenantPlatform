@@ -120,14 +120,14 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
         public IActionResult Detail(string app)
         {
             if (string.IsNullOrEmpty(app))
-            {
                 return Redirect("/Application/Select");
-            }
+
             var application = applicationService.GetByCode(app);
 
-            HttpContext.Session.SetInt32("ApplicationId", application.Id);
-            HttpContext.Session.SetString("ApplicationCode", application.Code);
+            //HttpContext.Session.SetInt32("ApplicationId", application.Id);
+            //HttpContext.Session.SetString("ApplicationCode", application.Code);
             ViewData["Application"] = application.Code;
+            ViewData["ApplicationId"] = application.Id;
 
             return View();
         }

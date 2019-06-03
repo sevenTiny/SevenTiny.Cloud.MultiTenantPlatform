@@ -3,6 +3,8 @@
     ViewData["Title"] = "Setting";
     Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
     var metaObjectList = ViewData["MetaObjects"] as List<MetaObject> ?? new List<MetaObject>();
+    string applicationCode = Convert.ToString(ViewData["Application"]);
+    int applicationId = Convert.ToInt32(ViewData["ApplicationId"]);
 }
 <link href="~/lib/bootstrap-select/bootstrap-customOfSelect.css" rel="stylesheet" />
 <link href="~/lib/bootstrap-select/bootstrap-select.css" rel="stylesheet" />
@@ -63,7 +65,7 @@
 <section class="Hui-article-box mt-15">
     <div class="show_iframe" style="margin-bottom:50px;">
         <div style="display:none" class="loading"></div>
-        <iframe id="main_iframe" scrolling="auto" frameborder="0" src="/MetaObject/List"></iframe>
+        <iframe id="main_iframe" scrolling="auto" frameborder="0" src="/MetaObject/List?applicationId=@applicationId&applicationCode=@applicationCode"></iframe>
     </div>
 </section>
 
