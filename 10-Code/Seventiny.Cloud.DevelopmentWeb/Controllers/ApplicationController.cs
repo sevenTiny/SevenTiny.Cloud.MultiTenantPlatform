@@ -21,6 +21,8 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
 
         public IActionResult Setting()
         {
+            ViewData["ApplicationId"] = CurrentApplicationId;
+            ViewData["Application"] = CurrentApplicationCode;
             return View();
         }
 
@@ -124,10 +126,9 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
 
             var application = applicationService.GetByCode(app);
 
-            //HttpContext.Session.SetInt32("ApplicationId", application.Id);
-            //HttpContext.Session.SetString("ApplicationCode", application.Code);
-            ViewData["Application"] = application.Code;
+            SetApplictionSession(application.Id, application.Code);
             ViewData["ApplicationId"] = application.Id;
+            ViewData["Application"] = application.Code;
 
             return View();
         }

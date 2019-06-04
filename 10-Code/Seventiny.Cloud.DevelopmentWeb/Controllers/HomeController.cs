@@ -5,7 +5,7 @@ using System.Diagnostics;
 
 namespace Seventiny.Cloud.DevelopmentWeb.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : ControllerBase
     {
         public HomeController() { }
 
@@ -14,8 +14,9 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             return Redirect("/Application/Select");
         }
 
-        public IActionResult Welcome()
+        public IActionResult Welcome(int applicationId, string applicationCode)
         {
+            SetApplictionSession(applicationId, applicationCode);
             return View();
         }
 

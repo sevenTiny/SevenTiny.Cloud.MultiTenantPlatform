@@ -2,6 +2,8 @@
 @{
     ViewData["Title"] = "Setting";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    string applicationCode = Convert.ToString(ViewData["Application"]);
+    int applicationId = Convert.ToInt32(ViewData["ApplicationId"]);
 }
 
 <!--_menu 作为公共模版分离出去-->
@@ -116,7 +118,7 @@
 <section class="Hui-article-box">
     <div class="show_iframe">
         <div style="display:none" class="loading"></div>
-        <iframe id="main_iframe" scrolling="yes" frameborder="0" src="/Home/Welcome"></iframe>
+        <iframe id="main_iframe" scrolling="yes" frameborder="0" src="/Home/Welcome?applicationId=@applicationId&applicationCode=@applicationCode"></iframe>
     </div>
 </section>
 
