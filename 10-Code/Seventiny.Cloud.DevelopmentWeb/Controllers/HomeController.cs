@@ -14,9 +14,8 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             return Redirect("/Application/Select");
         }
 
-        public IActionResult Welcome(int applicationId, string applicationCode)
+        public IActionResult Welcome()
         {
-            SetApplictionSession(applicationId, applicationCode);
             return View();
         }
 

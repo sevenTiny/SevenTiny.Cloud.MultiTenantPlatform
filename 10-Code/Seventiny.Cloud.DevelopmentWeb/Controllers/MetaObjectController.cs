@@ -17,24 +17,14 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             metaObjectService = _metaObjectService;
         }
 
-        public IActionResult Setting(int applicationId, string applicationCode)
+        public IActionResult Setting()
         {
-            if (applicationId == 0 || string.IsNullOrEmpty(applicationCode))
-                return Redirect("/Application/Select");
-
-            ViewData["MetaObjects"] = metaObjectService.GetMetaObjectsUnDeletedByApplicationId(applicationId);
-
-            ViewData["Application"] = applicationCode;
-            ViewData["ApplicationId"] = applicationId;
+            ViewData["MetaObjects"] = metaObjectService.GetMetaObjectsUnDeletedByApplicationId(CurrentApplicationId);
             return View();
         }
 
-        public IActionResult List(int applicationId, string applicationCode)
+        public IActionResult List()
         {
-            if (applicationId == 0 || string.IsNullOrEmpty(applicationCode))
-                return Redirect("/Application/Select");
-
-            SetApplictionSession(applicationId, applicationCode);
             return View(metaObjectService.GetMetaObjectsUnDeletedByApplicationId(CurrentApplicationId));
         }
 
