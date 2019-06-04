@@ -12,7 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
-using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
+using SevenTiny.Cloud.Infrastructure.ValueObject;
 
 namespace Seventiny.Cloud.DataApi.Controllers
 {

@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 
-namespace SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.DependencyInjection
+namespace SevenTiny.Cloud.Infrastructure.DependencyInjection
 {
     public static class InjectHelper
     {

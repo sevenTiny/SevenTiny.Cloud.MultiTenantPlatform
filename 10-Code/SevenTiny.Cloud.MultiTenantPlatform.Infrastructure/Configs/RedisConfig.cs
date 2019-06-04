@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Configs
+namespace SevenTiny.Cloud.Infrastructure.Configs
 {
     [ConfigName("Redis")]
     public class RedisConfig : MySqlRowConfigBase<RedisConfig>

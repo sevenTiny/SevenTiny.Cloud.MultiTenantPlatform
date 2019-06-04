@@ -1,6 +1,6 @@
 ﻿using SevenTiny.Bantina.Configuration;
 
-namespace SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Configs
+namespace SevenTiny.Cloud.Infrastructure.Configs
 {
     [ConfigName("ConnectionStrings")]
     public class ConnectionStringsConfig : MySqlColumnConfigBase<ConnectionStringsConfig>

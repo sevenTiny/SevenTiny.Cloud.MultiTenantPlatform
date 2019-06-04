@@ -1,4 +1,4 @@
-﻿namespace SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject
+﻿namespace SevenTiny.Cloud.Infrastructure.ValueObject
 {
     /// <summary>
     /// 排序字段

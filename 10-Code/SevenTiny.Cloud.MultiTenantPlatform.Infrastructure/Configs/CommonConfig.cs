@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Configs
+namespace SevenTiny.Cloud.Infrastructure.Configs
 {
     [ConfigName("Common")]
     public class CommonConfig : MySqlColumnConfigBase<CommonConfig>

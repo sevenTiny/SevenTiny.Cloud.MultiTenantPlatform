@@ -2,8 +2,8 @@
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
-using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
-using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Caching;
+using SevenTiny.Cloud.Infrastructure.ValueObject;
+using SevenTiny.Cloud.Infrastructure.Caching;
 using System;
 using System.Collections.Generic;
 using SevenTiny.Bantina;
@@ -178,7 +178,7 @@ using System.Linq;
 using System.Text;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using logger = SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging.Logger;
+using logger = SevenTiny.Cloud.Infrastructure.Logging.Logger;
 using SevenTiny.Cloud.MultiTenantPlatform.UIModel.DataAccess;";
         /// <summary>
         /// 所有脚本类内方法外内置的通用代码段，个性化请写在各自脚本中

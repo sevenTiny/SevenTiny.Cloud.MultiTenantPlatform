@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Const
+namespace SevenTiny.Cloud.Infrastructure.Const
 {
     public class CommonConst
     {

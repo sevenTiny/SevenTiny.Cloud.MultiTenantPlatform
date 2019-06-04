@@ -4,7 +4,7 @@ using SevenTiny.Bantina.Redis;
 using StackExchange.Redis;
 using System;
 
-namespace SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Caching
+namespace SevenTiny.Cloud.Infrastructure.Caching
 {
     /// <summary>
     /// 触发器脚本专用缓存

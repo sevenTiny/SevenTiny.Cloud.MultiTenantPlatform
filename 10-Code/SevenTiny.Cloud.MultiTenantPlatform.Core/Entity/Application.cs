@@ -1,5 +1,5 @@
 ﻿using SevenTiny.Bantina.Bankinate.Attributes;
-using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Const;
+using SevenTiny.Cloud.Infrastructure.Const;
 using System;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Entity

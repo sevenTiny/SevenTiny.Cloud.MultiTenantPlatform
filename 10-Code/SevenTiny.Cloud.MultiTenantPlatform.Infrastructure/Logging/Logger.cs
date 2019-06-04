@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Logging
+namespace SevenTiny.Cloud.Infrastructure.Logging
 {
     public static class Logger
     {

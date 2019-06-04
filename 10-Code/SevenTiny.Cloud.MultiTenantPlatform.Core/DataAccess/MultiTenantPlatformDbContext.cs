@@ -1,6 +1,6 @@
 ﻿using SevenTiny.Bantina.Bankinate;
 using SevenTiny.Bantina.Bankinate.Attributes;
-using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Configs;
+using SevenTiny.Cloud.Infrastructure.Configs;
 using System;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.DataAccess
