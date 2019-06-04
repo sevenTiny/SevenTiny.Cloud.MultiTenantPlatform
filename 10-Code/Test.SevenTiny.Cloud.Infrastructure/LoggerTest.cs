@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-namespace Test.SevenTiny.Cloud.MultiTenantPlatform.UnitTest.Infrastructure
+namespace Test.SevenTiny.Cloud.Infrastructure
 {
     public class LoggerTest
     {
