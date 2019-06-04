@@ -23,6 +23,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Seventiny.Cloud.DataApi", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Seventiny.Cloud.SettingWeb", "..\10-Code\Seventiny.Cloud.SettingWeb\Seventiny.Cloud.SettingWeb.csproj", "{6CFF8306-D915-4278-A974-DED4F7A0C101}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenTiny.Cloud.Account.Core", "..\10-Code\SevenTiny.Cloud.Account.Core\SevenTiny.Cloud.Account.Core.csproj", "{671B42A7-8E7D-4614-A7AA-E2E9F4DEFCC2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenTiny.Cloud.Account", "..\10-Code\SevenTiny.Cloud.Account\SevenTiny.Cloud.Account.csproj", "{A4D8A839-555A-4112-9D5F-7D630AC7C200}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +65,14 @@ Global
 		{6CFF8306-D915-4278-A974-DED4F7A0C101}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6CFF8306-D915-4278-A974-DED4F7A0C101}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6CFF8306-D915-4278-A974-DED4F7A0C101}.Release|Any CPU.Build.0 = Release|Any CPU
+		{671B42A7-8E7D-4614-A7AA-E2E9F4DEFCC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{671B42A7-8E7D-4614-A7AA-E2E9F4DEFCC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{671B42A7-8E7D-4614-A7AA-E2E9F4DEFCC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{671B42A7-8E7D-4614-A7AA-E2E9F4DEFCC2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4D8A839-555A-4112-9D5F-7D630AC7C200}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4D8A839-555A-4112-9D5F-7D630AC7C200}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4D8A839-555A-4112-9D5F-7D630AC7C200}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4D8A839-555A-4112-9D5F-7D630AC7C200}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -71,6 +83,7 @@ Global
 		{D0688BB0-4659-42AC-A587-75A7AC584D31} = {C2B695A9-F5A6-4B33-A156-1EE934683EC7}
 		{AB11F9F1-12B3-454B-84C4-FF881E06B963} = {C2B695A9-F5A6-4B33-A156-1EE934683EC7}
 		{6CFF8306-D915-4278-A974-DED4F7A0C101} = {C2B695A9-F5A6-4B33-A156-1EE934683EC7}
+		{A4D8A839-555A-4112-9D5F-7D630AC7C200} = {C2B695A9-F5A6-4B33-A156-1EE934683EC7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9275BAE2-A702-407D-B637-BDFE92758D51}
