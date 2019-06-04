@@ -55,7 +55,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                     entity.SearchConditionName = searchConditionService.GetById(entity.SearchConditionId)?.Name;
                     break;
                 case InterfaceType.JsonDataSource:
-                case InterfaceType.TriggerScriptDataSource:
+                case InterfaceType.ExecutableScriptDataSource:
                     entity.DataSourceName = _dataSourceService.GetById(entity.DataSourceId)?.Name;
                     break;
                 default:
