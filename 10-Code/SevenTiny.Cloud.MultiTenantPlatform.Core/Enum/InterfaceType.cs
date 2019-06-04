@@ -38,9 +38,9 @@
         /// </summary>
         JsonDataSource = 8,
         /// <summary>
-        /// 触发器脚本数据源
+        /// 可执行脚本数据源
         /// </summary>
-        TriggerScriptDataSource = 9
+        ExecutableScriptDataSource = 9
     }
     public static class InterfaceTypeTranslator
     {
@@ -64,8 +64,8 @@
                     return "数据量";
                 case InterfaceType.JsonDataSource:
                     return "Json数据源";
-                case InterfaceType.TriggerScriptDataSource:
-                    return "触发器数据源";
+                case InterfaceType.ExecutableScriptDataSource:
+                    return "可执行脚本数据源";
                 default:
                     return string.Empty;
             }
