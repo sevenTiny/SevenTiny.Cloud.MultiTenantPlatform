@@ -11,7 +11,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Filters
         public override void OnResultExecuting(ResultExecutingContext context)
         {
             base.OnResultExecuting(context);
-            context.HttpContext.Response.Headers.Add("P3P", "CP=\"NOI CURa ADMa DEVa TAIa OUR BUS IND UNI COM NAV INT\"");
+            //context.HttpContext.Response.Headers.Add("P3P", "CP=\"NOI CURa ADMa DEVa TAIa OUR BUS IND UNI COM NAV INT\"");
         }
     }
 }
