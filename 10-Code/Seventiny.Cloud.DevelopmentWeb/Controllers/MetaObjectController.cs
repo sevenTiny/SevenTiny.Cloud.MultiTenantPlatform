@@ -17,25 +17,14 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             metaObjectService = _metaObjectService;
         }
 
-        public IActionResult Setting(int applicationId, string applicationCode)
+        public IActionResult Setting()
         {
-            if (applicationId == 0 || string.IsNullOrEmpty(applicationCode))
-                return Redirect("/Application/Select");
-
-            ViewData["MetaObjects"] = metaObjectService.GetMetaObjectsUnDeletedByApplicationId(applicationId);
-
-            ViewData["Application"] = applicationCode;
-            ViewData["ApplicationId"] = applicationId;
+            ViewData["MetaObjects"] = metaObjectService.GetMetaObjectsUnDeletedByApplicationId(CurrentApplicationId);
             return View();
         }
 
-        public IActionResult List(int applicationId, string applicationCode)
+        public IActionResult List()
         {
-            if (applicationId == 0 || string.IsNullOrEmpty(applicationCode))
-                return Redirect("/Application/Select");
-
-            HttpContext.Session.SetInt32("ApplicationId", applicationId);
-            HttpContext.Session.SetString("ApplicationCode", applicationCode);
             return View(metaObjectService.GetMetaObjectsUnDeletedByApplicationId(CurrentApplicationId));
         }
 
@@ -131,9 +120,8 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
 
         public IActionResult Switch(int id)
         {
-            HttpContext.Session.SetInt32("MetaObjectId", id);
             var obj = metaObjectService.GetById(id);
-            HttpContext.Session.SetString("MetaObjectCode", obj.Code);
+            SetMetaObjectSession(id, obj.Code);
 
             //这里换成当前MetaObject的MetaFields列表
             return Redirect("/MetaField/List");

@@ -3,7 +3,6 @@
     ViewData["Title"] = "Detail";
     Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
     string applicationCode = Convert.ToString(ViewData["Application"]);
-    int applicationId = Convert.ToInt32(ViewData["ApplicationId"]);
 }
 
 <!--_header 作为公共模版分离出去-->
@@ -50,7 +49,7 @@
 <section class="Hui-article-box" style="top:0;left:0">
     <div class="show_iframe" tyle="margin-bottom:50px;">
         <div style="display:none" class="loading"></div>
-        <iframe id="application_detail_iframe" scrolling="no" frameborder="0" src="/MetaObject/Setting?applicationId=@applicationId&applicationCode=@applicationCode"></iframe>
+        <iframe id="application_detail_iframe" scrolling="no" frameborder="0" src="/MetaObject/Setting"></iframe>
     </div>
 </section>
 

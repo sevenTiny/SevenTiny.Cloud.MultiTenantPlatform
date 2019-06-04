@@ -124,10 +124,8 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
 
             var application = applicationService.GetByCode(app);
 
-            //HttpContext.Session.SetInt32("ApplicationId", application.Id);
-            //HttpContext.Session.SetString("ApplicationCode", application.Code);
+            SetApplictionSession(application.Id, application.Code);
             ViewData["Application"] = application.Code;
-            ViewData["ApplicationId"] = application.Id;
 
             return View();
         }

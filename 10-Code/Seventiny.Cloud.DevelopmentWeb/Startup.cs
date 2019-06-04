@@ -29,7 +29,8 @@ namespace Seventiny.Cloud.DevelopmentWeb
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
+                //GDPR规定了cookie的操作方式，并且在用户同意使用cookie之前不会使用。
+                options.CheckConsentNeeded = context => false;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
@@ -46,6 +47,7 @@ namespace Seventiny.Cloud.DevelopmentWeb
             services.AddMvc(options =>
             {
                 options.Filters.Add<HttpGlobalExceptionFilter>();
+                options.Filters.Add<ActionExecuteFilter>();
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

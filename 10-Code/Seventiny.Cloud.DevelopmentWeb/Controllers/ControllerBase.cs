@@ -9,6 +9,18 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
     /// </summary>
     public class ControllerBase : Controller
     {
+        protected void SetApplictionSession(int applicationId, string applicationCode)
+        {
+            HttpContext.Session.SetInt32("ApplicationId", applicationId);
+            HttpContext.Session.SetString("ApplicationCode", applicationCode);
+        }
+
+        protected void SetMetaObjectSession(int metaObjectId, string metaObjectCode)
+        {
+            HttpContext.Session.SetInt32("MetaObjectId", metaObjectId);
+            HttpContext.Session.SetString("MetaObjectCode", metaObjectCode);
+        }
+
         /// <summary>
         /// 当前应用Id
         /// </summary>
