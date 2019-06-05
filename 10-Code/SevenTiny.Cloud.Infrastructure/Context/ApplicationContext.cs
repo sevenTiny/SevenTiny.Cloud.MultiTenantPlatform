@@ -5,7 +5,7 @@ namespace SevenTiny.Cloud.Infrastructure.Context
     /// <summary>
     /// 请求管道中用于传递租户用户信息的上下文
     /// </summary>
-    public class AppContext
+    public class ApplicationContext
     {
         public int TenantId { get; set; }
         public string ApplicationCode { get; set; }
