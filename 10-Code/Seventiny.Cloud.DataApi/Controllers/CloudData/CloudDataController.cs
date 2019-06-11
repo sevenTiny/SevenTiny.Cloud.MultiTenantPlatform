@@ -21,7 +21,7 @@ namespace Seventiny.Cloud.DataApi.Controllers
     [EnableCors("AllowSameDomain")]
     [Route("api/CloudData")]
     [ApiController]
-    public class CloudDataController : ControllerBase
+    public class CloudDataController : ApiControllerBase
     {
         public CloudDataController(
             IDataAccessService _dataAccessService,
@@ -91,6 +91,9 @@ namespace Seventiny.Cloud.DataApi.Controllers
             queryContext.DataSourceId = interfaceAggregation.DataSourceId;
             queryContext.InterfaceType = (InterfaceType)interfaceAggregation.InterfaceType;
 
+            //设置ApplicationCode到Session
+            SetApplictionCodeToSession(queryContext.ApplicationCode);
+
             return queryContext;
         }
 
@@ -124,29 +127,29 @@ namespace Seventiny.Cloud.DataApi.Controllers
                     case InterfaceType.SingleObject:
                         //缓存某个服务下的全部触发器脚本，包括before和after
                         queryContext.TriggerScriptsOfOneServiceType = _triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(queryContext.MetaObjectId, (int)ServiceType.Interface_SingleObject);
-                        filter = _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_SingleObject_Before, filter, queryContext.InterfaceCode, filter);
+                        filter = _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_SingleObject_Before, filter, CurrentApplicationContext, queryContext.InterfaceCode, filter);
                         var singleObjectComponent = dataAccessService.GetSingleObjectComponent(queryContext, filter);
-                        singleObjectComponent = _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_SingleObject_After, singleObjectComponent, queryContext.InterfaceCode, singleObjectComponent);
+                        singleObjectComponent = _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_SingleObject_After, singleObjectComponent, CurrentApplicationContext, queryContext.InterfaceCode, singleObjectComponent);
                         return JsonResultModel.Success("get single data success", singleObjectComponent);
                     case InterfaceType.TableList:
                         //缓存某个服务下的全部触发器脚本，包括before和after
                         queryContext.TriggerScriptsOfOneServiceType = _triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(queryContext.MetaObjectId, (int)ServiceType.Interface_TableList);
-                        filter = _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_TableList_Before, filter, queryContext.InterfaceCode, filter);
+                        filter = _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_TableList_Before, filter, CurrentApplicationContext, queryContext.InterfaceCode, filter);
                         var sort = metaFieldService.GetSortDefinitionBySortFields(queryContext, new[] { new SortField { Column = "ModifyTime", IsDesc = true } });
                         var tableListComponent = dataAccessService.GetTableListComponent(queryContext, filter, queryArgs._pageIndex, queryArgs._pageSize, sort, out int totalCount);
-                        tableListComponent = _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_TableList_After, tableListComponent, queryContext.InterfaceCode, tableListComponent);
+                        tableListComponent = _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_TableList_After, tableListComponent, CurrentApplicationContext, queryContext.InterfaceCode, tableListComponent);
                         return JsonResultModel.Success("get data list success", tableListComponent);
                     case InterfaceType.Count:
                         //缓存某个服务下的全部触发器脚本，包括before和after
                         queryContext.TriggerScriptsOfOneServiceType = _triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(queryContext.MetaObjectId, (int)ServiceType.Interface_Count);
-                        filter = _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_Count_Before, filter, queryContext.InterfaceCode, filter);
+                        filter = _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_Count_Before, filter, CurrentApplicationContext, queryContext.InterfaceCode, filter);
                         var count = dataAccessService.GetCount(queryContext.MetaObjectId, filter);
-                        count = _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_Count_After, count, queryContext.InterfaceCode, filter, count);
+                        count = _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_Count_After, count, CurrentApplicationContext, queryContext.InterfaceCode, filter, count);
                         return JsonResultModel.Success("get data count success", count);
                     case InterfaceType.JsonDataSource:
                         return new JsonResult(Newtonsoft.Json.JsonConvert.DeserializeObject(_dataSourceService.GetById(queryContext.DataSourceId).Script));
                     case InterfaceType.ExecutableScriptDataSource:
-                        object triggerScriptDataSourceResult = _triggerScriptService.RunDataSourceScript(queryContext, queryContext.ArgumentsDic);
+                        object triggerScriptDataSourceResult = _triggerScriptService.RunDataSourceScript(queryContext, CurrentApplicationContext, queryContext.ArgumentsDic);
                         return JsonResultModel.Success("get trigger script result success", triggerScriptDataSourceResult);
                     default:
                         break;
@@ -192,7 +195,7 @@ namespace Seventiny.Cloud.DataApi.Controllers
                 queryContext.TriggerScriptsOfOneServiceType = _triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(queryContext.MetaObjectId, (int)ServiceType.Interface_Add);
 
                 //trigger before
-                bson = _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_Add_Before, bson, queryContext.InterfaceCode, bson);
+                bson = _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_Add_Before, bson, CurrentApplicationContext, queryContext.InterfaceCode, bson);
 
                 //check data by form
                 if (queryContext.FormId != default(int))
@@ -206,7 +209,7 @@ namespace Seventiny.Cloud.DataApi.Controllers
                 var addResult = dataAccessService.Add(queryContext.MetaObject, bson);
 
                 //trigger after
-                _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_Add_After, bson, queryContext.InterfaceCode, bson);
+                _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_Add_After, bson, CurrentApplicationContext, queryContext.InterfaceCode, bson);
 
                 return addResult.ToJsonResultModel();
             }
@@ -247,7 +250,7 @@ namespace Seventiny.Cloud.DataApi.Controllers
                 FilterDefinition<BsonDocument> filter = conditionAggregationService.AnalysisConditionToFilterDefinitionByConditionId(queryContext, queryContext.ArgumentsDic);
 
                 //trigger before
-                bson = _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_Update_Before, bson, queryContext.InterfaceCode, bson, filter);
+                bson = _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_Update_Before, bson, CurrentApplicationContext, queryContext.InterfaceCode, bson, filter);
 
                 //check data by form
                 if (queryContext.FormId != default(int))
@@ -261,7 +264,7 @@ namespace Seventiny.Cloud.DataApi.Controllers
                 dataAccessService.Update(queryContext.MetaObjectId, filter, bson);
 
                 //trigger after
-                _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_Update_After, bson, queryContext.InterfaceCode, bson);
+                _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_Update_After, bson, CurrentApplicationContext, queryContext.InterfaceCode, bson);
 
                 return JsonResultModel.Success("success");
             }
@@ -294,7 +297,7 @@ namespace Seventiny.Cloud.DataApi.Controllers
                 FilterDefinition<BsonDocument> filter = conditionAggregationService.AnalysisConditionToFilterDefinitionByConditionId(queryContext, queryContext.ArgumentsDic);
 
                 //trigger before
-                filter = _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_Delete_Before, filter, queryContext.InterfaceCode, filter);
+                filter = _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_Delete_Before, filter, CurrentApplicationContext, queryContext.InterfaceCode, filter);
 
                 //queryResult       
                 var queryDatas = dataAccessService.GetList(queryContext.MetaObjectId, filter, null);
@@ -303,7 +306,7 @@ namespace Seventiny.Cloud.DataApi.Controllers
                 dataAccessService.Delete(queryContext.MetaObjectId, filter);
 
                 //trigger after
-                _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_Delete_After, filter, queryContext.InterfaceCode, queryDatas);
+                _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_Delete_After, filter, CurrentApplicationContext, queryContext.InterfaceCode, queryDatas);
 
                 return JsonResultModel.Success("success");
             }

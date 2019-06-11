@@ -17,7 +17,7 @@ namespace Seventiny.Cloud.DataApi.Controllers
     [EnableCors("AllowSameDomain")]
     [Route("api/BatchCloudData")]
     [ApiController]
-    public class BatchCloudDataController : ControllerBase
+    public class BatchCloudDataController : ApiControllerBase
     {
         public BatchCloudDataController(
             IDataAccessService _dataAccessService,
@@ -84,6 +84,9 @@ namespace Seventiny.Cloud.DataApi.Controllers
             queryContext.DataSourceId = interfaceAggregation.DataSourceId;
             queryContext.InterfaceType = (InterfaceType)interfaceAggregation.InterfaceType;
 
+            //设置ApplicationCode到Session
+            SetApplictionCodeToSession(queryContext.ApplicationCode);
+
             return queryContext;
         }
 
@@ -124,7 +127,7 @@ namespace Seventiny.Cloud.DataApi.Controllers
                 queryContext.TriggerScriptsOfOneServiceType = _triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(queryContext.MetaObjectId, (int)ServiceType.Interface_BatchAdd);
 
                 //trigger before
-                documents = _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_BatchAdd_Before, documents, queryContext.InterfaceCode, documents);
+                documents = _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_BatchAdd_Before, documents, CurrentApplicationContext, queryContext.InterfaceCode, documents);
 
                 //check data by form
                 if (queryContext.FormId != default(int))
@@ -138,7 +141,7 @@ namespace Seventiny.Cloud.DataApi.Controllers
                 var addResult = dataAccessService.BatchAdd(queryContext.MetaObject, documents);
 
                 //trigger after
-                _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_BatchAdd_After, documents, queryContext.InterfaceCode, documents);
+                _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_BatchAdd_After, documents, CurrentApplicationContext, queryContext.InterfaceCode, documents);
 
                 return addResult.ToJsonResultModel();
             }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SevenTiny.Cloud.Infrastructure.Context;
 using System;
 
 namespace Seventiny.Cloud.DevelopmentWeb.Controllers
@@ -74,6 +75,28 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             get
             {
                 return HttpContext.Session.GetString("MetaObjectCode") ?? throw new ArgumentNullException("MetaObjectCode is null,please select MetaObject first!"); ;
+            }
+        }
+        
+        /// <summary>
+        /// 请求上下文信息
+        /// </summary>
+        private ApplicationContext _applicationContext;
+        protected ApplicationContext CurrentApplicationContext
+        {
+            get
+            {
+                if (_applicationContext == null)
+                {
+                    _applicationContext = new ApplicationContext
+                    {
+                        ApplicationCode = CurrentApplicationCode,
+                        TenantId = HttpContext.Session.GetInt32("TenantId").Value,
+                        UserId = HttpContext.Session.GetInt32("UserId").Value,
+                        UserEmail = HttpContext.Session.GetString("UserEmail")
+                    };
+                }
+                return _applicationContext;
             }
         }
     }
