@@ -12,7 +12,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Filters
         public override void OnResultExecuting(ResultExecutingContext context)
         {
             //这个是模拟
-            //context.HttpContext.Session.SetString();
+            context.HttpContext.Items["xxx"] = "xxx";
             base.OnResultExecuting(context);
             //context.HttpContext.Response.Headers.Add("P3P", "CP=\"NOI CURa ADMa DEVa TAIa OUR BUS IND UNI COM NAV INT\"");
         }

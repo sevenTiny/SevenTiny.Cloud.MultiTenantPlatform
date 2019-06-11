@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Seventiny.Cloud.DataApi.Models;
 using SevenTiny.Cloud.Infrastructure.Context;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,13 +10,14 @@ namespace Seventiny.Cloud.DataApi.Controllers
 {
     public abstract class ApiControllerBase : ControllerBase
     {
+        private string _applicationCode;
         /// <summary>
         /// 设置Session中ApplicationCode
         /// </summary>
         /// <param name="applicationCode"></param>
         protected void SetApplictionCodeToSession(string applicationCode)
         {
-            HttpContext.Session.SetString("ApplicationCode", applicationCode);
+            _applicationCode = applicationCode;
         }
 
         /// <summary>
@@ -28,12 +27,10 @@ namespace Seventiny.Cloud.DataApi.Controllers
         {
             get
             {
-                var applicationCode = HttpContext.Session.GetString("ApplicationCode");
-
-                if (string.IsNullOrEmpty(applicationCode))
+                if (string.IsNullOrEmpty(_applicationCode))
                     throw new ArgumentNullException("ApplicationCode is null");
 
-                return applicationCode;
+                return _applicationCode;
             }
         }
         /// <summary>
@@ -49,10 +46,20 @@ namespace Seventiny.Cloud.DataApi.Controllers
                     _applicationContext = new ApplicationContext
                     {
                         ApplicationCode = CurrentApplicationCode,
-                        TenantId = HttpContext.Session.GetInt32("TenantId").Value,
-                        UserId = HttpContext.Session.GetInt32("UserId").Value,
-                        UserEmail = HttpContext.Session.GetString("UserEmail")
+                        TenantId = Convert.ToInt32(HttpContext.Items["TenantId"]),
+                        UserId = Convert.ToInt32(HttpContext.Items["UserId"]),
+                        UserEmail = Convert.ToString(HttpContext.Items["UserEmail"])
                     };
+
+                    //check
+                    if (_applicationContext.TenantId <= 0)
+                    {
+                        throw new ArgumentNullException("TenantId", "TenantId incorrect! It could be the result of an identity failure");
+                    }
+                    if (_applicationContext.UserId <= 0)
+                    {
+                        throw new ArgumentNullException("UserId", "UserId incorrect! It could be the result of an identity failure");
+                    }
                 }
                 return _applicationContext;
             }
