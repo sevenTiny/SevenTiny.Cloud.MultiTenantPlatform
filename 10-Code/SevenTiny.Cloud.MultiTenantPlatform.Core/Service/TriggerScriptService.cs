@@ -179,6 +179,7 @@ using System.Text;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using SevenTiny.Bantina.Logging;
+using SevenTiny.Cloud.Infrastructure.Context;
 using SevenTiny.Cloud.MultiTenantPlatform.UIModel.DataAccess;";
         /// <summary>
         /// 所有脚本类内方法外内置的通用代码段，个性化请写在各自脚本中
@@ -187,9 +188,9 @@ using SevenTiny.Cloud.MultiTenantPlatform.UIModel.DataAccess;";
 => @"//EndUsing
 //注释：上面的 EndUsing 注释为using分隔符，请不要删除；
 //注释：输出日志请使用 logger.Error(),logger.Debug(),logger.Info()...；
-static ILog logger = new LogManager();
+ILog logger = new LogManager();
 //注释：查询数据请使用下面的db；
-var db = new MultiTenantDataDbContext();";
+MultiTenantDataDbContext db = new MultiTenantDataDbContext();";
         /// <summary>
         /// 所有脚本方法内默认内置的通用代码段，个性化请写在各自脚本中
         /// </summary>
