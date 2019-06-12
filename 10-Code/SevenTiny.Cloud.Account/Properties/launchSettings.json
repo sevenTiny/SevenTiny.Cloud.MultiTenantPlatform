@@ -11,6 +11,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
+      "launchUrl": "api/values",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -18,7 +19,8 @@
     "SevenTiny.Cloud.Account": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "http://localhost:5000",
+      "launchUrl": "api/values",
+      "applicationUrl": "http://localhost:39041",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
