@@ -1,6 +1,8 @@
-﻿using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
+﻿using SevenTiny.Bantina;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.DataAccess;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
-using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
+using System;
 using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Repository
@@ -14,13 +16,21 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Repository
 
         MultiTenantPlatformDbContext dbContext;
 
-        public Result Delete(int id)
+        public new Result<TEntity> Update(TEntity entity)
         {
-            dbContext.Delete<TEntity>(t => t.Id.Equals(id));
-            return Result.Success();
+            entity.ModifyTime = DateTime.Now;
+
+            base.Update(entity);
+            return Result<TEntity>.Success();
         }
 
-        public Result LogicDelete(int id)
+        public Result<TEntity> Delete(int id)
+        {
+            dbContext.Delete<TEntity>(t => t.Id.Equals(id));
+            return Result<TEntity>.Success();
+        }
+
+        public Result<TEntity> LogicDelete(int id)
         {
             var entity = GetById(id);
             if (entity != null)
@@ -28,10 +38,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Repository
                 entity.IsDeleted = (int)IsDeleted.Deleted;
                 dbContext.Update(entity);
             }
-            return Result.Success();
+            return Result<TEntity>.Success();
         }
 
-        public Result Recover(int id)
+        public Result<TEntity> Recover(int id)
         {
             var entity = GetById(id);
             if (entity != null)
@@ -39,19 +49,19 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Repository
                 entity.IsDeleted = (int)IsDeleted.UnDeleted;
                 dbContext.Update(entity);
             }
-            return Result.Success();
+            return Result<TEntity>.Success();
         }
 
         public TEntity GetById(int id)
-            => dbContext.QueryOne<TEntity>(t => t.Id.Equals(id));
+            => dbContext.Queryable<TEntity>().Where(t => t.Id.Equals(id)).ToOne();
 
         public TEntity GetByCode(string code)
-            => dbContext.QueryOne<TEntity>(t => t.Code.Equals(code));
+            => dbContext.Queryable<TEntity>().Where(t => t.Code.Equals(code)).ToOne();
 
         public List<TEntity> GetEntitiesDeleted()
-            => dbContext.QueryList<TEntity>(t => t.IsDeleted == (int)IsDeleted.Deleted);
+            => dbContext.Queryable<TEntity>().Where(t => t.IsDeleted == (int)IsDeleted.Deleted).ToList();
 
         public List<TEntity> GetEntitiesUnDeleted()
-            => dbContext.QueryList<TEntity>(t => t.IsDeleted == (int)IsDeleted.UnDeleted);
+            => dbContext.Queryable<TEntity>().Where(t => t.IsDeleted == (int)IsDeleted.UnDeleted).ToList();
     }
 }

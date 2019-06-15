@@ -10,6 +10,18 @@
     }
     public static class TrueFalseTranslator
     {
+        public static string ToLabel(int trueFalse)
+        {
+            switch (trueFalse)
+            {
+                case (int)TrueFalse.False:
+                    return "否";
+                case (int)TrueFalse.True:
+                    return "是";
+                default:
+                    return "UnKnown";
+            }
+        }
         public static bool ToBoolean(int trueFale)
         {
             switch (trueFale)

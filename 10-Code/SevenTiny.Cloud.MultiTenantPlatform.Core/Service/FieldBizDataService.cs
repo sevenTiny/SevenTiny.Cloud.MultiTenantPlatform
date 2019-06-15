@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.UIMetaData;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
+using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,20 +9,20 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 {
     public class FieldBizDataService : IFieldBizDataService
     {
-        readonly IFieldListAggregationService fieldAggregationService;
+        readonly IFieldListMetaFieldService fieldAggregationService;
         public FieldBizDataService(
-            IFieldListAggregationService _fieldAggregationService
+            IFieldListMetaFieldService _fieldAggregationService
             )
         {
             fieldAggregationService = _fieldAggregationService;
         }
 
-        public Dictionary<string, FieldBizData> ToBizDataDictionary(int InterfaceFieldId, BsonDocument bsonElement)
+        public Dictionary<string, FieldBizData> ToBizDataDictionary(QueryPiplineContext queryPiplineContext, BsonDocument bsonElement)
         {
             if (bsonElement != null && bsonElement.Any())
             {
                 //接口配置的字段字典
-                var interfaceMetaFieldsDic = fieldAggregationService.GetMetaFieldsDicByFieldListId(InterfaceFieldId);
+                var interfaceMetaFieldsDic = queryPiplineContext.MetaFieldsCodeDicByFieldListId;
                 Dictionary<string, FieldBizData> keyValuePairs = new Dictionary<string, FieldBizData>();
                 foreach (var field in interfaceMetaFieldsDic)
                 {
@@ -41,10 +42,10 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             return null;
         }
 
-        public List<Dictionary<string, FieldBizData>> ToBizDataDictionaryList(int InterfaceFieldId, List<BsonDocument> bsonElements)
+        public List<Dictionary<string, FieldBizData>> ToBizDataDictionaryList(QueryPiplineContext queryPiplineContext, List<BsonDocument> bsonElements)
         {
             //接口配置的字段字典
-            var interfaceMetaFieldsDic = fieldAggregationService.GetMetaFieldsDicByFieldListId(InterfaceFieldId);
+            var interfaceMetaFieldsDic = queryPiplineContext.MetaFieldsCodeDicByFieldListId;
             List<Dictionary<string, FieldBizData>> resultList = new List<Dictionary<string, FieldBizData>>();
             if (bsonElements != null && bsonElements.Any())
             {

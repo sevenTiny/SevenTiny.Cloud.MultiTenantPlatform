@@ -1,9 +1,10 @@
 ﻿using SevenTiny.Bantina;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.DataAccess;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
-using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
+using SevenTiny.Cloud.Infrastructure.ValueObject;
 using System;
 using System.Collections.Generic;
 
@@ -17,7 +18,8 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             IFieldListService _fieldListService,
             IInterfaceAggregationService _interfaceAggregationService,
             ISearchConditionService _searchConditionService,
-            ITriggerScriptService _triggerScriptService
+            ITriggerScriptService _triggerScriptService,
+            IFormService formService
             ) : base(multiTenantPlatformDbContext)
         {
             dbContext = multiTenantPlatformDbContext;
@@ -26,6 +28,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             interfaceAggregationService = _interfaceAggregationService;
             searchConditionService = _searchConditionService;
             triggerScriptService = _triggerScriptService;
+            _formService = formService;
         }
 
         MultiTenantPlatformDbContext dbContext;
@@ -34,20 +37,21 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         IInterfaceAggregationService interfaceAggregationService;
         ISearchConditionService searchConditionService;
         ITriggerScriptService triggerScriptService;
+        IFormService _formService;
 
         public List<MetaObject> GetMetaObjectsUnDeletedByApplicationId(int applicationId)
-            => dbContext.QueryList<MetaObject>(t => t.ApplicationId == applicationId && t.IsDeleted == (int)IsDeleted.UnDeleted);
+            => dbContext.Queryable<MetaObject>().Where(t => t.ApplicationId == applicationId && t.IsDeleted == (int)IsDeleted.UnDeleted).ToList();
 
         public List<MetaObject> GetMetaObjectsDeletedByApplicationId(int applicationId)
-            => dbContext.QueryList<MetaObject>(t => t.ApplicationId == applicationId && t.IsDeleted == (int)IsDeleted.Deleted);
+            => dbContext.Queryable<MetaObject>().Where(t => t.ApplicationId == applicationId && t.IsDeleted == (int)IsDeleted.Deleted).ToList();
 
         public MetaObject GetMetaObjectByCodeOrNameWithApplicationId(int applicationId, string code, string name)
-            => dbContext.QueryOne<MetaObject>(t => (t.ApplicationId == applicationId && t.Name.Equals(name)) || (t.ApplicationId == applicationId && t.Code.Equals(code)));
+            => dbContext.Queryable<MetaObject>().Where(t => (t.ApplicationId == applicationId && t.Name.Equals(name)) || (t.ApplicationId == applicationId && t.Code.Equals(code))).ToOne();
 
         public MetaObject GetMetaObjectByCodeAndApplicationId(int applicationId, string code)
-            => dbContext.QueryOne<MetaObject>(t => t.ApplicationId == applicationId && t.Code.Equals(code));
+            => dbContext.Queryable<MetaObject>().Where(t => t.ApplicationId == applicationId && t.Code.Equals(code)).ToOne();
 
-        public new Result Update(MetaObject metaObject)
+        public new Result<MetaObject> Update(MetaObject metaObject)
         {
             MetaObject app = GetById(metaObject.Id);
             if (app != null)
@@ -60,13 +64,13 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                 app.ModifyTime = DateTime.Now;
             }
             base.Update(app);
-            return Result.Success();
+            return Result<MetaObject>.Success();
         }
 
         public bool ExistSameNameWithOtherIdByApplicationId(int applicationId, int id, string name)
-            => dbContext.QueryExist<MetaObject>(t => t.ApplicationId != applicationId && t.Name.Equals(name) && t.Id != id);
+            => dbContext.Queryable<MetaObject>().Where(t => t.ApplicationId != applicationId && t.Name.Equals(name) && t.Id != id).Any();
 
-        public Result AddMetaObject(int applicationId, string applicationCode, MetaObject metaObject)
+        public Result<MetaObject> AddMetaObject(int applicationId, string applicationCode, MetaObject metaObject)
         {
             //check metaobject of name or code exist?
             MetaObject obj = GetMetaObjectByCodeOrNameWithApplicationId(applicationId, metaObject.Code, metaObject.Name);
@@ -74,16 +78,16 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             {
                 if (obj.Code.Equals(metaObject.Code))
                 {
-                    return Result.Error("MetaObject Code Has Been Exist！", metaObject);
+                    return Result<MetaObject>.Error("MetaObject Code Has Been Exist！", metaObject);
                 }
                 if (obj.Name.Equals(metaObject.Name))
                 {
-                    return Result.Error("MetaObject Name Has Been Exist！", metaObject);
+                    return Result<MetaObject>.Error("MetaObject Name Has Been Exist！", metaObject);
                 }
             }
             if (applicationId == default(int))
             {
-                return Result.Error("Application Id Can Not Be Null！", metaObject);
+                return Result<MetaObject>.Error("Application Id Can Not Be Null！", metaObject);
             }
 
             metaObject.ApplicationId = applicationId;
@@ -97,14 +101,14 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 
                 if (obj == null)
                 {
-                    return Result.Error("add metaobject then query faild！", metaObject);
+                    return Result<MetaObject>.Error("add metaobject then query faild！", metaObject);
                 }
 
                 //预置字段数据
                 //将公共字段统一处理，不每个对象预置
                 //metaFieldService.PresetFields(obj.Id);
 
-                return Result.Success();
+                return Result<MetaObject>.Success();
             });
         }
 
@@ -112,23 +116,28 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         /// 删除
         /// </summary>
         /// <param name="id"></param>
-        public new Result Delete(int id)
+        public new Result<MetaObject> Delete(int id)
         {
             var metaObject = GetById(id);
             TransactionHelper.Transaction(() =>
             {
                 //把相关字段一并删除
+                //删除字段
                 metaFieldService.DeleteByMetaObjectId(id);
-                metaFieldService.DeleteByMetaObjectId(id);
+                //删除列表
                 fieldListService.DeleteByMetaObjectId(id);//删除相关子对象
+                //删除接口
                 interfaceAggregationService.DeleteByMetaObjectId(id);
+                //删除搜索条件
                 searchConditionService.DeleteByMetaObjectId(id);//删除相关子对象
+                //删除触发器
                 triggerScriptService.DeleteByMetaObjectId(id);
-                //这里补充待删除的子对象
-                //...
+                //删除表单
+                _formService.DeleteByMetaObjectId(id);
+                //这里要补充待删除的子对象
                 base.Delete(id);
             });
-            return Result.Success();
+            return Result<MetaObject>.Success();
         }
     }
 }

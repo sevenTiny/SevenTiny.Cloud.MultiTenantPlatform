@@ -1,8 +1,10 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
+using SevenTiny.Bantina;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Repository;
-using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
+using SevenTiny.Cloud.Infrastructure.ValueObject;
 using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract
@@ -46,20 +48,20 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract
         /// <param name="fieldId"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        Result CheckAndGetFieldValueByFieldType(int fieldId, object value);
-        Result CheckAndGetFieldValueByFieldType(MetaField metaField, object value);
+        Result<dynamic> CheckAndGetFieldValueByFieldType(int fieldId, object value);
+        Result<dynamic> CheckAndGetFieldValueByFieldType(MetaField metaField, object value);
         /// <summary>
         /// 获取字段列表集合通过字段id集合
         /// </summary>
         /// <param name="ids"></param>
         /// <returns></returns>
-        List<MetaField> GetByIds(int[] ids);
+        List<MetaField> GetByIds(int metaObjectId, int[] ids);
         /// <summary>
         /// 生成mongodb的排序字段配置
         /// </summary>
         /// <param name="metaObjectId"></param>
         /// <param name="sortFields"></param>
         /// <returns></returns>
-        SortDefinition<BsonDocument> GetSortDefinitionBySortFields(int metaObjectId, SortField[] sortFields);
+        SortDefinition<BsonDocument> GetSortDefinitionBySortFields(QueryPiplineContext queryPiplineContext, SortField[] sortFields);
     }
 }

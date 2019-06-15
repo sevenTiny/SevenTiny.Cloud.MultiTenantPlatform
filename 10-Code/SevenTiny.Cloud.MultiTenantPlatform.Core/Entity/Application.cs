@@ -1,12 +1,11 @@
-﻿using SevenTiny.Bantina.Bankinate;
-using SevenTiny.Bantina.Bankinate.Attributes;
+﻿using SevenTiny.Bantina.Bankinate.Attributes;
+using SevenTiny.Cloud.Infrastructure.Const;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Entity
 {
     [Table]
+    [TableCaching]
     public class Application: CommonInfo
     {
         [Column]

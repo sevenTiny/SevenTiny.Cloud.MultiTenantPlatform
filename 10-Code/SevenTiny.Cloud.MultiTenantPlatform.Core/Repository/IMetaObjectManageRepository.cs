@@ -1,5 +1,5 @@
-﻿using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
-using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
+﻿using SevenTiny.Bantina;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Repository
@@ -10,6 +10,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Repository
         List<TEntity> GetEntitiesByMetaObjectId(int metaObjectId);
         List<TEntity> GetEntitiesDeletedByMetaObjectId(int metaObjectId);
         List<TEntity> GetEntitiesUnDeletedByMetaObjectId(int metaObjectId);
-        Result CheckSameCodeOrName(int metaObjectId, TEntity entity);
+        Result<TEntity> CheckSameCodeOrName(int metaObjectId, TEntity entity);
     }
 }

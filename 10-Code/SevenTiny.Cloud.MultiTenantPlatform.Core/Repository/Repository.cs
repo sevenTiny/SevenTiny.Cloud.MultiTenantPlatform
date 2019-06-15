@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using SevenTiny.Bantina;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.DataAccess;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
-using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
+using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Repository
 {
@@ -13,28 +14,28 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Repository
 
         MultiTenantPlatformDbContext dbContext;
 
-        public Result Add(TEntity entity)
+        public Result<TEntity> Add(TEntity entity)
         {
             dbContext.Add(entity);
-            return Result.Success();
+            return Result<TEntity>.Success();
         }
 
-        public Result Add(IList<TEntity> entities)
+        public Result<IList<TEntity>> Add(IList<TEntity> entities)
         {
             dbContext.Add<TEntity>(entities);
-            return Result.Success();
+            return Result<IList<TEntity>>.Success();
         }
 
-        public Result Update(TEntity entity)
+        public Result<TEntity> Update(TEntity entity)
         {
             dbContext.Update(entity);
-            return Result.Success();
+            return Result<TEntity>.Success();
         }
 
-        public Result Delete(TEntity entity)
+        public Result<TEntity> Delete(TEntity entity)
         {
             dbContext.Delete<TEntity>(entity);
-            return Result.Success();
+            return Result<TEntity>.Success();
         }
     }
 }

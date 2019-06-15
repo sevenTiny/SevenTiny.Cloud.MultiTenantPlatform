@@ -1,14 +1,14 @@
-﻿using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
-using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
+﻿using SevenTiny.Bantina;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Repository
 {
     public interface ICommonInfoRepository<TEntity> : IRepository<TEntity> where TEntity : CommonInfo
     {
-        Result Delete(int id);
-        Result LogicDelete(int id);
-        Result Recover(int id);
+        Result<TEntity> Delete(int id);
+        Result<TEntity> LogicDelete(int id);
+        Result<TEntity> Recover(int id);
         TEntity GetById(int id);
         TEntity GetByCode(string code);
         List<TEntity> GetEntitiesDeleted();

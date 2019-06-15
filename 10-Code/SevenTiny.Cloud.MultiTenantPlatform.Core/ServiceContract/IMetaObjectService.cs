@@ -1,6 +1,7 @@
-﻿using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
+﻿using SevenTiny.Bantina;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Repository;
-using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
+using SevenTiny.Cloud.Infrastructure.ValueObject;
 using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract
@@ -26,6 +27,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract
         /// <param name="applicationCode"></param>
         /// <param name="metaObject"></param>
         /// <returns></returns>
-        Result AddMetaObject(int applicationId, string applicationCode, MetaObject metaObject);
+        Result<MetaObject> AddMetaObject(int applicationId, string applicationCode, MetaObject metaObject);
     }
 }

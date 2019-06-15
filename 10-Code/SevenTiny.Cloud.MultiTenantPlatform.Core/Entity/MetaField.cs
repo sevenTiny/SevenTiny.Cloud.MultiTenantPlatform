@@ -3,6 +3,8 @@ using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Entity
 {
+    [Table]
+    [TableCaching]
     public class MetaField : MetaObjectManageInfo
     {
         //=DataType
@@ -11,8 +13,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Entity
         //if field type is datasource
         [Column]
         public int DataSourceId { get; set; } = -1;
-        [Column]
-        public int IsMust { get; set; }
         [Column]
         public int IsSystem { get; set; } = (int)TrueFalse.False;
     }

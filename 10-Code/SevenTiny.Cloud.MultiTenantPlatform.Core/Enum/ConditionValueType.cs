@@ -14,4 +14,20 @@
         /// </summary>
         Const = 1
     }
+
+    public static class ConditionValueTypeTranslator
+    {
+        public static string ToLabel(int type)
+        {
+            switch (type)
+            {
+                case (int)ConditionValueType.Const:
+                    return "固定值";
+                case (int)ConditionValueType.Parameter:
+                    return "参数传递值";
+                default:
+                    return string.Empty;
+            }
+        }
+    }
 }
