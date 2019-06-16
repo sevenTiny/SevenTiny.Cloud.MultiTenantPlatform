@@ -2,7 +2,7 @@
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
-using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.ListView;
+using SevenTiny.Cloud.MultiTenantPlatform.UI.UIMetaData.ListView;
 using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract

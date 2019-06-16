@@ -19,7 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SevenTiny.Cloud.Infrastructure\SevenTiny.Cloud.Infrastructure.csproj" />
-    <ProjectReference Include="..\SevenTiny.Cloud.MultiTenantPlatform.UIModel\SevenTiny.Cloud.MultiTenantPlatform.UIModel.csproj" />
+    <ProjectReference Include="..\SevenTiny.Cloud.MultiTenantPlatform.UI\SevenTiny.Cloud.MultiTenantPlatform.UI.csproj" />
   </ItemGroup>
 
   <ItemGroup>

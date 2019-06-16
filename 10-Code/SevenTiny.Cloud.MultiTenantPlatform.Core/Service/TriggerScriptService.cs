@@ -11,7 +11,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Core.DataAccess;
 using Seventiny.Cloud.ScriptEngine;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.ListView;
+using SevenTiny.Cloud.MultiTenantPlatform.UI.UIMetaData.ListView;
 using System.Linq;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
 
@@ -180,7 +180,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using SevenTiny.Bantina.Logging;
 using SevenTiny.Cloud.Infrastructure.Context;
-using SevenTiny.Cloud.MultiTenantPlatform.UIModel.DataAccess;";
+using SevenTiny.Cloud.MultiTenantPlatform.UI.DataAccess;";
         /// <summary>
         /// 所有脚本类内方法外内置的通用代码段，个性化请写在各自脚本中
         /// </summary>
@@ -287,9 +287,9 @@ public void {FunctionName_MetaObject_Interface_Delete_After}(ApplicationContext 
 => Get_DefaultScript_MetaObject_Interface_QueryCondition(FunctionName_MetaObject_Interface_TableList_Before);
         private string DefaultScript_MetaObject_Interface_TableList_After
 => $@"{DefaultCommonUsing}
-using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData;
-using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.ListView;
-using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.UserInfo;
+using SevenTiny.Cloud.MultiTenantPlatform.UI.UIMetaData;
+using SevenTiny.Cloud.MultiTenantPlatform.UI.UIMetaData.ListView;
+using SevenTiny.Cloud.MultiTenantPlatform.UI.UIMetaData.UserInfo;
 {DefaultCommonClassInnerCode}
 public TableListComponent {FunctionName_MetaObject_Interface_TableList_After}(ApplicationContext applicationContext,string interfaceCode, TableListComponent tableListComponent)
 {{
@@ -300,9 +300,9 @@ public TableListComponent {FunctionName_MetaObject_Interface_TableList_After}(Ap
 => Get_DefaultScript_MetaObject_Interface_QueryCondition(FunctionName_MetaObject_Interface_SingleObject_Before);
         private string DefaultScript_MetaObject_Interface_SingleObject_After
 => $@"{DefaultCommonUsing}
-using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData;
-using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.ListView;
-using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.UserInfo;
+using SevenTiny.Cloud.MultiTenantPlatform.UI.UIMetaData;
+using SevenTiny.Cloud.MultiTenantPlatform.UI.UIMetaData.ListView;
+using SevenTiny.Cloud.MultiTenantPlatform.UI.UIMetaData.UserInfo;
 {DefaultCommonClassInnerCode}
 public SingleObjectComponent {FunctionName_MetaObject_Interface_SingleObject_After}(ApplicationContext applicationContext,string interfaceCode,SingleObjectComponent singleObjectComponent)
 {{
