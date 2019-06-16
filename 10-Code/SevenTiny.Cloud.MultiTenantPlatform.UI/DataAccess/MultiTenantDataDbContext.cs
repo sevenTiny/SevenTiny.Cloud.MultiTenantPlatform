@@ -3,7 +3,7 @@ using MongoDB.Driver;
 using SevenTiny.Bantina.Bankinate;
 using SevenTiny.Cloud.Infrastructure.Configs;
 
-namespace SevenTiny.Cloud.MultiTenantPlatform.UIModel.DataAccess
+namespace SevenTiny.Cloud.MultiTenantPlatform.UI.DataAccess
 {
     public class MultiTenantDataDbContext : MongoDbContext<MultiTenantDataDbContext>
     {

@@ -1,8 +1,8 @@
 ﻿using MongoDB.Bson;
-using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData;
+using SevenTiny.Cloud.MultiTenantPlatform.UI.UIMetaData;
 using System.Collections.Generic;
 
-namespace SevenTiny.Cloud.MultiTenantPlatform.UIModel.CloudEntity
+namespace SevenTiny.Cloud.MultiTenantPlatform.UI.CloudEntity
 {
     /// <summary>
     /// 业务数据转化为字典

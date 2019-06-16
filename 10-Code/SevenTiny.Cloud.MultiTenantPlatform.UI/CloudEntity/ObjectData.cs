@@ -3,7 +3,7 @@
 //using System.Collections.Generic;
 //using System.Linq;
 
-//namespace SevenTiny.Cloud.MultiTenantPlatform.UIModel.CloudEntity
+//namespace SevenTiny.Cloud.MultiTenantPlatform.UI.CloudEntity
 //{
 //    /// <summary>
 //    /// query object data

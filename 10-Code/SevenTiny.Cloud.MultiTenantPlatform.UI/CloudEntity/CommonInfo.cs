@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SevenTiny.Cloud.MultiTenantPlatform.UIModel.CloudEntity
+namespace SevenTiny.Cloud.MultiTenantPlatform.UI.CloudEntity
 {
     /// <summary>
     /// EntityInfo Standard Property

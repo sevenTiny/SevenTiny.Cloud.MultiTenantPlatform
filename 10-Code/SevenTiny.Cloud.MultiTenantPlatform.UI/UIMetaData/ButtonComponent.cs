@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData
+namespace SevenTiny.Cloud.MultiTenantPlatform.UI.UIMetaData
 {
     /// <summary>
     /// button组件
