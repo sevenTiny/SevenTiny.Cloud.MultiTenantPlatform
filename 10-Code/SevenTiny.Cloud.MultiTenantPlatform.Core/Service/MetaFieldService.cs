@@ -147,6 +147,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             return new BsonDocument
             {
                 { "_id",Guid.NewGuid().ToString()},
+                { "TenantId",0 },
                 { "IsDeleted",false },
                 { "CreateBy", -1 },
                 { "CreateTime", DateTime.Now },
