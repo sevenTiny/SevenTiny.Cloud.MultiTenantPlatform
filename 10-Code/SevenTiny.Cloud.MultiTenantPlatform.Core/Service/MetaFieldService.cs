@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SevenTiny.Cloud.Infrastructure.Const;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 {
@@ -147,7 +148,6 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             return new BsonDocument
             {
                 { "_id",Guid.NewGuid().ToString()},
-                { "TenantId",0 },
                 { "IsDeleted",false },
                 { "CreateBy", -1 },
                 { "CreateTime", DateTime.Now },

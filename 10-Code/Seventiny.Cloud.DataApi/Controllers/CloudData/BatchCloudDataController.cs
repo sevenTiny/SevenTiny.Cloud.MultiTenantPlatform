@@ -138,7 +138,7 @@ namespace Seventiny.Cloud.DataApi.Controllers
                 }
 
                 //add data
-                var addResult = dataAccessService.BatchAdd(queryContext.MetaObject, documents);
+                var addResult = dataAccessService.BatchAdd(queryContext.TenantId, queryContext.MetaObject, documents);
 
                 //trigger after
                 _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_BatchAdd_After, documents, CurrentApplicationContext, queryContext.InterfaceCode, documents);
