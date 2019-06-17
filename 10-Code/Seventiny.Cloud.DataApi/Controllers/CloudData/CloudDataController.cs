@@ -149,7 +149,7 @@ namespace Seventiny.Cloud.DataApi.Controllers
                     case InterfaceType.JsonDataSource:
                         return new JsonResult(Newtonsoft.Json.JsonConvert.DeserializeObject(_dataSourceService.GetById(queryContext.DataSourceId).Script));
                     case InterfaceType.ExecutableScriptDataSource:
-                        object triggerScriptDataSourceResult = _triggerScriptService.RunDataSourceScript(queryContext, CurrentApplicationContext, queryContext.ArgumentsDic);
+                        object triggerScriptDataSourceResult = _triggerScriptService.RunDataSourceScript(queryContext, CurrentApplicationContext, queryContext.InterfaceCode, queryContext.ArgumentsDic);
                         return JsonResultModel.Success("get trigger script result success", triggerScriptDataSourceResult);
                     default:
                         break;

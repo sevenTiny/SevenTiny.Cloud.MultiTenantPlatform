@@ -54,11 +54,11 @@ namespace Seventiny.Cloud.DataApi.Controllers
                     //check
                     if (_applicationContext.TenantId <= 0)
                     {
-                        throw new ArgumentNullException("TenantId", "TenantId incorrect! It could be the result of an identity failure");
+                        //throw new ArgumentNullException("TenantId", "TenantId incorrect! It could be the result of an identity failure");
                     }
                     if (_applicationContext.UserId <= 0)
                     {
-                        throw new ArgumentNullException("UserId", "UserId incorrect! It could be the result of an identity failure");
+                        //throw new ArgumentNullException("UserId", "UserId incorrect! It could be the result of an identity failure");
                     }
                 }
                 return _applicationContext;
