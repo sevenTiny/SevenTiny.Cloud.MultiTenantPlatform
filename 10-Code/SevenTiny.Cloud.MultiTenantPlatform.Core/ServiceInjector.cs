@@ -2,7 +2,7 @@
 using Seventiny.Cloud.ScriptEngine;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.DataAccess;
 using SevenTiny.Cloud.Infrastructure.DependencyInjection;
-using SevenTiny.Cloud.MultiTenantPlatform.UIModel.DataAccess;
+using SevenTiny.Cloud.MultiTenantPlatform.UI.DataAccess;
 using System.Reflection;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core

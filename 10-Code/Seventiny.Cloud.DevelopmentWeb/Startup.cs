@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Seventiny.Cloud.DevelopmentWeb.Filters;
+using SevenTiny.Cloud.Infrastructure.Context;
 using SevenTiny.Cloud.MultiTenantPlatform.Core;
 
 namespace Seventiny.Cloud.DevelopmentWeb

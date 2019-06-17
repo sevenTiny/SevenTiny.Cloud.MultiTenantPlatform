@@ -11,7 +11,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Core.DataAccess;
 using Seventiny.Cloud.ScriptEngine;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.ListView;
+using SevenTiny.Cloud.MultiTenantPlatform.UI.UIMetaData.ListView;
 using System.Linq;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
 
@@ -178,17 +178,19 @@ using System.Linq;
 using System.Text;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using logger = SevenTiny.Cloud.Infrastructure.Logging.Logger;
-using SevenTiny.Cloud.MultiTenantPlatform.UIModel.DataAccess;";
+using SevenTiny.Bantina.Logging;
+using SevenTiny.Cloud.Infrastructure.Context;
+using SevenTiny.Cloud.MultiTenantPlatform.UI.DataAccess;";
         /// <summary>
         /// 所有脚本类内方法外内置的通用代码段，个性化请写在各自脚本中
         /// </summary>
         private string DefaultCommonClassInnerCode
 => @"//EndUsing
 //注释：上面的 EndUsing 注释为using分隔符，请不要删除；
-//注释：输出日志请使用 logger.Error(),logger.Debug(),logger.Info()；
+//注释：输出日志请使用 logger.Error(),logger.Debug(),logger.Info()...；
+ILog logger = new LogManager();
 //注释：查询数据请使用下面的db；
-var db = new MultiTenantDataDbContext();";
+MultiTenantDataDbContext db = new MultiTenantDataDbContext();";
         /// <summary>
         /// 所有脚本方法内默认内置的通用代码段，个性化请写在各自脚本中
         /// </summary>
@@ -219,7 +221,7 @@ var db = new MultiTenantDataDbContext();";
         private string Get_DefaultScript_MetaObject_Interface_QueryCondition(string methodName)
 => $@"{DefaultCommonUsing}
 {DefaultCommonClassInnerCode}
-public FilterDefinition<BsonDocument> {methodName}(string interfaceCode,FilterDefinition<BsonDocument> condition)
+public FilterDefinition<BsonDocument> {methodName}(ApplicationContext applicationContext,string interfaceCode,FilterDefinition<BsonDocument> condition)
 {{
     {DefaultCommonMethodCode}
 	return condition;
@@ -228,7 +230,7 @@ public FilterDefinition<BsonDocument> {methodName}(string interfaceCode,FilterDe
         private string DefaultScript_MetaObject_Interface_Add_Before
 => $@"{DefaultCommonUsing}
 {DefaultCommonClassInnerCode}
-public BsonDocument {FunctionName_MetaObject_Interface_Add_Before}(string interfaceCode,BsonDocument bsonElements)
+public BsonDocument {FunctionName_MetaObject_Interface_Add_Before}(ApplicationContext applicationContext,string interfaceCode,BsonDocument bsonElements)
 {{
     {DefaultCommonMethodCode}
 	return bsonElements;
@@ -236,7 +238,7 @@ public BsonDocument {FunctionName_MetaObject_Interface_Add_Before}(string interf
         private string DefaultScript_MetaObject_Interface_Add_After
 => $@"{DefaultCommonUsing}
 {DefaultCommonClassInnerCode}
-public BsonDocument {FunctionName_MetaObject_Interface_Add_After}(string interfaceCode,BsonDocument bsonElements)
+public BsonDocument {FunctionName_MetaObject_Interface_Add_After}(ApplicationContext applicationContext,string interfaceCode,BsonDocument bsonElements)
 {{
     {DefaultCommonMethodCode}
 	return bsonElements;
@@ -244,7 +246,7 @@ public BsonDocument {FunctionName_MetaObject_Interface_Add_After}(string interfa
         private string DefaultScript_MetaObject_Interface_BatchAdd_Before
 => $@"{DefaultCommonUsing}
 {DefaultCommonClassInnerCode}
-public List<BsonDocument> {FunctionName_MetaObject_Interface_BatchAdd_Before}(string interfaceCode,List<BsonDocument> bsonElementsList)
+public List<BsonDocument> {FunctionName_MetaObject_Interface_BatchAdd_Before}(ApplicationContext applicationContext,string interfaceCode,List<BsonDocument> bsonElementsList)
 {{
     {DefaultCommonMethodCode}
 	return bsonElementsList;
@@ -252,7 +254,7 @@ public List<BsonDocument> {FunctionName_MetaObject_Interface_BatchAdd_Before}(st
         private string DefaultScript_MetaObject_Interface_BatchAdd_After
             => $@"{DefaultCommonUsing}
 {DefaultCommonClassInnerCode}
-public List<BsonDocument> {FunctionName_MetaObject_Interface_BatchAdd_After}(string interfaceCode,List<BsonDocument> bsonElementsList)
+public List<BsonDocument> {FunctionName_MetaObject_Interface_BatchAdd_After}(ApplicationContext applicationContext,string interfaceCode,List<BsonDocument> bsonElementsList)
 {{
     {DefaultCommonMethodCode}
 	return bsonElementsList;
@@ -260,7 +262,7 @@ public List<BsonDocument> {FunctionName_MetaObject_Interface_BatchAdd_After}(str
         private string DefaultScript_MetaObject_Interface_Update_Before
 => $@"{DefaultCommonUsing}
 {DefaultCommonClassInnerCode}
-public FilterDefinition<BsonDocument> {FunctionName_MetaObject_Interface_Update_Before}(string interfaceCode,FilterDefinition<BsonDocument> condition,BsonDocument bsonElements)
+public FilterDefinition<BsonDocument> {FunctionName_MetaObject_Interface_Update_Before}(ApplicationContext applicationContext,string interfaceCode,FilterDefinition<BsonDocument> condition,BsonDocument bsonElements)
 {{
     {DefaultCommonMethodCode}
 	return condition;
@@ -268,7 +270,7 @@ public FilterDefinition<BsonDocument> {FunctionName_MetaObject_Interface_Update_
         private string DefaultScript_MetaObject_Interface_Update_After
 => $@"{DefaultCommonUsing}
 {DefaultCommonClassInnerCode}
-public void {FunctionName_MetaObject_Interface_Update_After}(string interfaceCode,FilterDefinition<BsonDocument> condition,BsonDocument bsonElements)
+public void {FunctionName_MetaObject_Interface_Update_After}(ApplicationContext applicationContext,string interfaceCode,FilterDefinition<BsonDocument> condition,BsonDocument bsonElements)
 {{
     {DefaultCommonMethodCode}
 }}";
@@ -277,7 +279,7 @@ public void {FunctionName_MetaObject_Interface_Update_After}(string interfaceCod
         private string DefaultScript_MetaObject_Interface_Delete_After
 => $@"{DefaultCommonUsing}
 {DefaultCommonClassInnerCode}
-public void {FunctionName_MetaObject_Interface_Delete_After}(string interfaceCode,List<BsonDocument> bsonElementsList)
+public void {FunctionName_MetaObject_Interface_Delete_After}(ApplicationContext applicationContext,string interfaceCode,List<BsonDocument> bsonElementsList)
 {{
     {DefaultCommonMethodCode}
 }}";
@@ -285,11 +287,11 @@ public void {FunctionName_MetaObject_Interface_Delete_After}(string interfaceCod
 => Get_DefaultScript_MetaObject_Interface_QueryCondition(FunctionName_MetaObject_Interface_TableList_Before);
         private string DefaultScript_MetaObject_Interface_TableList_After
 => $@"{DefaultCommonUsing}
-using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData;
-using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.ListView;
-using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.UserInfo;
+using SevenTiny.Cloud.MultiTenantPlatform.UI.UIMetaData;
+using SevenTiny.Cloud.MultiTenantPlatform.UI.UIMetaData.ListView;
+using SevenTiny.Cloud.MultiTenantPlatform.UI.UIMetaData.UserInfo;
 {DefaultCommonClassInnerCode}
-public TableListComponent {FunctionName_MetaObject_Interface_TableList_After}(string interfaceCode, TableListComponent tableListComponent)
+public TableListComponent {FunctionName_MetaObject_Interface_TableList_After}(ApplicationContext applicationContext,string interfaceCode, TableListComponent tableListComponent)
 {{
     { DefaultCommonMethodCode}
     return tableListComponent;
@@ -298,11 +300,11 @@ public TableListComponent {FunctionName_MetaObject_Interface_TableList_After}(st
 => Get_DefaultScript_MetaObject_Interface_QueryCondition(FunctionName_MetaObject_Interface_SingleObject_Before);
         private string DefaultScript_MetaObject_Interface_SingleObject_After
 => $@"{DefaultCommonUsing}
-using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData;
-using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.ListView;
-using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.UserInfo;
+using SevenTiny.Cloud.MultiTenantPlatform.UI.UIMetaData;
+using SevenTiny.Cloud.MultiTenantPlatform.UI.UIMetaData.ListView;
+using SevenTiny.Cloud.MultiTenantPlatform.UI.UIMetaData.UserInfo;
 {DefaultCommonClassInnerCode}
-public SingleObjectComponent {FunctionName_MetaObject_Interface_SingleObject_After}(string interfaceCode,SingleObjectComponent singleObjectComponent)
+public SingleObjectComponent {FunctionName_MetaObject_Interface_SingleObject_After}(ApplicationContext applicationContext,string interfaceCode,SingleObjectComponent singleObjectComponent)
 {{
     {DefaultCommonMethodCode}
 	return singleObjectComponent;
@@ -312,7 +314,7 @@ public SingleObjectComponent {FunctionName_MetaObject_Interface_SingleObject_Aft
         private string DefaultScript_MetaObject_Interface_Count_After
 => $@"{DefaultCommonUsing}
 {DefaultCommonClassInnerCode}
-public int {FunctionName_MetaObject_Interface_Count_After}(string interfaceCode,FilterDefinition<BsonDocument> condition,int count)
+public int {FunctionName_MetaObject_Interface_Count_After}(ApplicationContext applicationContext,string interfaceCode,FilterDefinition<BsonDocument> condition,int count)
 {{
     {DefaultCommonMethodCode}
 	return count;
@@ -321,7 +323,7 @@ public int {FunctionName_MetaObject_Interface_Count_After}(string interfaceCode,
         private string DefaultScript_DataSource
 => $@"{DefaultCommonUsing}
 {DefaultCommonClassInnerCode}
-public object {FunctionName_DataSource}(string interfaceCode, Dictionary<string, object> argumentsDic)
+public object {FunctionName_DataSource}(ApplicationContext applicationContext,string interfaceCode, Dictionary<string, object> argumentsDic)
 {{
     {DefaultCommonMethodCode}
 	return null;
