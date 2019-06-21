@@ -19,6 +19,17 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Models
 
     public static class JsonResultModelExtension
     {
+        public static JsonResult ToJsonResultModel(this Result result)
+        {
+            if (result.IsSuccess)
+            {
+                return JsonResultModel.Success(result.Message);
+            }
+            else
+            {
+                return JsonResultModel.Error(result.Message);
+            }
+        }
         public static JsonResult ToJsonResultModel<T>(this Result<T> result)
         {
             if (result.IsSuccess)
