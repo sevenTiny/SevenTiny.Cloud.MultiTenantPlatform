@@ -6,7 +6,7 @@
 
     List<Menue> entities = Model as List<Menue> ?? new List<Menue>();
 }
-
+<link href="~/lib/font-awesome-4.7.0/css/font-awesome.css" rel="stylesheet" />
 <article class="cl pd-20">
     <div class="cl pd-5 bg-1 bk-gray">
         <span class="l">
@@ -22,6 +22,7 @@
                     <th>编码</th>
                     <th>打开方式</th>
                     <th>链接地址</th>
+                    <th>图标</th>
                     <th>描述</th>
                     <th>分组</th>
                     <th>排序值</th>
@@ -36,6 +37,7 @@
                         <td>@item.Code</td>
                         <td>@LinkTypeTranslator.ToChinese(item.LinkType)</td>
                         <td>@item.Address</td>
+                        <td><span class="fa fa-@item.Icon"></span></td>
                         <td>@item.Description</td>
                         <td>@item.Group</td>
                         <td>@item.SortNumber</td>
@@ -60,7 +62,7 @@
         "bStateSave": true,//状态保存
         "aoColumnDefs": [
             //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
-            { "orderable": false, "aTargets": [6] }// 不参与排序的列
+            { "orderable": false, "aTargets": [8] }// 不参与排序的列
         ]
     });
 </script>

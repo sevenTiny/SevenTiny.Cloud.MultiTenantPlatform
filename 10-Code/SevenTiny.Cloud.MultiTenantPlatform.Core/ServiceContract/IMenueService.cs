@@ -7,6 +7,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract
 {
     public interface IMenueService : ICommonInfoRepository<Menue>
     {
+        List<Menue> GetUnDeletedEntitiesByApplicationId(int applicationId);
         Result<List<Menue>> AnalysisMenueTree();
     }
 }

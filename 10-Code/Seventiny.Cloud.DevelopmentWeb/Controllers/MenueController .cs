@@ -25,7 +25,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
 
         public IActionResult List()
         {
-            var list = _menueService.GetEntitiesUnDeleted();
+            var list = _menueService.GetUnDeletedEntitiesByApplicationId(CurrentApplicationId);
             return View(list);
         }
 
@@ -37,7 +37,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
         public IActionResult Add()
         {
             var entity = new Menue();
-            entity.Icon = "cloud";
+            entity.Icon = "reorder";
             return View(ResponseModel.Success(entity));
         }
 

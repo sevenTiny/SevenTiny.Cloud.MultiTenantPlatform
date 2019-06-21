@@ -1,6 +1,7 @@
 ﻿using SevenTiny.Bantina;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.DataAccess;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
 using System;
@@ -86,6 +87,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             //    }
             //}
             return Result<List<Menue>>.Success("", null);
+        }
+
+        public List<Menue> GetUnDeletedEntitiesByApplicationId(int applicationId)
+        {
+            return dbContext.Queryable<Menue>().Where(t => t.ApplicationId == applicationId && t.IsDeleted == (int)IsDeleted.UnDeleted).ToList();
         }
     }
 }
