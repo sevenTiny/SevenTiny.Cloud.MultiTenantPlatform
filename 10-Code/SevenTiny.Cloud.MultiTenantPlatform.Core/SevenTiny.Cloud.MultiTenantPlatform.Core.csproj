@@ -6,8 +6,11 @@
 
   <ItemGroup>
     <Compile Remove="Const\**" />
+    <Compile Remove="MetaAccess\**" />
     <EmbeddedResource Remove="Const\**" />
+    <EmbeddedResource Remove="MetaAccess\**" />
     <None Remove="Const\**" />
+    <None Remove="MetaAccess\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,10 +23,6 @@
   <ItemGroup>
     <ProjectReference Include="..\SevenTiny.Cloud.Infrastructure\SevenTiny.Cloud.Infrastructure.csproj" />
     <ProjectReference Include="..\SevenTiny.Cloud.MultiTenantPlatform.UI\SevenTiny.Cloud.MultiTenantPlatform.UI.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="MetaAccess\" />
   </ItemGroup>
 
 </Project>
