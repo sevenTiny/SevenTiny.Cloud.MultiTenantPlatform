@@ -39,10 +39,5 @@ namespace SevenTiny.Cloud.Account.Core.Entity
         /// </summary>
         [Column]
         public int AccountSystemIdentity { get; set; } = (int)Enum.AccountSystemIdentity.User;
-        /// <summary>
-        /// 应用和对应身份的Json格式
-        /// </summary>
-        [Column]
-        public string AppIdentityJson { get; set; }
     }
 }

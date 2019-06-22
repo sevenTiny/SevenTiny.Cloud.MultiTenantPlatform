@@ -8,5 +8,10 @@ namespace SevenTiny.Cloud.Account.Core.Entity
     [Table]
     public class UserAccountInfo : CommonInfo
     {
+        /// <summary>
+        /// 用户Id
+        /// </summary>
+        [Column]
+        public int UserId { get; set; }
     }
 }

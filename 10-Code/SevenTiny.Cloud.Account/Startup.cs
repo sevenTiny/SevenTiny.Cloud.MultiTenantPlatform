@@ -38,7 +38,7 @@ namespace SevenTiny.Cloud.Account
                         ValidateIssuerSigningKey = true,//是否验证SecurityKey
                         ValidAudience = "yourdomain.com",//Audience
                         ValidIssuer = "yourdomain.com",//Issuer，这两项和前面签发jwt的设置一致
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecurityKey"]))//拿到SecurityKey
+                        //IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecurityKey"]))//拿到SecurityKey
                     };
                 });
 

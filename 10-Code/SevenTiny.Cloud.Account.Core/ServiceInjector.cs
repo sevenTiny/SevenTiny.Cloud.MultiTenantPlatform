@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using SevenTiny.Cloud.Account.DataAccess;
+using SevenTiny.Cloud.Account.Core.DataAccess;
 using SevenTiny.Cloud.Infrastructure.DependencyInjection;
 using System.Reflection;
 
@@ -11,7 +11,6 @@ namespace SevenTiny.Cloud.Account.Core
         {
             services.AddScoped(Assembly.GetExecutingAssembly());
 
-            //脚本引擎
             services.AddScoped<AccountDbContext>();
         }
     }

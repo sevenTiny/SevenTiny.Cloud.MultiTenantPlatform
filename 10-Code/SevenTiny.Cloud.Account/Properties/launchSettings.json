@@ -19,7 +19,7 @@
     "SevenTiny.Cloud.Account": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/values",
+      "launchUrl": "Home/Index",
       "applicationUrl": "http://localhost:39041",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
