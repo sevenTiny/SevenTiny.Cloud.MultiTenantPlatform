@@ -8,6 +8,8 @@ namespace SevenTiny.Cloud.Infrastructure.Configs
         [ConfigProperty]
         public string mongodb39911 { get; set; }
         [ConfigProperty]
+        public string Account { get; set; }
+        [ConfigProperty]
         public string MultiTenantPlatformWeb { get; set; }
         [ConfigProperty]
         public string mysql39901 { get; set; }

@@ -3,7 +3,7 @@
     /// <summary>
     /// Account站点的身份，不同的身份对应不同的菜单界面权限
     /// </summary>
-    public enum AccountSystemIdentity
+    public enum SystemIdentity
     {
         /// <summary>
         /// 普通用户
@@ -23,5 +23,21 @@
         /// 系统管理员，该账号不对外开放
         /// </summary>
         SystemAdministrator = 3
+    }
+
+    public static class SystemIdentityTranslator
+    {
+        public static string ToChinese(int systemIdentity)
+        {
+            switch ((SystemIdentity)systemIdentity)
+            {
+                case SystemIdentity.User:
+                    return "用户";
+                case SystemIdentity.TenantAdministrator:
+                    return "租户管理员";
+                default:
+                    return "UnKnown";
+            }
+        }
     }
 }
