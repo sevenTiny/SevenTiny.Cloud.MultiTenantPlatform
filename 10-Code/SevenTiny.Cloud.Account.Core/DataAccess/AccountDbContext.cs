@@ -7,7 +7,7 @@ namespace SevenTiny.Cloud.Account.Core.DataAccess
     [DataBase("MultiTenantPlatformWeb")]
     public class AccountDbContext : MySqlDbContext<AccountDbContext>
     {
-        public AccountDbContext() : base(ConnectionStringsConfig.Instance.Account)
+        public AccountDbContext() : base(ConnectionStringsConfig.Instance.MultiTenantAccount)
         {
             //开启一级缓存
             OpenQueryCache = false;

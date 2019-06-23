@@ -2,7 +2,9 @@
 using SevenTiny.Cloud.Account.Core.DataAccess;
 using SevenTiny.Cloud.Infrastructure.DependencyInjection;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("Test.SevenTiny.Cloud.Account.Core")]
 namespace SevenTiny.Cloud.Account.Core
 {
     public static class ServiceInjector
