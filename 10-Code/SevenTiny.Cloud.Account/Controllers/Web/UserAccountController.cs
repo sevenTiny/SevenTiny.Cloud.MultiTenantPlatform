@@ -117,7 +117,7 @@ namespace SevenTiny.Cloud.Account.Controllers
         [Authorize("Administrator")]
         public IActionResult List()
         {
-            var list = _userAccountService.GetUserAccountsByTenantId(CurrentTenantId);
+            var list = _userAccountService.GetUserAccountsByTenantId(CurrentTenantId).Data;
             return View(list);
         }
 
