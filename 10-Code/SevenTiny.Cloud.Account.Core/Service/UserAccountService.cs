@@ -75,7 +75,12 @@ namespace SevenTiny.Cloud.Account.Core.Service
                     //返回的数据是查询到的数据
                     re.Data = existAccount;
                     return re.ContinueAssert(existAccount != null, "账号不存在")
-                            .ContinueAssert(existAccount.Password.Equals(GetSaltPwd(userAccount.Password)), "密码错误");
+                            .Continue(ree =>
+                            {
+                                if (existAccount.Password.Equals(GetSaltPwd(userAccount.Password)))
+                                    return Result<UserAccount>.Error("密码错误");
+                                return ree;
+                            });
                 });
         }
 
@@ -87,7 +92,7 @@ namespace SevenTiny.Cloud.Account.Core.Service
         private string GetSaltPwd(string pwd)
         {
             //为降低暴力破解的可能，密码强制前后加盐
-            return MD5Helper.GetMd5Hash(string.Concat(AccountConst.SaltBefore, pwd, AccountConst.SaltAfter));
+            return MD5Helper.GetMd5Hash(string.Concat(AccountConst.SALT_BEFORE, pwd, AccountConst.SALT_AFTER));
         }
 
         public Result<List<UserAccount>> GetUserAccountsByTenantId(int tenantId)

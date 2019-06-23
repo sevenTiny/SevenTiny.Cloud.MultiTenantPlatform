@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SevenTiny.Bantina;
+using SevenTiny.Cloud.Account.AuthManagement;
+using SevenTiny.Cloud.Account.Core.Const;
 using SevenTiny.Cloud.Account.Core.Entity;
 using SevenTiny.Cloud.Account.Core.ServiceContract;
+using SevenTiny.Cloud.Account.DTO;
 using SevenTiny.Cloud.Account.Models;
 
 namespace SevenTiny.Cloud.Account.Controllers
@@ -27,9 +31,40 @@ namespace SevenTiny.Cloud.Account.Controllers
         }
 
         [AllowAnonymous]
-        public IActionResult LoginLogic(UserAccount userAccount)
+        public IActionResult LoginLogic(LoginModel loginModel)
         {
-            return View();
+            var loginResult = Result<UserAccount>.Success("登陆成功")
+                .ContinueAssert(!string.IsNullOrEmpty(loginModel.Email), "email can not be null")
+                .ContinueAssert(!string.IsNullOrEmpty(loginModel.Password), "password can not be null")
+                .ContinueAssert(!string.IsNullOrEmpty(loginModel.RedirectUrl), "redirectUrl can not be null")
+                .Continue(re => _userAccountService.LoginByEmail(new UserAccount { Email = loginModel.Email, Password = loginModel.Password }));
+
+            if (loginResult.IsSuccess)
+            {
+                //将租户Id存入Session
+                SetTenantIdToSession(loginResult.Data.TenantId);
+                SetTenantIdToSession(loginResult.Data.Id);
+                //get token
+                var token = TokenManagement.GetToken(loginResult.Data).Data;
+                //set token to cookie
+                Response.Cookies.Append(AccountConst.KEY_ACCESSTOKEN, token);
+                //concat url
+                string redireUrl = loginModel.RedirectUrl;
+                if (redireUrl.Contains('?'))
+                    redireUrl = $"{redireUrl}&{AccountConst.KEY_ACCESSTOKEN}={token}";
+                else
+                    redireUrl = $"{redireUrl}?{AccountConst.KEY_ACCESSTOKEN}={token}";
+                return Redirect(redireUrl);
+            }
+            return View("Login", loginResult.ToResponseModel());
+        }
+
+        [AllowAnonymous]
+        public IActionResult LogOut()
+        {
+            //clear cookie
+            Response.Cookies.Delete(AccountConst.KEY_ACCESSTOKEN);
+            return Redirect("/UserAccount/Login");
         }
 
         [AllowAnonymous]

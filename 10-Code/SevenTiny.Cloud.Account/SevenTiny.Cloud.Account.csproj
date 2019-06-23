@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SevenTiny.Cloud.Account.Core\SevenTiny.Cloud.Account.Core.csproj" />
+    <ProjectReference Include="..\SevenTiny.Cloud.Account.DTO\SevenTiny.Cloud.Account.DTO.csproj" />
   </ItemGroup>
 
 </Project>

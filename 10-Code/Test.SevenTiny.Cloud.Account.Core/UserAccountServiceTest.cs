@@ -22,7 +22,7 @@ namespace Test.Seventiny.Cloud.Account.Core
         {
             //为降低暴力破解的可能，密码强制前后加盐
             string password = "123456";
-            var pwd = MD5Helper.GetMd5Hash(string.Concat(AccountConst.SaltBefore, password, AccountConst.SaltAfter)); ;
+            var pwd = MD5Helper.GetMd5Hash(string.Concat(AccountConst.SALT_BEFORE, password, AccountConst.SALT_AFTER)); ;
         }
 
         [Fact]
@@ -35,7 +35,7 @@ namespace Test.Seventiny.Cloud.Account.Core
                 Name = "7tiny",
                 Email = "seventiny@foxmail.com",
                 Phone = "130110110110",
-                Password = MD5Helper.GetMd5Hash(string.Concat(AccountConst.SaltBefore, "123456", AccountConst.SaltAfter))
+                Password = MD5Helper.GetMd5Hash(string.Concat(AccountConst.SALT_BEFORE, "123456", AccountConst.SALT_AFTER))
             });
 
             Assert.True(result.IsSuccess);

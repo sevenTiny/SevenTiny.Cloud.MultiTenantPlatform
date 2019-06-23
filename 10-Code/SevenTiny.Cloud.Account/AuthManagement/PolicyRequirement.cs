@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+using SevenTiny.Cloud.Account.Core.Enum;
 using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.Account.AuthManagement
@@ -14,20 +14,26 @@ namespace SevenTiny.Cloud.Account.AuthManagement
         /// </summary>
         public List<UserPermission> UserPermissions { get; private set; }
         /// <summary>
-        /// 无权限action
-        /// </summary>
-        public string DeniedAction { get; set; }
-        /// <summary>
         /// 构造
         /// </summary>
         public PolicyRequirement()
         {
-            //没有权限则跳转到这个路由
-            DeniedAction = new PathString("/api/nopermission");
             //用户有权限访问的路由配置,当然可以从数据库获取
             UserPermissions = new List<UserPermission> {
-                              new UserPermission {  Url="/api/value3", UserName="admin"},
-                          };
+                //需要系统管理员才能访问的路由必须配置在这里进行管控，其他有标签的路由默认租户管理员都可以访问
+                new UserPermission {
+                    RoutesToUpper = new[]{ "" },
+                    Identities = new[]{(int)AccountSystemIdentityInternal.SystemAdministrator }
+                }
+            };
+            //路由都转为大写形式
+            for (int i = 0; i < UserPermissions.Count; i++)
+            {
+                for (int j = 0; j < UserPermissions[i].RoutesToUpper.Length; j++)
+                {
+                    UserPermissions[i].RoutesToUpper[j] = UserPermissions[i].RoutesToUpper[j].ToUpperInvariant();
+                }
+            }
         }
     }
 
@@ -37,12 +43,12 @@ namespace SevenTiny.Cloud.Account.AuthManagement
     public class UserPermission
     {
         /// <summary>
-        /// 用户名
+        /// 需要进行权限管控的route集合
         /// </summary>
-        public string UserName { get; set; }
+        public string[] RoutesToUpper { get; set; }
         /// <summary>
-        /// 请求Url
+        /// 权限管控对应集合符合条件的身份编码
         /// </summary>
-        public string Url { get; set; }
+        public int[] Identities { get; set; }
     }
 }

@@ -1,6 +1,9 @@
-﻿
+﻿@using SevenTiny.Cloud.Account.Core.Entity;
 @{
     Layout = null;
+
+    ResponseModel result = Model as ResponseModel ?? new ResponseModel();
+    UserAccount entity = result.Data as UserAccount ?? new UserAccount();
 }
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -192,20 +195,16 @@
         }
     </style>
     <script type="text/javascript">
-
-		$(function(){
-			$("button").click(function(){
-			if($("#signup_email").val()==""||$("#signup_password").val()=="")
-			{
-				alert('账号和密码不能为空!');
-
-			}
-			else
-			{
-				$("#sign_form").submit();
-			}
-		});
-	});
+        $(function () {
+            $("button").click(function () {
+                if ($("#signup_email").val() == "" || $("#signup_password").val() == "") {
+                    alert('账号和密码不能为空!');
+                }
+                else {
+                    $("#sign_form").submit();
+                }
+            });
+        })
     </script>
 </head>
 <body>
@@ -221,20 +220,26 @@
         </div>
         <div class="signup_forms">
             <div id="signup_forms_container" class="signup_forms_container">
-                <form class="signup_form_form" id="sign_form" method="post" action="checklogin.jsp">
+                <form class="signup_form_form" id="sign_form" method="post" action="/UserAccount/LoginLogic">
                     <div class="signup_account" id="signup_account">
                         <div class="form_user">
-                            <input type="text" name="email" placeholder="Email" id="signup_email">
+                            <input type="text" name="email" placeholder="Email" id="signup_email" />
                         </div>
                         <div class="form_password">
-                            <input type="password" name="password" placeholder="Password" id="signup_password">
+                            <input type="password" name="password" placeholder="Password" id="signup_password" />
+                        </div>
+                        <div class="form_redirectUrl" style="display:none">
+                            <input type="text" name="redirectUrl" placeholder="redirectUrl" id="redirectUrl" value="/Home/Index" />
                         </div>
                     </div>
                 </form>
             </div>
+            @if (!result.IsSuccess)
+            {
+                <br /><pre><span class="c-red">@result.Message</span></pre>
+            }
             <button type="button" id="signup_forms_submit"><span><strong>Log in</strong></span></button>
         </div>
-    </div>
     </div>
     <div class="footer">
         <div class="footer_signup_link">

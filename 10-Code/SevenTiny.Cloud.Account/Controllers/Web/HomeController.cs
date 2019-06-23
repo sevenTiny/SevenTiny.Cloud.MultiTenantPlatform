@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SevenTiny.Cloud.Account.Models;
 
@@ -10,6 +11,7 @@ namespace SevenTiny.Cloud.Account.Controllers
 {
     public class HomeController : Controller
     {
+        [Authorize("Administrator")]
         public IActionResult Index()
         {
             return View();
@@ -21,6 +23,16 @@ namespace SevenTiny.Cloud.Account.Controllers
         }
 
         public IActionResult Welcome()
+        {
+            return View();
+        }
+       
+        public IActionResult HTTP401()
+        {
+            return View();
+        }
+
+        public IActionResult HTTP403()
         {
             return View();
         }
