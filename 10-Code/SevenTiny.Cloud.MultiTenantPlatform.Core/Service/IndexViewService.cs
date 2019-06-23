@@ -2,14 +2,14 @@
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Repository;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
-using SevenTiny.Cloud.MultiTenantPlatform.UIModel.UIMetaData.IndexPage;
-using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
-using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Caching;
+using SevenTiny.Cloud.MultiTenantPlatform.UI.UIMetaData.IndexPage;
+using SevenTiny.Cloud.Infrastructure.ValueObject;
+using SevenTiny.Cloud.Infrastructure.Caching;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using SevenTiny.Cloud.MultiTenantPlatform.UIModel.Enum;
+using SevenTiny.Cloud.MultiTenantPlatform.UI.Enum;
 using SevenTiny.Bantina;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.DataAccess;
 

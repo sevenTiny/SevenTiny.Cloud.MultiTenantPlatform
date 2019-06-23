@@ -5,7 +5,7 @@ using SevenTiny.Bantina.Validation;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
-using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.ValueObject;
+using SevenTiny.Cloud.Infrastructure.ValueObject;
 using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
 using System;
 using System.Collections.Generic;

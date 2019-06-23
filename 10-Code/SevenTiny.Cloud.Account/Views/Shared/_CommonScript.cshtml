@@ -1,0 +1,53 @@
+﻿<!--这里写公共的方法-->
+<script>
+    //ajax删除datatable中数据
+    function ajax_delete_table(obj, url) {
+        layer.confirm('确认要删除吗？', function (index) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                dataType: 'json',
+                success: function (data) {
+                    if (data.success) {
+                        $(obj).parents("tr").remove();
+                        layer.msg('已删除!', { icon: 1, time: 1000 });
+                    } else {
+                        layer.msg(data.msg, { icon: 2, time: 1000 });
+                    }
+                },
+                error: function (data) {
+                    console.log(data.msg);
+                },
+            });
+        });
+    }
+
+    //ajax操作列表数据，可以提供confirm信息
+    function ajax_operate_table_confirm(obj, url, confirmMsg) {
+        layer.confirm(confirmMsg, function (index) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                dataType: 'json',
+                success: function (data) {
+                    if (data.success) {
+                        $(obj).parents("tr").remove();
+                        layer.msg('操作成功!', { icon: 1, time: 1000 });
+                    } else {
+                        layer.msg(data.msg, { icon: 2, time: 1000 });
+                    }
+                },
+                error: function (data) {
+                    console.log(data.msg);
+                },
+            });
+        });
+    }
+
+    //公共小弹窗
+    function commonPannel(title, url) {
+        //item拿的是该条数据的id
+        layer_show(title, url, window.innerWidth / 1.5, window.innerHeight / 1.5);
+    }
+
+</script>

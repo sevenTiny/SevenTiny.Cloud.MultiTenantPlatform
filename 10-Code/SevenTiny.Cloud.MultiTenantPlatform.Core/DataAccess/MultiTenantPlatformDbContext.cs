@@ -1,6 +1,6 @@
 ﻿using SevenTiny.Bantina.Bankinate;
 using SevenTiny.Bantina.Bankinate.Attributes;
-using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Configs;
+using SevenTiny.Cloud.Infrastructure.Configs;
 using System;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.DataAccess
@@ -8,7 +8,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.DataAccess
     [DataBase("MultiTenantPlatformWeb")]
     public class MultiTenantPlatformDbContext : MySqlDbContext<MultiTenantPlatformDbContext>
     {
-        public MultiTenantPlatformDbContext() : base(ConnectionStringsConfig.Instance.Config.MultiTenantPlatformWeb)
+        public MultiTenantPlatformDbContext() : base(ConnectionStringsConfig.Instance.MultiTenantPlatformWeb)
         {
             //开启一级缓存
             OpenQueryCache = false;

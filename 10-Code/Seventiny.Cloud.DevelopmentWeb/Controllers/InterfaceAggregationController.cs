@@ -3,7 +3,7 @@ using SevenTiny.Bantina.Validation;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
-using SevenTiny.Cloud.MultiTenantPlatform.Infrastructure.Configs;
+using SevenTiny.Cloud.Infrastructure.Configs;
 using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
 
 namespace Seventiny.Cloud.DevelopmentWeb.Controllers
@@ -156,7 +156,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             if (interfaceInfo.SearchConditionId != default(int))
                 ViewData["ParametersConditionItems"] = _searchConditionNodeService.GetParametersConditionItemsBySearchConditionId(interfaceInfo.SearchConditionId);
 
-            ViewData["DataApiUrl"] = CommonConfig.Instance.Config.DataApiUrl;
+            ViewData["DataApiUrl"] = CommonConfig.Instance.DataApiUrl;
             return View(interfaceInfo);
         }
     }
