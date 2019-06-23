@@ -4,7 +4,7 @@ using SevenTiny.Cloud.Infrastructure.Configs;
 
 namespace SevenTiny.Cloud.Account.Core.DataAccess
 {
-    [DataBase("MultiTenantPlatformWeb")]
+    [DataBase("MultiTenantAccount")]
     public class AccountDbContext : MySqlDbContext<AccountDbContext>
     {
         public AccountDbContext() : base(ConnectionStringsConfig.Instance.MultiTenantAccount)

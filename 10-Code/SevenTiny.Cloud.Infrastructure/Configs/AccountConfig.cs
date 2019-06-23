@@ -19,6 +19,8 @@ namespace SevenTiny.Cloud.Infrastructure.Configs
         [ConfigProperty]
         public int TokenExpiredMinutesTimeSpan { get; set; }
         [ConfigProperty]
+        public string TokenIssuer { get; set; }
+        [ConfigProperty]
         public string TokenAudience { get; set; }
     }
 }

@@ -5,15 +5,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SevenTiny.Cloud.Account.Core.Enum;
 using SevenTiny.Cloud.Account.Models;
 
 namespace SevenTiny.Cloud.Account.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : WebControllerBase
     {
         [Authorize("Administrator")]
         public IActionResult Index()
         {
+            ViewData["TenantName"] = CurrentTenantName;
+            ViewData["UserName"] = CurrentUserName;
+            ViewData["Identity"] = SystemIdentityTranslator.ToChinese(CurrentIdentity);
             return View();
         }
 
@@ -26,7 +30,7 @@ namespace SevenTiny.Cloud.Account.Controllers
         {
             return View();
         }
-       
+
         public IActionResult HTTP401()
         {
             return View();

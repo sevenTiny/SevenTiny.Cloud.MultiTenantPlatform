@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SevenTiny.Bantina;
+using SevenTiny.Bantina.Validation;
 using SevenTiny.Cloud.Account.AuthManagement;
 using SevenTiny.Cloud.Account.Core.Const;
 using SevenTiny.Cloud.Account.Core.Entity;
@@ -18,34 +19,45 @@ namespace SevenTiny.Cloud.Account.Controllers
     public class UserAccountController : WebControllerBase
     {
         IUserAccountService _userAccountService;
+        ITenantInfoService _tenantInfoService;
+        TokenManagement _tokenManagement;
         public UserAccountController(
-            IUserAccountService userAccountService
+            IUserAccountService userAccountService,
+            ITenantInfoService tenantInfoService,
+            TokenManagement tokenManagement
             )
         {
             _userAccountService = userAccountService;
+            _tenantInfoService = tenantInfoService;
+            _tokenManagement = tokenManagement;
         }
         [AllowAnonymous]
         public IActionResult Login()
         {
+            var httpCode = Convert.ToString(Request.Query["httpCode"]);
+            if (httpCode != null && httpCode.Equals(401.ToString()))
+            {
+                return View(ResponseModel.Error("身份认证失败，请重新登陆!"));
+            }
             return View();
         }
 
         [AllowAnonymous]
         public IActionResult LoginLogic(LoginModel loginModel)
         {
-            var loginResult = Result<UserAccount>.Success("登陆成功")
-                .ContinueAssert(!string.IsNullOrEmpty(loginModel.Email), "email can not be null")
-                .ContinueAssert(!string.IsNullOrEmpty(loginModel.Password), "password can not be null")
+            var userAccount = new UserAccount { Email = loginModel.Email, Password = loginModel.Password };
+            var loginResult = Result<UserAccount>.Success("登陆成功", userAccount)
+                .ContinueAssert(!string.IsNullOrEmpty(loginModel.Email), "邮箱不能为空")
+                .ContinueAssert(!string.IsNullOrEmpty(loginModel.Password), "密码不能为空")
+                .ContinueAssert(loginModel.Email.IsEmail(), "邮箱格式不正确")
+                .ContinueAssert(loginModel.Password.Length >= 6, "密码不能少于6位")
                 .ContinueAssert(!string.IsNullOrEmpty(loginModel.RedirectUrl), "redirectUrl can not be null")
-                .Continue(re => _userAccountService.LoginByEmail(new UserAccount { Email = loginModel.Email, Password = loginModel.Password }));
+                .Continue(re => _userAccountService.LoginByEmail(userAccount));
 
             if (loginResult.IsSuccess)
             {
-                //将租户Id存入Session
-                SetTenantIdToSession(loginResult.Data.TenantId);
-                SetTenantIdToSession(loginResult.Data.Id);
                 //get token
-                var token = TokenManagement.GetToken(loginResult.Data).Data;
+                var token = _tokenManagement.GetToken(loginResult.Data).Data;
                 //set token to cookie
                 Response.Cookies.Append(AccountConst.KEY_ACCESSTOKEN, token);
                 //concat url
@@ -56,11 +68,14 @@ namespace SevenTiny.Cloud.Account.Controllers
                     redireUrl = $"{redireUrl}?{AccountConst.KEY_ACCESSTOKEN}={token}";
                 return Redirect(redireUrl);
             }
+
+            //将上次的值提供到前端
+            loginResult.Data = userAccount;
             return View("Login", loginResult.ToResponseModel());
         }
 
         [AllowAnonymous]
-        public IActionResult LogOut()
+        public IActionResult Logout()
         {
             //clear cookie
             Response.Cookies.Delete(AccountConst.KEY_ACCESSTOKEN);

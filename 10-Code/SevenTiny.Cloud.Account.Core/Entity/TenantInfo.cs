@@ -26,7 +26,7 @@ namespace SevenTiny.Cloud.Account.Core.Entity
         /// 注册人手机号
         /// </summary>
         [Column]
-        public int RegisterPhone { get; set; }
+        public string RegisterPhone { get; set; }
         /// <summary>
         /// 是否激活
         /// </summary>

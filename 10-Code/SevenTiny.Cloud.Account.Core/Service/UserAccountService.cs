@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using SevenTiny.Bantina;
 using SevenTiny.Bantina.Security;
 using SevenTiny.Cloud.Account.Core.Const;
@@ -71,13 +72,13 @@ namespace SevenTiny.Cloud.Account.Core.Service
                 .ContinueAssert(!string.IsNullOrEmpty(userAccount.Email), "邮箱信息为空")
                 .Continue(re =>
                 {
-                    UserAccount existAccount = _dbContext.Queryable<UserAccount>().Where(t => t.Email == userAccount.Email).ToOne();
+                    UserAccount existAccount = _dbContext.Queryable<UserAccount>().Where(t => t.Email.Equals(userAccount.Email)).ToOne();
                     //返回的数据是查询到的数据
                     re.Data = existAccount;
                     return re.ContinueAssert(existAccount != null, "账号不存在")
                             .Continue(ree =>
                             {
-                                if (existAccount.Password.Equals(GetSaltPwd(userAccount.Password)))
+                                if (!existAccount.Password.Equals(GetSaltPwd(userAccount.Password)))
                                     return Result<UserAccount>.Error("密码错误");
                                 return ree;
                             });

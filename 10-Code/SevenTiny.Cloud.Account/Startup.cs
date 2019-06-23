@@ -55,12 +55,14 @@ namespace SevenTiny.Cloud.Account
                         if (!string.IsNullOrEmpty(tokenFromRequest))
                         {
                             context.Token = tokenFromRequest;
+                            return Task.CompletedTask;
                         }
                         //如果cookie中有token，则直接从cookie获取
                         string tokenFromCookie = context.Request.Cookies[AccountConst.KEY_ACCESSTOKEN];
                         if (!string.IsNullOrEmpty(tokenFromCookie))
                         {
                             context.Token = tokenFromCookie;
+                            return Task.CompletedTask;
                         }
                         return Task.CompletedTask;
                     },
@@ -72,7 +74,7 @@ namespace SevenTiny.Cloud.Account
                         if (context.Response.StatusCode == 401)
                         {
                             //未登录重新登陆
-                            context.Response.Redirect("/UserAccount/Login");
+                            context.Response.Redirect("/UserAccount/Login?httpCode=401");
                         }
                         else if (context.Response.StatusCode == 403)
                         {
@@ -100,12 +102,10 @@ namespace SevenTiny.Cloud.Account
                 {
                     ValidateLifetime = true,//是否验证失效时间
                     ClockSkew = TimeSpan.FromSeconds(30),
-
                     ValidateAudience = true,//是否验证Audience
                     ValidAudience = AccountConfig.Instance.TokenAudience,//Audience
-                    //ValidateIssuer = true,//是否验证Issuer
-                    //ValidIssuer = "23223",//Issuer，这两项和前面签发jwt的设置一致
-
+                    ValidateIssuer = true,//是否验证Issuer
+                    ValidIssuer = AccountConfig.Instance.TokenIssuer,//Issuer，这两项和前面签发jwt的设置一致
                     ValidateIssuerSigningKey = true,//是否验证SecurityKey
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(AccountConfig.Instance.SecurityKey))//拿到SecurityKey
                 };
@@ -130,6 +130,7 @@ namespace SevenTiny.Cloud.Account
             });
             //DI
             services.InjectCore();
+            services.AddScoped<TokenManagement>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }

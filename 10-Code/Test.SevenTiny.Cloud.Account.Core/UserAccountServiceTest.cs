@@ -40,5 +40,12 @@ namespace Test.Seventiny.Cloud.Account.Core
 
             Assert.True(result.IsSuccess);
         }
+
+        [Fact]
+        public void GetUser()
+        {
+            var _dbContext = new AccountDbContext();
+            var result = _dbContext.Queryable<UserAccount>().Where(t=>t.Email.Equals("seventiny@foxmail.com")).ToList();
+        }
     }
 }

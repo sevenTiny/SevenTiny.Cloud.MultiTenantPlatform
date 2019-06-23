@@ -201,7 +201,7 @@
                     alert('账号和密码不能为空!');
                 }
                 else {
-                    $("#sign_form").submit();
+                $("#sign_form").submit();
                 }
             });
         })
@@ -220,10 +220,10 @@
         </div>
         <div class="signup_forms">
             <div id="signup_forms_container" class="signup_forms_container">
-                <form class="signup_form_form" id="sign_form" method="post" action="/UserAccount/LoginLogic">
+                <form class="form signup_form_form" id="sign_form" method="post" action="/UserAccount/LoginLogic">
                     <div class="signup_account" id="signup_account">
                         <div class="form_user">
-                            <input type="text" name="email" placeholder="Email" id="signup_email" />
+                            <input type="text" name="email" placeholder="Email" id="signup_email" value="@entity.Email" />
                         </div>
                         <div class="form_password">
                             <input type="password" name="password" placeholder="Password" id="signup_password" />
@@ -236,7 +236,7 @@
             </div>
             @if (!result.IsSuccess)
             {
-                <br /><pre><span class="c-red">@result.Message</span></pre>
+                <br /><pre><span class="c-red" style="color:red">@result.Message</span></pre>
             }
             <button type="button" id="signup_forms_submit"><span><strong>Log in</strong></span></button>
         </div>

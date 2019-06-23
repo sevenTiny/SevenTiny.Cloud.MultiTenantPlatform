@@ -2,7 +2,6 @@
     ViewData["Title"] = "Seventiny Cloud 租户中心";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <!--_header 作为公共模版分离出去-->
 <header class="navbar-wrapper">
     <div class="navbar navbar-fixed-top">
@@ -10,18 +9,18 @@
             <a aria-hidden="false" class="nav-toggle Hui-iconfont visible-xs" href="javascript:;">&#xe667;</a>
             <nav class="nav navbar-nav">
                 <ul class="cl">
-                    <li><a href="/Application/Select" class="dropDown_A">这里显示当前租户名</a></li>
+                    <li><a href="/Home/Index" class="dropDown_A">@ViewData["TenantName"]</a></li>
                 </ul>
             </nav>
             <nav id="Hui-userbar" class="nav navbar-nav navbar-userbar hidden-xs">
                 <ul class="cl">
-                    <li>超级管理员</li>
+                    <li>@ViewData["Identity"]</li>
                     <li class="dropDown dropDown_hover">
-                        <a href="#" class="dropDown_A">admin <i class="Hui-iconfont">&#xe6d5;</i></a>
+                        <a href="#" class="dropDown_A"> @ViewData["UserName"]<i class="Hui-iconfont">&#xe6d5;</i></a>
                         <ul class="dropDown-menu menu radius box-shadow">
                             <li><a href="javascript:;" onClick="myselfinfo()">个人信息</a></li>
-                            <li><a href="#">切换账户</a></li>
-                            <li><a href="#">退出</a></li>
+                            <li><a href="/UserAccount/Login">切换账户</a></li>
+                            <li><a href="/UserAccount/Logout">退出</a></li>
                         </ul>
                     </li>
                     <li id="Hui-msg"> <a href="#" title="消息"><span class="badge badge-danger">1</span><i class="Hui-iconfont" style="font-size:18px">&#xe68a;</i></a> </li>
@@ -50,7 +49,7 @@
                 <dt><i class="Hui-iconfont">&#xe611; </i> 租户管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
                 <dd>
                     <ul>
-                        <li><a href="javascript:frameOpen('/Menue/List')">租户列表</a></li>
+                        <li><a href="javascript:frameOpen('/TenantInfo/List')">租户列表</a></li>
                         <li><a href="javascript:frameOpen('/Menue/List')">应用配置</a></li>
                     </ul>
                 </dd>

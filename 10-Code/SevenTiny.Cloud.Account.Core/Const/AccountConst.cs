@@ -15,7 +15,10 @@
         public const string SALT_AFTER = ".25913AEE-8F27-49DB-89AA-AD730CAB58F1";
 
         public const string KEY_TENANTID = "TenantId";
+        public const string KEY_TENANTNAME = "TenantName";
         public const string KEY_USERID = "UserId";
+        public const string KEY_USEREMAIL = "UserEmail";
+        public const string KEY_USERNAME = "UserName";
         public const string KEY_ACCESSTOKEN = "_AccessToken";
         public const string KEY_SYSTEMIDENTITY = "SystemIdentity";
     }
