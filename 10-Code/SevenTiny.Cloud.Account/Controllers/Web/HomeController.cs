@@ -17,7 +17,7 @@ namespace SevenTiny.Cloud.Account.Controllers
         {
             ViewData["TenantName"] = CurrentTenantName;
             ViewData["UserName"] = CurrentUserName;
-            ViewData["Identity"] = SystemIdentityTranslator.ToChinese(CurrentIdentity);
+            ViewData["Identity"] = CurrentIdentity;
             return View();
         }
 

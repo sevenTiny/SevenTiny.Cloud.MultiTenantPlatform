@@ -2,6 +2,7 @@
 using System.Linq;
 using SevenTiny.Bantina;
 using SevenTiny.Bantina.Security;
+using SevenTiny.Bantina.Validation;
 using SevenTiny.Cloud.Account.Core.Const;
 using SevenTiny.Cloud.Account.Core.DataAccess;
 using SevenTiny.Cloud.Account.Core.Entity;
@@ -46,6 +47,8 @@ namespace SevenTiny.Cloud.Account.Core.Service
         {
             return Result.Success("Register Succeed!")
                 .ContinueAssert(userAccount.TenantId >= 0, "非法的租户")
+                .ContinueAssert(!string.IsNullOrEmpty(userAccount.Email), "邮箱不能为空")
+                .ContinueAssert(userAccount.Email.IsEmail(), "邮箱格式不正确")
                 //check register
                 .Continue(re => ValidateRegisterdByEmail(userAccount.Email))
                 //+salt
@@ -69,7 +72,10 @@ namespace SevenTiny.Cloud.Account.Core.Service
         public Result<UserAccount> LoginByEmail(UserAccount userAccount)
         {
             return Result<UserAccount>.Success("登陆成功")
-                .ContinueAssert(!string.IsNullOrEmpty(userAccount.Email), "邮箱信息为空")
+                .ContinueAssert(!string.IsNullOrEmpty(userAccount.Email), "邮箱不能为空")
+                .ContinueAssert(!string.IsNullOrEmpty(userAccount.Password), "密码不能为空")
+                .ContinueAssert(userAccount.Email.IsEmail(), "邮箱格式不正确")
+                .ContinueAssert(userAccount.Password.Length >= 6, "密码不能少于6位")
                 .Continue(re =>
                 {
                     UserAccount existAccount = _dbContext.Queryable<UserAccount>().Where(t => t.Email.Equals(userAccount.Email)).ToOne();

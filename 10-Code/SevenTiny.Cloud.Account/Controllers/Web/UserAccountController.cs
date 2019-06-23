@@ -19,16 +19,13 @@ namespace SevenTiny.Cloud.Account.Controllers
     public class UserAccountController : WebControllerBase
     {
         IUserAccountService _userAccountService;
-        ITenantInfoService _tenantInfoService;
         TokenManagement _tokenManagement;
         public UserAccountController(
             IUserAccountService userAccountService,
-            ITenantInfoService tenantInfoService,
             TokenManagement tokenManagement
             )
         {
             _userAccountService = userAccountService;
-            _tenantInfoService = tenantInfoService;
             _tokenManagement = tokenManagement;
         }
         [AllowAnonymous]
@@ -47,10 +44,6 @@ namespace SevenTiny.Cloud.Account.Controllers
         {
             var userAccount = new UserAccount { Email = loginModel.Email, Password = loginModel.Password };
             var loginResult = Result<UserAccount>.Success("登陆成功", userAccount)
-                .ContinueAssert(!string.IsNullOrEmpty(loginModel.Email), "邮箱不能为空")
-                .ContinueAssert(!string.IsNullOrEmpty(loginModel.Password), "密码不能为空")
-                .ContinueAssert(loginModel.Email.IsEmail(), "邮箱格式不正确")
-                .ContinueAssert(loginModel.Password.Length >= 6, "密码不能少于6位")
                 .ContinueAssert(!string.IsNullOrEmpty(loginModel.RedirectUrl), "redirectUrl can not be null")
                 .Continue(re => _userAccountService.LoginByEmail(userAccount));
 
@@ -97,7 +90,7 @@ namespace SevenTiny.Cloud.Account.Controllers
         [Authorize("Administrator")]
         public IActionResult AddAccount()
         {
-            return View();
+            return View(ResponseModel.Success(new UserAccount()));
         }
 
         [Authorize("Administrator")]
@@ -108,10 +101,18 @@ namespace SevenTiny.Cloud.Account.Controllers
                 {
                     //赋值当前租户Id
                     userAccount.TenantId = CurrentTenantId;
+                    //默认账号密码都是123456
+                    userAccount.Password = "123456";
+                    userAccount.CreateBy = CurrentUserId;
                     //注册用户
                     return _userAccountService.SignUpByEmail(userAccount);
                 });
-            return View();
+
+            if (result.IsSuccess)
+            {
+                return Redirect("/UserAccount/List");
+            }
+            return View(ResponseModel.Error(result.Message, userAccount));
         }
 
         [Authorize("Administrator")]

@@ -97,6 +97,10 @@ namespace SevenTiny.Cloud.Account
                         }
                         return Task.CompletedTask;
                     },
+                    OnTokenValidated = context => 
+                    {
+                        return Task.CompletedTask;
+                    }
                 };
                 options.TokenValidationParameters = new TokenValidationParameters
                 {

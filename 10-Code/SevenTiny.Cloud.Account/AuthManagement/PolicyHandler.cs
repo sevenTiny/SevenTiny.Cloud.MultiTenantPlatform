@@ -28,8 +28,11 @@ namespace SevenTiny.Cloud.Account.AuthManagement
                         if (!item.Identities.Contains(identity))
                         {
                             //无权限跳转到拒绝页面
-                            httpContext.Response.StatusCode = 403;
-                            context.Fail();
+                            //httpContext.Response.StatusCode = 403;
+                            //他妈的，跳转怎么不好使啊
+                            httpContext.Response.Redirect("/Home/HTTP403", true);
+                            //context.Fail();
+                            return Task.CompletedTask;
                         }
                     }
                 }

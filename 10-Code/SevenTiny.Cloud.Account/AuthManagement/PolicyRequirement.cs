@@ -22,7 +22,7 @@ namespace SevenTiny.Cloud.Account.AuthManagement
             UserPermissions = new List<UserPermission> {
                 //需要系统管理员才能访问的路由必须配置在这里进行管控，其他有标签的路由默认租户管理员都可以访问
                 new UserPermission {
-                    RoutesToUpper = new[]{ "" },
+                    RoutesToUpper = new[]{ "/TenantInfo/List" },
                     Identities = new[]{(int)AccountSystemIdentityInternal.SystemAdministrator }
                 }
             };

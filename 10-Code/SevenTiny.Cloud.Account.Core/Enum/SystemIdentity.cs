@@ -29,12 +29,14 @@
     {
         public static string ToChinese(int systemIdentity)
         {
-            switch ((SystemIdentity)systemIdentity)
+            switch (systemIdentity)
             {
-                case SystemIdentity.User:
+                case (int)SystemIdentity.User:
                     return "用户";
-                case SystemIdentity.TenantAdministrator:
+                case (int)SystemIdentity.TenantAdministrator:
                     return "租户管理员";
+                case (int)AccountSystemIdentityInternal.SystemAdministrator:
+                    return "Cloud系统管理员";
                 default:
                     return "UnKnown";
             }

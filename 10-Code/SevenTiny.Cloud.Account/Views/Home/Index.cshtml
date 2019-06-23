@@ -1,6 +1,8 @@
-﻿@{
+﻿@using SevenTiny.Cloud.Account.Core.Enum;
+@{
     ViewData["Title"] = "Seventiny Cloud 租户中心";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    int identity = Convert.ToInt32(ViewData["Identity"]);
 }
 <!--_header 作为公共模版分离出去-->
 <header class="navbar-wrapper">
@@ -14,7 +16,7 @@
             </nav>
             <nav id="Hui-userbar" class="nav navbar-nav navbar-userbar hidden-xs">
                 <ul class="cl">
-                    <li>@ViewData["Identity"]</li>
+                    <li>@SystemIdentityTranslator.ToChinese(identity)</li>
                     <li class="dropDown dropDown_hover">
                         <a href="#" class="dropDown_A"> @ViewData["UserName"]<i class="Hui-iconfont">&#xe6d5;</i></a>
                         <ul class="dropDown-menu menu radius box-shadow">
@@ -49,13 +51,16 @@
                 <dt><i class="Hui-iconfont">&#xe611; </i> 租户管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
                 <dd>
                     <ul>
-                        <li><a href="javascript:frameOpen('/TenantInfo/List')">租户列表</a></li>
+                        @if (identity == (int)AccountSystemIdentityInternal.SystemAdministrator)
+                        {
+                            <li><a href="javascript:frameOpen('/TenantInfo/List')">租户列表</a></li>
+                        }
                         <li><a href="javascript:frameOpen('/Menue/List')">应用配置</a></li>
                     </ul>
                 </dd>
             </dl>
             <dl id="menu-profile">
-                <dt><i class="Hui-iconfont">&#xe611; </i> 账号管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+                <dt><i class="Hui-iconfont">&#xe611; </i> 用户管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
                 <dd>
                     <ul>
                         <li><a href="javascript:frameOpen('/UserAccount/List')">用户列表</a></li>
