@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
 using SevenTiny.Bantina;
+using SevenTiny.Cloud.Infrastructure.Const;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
@@ -35,7 +36,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             fieldListAggregationService = _fieldListAggregationService;
         }
 
-        public Result Add(string metaObjectCode, BsonDocument bsons)
+        public Result Add(int tenantId, string metaObjectCode, BsonDocument bsons)
         {
             if (string.IsNullOrEmpty(metaObjectCode))
                 return Result.Error("实体编码不能为空");
@@ -45,9 +46,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             if (metaObject == null)
                 return Result.Error("没有找到该实体编码对应的实体信息");
 
-            return Add(metaObject, bsons);
+            return Add(tenantId, metaObject, bsons);
         }
-        public Result Add(MetaObject metaObject, BsonDocument bsons)
+        public Result Add(int tenantId, MetaObject metaObject, BsonDocument bsons)
         {
             //错误信息返回值
             HashSet<string> ErrorInfo = new HashSet<string>();
@@ -100,7 +101,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             }
 
             //补充字段
-            //bsons.SetElement(new BsonElement("_id", Guid.NewGuid().ToString()));//id已经补充到预置字段
+            bsons.SetElement(new BsonElement(MetaDataConst.TenantId, tenantId));
             bsons.SetElement(new BsonElement("MetaObjectCode", metaObject.Code));
 
             db.GetCollectionBson(metaObject.Code).InsertOne(bsons);
@@ -108,7 +109,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             return Result.Success($"插入成功，日志：{string.Join(",", ErrorInfo)}");
         }
 
-        public Result BatchAdd(string metaObjectCode, List<BsonDocument> bsons)
+        public Result BatchAdd(int tenantId, string metaObjectCode, List<BsonDocument> bsons)
         {
             if (string.IsNullOrEmpty(metaObjectCode))
                 return Result.Error("实体编码不能为空");
@@ -118,9 +119,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             if (metaObject == null)
                 return Result.Error("没有找到该实体编码对应的实体信息");
 
-            return BatchAdd(metaObject, bsons);
+            return BatchAdd(tenantId, metaObject, bsons);
         }
-        public Result BatchAdd(MetaObject metaObject, List<BsonDocument> bsonsList)
+        public Result BatchAdd(int tenantId, MetaObject metaObject, List<BsonDocument> bsonsList)
         {
             if (bsonsList != null && bsonsList.Any())
             {
@@ -178,7 +179,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                     }
 
                     //补充字段
-                    //bsons.SetElement(new BsonElement("_id", Guid.NewGuid().ToString()));//id已经补充到预置字段
+                    bsons.SetElement(new BsonElement(MetaDataConst.TenantId, tenantId));
                     bsons.SetElement(new BsonElement("MetaObjectCode", metaObject.Code));
 
                     insertBsonsList.Add(bsons);
@@ -193,7 +194,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             return Result.Success($"插入失败! 失败原因：没有任何数据需要插入.");
         }
 
-        public Result Update(string metaObjectCode, FilterDefinition<BsonDocument> condition, BsonDocument bsons)
+        public Result Update(int tenantId, string metaObjectCode, FilterDefinition<BsonDocument> condition, BsonDocument bsons)
         {
             if (string.IsNullOrEmpty(metaObjectCode))
                 return Result.Error("实体编码不能为空");
@@ -203,18 +204,18 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             if (metaObject == null)
                 return Result.Error("没有找到该实体编码对应的实体信息");
 
-            return Update(metaObject, condition, bsons);
+            return Update(tenantId, metaObject, condition, bsons);
         }
-        public Result Update(int metaObjectId, FilterDefinition<BsonDocument> condition, BsonDocument bsons)
+        public Result Update(int tenantId, int metaObjectId, FilterDefinition<BsonDocument> condition, BsonDocument bsons)
         {
             var metaObject = metaObjectService.GetById(metaObjectId);
 
             if (metaObject == null)
                 return Result.Error("没有找到该实体编码对应的实体信息");
 
-            return Update(metaObject, condition, bsons);
+            return Update(tenantId, metaObject, condition, bsons);
         }
-        public Result Update(MetaObject metaObject, FilterDefinition<BsonDocument> condition, BsonDocument bsons)
+        public Result Update(int tenantId, MetaObject metaObject, FilterDefinition<BsonDocument> condition, BsonDocument bsons)
         {
             //错误信息返回值
             HashSet<string> ErrorInfo = new HashSet<string>();
@@ -263,13 +264,13 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                 var bu = Builders<BsonDocument>.Update;
                 foreach (var item in bsons)
                 {
-                    collection.UpdateMany(condition, bu.Set(item.Name, item.Value));
+                    collection.UpdateMany(CombineTenantId(tenantId, condition), bu.Set(item.Name, item.Value));
                 }
             }
             return Result.Success($"修改成功，日志：{string.Join(",", ErrorInfo)}");
         }
 
-        public Result Delete(string metaObjectCode, FilterDefinition<BsonDocument> condition)
+        public Result Delete(int tenantId, string metaObjectCode, FilterDefinition<BsonDocument> condition)
         {
             if (string.IsNullOrEmpty(metaObjectCode))
                 return Result.Error("实体编码不能为空");
@@ -279,25 +280,25 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             if (metaObject == null)
                 return Result.Error("没有找到该实体编码对应的实体信息");
 
-            return Delete(metaObject, condition);
+            return Delete(tenantId, metaObject, condition);
         }
-        public Result Delete(int metaObjectId, FilterDefinition<BsonDocument> condition)
+        public Result Delete(int tenantId, int metaObjectId, FilterDefinition<BsonDocument> condition)
         {
             var metaObject = metaObjectService.GetById(metaObjectId);
 
             if (metaObject == null)
                 return Result.Error("没有找到该实体编码对应的实体信息");
 
-            return Delete(metaObject, condition);
+            return Delete(tenantId, metaObject, condition);
         }
-        public Result Delete(MetaObject metaObject, FilterDefinition<BsonDocument> condition)
+        public Result Delete(int tenantId, MetaObject metaObject, FilterDefinition<BsonDocument> condition)
         {
-            db.GetCollectionBson(metaObject.Code).DeleteMany(condition);
+            db.GetCollectionBson(metaObject.Code).DeleteMany(CombineTenantId(tenantId, condition));
 
             return Result.Success($"删除成功");
         }
 
-        public BsonDocument Get(string metaObjectCode, FilterDefinition<BsonDocument> condition, string[] columns = null)
+        public BsonDocument Get(int tenantId, string metaObjectCode, FilterDefinition<BsonDocument> condition, string[] columns = null)
         {
             if (string.IsNullOrEmpty(metaObjectCode))
                 throw new Exception("实体编码不能为空");
@@ -305,17 +306,17 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             if (metaObject == null)
                 throw new Exception("没有找到该实体编码对应的实体信息");
 
-            return Get(metaObject, condition, columns);
+            return Get(tenantId, metaObject, condition, columns);
         }
-        public BsonDocument Get(int metaObjectId, FilterDefinition<BsonDocument> condition, string[] columns = null)
+        public BsonDocument Get(int tenantId, int metaObjectId, FilterDefinition<BsonDocument> condition, string[] columns = null)
         {
             var metaObject = metaObjectService.GetById(metaObjectId);
             if (metaObject == null)
                 throw new Exception("没有找到该实体编码对应的实体信息");
 
-            return Get(metaObject, condition, columns);
+            return Get(tenantId, metaObject, condition, columns);
         }
-        public BsonDocument Get(MetaObject metaObject, FilterDefinition<BsonDocument> condition, string[] columns = null)
+        public BsonDocument Get(int tenantId, MetaObject metaObject, FilterDefinition<BsonDocument> condition, string[] columns = null)
         {
             var projection = Builders<BsonDocument>.Projection.Include("_id");
             //include fields
@@ -323,12 +324,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                 foreach (var item in columns)
                     projection = projection.Include(item);
 
-            return db.GetCollectionBson(metaObject.Code).Find<BsonDocument>(condition).Project(projection).Limit(1)?.FirstOrDefault();
+            return db.GetCollectionBson(metaObject.Code).Find<BsonDocument>(CombineTenantId(tenantId, condition)).Project(projection).Limit(1)?.FirstOrDefault();
         }
         public SingleObjectComponent GetSingleObjectComponent(QueryPiplineContext queryPiplineContext, FilterDefinition<BsonDocument> condition)
         {
             var fieldMetas = fieldListAggregationService.GetColumnDataByFieldListId(queryPiplineContext);
-            var document = Get(queryPiplineContext.MetaObjectId, condition, fieldMetas?.Select(t => t.CmpData.Name)?.ToArray());
+            var document = Get(queryPiplineContext.TenantId, queryPiplineContext.MetaObjectId, condition, fieldMetas?.Select(t => t.CmpData.Name)?.ToArray());
             SingleObjectComponent singleObjectComponent = new SingleObjectComponent
             {
                 BizData = fieldBizDataService.ToBizDataDictionary(queryPiplineContext, document),
@@ -337,34 +338,34 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             return singleObjectComponent;
         }
 
-        public BsonDocument GetById(string metaObjectCode, string _id)
+        public BsonDocument GetById(int tenantId, string metaObjectCode, string _id)
         {
             FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.Eq("_id", _id);
-            return Get(metaObjectCode, filter);
+            return Get(tenantId, metaObjectCode, filter);
         }
-        public List<BsonDocument> GetByIds(string metaObjectCode, string[] _ids, SortDefinition<BsonDocument> sort, string[] columns = null)
+        public List<BsonDocument> GetByIds(int tenantId, string metaObjectCode, string[] _ids, SortDefinition<BsonDocument> sort, string[] columns = null)
         {
             FilterDefinition<BsonDocument> filter = Builders<BsonDocument>.Filter.In("_id", _ids);
-            return GetList(metaObjectCode, filter, sort, columns);
+            return GetList(tenantId, metaObjectCode, filter, sort, columns);
         }
-        public List<BsonDocument> GetList(int metaObjectId, FilterDefinition<BsonDocument> condition, SortDefinition<BsonDocument> sort, string[] columns = null)
+        public List<BsonDocument> GetList(int tenantId, int metaObjectId, FilterDefinition<BsonDocument> condition, SortDefinition<BsonDocument> sort, string[] columns = null)
         {
-            return GetList(metaObjectId, condition, 0, 0, sort, columns);
+            return GetList(tenantId, metaObjectId, condition, 0, 0, sort, columns);
         }
-        public List<BsonDocument> GetList(string metaObjectCode, FilterDefinition<BsonDocument> condition, SortDefinition<BsonDocument> sort, string[] columns = null)
+        public List<BsonDocument> GetList(int tenantId, string metaObjectCode, FilterDefinition<BsonDocument> condition, SortDefinition<BsonDocument> sort, string[] columns = null)
         {
-            return GetList(metaObjectCode, condition, 0, 0, sort, columns);
+            return GetList(tenantId, metaObjectCode, condition, 0, 0, sort, columns);
         }
 
-        public List<BsonDocument> GetList(int metaObjectId, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort, string[] columns = null)
+        public List<BsonDocument> GetList(int tenantId, int metaObjectId, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort, string[] columns = null)
         {
             var metaObject = metaObjectService.GetById(metaObjectId);
             if (metaObject == null)
                 throw new Exception("没有找到该实体编码对应的实体信息");
 
-            return GetList(metaObject, condition, pageIndex, pageSize, sort, columns);
+            return GetList(tenantId, metaObject, condition, pageIndex, pageSize, sort, columns);
         }
-        public List<BsonDocument> GetList(string metaObjectCode, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort, string[] columns = null)
+        public List<BsonDocument> GetList(int tenantId, string metaObjectCode, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort, string[] columns = null)
         {
             if (string.IsNullOrEmpty(metaObjectCode))
                 throw new Exception("实体编码不能为空");
@@ -372,9 +373,9 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             if (metaObject == null)
                 throw new Exception("没有找到该实体编码对应的实体信息");
 
-            return GetList(metaObject, condition, pageIndex, pageSize, sort, columns);
+            return GetList(tenantId, metaObject, condition, pageIndex, pageSize, sort, columns);
         }
-        public List<BsonDocument> GetList(MetaObject metaObject, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort, string[] columns = null)
+        public List<BsonDocument> GetList(int tenantId, MetaObject metaObject, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort, string[] columns = null)
         {
             List<BsonDocument> bson = new List<BsonDocument>();
             if (pageSize == 0)
@@ -394,41 +395,41 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             if (sort == null)
                 sort = new SortDefinitionBuilder<BsonDocument>().Ascending("_id");
 
-            bson = db.GetCollectionBson(metaObject.Code).Find(condition).Skip(skipSize).Limit(pageSize).Sort(sort).Project(projection).ToList();
+            bson = db.GetCollectionBson(metaObject.Code).Find(CombineTenantId(tenantId, condition)).Skip(skipSize).Limit(pageSize).Sort(sort).Project(projection).ToList();
             return bson;
         }
 
-        public List<BsonDocument> GetList(int metaObjectId, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort, out int count, string[] columns = null)
+        public List<BsonDocument> GetList(int tenantId, int metaObjectId, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort, out int count, string[] columns = null)
         {
             var metaObject = metaObjectService.GetById(metaObjectId);
             if (metaObject == null)
                 throw new Exception("没有找到该实体编码对应的实体信息");
-            return GetList(metaObject, condition, pageIndex, pageSize, sort, out count, columns);
+            return GetList(tenantId, metaObject, condition, pageIndex, pageSize, sort, out count, columns);
         }
-        public List<BsonDocument> GetList(string metaObjectCode, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort, out int count, string[] columns = null)
+        public List<BsonDocument> GetList(int tenantId, string metaObjectCode, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort, out int count, string[] columns = null)
         {
             if (string.IsNullOrEmpty(metaObjectCode))
                 throw new Exception("实体编码不能为空");
             var metaObject = metaObjectService.GetByCode(metaObjectCode);
             if (metaObject == null)
                 throw new Exception("没有找到该实体编码对应的实体信息");
-            return GetList(metaObject, condition, pageIndex, pageSize, sort, out count, columns);
+            return GetList(tenantId, metaObject, condition, pageIndex, pageSize, sort, out count, columns);
         }
-        public List<BsonDocument> GetList(MetaObject metaObject, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort, out int count, string[] columns = null)
+        public List<BsonDocument> GetList(int tenantId, MetaObject metaObject, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort, out int count, string[] columns = null)
         {
-            List<BsonDocument> bson = GetList(metaObject, condition, pageIndex, pageSize, sort, columns);
+            List<BsonDocument> bson = GetList(tenantId, metaObject, condition, pageIndex, pageSize, sort, columns);
 
             if (pageSize == 0)
                 count = bson?.Count ?? 0;
             else
-                count = Convert.ToInt32(db.GetCollectionBson(metaObject.Code).CountDocuments(condition));
+                count = Convert.ToInt32(db.GetCollectionBson(metaObject.Code).CountDocuments(CombineTenantId(tenantId, condition)));
 
             return bson;
         }
         public TableListComponent GetTableListComponent(QueryPiplineContext queryPiplineContext, FilterDefinition<BsonDocument> condition, int pageIndex, int pageSize, SortDefinition<BsonDocument> sort, out int count)
         {
             var fieldMetas = fieldListAggregationService.GetColumnDataByFieldListId(queryPiplineContext);
-            var documents = GetList(queryPiplineContext.MetaObjectId, condition, pageIndex, pageSize, sort, out count, fieldMetas?.Select(t => t.CmpData.Name)?.ToArray());
+            var documents = GetList(queryPiplineContext.TenantId, queryPiplineContext.MetaObjectId, condition, pageIndex, pageSize, sort, out count, fieldMetas?.Select(t => t.CmpData.Name)?.ToArray());
             TableListComponent tableListComponent = new TableListComponent
             {
                 BizData = fieldBizDataService.ToBizDataDictionaryList(queryPiplineContext, documents),
@@ -442,15 +443,15 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             return tableListComponent;
         }
 
-        public int GetCount(int metaObjectId, FilterDefinition<BsonDocument> condition)
+        public int GetCount(int tenantId, int metaObjectId, FilterDefinition<BsonDocument> condition)
         {
             var metaObject = metaObjectService.GetById(metaObjectId);
             if (metaObject == null)
                 throw new Exception("没有找到该实体编码对应的实体信息");
 
-            return GetCount(metaObject, condition);
+            return GetCount(tenantId, metaObject, condition);
         }
-        public int GetCount(string metaObjectCode, FilterDefinition<BsonDocument> condition)
+        public int GetCount(int tenantId, string metaObjectCode, FilterDefinition<BsonDocument> condition)
         {
             if (string.IsNullOrEmpty(metaObjectCode))
                 throw new Exception("实体编码不能为空");
@@ -458,11 +459,24 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             if (metaObject == null)
                 throw new Exception("没有找到该实体编码对应的实体信息");
 
-            return GetCount(metaObject, condition);
+            return GetCount(tenantId, metaObject, condition);
         }
-        public int GetCount(MetaObject metaObject, FilterDefinition<BsonDocument> condition)
+        public int GetCount(int tenantId, MetaObject metaObject, FilterDefinition<BsonDocument> condition)
         {
-            return Convert.ToInt32(db.GetCollectionBson(metaObject.Code).CountDocuments(condition));
+            return Convert.ToInt32(db.GetCollectionBson(metaObject.Code).CountDocuments(CombineTenantId(tenantId, condition)));
+        }
+
+        /// <summary>
+        /// 拼接租户id到条件上
+        /// </summary>
+        /// <param name="tenantId"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        private FilterDefinition<BsonDocument> CombineTenantId(int tenantId, FilterDefinition<BsonDocument> filter)
+        {
+            //把租户id拼接上
+            var bf = Builders<BsonDocument>.Filter;
+            return bf.And(filter, bf.Eq(MetaDataConst.TenantId, tenantId));
         }
     }
 }

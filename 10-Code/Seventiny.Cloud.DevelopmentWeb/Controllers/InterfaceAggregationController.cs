@@ -156,7 +156,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             if (interfaceInfo.SearchConditionId != default(int))
                 ViewData["ParametersConditionItems"] = _searchConditionNodeService.GetParametersConditionItemsBySearchConditionId(interfaceInfo.SearchConditionId);
 
-            ViewData["DataApiUrl"] = CommonConfig.Instance.Config.DataApiUrl;
+            ViewData["DataApiUrl"] = CommonConfig.Instance.DataApiUrl;
             return View(interfaceInfo);
         }
     }

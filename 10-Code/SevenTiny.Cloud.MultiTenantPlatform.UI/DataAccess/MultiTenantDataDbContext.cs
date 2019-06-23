@@ -7,7 +7,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.UI.DataAccess
 {
     public class MultiTenantDataDbContext : MongoDbContext<MultiTenantDataDbContext>
     {
-        public MultiTenantDataDbContext() : base(ConnectionStringsConfig.Instance.Config.mongodb39911)
+        public MultiTenantDataDbContext() : base(ConnectionStringsConfig.Instance.mongodb39911)
         {
         }
     }

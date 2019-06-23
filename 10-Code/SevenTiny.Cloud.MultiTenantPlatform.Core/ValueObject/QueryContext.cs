@@ -12,6 +12,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject
     /// </summary>
     public class QueryPiplineContext
     {
+        /// <summary>
+        /// 租户Id
+        /// </summary>
+        public int TenantId { get; set; }
+
         public string InterfaceCode { get; set; }
         public Dictionary<string, object> ArgumentsDic { get; set; }
 

@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SevenTiny.Cloud.Infrastructure.Const;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 {

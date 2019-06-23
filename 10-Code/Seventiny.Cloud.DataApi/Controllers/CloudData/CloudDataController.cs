@@ -143,13 +143,13 @@ namespace Seventiny.Cloud.DataApi.Controllers
                         //缓存某个服务下的全部触发器脚本，包括before和after
                         queryContext.TriggerScriptsOfOneServiceType = _triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(queryContext.MetaObjectId, (int)ServiceType.Interface_Count);
                         filter = _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_Count_Before, filter, CurrentApplicationContext, queryContext.InterfaceCode, filter);
-                        var count = dataAccessService.GetCount(queryContext.MetaObjectId, filter);
+                        var count = dataAccessService.GetCount(queryContext.TenantId, queryContext.MetaObjectId, filter);
                         count = _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_Count_After, count, CurrentApplicationContext, queryContext.InterfaceCode, filter, count);
                         return JsonResultModel.Success("get data count success", count);
                     case InterfaceType.JsonDataSource:
                         return new JsonResult(Newtonsoft.Json.JsonConvert.DeserializeObject(_dataSourceService.GetById(queryContext.DataSourceId).Script));
                     case InterfaceType.ExecutableScriptDataSource:
-                        object triggerScriptDataSourceResult = _triggerScriptService.RunDataSourceScript(queryContext, CurrentApplicationContext, queryContext.ArgumentsDic);
+                        object triggerScriptDataSourceResult = _triggerScriptService.RunDataSourceScript(queryContext, CurrentApplicationContext, queryContext.InterfaceCode, queryContext.ArgumentsDic);
                         return JsonResultModel.Success("get trigger script result success", triggerScriptDataSourceResult);
                     default:
                         break;
@@ -206,7 +206,7 @@ namespace Seventiny.Cloud.DataApi.Controllers
                 }
 
                 //add data
-                var addResult = dataAccessService.Add(queryContext.MetaObject, bson);
+                var addResult = dataAccessService.Add(queryContext.TenantId, queryContext.MetaObject, bson);
 
                 //trigger after
                 _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_Add_After, bson, CurrentApplicationContext, queryContext.InterfaceCode, bson);
@@ -261,7 +261,7 @@ namespace Seventiny.Cloud.DataApi.Controllers
                 }
 
                 //update data
-                dataAccessService.Update(queryContext.MetaObjectId, filter, bson);
+                dataAccessService.Update(queryContext.TenantId, queryContext.MetaObjectId, filter, bson);
 
                 //trigger after
                 _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_Update_After, bson, CurrentApplicationContext, queryContext.InterfaceCode, bson);
@@ -300,10 +300,10 @@ namespace Seventiny.Cloud.DataApi.Controllers
                 filter = _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_Delete_Before, filter, CurrentApplicationContext, queryContext.InterfaceCode, filter);
 
                 //queryResult       
-                var queryDatas = dataAccessService.GetList(queryContext.MetaObjectId, filter, null);
+                var queryDatas = dataAccessService.GetList(queryContext.TenantId, queryContext.MetaObjectId, filter, null);
 
                 //delete
-                dataAccessService.Delete(queryContext.MetaObjectId, filter);
+                dataAccessService.Delete(queryContext.TenantId, queryContext.MetaObjectId, filter);
 
                 //trigger after
                 _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.After, TriggerScriptService.FunctionName_MetaObject_Interface_Delete_After, filter, CurrentApplicationContext, queryContext.InterfaceCode, queryDatas);

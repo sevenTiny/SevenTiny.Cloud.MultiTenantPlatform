@@ -19,6 +19,7 @@ namespace SevenTiny.Cloud.Account
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .UseUrls("http://*:39041")
                 .UseStartup<Startup>();
     }
 }
