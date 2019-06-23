@@ -3,7 +3,7 @@
     /// <summary>
     /// 常量
     /// </summary>
-    public class AccountConst
+    internal class AccountConst
     {
         /// <summary>
         /// 数值前面的盐值，建议后面再拼接

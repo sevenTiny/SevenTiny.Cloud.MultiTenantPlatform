@@ -33,7 +33,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.SevenTiny.Cloud.Infras
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenantPlatform.UI", "..\10-Code\SevenTiny.Cloud.MultiTenantPlatform.UI\SevenTiny.Cloud.MultiTenantPlatform.UI.csproj", "{C920C71D-0EC5-482E-96DB-C0A74F53FFFC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Seventiny.Cloud.OfficialWeb", "..\10-Code\Seventiny.Cloud.OfficialWeb\Seventiny.Cloud.OfficialWeb.csproj", "{24D63500-2857-4574-ABDA-E47EB2EB3BAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Seventiny.Cloud.OfficialWeb", "..\10-Code\Seventiny.Cloud.OfficialWeb\Seventiny.Cloud.OfficialWeb.csproj", "{24D63500-2857-4574-ABDA-E47EB2EB3BAF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.SevenTiny.Cloud.Account.Core", "..\10-Code\Test.SevenTiny.Cloud.Account.Core\Test.SevenTiny.Cloud.Account.Core.csproj", "{D86E79D5-D17E-46B7-BB41-BAFECE403A8D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -85,6 +87,10 @@ Global
 		{24D63500-2857-4574-ABDA-E47EB2EB3BAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24D63500-2857-4574-ABDA-E47EB2EB3BAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24D63500-2857-4574-ABDA-E47EB2EB3BAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D86E79D5-D17E-46B7-BB41-BAFECE403A8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D86E79D5-D17E-46B7-BB41-BAFECE403A8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D86E79D5-D17E-46B7-BB41-BAFECE403A8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D86E79D5-D17E-46B7-BB41-BAFECE403A8D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -103,6 +109,7 @@ Global
 		{C70D4F41-9023-42A0-AB83-C2797F831278} = {96B1B369-C366-4046-95BD-478CB3145B74}
 		{C920C71D-0EC5-482E-96DB-C0A74F53FFFC} = {C818DFEF-2D8E-4FD3-851F-C3AFDDFE3E2A}
 		{24D63500-2857-4574-ABDA-E47EB2EB3BAF} = {C2B695A9-F5A6-4B33-A156-1EE934683EC7}
+		{D86E79D5-D17E-46B7-BB41-BAFECE403A8D} = {96B1B369-C366-4046-95BD-478CB3145B74}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9275BAE2-A702-407D-B637-BDFE92758D51}
