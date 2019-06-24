@@ -1,0 +1,122 @@
+﻿@using SevenTiny.Cloud.Account.Core.Entity;
+@using SevenTiny.Cloud.Account.Core.Enum;
+@{
+    ViewData["Title"] = "EditAccount";
+    Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
+
+    ResponseModel result = Model as ResponseModel ?? new ResponseModel();
+    UserAccount entity = result.Data as UserAccount ?? new UserAccount();
+}
+@{
+    ViewData["Level_1"] = "用户管理";
+    ViewData["Level_2"] = "编辑用户";
+}
+@await Html.PartialAsync("~/Views/Shared/PartialNav.cshtml")
+
+<article class="page-container">
+    <form class="form form-horizontal validate" id="form-article-add" method="post" action="/UserAccount/EditAccountLogic">
+        <input type="text" class="input-text" value="@entity.Id" name="id" hidden>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>用户名：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="@entity.Name" placeholder="" id="" name="name" required minLength="2" maxlength="50">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>邮箱：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="email" class="input-text" value="@entity.Email" placeholder="" id="" name="email" style="background-color:#e8e8e8;" readonly="readonly" required>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">手机号码：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="@entity.Phone" placeholder="" id="" name="phone">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>系统身份：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <span class="select-box">
+                    <select name="SystemIdentity" class="input select" value="0" id="SystemIdentity" required>
+                        <option value="">--请选择--</option>
+                        @foreach (var item in Enum.GetValues(typeof(SystemIdentity)))
+                        {
+                            int id = (int)item;
+                            <option value="@id">@SystemIdentityTranslator.ToChinese(id)</option>
+                        }
+                    </select>
+                </span>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>实施态权限：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <span class="select-box">
+                    <select name="HasSettingSystemPermission" class="input select" value="0" id="HasSettingSystemPermission" required>
+                        <option value="">--请选择--</option>
+                        @foreach (var item in Enum.GetValues(typeof(TrueFalse)))
+                        {
+                            int id = (int)item;
+                            <option value="@id">@TrueFalseTranslator.ToLabel(id)</option>
+                        }
+                    </select>
+                </span>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>运行态权限：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <span class="select-box">
+                    <select name="HasOfficialSystemPermission" class="input select" value="0" id="HasOfficialSystemPermission" required>
+                        <option value="">--请选择--</option>
+                        @foreach (var item in Enum.GetValues(typeof(TrueFalse)))
+                        {
+                            int id = (int)item;
+                            <option value="@id">@TrueFalseTranslator.ToLabel(id)</option>
+                        }
+                    </select>
+                </span>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">分组：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="@entity.Group" placeholder="" id="" name="group">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">排序值：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="@entity.SortNumber" placeholder="" id="" name="sortNumber">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">描述：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <textarea name="description" class="textarea ignore" placeholder="说点什么...">@entity.Description</textarea>
+            </div>
+        </div>
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+                <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+                <button onClick="javascript:history.back(-1);" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+                @if (!result.IsSuccess)
+                {
+                    <br /><br /><pre><span class="c-red">@result.Message</span></pre>
+                }
+            </div>
+        </div>
+    </form>
+</article>
+
+@await Html.PartialAsync("~/Views/Shared/_FooterScripts.cshtml")
+@await Html.PartialAsync("~/Views/Shared/_CommonScript.cshtml")
+@await Html.PartialAsync("~/Views/Shared/_FormValidate.cshtml")
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript">
+    $("#HasSettingSystemPermission").val(@entity.HasSettingSystemPermission);
+    $("#HasOfficialSystemPermission").val(@entity.HasOfficialSystemPermission);
+    $("#SystemIdentity").val(@entity.SystemIdentity);
+</script>
+<!--/请在上方写此页面业务相关的脚本-->

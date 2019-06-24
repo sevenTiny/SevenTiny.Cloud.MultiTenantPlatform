@@ -94,6 +94,13 @@ namespace SevenTiny.Cloud.Account.Controllers
         }
 
         [Authorize("Administrator")]
+        public IActionResult EditAccount(int id)
+        {
+            var entity = _userAccountService.GetById(id);
+            return View(ResponseModel.Success(entity));
+        }
+
+        [Authorize("Administrator")]
         public IActionResult AddAccountLogic(UserAccount userAccount)
         {
             var result = Result.Success("添加成功")
@@ -106,6 +113,22 @@ namespace SevenTiny.Cloud.Account.Controllers
                     userAccount.CreateBy = CurrentUserId;
                     //注册用户
                     return _userAccountService.SignUpByEmail(userAccount);
+                });
+
+            if (result.IsSuccess)
+            {
+                return Redirect("/UserAccount/List");
+            }
+            return View(ResponseModel.Error(result.Message, userAccount));
+        }
+
+        [Authorize("Administrator")]
+        public IActionResult EditAccountLogic(UserAccount userAccount)
+        {
+            var result = Result.Success("修改成功")
+                .Continue(re =>
+                {
+                    return _userAccountService.Update(userAccount);
                 });
 
             if (result.IsSuccess)

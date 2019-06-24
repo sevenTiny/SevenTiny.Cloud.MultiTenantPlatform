@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using SevenTiny.Bantina;
 using SevenTiny.Bantina.Security;
@@ -17,6 +18,27 @@ namespace SevenTiny.Cloud.Account.Core.Service
         public UserAccountService(AccountDbContext accountDbContext) : base(accountDbContext)
         {
             _dbContext = accountDbContext;
+        }
+
+        public new Result<UserAccount> Update(UserAccount entity)
+        {
+            UserAccount old = GetById(entity.Id);
+            if (old != null)
+            {
+                //编码不允许修改
+                old.HasOfficialSystemPermission = entity.HasOfficialSystemPermission;
+                old.HasSettingSystemPermission = entity.HasSettingSystemPermission;
+                old.SystemIdentity = entity.SystemIdentity;
+                old.Phone = entity.Phone;
+
+                old.Name = entity.Name;
+                old.Group = entity.Group;
+                old.SortNumber = entity.SortNumber;
+                old.Description = entity.Description;
+                old.ModifyBy = -1;
+                old.ModifyTime = DateTime.Now;
+            }
+            return base.Update(old);
         }
 
         /// <summary>
