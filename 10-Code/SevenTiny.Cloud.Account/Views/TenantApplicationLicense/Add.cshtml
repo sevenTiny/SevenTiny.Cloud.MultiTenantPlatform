@@ -1,0 +1,76 @@
+﻿@using SevenTiny.Cloud.Account.Core.Entity;
+@using SevenTiny.Cloud.Account.Core.Enum;
+@{
+    ViewData["Title"] = "Add";
+    Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
+
+    ResponseModel result = Model as ResponseModel ?? new ResponseModel();
+    TenantApplicationLicense entity = result.Data as TenantApplicationLicense ?? new TenantApplicationLicense();
+    var applications = ViewData["ApplicationIdNameDic"] as Dictionary<int, string> ?? new Dictionary<int, string>();
+}
+@{
+    ViewData["Level_1"] = "应用授权";
+    ViewData["Level_2"] = "新增授权";
+}
+@await Html.PartialAsync("~/Views/Shared/PartialNav.cshtml")
+
+<article class="page-container">
+    <form class="form form-horizontal validate" id="form-article-add" method="post" action="/TenantApplicationLicense/AddLogic">
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>租户Id：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="@entity.TenantId" placeholder="" id="" name="TenantId" required" min="100000" max="10000000">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>开始日期：</label>
+            <div class="formControls col-xs-3 col-sm-3">
+                <input type="text" onfocus="WdatePicker({maxDate:'#F{$dp.$D(\'logmax\')||\'%y-%M-%d\'}'})" value="" placeholder="" id="logmin" name="StartTime" required class="input-text Wdate">
+            </div>
+            <label class="form-label col-offset-1 col-xs-2 col-sm-2"><span class="c-red">*</span>失效日期：</label>
+            <div class="formControls col-xs-3 col-sm-3">
+                <input type="text" onfocus="WdatePicker({minDate:'#F{$dp.$D(\'logmin\')}'})" value="" placeholder="" id="logmax" name="ExpirationTime" required class="input-text Wdate">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>应用：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <span class="select-box">
+                    <select  class="input select"  placeholder="" id="ApplicationId" name="ApplicationId" required>
+                        <option value="">--请选择--</option>
+                        @foreach (var item in applications)
+                        {
+                            <option value="@item.Key">@item.Value</option>
+                        }
+                    </select>
+                </span>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">描述：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <textarea name="description" class="textarea ignore" placeholder="说点什么...">@entity.Description</textarea>
+            </div>
+        </div>
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+                <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+                <button onClick="javascript:history.back(-1);" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+                @if (!result.IsSuccess)
+                {
+                    <br /><br /><pre><span class="c-red">@result.Message</span></pre>
+                }
+            </div>
+        </div>
+    </form>
+</article>
+
+@await Html.PartialAsync("~/Views/Shared/_FooterScripts.cshtml")
+@await Html.PartialAsync("~/Views/Shared/_CommonScript.cshtml")
+@await Html.PartialAsync("~/Views/Shared/_FormValidate.cshtml")
+<script src="~/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript">
+    $("#ApplicationId").val(@entity.ApplicationId);
+</script>
+<!--/请在上方写此页面业务相关的脚本-->

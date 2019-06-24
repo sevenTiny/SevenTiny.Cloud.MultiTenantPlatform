@@ -170,10 +170,9 @@ namespace SevenTiny.Cloud.Account.Controllers
         }
 
         [Authorize("Administrator")]
-        public IActionResult Delete(int id)
+        public IActionResult LogicDelete(int id)
         {
-            //永久删除
-            _userAccountService.Delete(id);
+            _userAccountService.LogicDelete(id);
             return JsonResultModel.Success("删除成功");
         }
     }
