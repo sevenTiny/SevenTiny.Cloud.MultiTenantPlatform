@@ -16,7 +16,7 @@
             </nav>
             <nav id="Hui-userbar" class="nav navbar-nav navbar-userbar hidden-xs">
                 <ul class="cl">
-                    <li>@SystemIdentityTranslator.ToChinese(identity)</li>
+                    <li>@SystemIdentityTranslator.ToChinese(identity) </li>
                     <li class="dropDown dropDown_hover">
                         <a href="#" class="dropDown_A"> @ViewData["UserName"]<i class="Hui-iconfont">&#xe6d5;</i></a>
                         <ul class="dropDown-menu menu radius box-shadow">
@@ -48,30 +48,30 @@
     <aside class="Hui-aside">
         <div class="menu_dropdown bk_2">
             <dl id="menu-profile">
-                <dt><i class="Hui-iconfont">&#xe611; </i> 租户管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+                <dt><i class="Hui-iconfont">&#xe611; </i> 应用管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
                 <dd>
                     <ul>
-                        @if (identity == (int)AccountSystemIdentityInternal.SystemAdministrator)
-                        {
-                            <li><a href="javascript:frameOpen('/TenantInfo/List')">租户列表</a></li>
-                        }
-                        <li><a href="javascript:frameOpen('/Menue/List')">应用配置</a></li>
+                        <li><a href="javascript:frameOpen('/TenantApplicationLicense/List')">应用配置</a></li>
                     </ul>
                 </dd>
             </dl>
+            @if (identity == (int)AccountSystemIdentityInternal.SystemAdministrator)
+            {
+                <dl id="menu-profile">
+                    <dt><i class="Hui-iconfont">&#xe611; </i> 租户管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+                    <dd>
+                        <ul>
+                            <li><a href="javascript:frameOpen('/TenantInfo/List')">租户列表</a></li>
+                            <li><a href="javascript:frameOpen('/TenantApplicationLicense/AllTenantList')">应用开通</a></li>
+                        </ul>
+                    </dd>
+                </dl>
+            }
             <dl id="menu-profile">
                 <dt><i class="Hui-iconfont">&#xe611; </i> 用户管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
                 <dd>
                     <ul>
                         <li><a href="javascript:frameOpen('/UserAccount/List')">用户列表</a></li>
-                    </ul>
-                </dd>
-            </dl>
-            <dl id="menu-profile">
-                <dt><i class="Hui-iconfont">&#xe611; </i> 权限管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
-                <dd>
-                    <ul>
-                        <li><a href="javascript:frameOpen('/Menue/List')">用户授权</a></li>
                     </ul>
                 </dd>
             </dl>

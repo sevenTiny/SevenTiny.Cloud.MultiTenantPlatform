@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using SevenTiny.Bantina;
 using SevenTiny.Bantina.Security;
@@ -6,6 +7,7 @@ using SevenTiny.Bantina.Validation;
 using SevenTiny.Cloud.Account.Core.Const;
 using SevenTiny.Cloud.Account.Core.DataAccess;
 using SevenTiny.Cloud.Account.Core.Entity;
+using SevenTiny.Cloud.Account.Core.Enum;
 using SevenTiny.Cloud.Account.Core.Repository;
 using SevenTiny.Cloud.Account.Core.ServiceContract;
 
@@ -17,6 +19,31 @@ namespace SevenTiny.Cloud.Account.Core.Service
         public UserAccountService(AccountDbContext accountDbContext) : base(accountDbContext)
         {
             _dbContext = accountDbContext;
+        }
+
+        public new Result<UserAccount> Update(UserAccount entity)
+        {
+            UserAccount old = GetById(entity.Id);
+            if (old != null)
+            {
+                //编码不允许修改
+                old.HasOfficialSystemPermission = entity.HasOfficialSystemPermission;
+                old.HasSettingSystemPermission = entity.HasSettingSystemPermission;
+                //如果属于普通权限的才可以赋值，不允许直接给租户管理员
+                if (SystemIdentityProvider.Collection().Contains(entity.SystemIdentity))
+                {
+                    old.SystemIdentity = entity.SystemIdentity;
+                }
+                old.Phone = entity.Phone;
+
+                old.Name = entity.Name;
+                old.Group = entity.Group;
+                old.SortNumber = entity.SortNumber;
+                old.Description = entity.Description;
+                old.ModifyBy = entity.ModifyBy;
+                old.ModifyTime = DateTime.Now;
+            }
+            return base.Update(old);
         }
 
         /// <summary>
@@ -51,6 +78,15 @@ namespace SevenTiny.Cloud.Account.Core.Service
                 .ContinueAssert(userAccount.Email.IsEmail(), "邮箱格式不正确")
                 //check register
                 .Continue(re => ValidateRegisterdByEmail(userAccount.Email))
+                .Continue(re =>
+                {
+                    //如果属于普通权限的才可以赋值，不允许直接给租户管理员
+                    if (SystemIdentityProvider.Collection().Contains(userAccount.SystemIdentity))
+                    {
+                        return Result.Error("非法授权");
+                    }
+                    return re;
+                })
                 //+salt
                 .Continue(re =>
                 {
@@ -108,7 +144,7 @@ namespace SevenTiny.Cloud.Account.Core.Service
                 .ContinueAssert(tenantId >= 0, "非法的租户")
                 .Continue(re =>
                 {
-                    re.Data = _dbContext.Queryable<UserAccount>().Where(t => t.TenantId == tenantId).ToList();
+                    re.Data = _dbContext.Queryable<UserAccount>().Where(t => t.TenantId == tenantId && t.IsDeleted == (int)IsDeleted.UnDeleted).ToList();
                     return re;
                 });
         }

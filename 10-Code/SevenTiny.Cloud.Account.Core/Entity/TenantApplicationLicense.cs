@@ -1,4 +1,5 @@
 ﻿using SevenTiny.Bantina.Bankinate.Attributes;
+using SevenTiny.Cloud.Account.Core.Enum;
 using System;
 
 namespace SevenTiny.Cloud.Account.Core.Entity
@@ -25,14 +26,19 @@ namespace SevenTiny.Cloud.Account.Core.Entity
         [Column]
         public DateTime ExpirationTime { get; set; }
         /// <summary>
-        /// 是否激活
+        /// 是否启用（租户管理员设置该租户是否应用该产品）
         /// </summary>
         [Column]
-        public int IsActive { get; set; }
+        public int IsEnable { get; set; } = (int)TrueFalse.True;
         /// <summary>
         /// 应用Id
         /// </summary>
         [Column]
         public int ApplicationId { get; set; }
+        /// <summary>
+        /// 应用名称（不保证最新名称，所以每次更新的时候重新获取一次）
+        /// </summary>
+        [Column]
+        public string ApplicationName { get; set; }
     }
 }

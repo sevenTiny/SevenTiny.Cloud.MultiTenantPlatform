@@ -1,0 +1,69 @@
+﻿@using SevenTiny.Cloud.Account.Core.Entity;
+@using SevenTiny.Cloud.Account.Core.Enum;
+
+@{
+    ViewData["Title"] = "List";
+    Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
+    List<TenantApplicationLicense> entities = Model as List<TenantApplicationLicense> ?? new List<TenantApplicationLicense>();
+}
+<link href="~/lib/bootstrap-switch/bootstrapSwitch.css" rel="stylesheet" />
+<article class="cl pd-20">
+    <div class="cl pd-5 bg-1 bk-gray">
+        <span class="r">共有数据：<strong>@entities.Count</strong> 条</span>
+    </div>
+    <div class="mt-20">
+        <table class="table table-border table-bordered table-bg table-hover table-sort table-responsive">
+            <thead>
+                <tr class="text-c">
+                    <th>创建时间</th>
+                    <th>应用Id</th>
+                    <th>应用名称</th>
+                    <th>开始日期</th>
+                    <th>到期日期</th>
+                    <th>启用状态</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in entities)
+                {
+                    <tr class="text-c">
+                        <td>@item.CreateTime</td>
+                        <td>@item.ApplicationId</td>
+                        <td>@item.ApplicationName</td>
+                        <td>@item.StartTime</td>
+                        <td>@item.ExpirationTime</td>
+                        <td class="td-status">
+                            @if (item.IsEnable == (int)TrueFalse.True)
+                            {
+                                <span class="label label-success radius">@TrueFalseTranslator.ToLabel(item.IsEnable)</span>
+                            }
+                            else
+                            {
+                                <span class="label label-danger radius">@TrueFalseTranslator.ToLabel(item.IsEnable)</span>
+                            }
+                        </td>
+                        <td class="f-14 td-manage"></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</article>
+
+@await Html.PartialAsync($"~/Views/Shared/_FooterScripts.cshtml")
+@await Html.PartialAsync($"~/Views/Shared/_CommonScript.cshtml")
+<script type="text/javascript" src="~/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript">
+    $('.table-sort').dataTable({
+        "aLengthMenu": [[50, 100, -1], ["50", "100", "All"]],//二组数组，第一组数量，
+        "aaSorting": [[0, "desc"]],//默认第几个排序
+        "bStateSave": true,//状态保存
+        "aoColumnDefs": [
+            { "bVisible": false, "aTargets": [0] }, //控制列的隐藏显示
+            { "orderable": false, "aTargets": [6] }// 不参与排序的列
+        ]
+    });
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
