@@ -42,4 +42,12 @@
             }
         }
     }
+
+    public static class SystemIdentityProvider
+    {
+        public static int[] Collection()
+        {
+            return new int[] { (int)SystemIdentity.TenantAdministrator, (int)SystemIdentity.User };
+        }
+    }
 }

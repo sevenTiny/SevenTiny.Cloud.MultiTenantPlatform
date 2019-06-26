@@ -14,6 +14,7 @@ namespace SevenTiny.Cloud.Account.Core
             services.AddScoped(Assembly.GetExecutingAssembly());
 
             services.AddScoped<AccountDbContext>();
+            services.AddScoped<MultiTenantPlatformDbContext>();
         }
     }
 }
