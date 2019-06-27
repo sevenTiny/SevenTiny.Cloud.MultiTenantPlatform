@@ -49,14 +49,14 @@ namespace SevenTiny.Cloud.Account
                     OnMessageReceived = context =>
                     {
                         //如果request请求中有，则直接从request获取
-                        string tokenFromRequest = context.Request.Query[AccountConst.KEY_ACCESSTOKEN];
+                        string tokenFromRequest = context.Request.Query[AccountConst.KEY_AccessToken];
                         if (!string.IsNullOrEmpty(tokenFromRequest))
                         {
                             context.Token = tokenFromRequest;
                             return Task.CompletedTask;
                         }
                         //如果cookie中有token，则直接从cookie获取
-                        string tokenFromCookie = context.Request.Cookies[AccountConst.KEY_ACCESSTOKEN];
+                        string tokenFromCookie = context.Request.Cookies[AccountConst.KEY_AccessToken];
                         if (!string.IsNullOrEmpty(tokenFromCookie))
                         {
                             context.Token = tokenFromCookie;

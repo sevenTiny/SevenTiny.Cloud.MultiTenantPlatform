@@ -52,13 +52,13 @@ namespace SevenTiny.Cloud.Account.Controllers
                 //get token
                 var token = _tokenManagement.GetToken(loginResult.Data).Data;
                 //set token to cookie
-                Response.Cookies.Append(AccountConst.KEY_ACCESSTOKEN, token);
+                Response.Cookies.Append(AccountConst.KEY_AccessToken, token);
                 //concat url
                 string redireUrl = loginModel.RedirectUrl;
                 if (redireUrl.Contains('?'))
-                    redireUrl = $"{redireUrl}&{AccountConst.KEY_ACCESSTOKEN}={token}";
+                    redireUrl = $"{redireUrl}&{AccountConst.KEY_AccessToken}={token}";
                 else
-                    redireUrl = $"{redireUrl}?{AccountConst.KEY_ACCESSTOKEN}={token}";
+                    redireUrl = $"{redireUrl}?{AccountConst.KEY_AccessToken}={token}";
                 return Redirect(redireUrl);
             }
 
@@ -71,7 +71,7 @@ namespace SevenTiny.Cloud.Account.Controllers
         public IActionResult Logout()
         {
             //clear cookie
-            Response.Cookies.Delete(AccountConst.KEY_ACCESSTOKEN);
+            Response.Cookies.Delete(AccountConst.KEY_AccessToken);
             return Redirect("/UserAccount/Login");
         }
 
