@@ -10,7 +10,5 @@ namespace SevenTiny.Cloud.Infrastructure.Configs
     {
         [ConfigProperty]
         public string InternationalizationLanguage { get; set; }
-        [ConfigProperty]
-        public string DataApiUrl { get; set; }
     }
 }

@@ -9,6 +9,7 @@ using SevenTiny.Bantina;
 using SevenTiny.Bantina.Validation;
 using SevenTiny.Cloud.Account.AuthManagement;
 using SevenTiny.Cloud.Account.Core.Entity;
+using SevenTiny.Cloud.Account.Core.Enum;
 using SevenTiny.Cloud.Account.Core.ServiceContract;
 using SevenTiny.Cloud.Account.DTO;
 using SevenTiny.Cloud.Account.Models;
@@ -31,7 +32,13 @@ namespace SevenTiny.Cloud.Account.Controllers
         [AllowAnonymous]
         public IActionResult Login()
         {
-            var httpCode = Convert.ToString(Request.Query["httpCode"]);
+            var httpCode = Convert.ToString(Request.Query["_httpCode"]);
+            //传递跳转链接
+            string redirectUrl = Convert.ToString(Request.Query["_redirectUrl"]);
+            if (string.IsNullOrEmpty(redirectUrl))
+            {
+                ViewData["RedirectUrl"] = "/Home/ErrorPage?errorType=" + (int)ErrorType.NoRedirect;
+            }
             if (httpCode != null && httpCode.Equals(401.ToString()))
             {
                 return View(ResponseModel.Error("身份认证失败，请重新登陆!"));
