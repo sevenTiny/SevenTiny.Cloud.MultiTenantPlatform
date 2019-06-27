@@ -42,7 +42,16 @@ namespace SevenTiny.Cloud.Account.Core.Service
 
         public List<TenantApplicationLicense> GetUnDeletedValidityEntitiesByTenantId(int tenantId)
         {
-            return _dbContext.Queryable<TenantApplicationLicense>().Where(t => t.IsDeleted == (int)TrueFalse.False && t.TenantId == tenantId && DateTime.Now <= t.StartTime && t.ExpirationTime <= DateTime.Now).ToList();
+            //var dt = DateTime.Now;
+            //return _dbContext.Queryable<TenantApplicationLicense>().Where(t => t.IsDeleted == (int)TrueFalse.False && t.TenantId == tenantId && t.StartTime <= dt && t.ExpirationTime >= dt).ToList();
+            var param = new Dictionary<string, object>()
+            {
+                { "@tIsDeleted",(int)TrueFalse.False},
+                { "@tTenantId",tenantId},
+                { "@tStartTime",DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")},
+                { "@tExpirationTime",DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")},
+            };
+            return _dbContext.Queryable("SELECT * FROM TenantApplicationLicense t  WHERE ( 1=1 )  AND  ((((t.IsDeleted = @tIsDeleted)  AND  (t.TenantId = @tTenantId))  AND  (t.StartTime <= @tStartTime))  AND  (t.ExpirationTime >= @tExpirationTime))", param).ToList<TenantApplicationLicense>();
         }
 
         public new Result<TenantApplicationLicense> Add(TenantApplicationLicense entity)

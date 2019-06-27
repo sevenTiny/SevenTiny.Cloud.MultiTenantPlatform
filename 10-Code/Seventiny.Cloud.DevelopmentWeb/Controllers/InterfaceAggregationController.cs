@@ -8,7 +8,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
 
 namespace Seventiny.Cloud.DevelopmentWeb.Controllers
 {
-    public class InterfaceAggregationController : ControllerBase
+    public class InterfaceAggregationController : WebControllerBase
     {
         private readonly IInterfaceAggregationService interfaceAggregationService;
         private readonly IFieldListService interfaceFieldService;
@@ -89,6 +89,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
                 return View("Add", checkResult.ToResponseModel());
             }
 
+            entity.CreateBy = CurrentUserId;
             interfaceAggregationService.Add(entity);
 
             return RedirectToAction("List");
@@ -126,6 +127,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
                 return View("Update", checkResult.ToResponseModel());
             }
 
+            entity.ModifyBy = CurrentUserId;
             interfaceAggregationService.Update(entity);
 
             return RedirectToAction("List");

@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SevenTiny.Cloud.Infrastructure.Const;
 using SevenTiny.Cloud.Infrastructure.Context;
 using System;
+using System.Linq;
 
 namespace Seventiny.Cloud.DevelopmentWeb.Controllers
 {
@@ -10,7 +13,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
     /// 控制器基类
     /// </summary>
     [Authorize]
-    public class ControllerBase : Controller
+    public class WebControllerBase : Controller
     {
         protected void SetApplictionSession(int applicationId, string applicationCode)
         {
@@ -79,7 +82,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
                 return HttpContext.Session.GetString("MetaObjectCode") ?? throw new ArgumentNullException("MetaObjectCode is null,please select MetaObject first!"); ;
             }
         }
-        
+
         /// <summary>
         /// 请求上下文信息
         /// </summary>
@@ -93,12 +96,90 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
                     _applicationContext = new ApplicationContext
                     {
                         ApplicationCode = CurrentApplicationCode,
-                        TenantId = HttpContext.Session.GetInt32("TenantId").Value,
-                        UserId = HttpContext.Session.GetInt32("UserId").Value,
-                        UserEmail = HttpContext.Session.GetString("UserEmail")
+                        TenantId = CurrentTenantId,
+                        UserId = CurrentUserId,
+                        UserEmail = CurrentUserEmail
                     };
                 }
                 return _applicationContext;
+            }
+        }
+
+
+        /// <summary>
+        /// 从Token串中获取参数
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        private string GetArgumentFromToken(string key)
+        {
+            var auth = HttpContext.AuthenticateAsync()?.Result?.Principal?.Claims;
+            return auth?.FirstOrDefault(t => t.Type.Equals(key))?.Value;
+        }
+
+        protected int CurrentTenantId
+        {
+            get
+            {
+                var result = Convert.ToInt32(GetArgumentFromToken(AccountConst.KEY_TenantId));
+
+                if (result <= 0)
+                    Response.Redirect("/UserAccount/Login");
+
+                return result;
+            }
+        }
+
+        protected string CurrentTenantName
+        {
+            get
+            {
+                var result = GetArgumentFromToken(AccountConst.KEY_TenantName);
+                return result ?? CurrentTenantId.ToString();
+            }
+        }
+
+        protected int CurrentUserId
+        {
+            get
+            {
+                var result = Convert.ToInt32(GetArgumentFromToken(AccountConst.KEY_UserId));
+
+                if (result <= 0)
+                    Response.Redirect("/UserAccount/Login");
+
+                return result;
+            }
+        }
+
+        protected string CurrentUserEmail
+        {
+            get
+            {
+                var result = GetArgumentFromToken(AccountConst.KEY_UserEmail);
+
+                if (string.IsNullOrEmpty(result))
+                    Response.Redirect("/UserAccount/Login");
+
+                return result;
+            }
+        }
+
+        protected string CurrentUserName
+        {
+            get
+            {
+                var result = GetArgumentFromToken(AccountConst.KEY_UserName);
+                return result ?? CurrentUserEmail;
+            }
+        }
+
+        protected int CurrentIdentity
+        {
+            get
+            {
+                var result = Convert.ToInt32(GetArgumentFromToken(AccountConst.KEY_SystemIdentity));
+                return result;
             }
         }
     }

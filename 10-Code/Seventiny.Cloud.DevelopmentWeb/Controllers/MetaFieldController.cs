@@ -7,7 +7,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
 
 namespace Seventiny.Cloud.DevelopmentWeb.Controllers
 {
-    public class MetaFieldController : ControllerBase
+    public class MetaFieldController : WebControllerBase
     {
         readonly IMetaFieldService metaFieldService;
         readonly IMetaObjectService metaObjectService;
@@ -76,6 +76,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             }
 
             metaField.MetaObjectId = CurrentMetaObjectId;
+            metaField.CreateBy = CurrentUserId;
             metaFieldService.Add(metaField);
 
             return Redirect("/MetaField/List?metaObjectId=" + CurrentMetaObjectId);
@@ -114,6 +115,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
                 return View("Update", checkResult.ToResponseModel());
             }
 
+            metaField.ModifyBy = CurrentUserId;
             //更新操作
             metaFieldService.Update(metaField);
 
