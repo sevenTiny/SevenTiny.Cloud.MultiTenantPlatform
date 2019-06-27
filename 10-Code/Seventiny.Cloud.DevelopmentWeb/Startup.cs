@@ -72,17 +72,18 @@ namespace Seventiny.Cloud.DevelopmentWeb
                         if (context.Response.StatusCode == 401)
                         {
                             //未登录重新登陆
-                            context.Response.Redirect("/UserAccount/Login?_httpCode=401&_redirectUrl=/Home/Index");
+                            context.Response.Redirect($"{UrlsConfig.Instance.Account}/UserAccount/Login?_httpCode=401&_redirectUrl={UrlsConfig.Instance.DevelopmentWebUrl}/Home/Index");
                         }
                         else if (context.Response.StatusCode == 403)
                         {
+                            throw new Exception("xxx");
                             //无权限跳转到拒绝页面
                             context.Response.Redirect("/Home/HTTP403?_redirectUrl=/Home/Index");
                         }
                         else
                         {
-                            //无权限跳转到拒绝页面
-                            context.Response.Redirect("/Home/HTTP403?_redirectUrl=/Home/Index");
+                            //未登录重新登陆
+                            context.Response.Redirect($"{UrlsConfig.Instance.Account}/UserAccount/Login?_httpCode=401&_redirectUrl={UrlsConfig.Instance.DevelopmentWebUrl}/Home/Index");
                         }
                         return Task.CompletedTask;
                     },

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SevenTiny.Cloud.Infrastructure.Context;
 using System;
@@ -8,6 +9,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
     /// <summary>
     /// 控制器基类
     /// </summary>
+    [Authorize]
     public class ControllerBase : Controller
     {
         protected void SetApplictionSession(int applicationId, string applicationCode)

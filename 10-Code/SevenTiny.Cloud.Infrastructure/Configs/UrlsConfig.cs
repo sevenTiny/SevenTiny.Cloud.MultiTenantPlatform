@@ -3,7 +3,7 @@
 namespace SevenTiny.Cloud.Infrastructure.Configs
 {
     [ConfigName("Urls")]
-    public class UrlsConfig : MySqlColumnConfigBase<CommonConfig>
+    public class UrlsConfig : MySqlColumnConfigBase<UrlsConfig>
     {
         [ConfigProperty]
         public string DataApiUrl { get; set; }
