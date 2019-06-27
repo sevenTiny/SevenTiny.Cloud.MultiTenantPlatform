@@ -35,10 +35,11 @@ namespace SevenTiny.Cloud.Account.Controllers
             var httpCode = Convert.ToString(Request.Query["_httpCode"]);
             //传递跳转链接
             string redirectUrl = Convert.ToString(Request.Query["_redirectUrl"]);
+            //如果没传该参数，得到错误
             if (string.IsNullOrEmpty(redirectUrl))
-            {
-                ViewData["RedirectUrl"] = "/Home/ErrorPage?errorType=" + (int)ErrorType.NoRedirect;
-            }
+                return Redirect("/Home/ErrorPage?errorType=" + (int)ErrorType.NoRedirect);
+
+            ViewData["RedirectUrl"] = redirectUrl;
             if (httpCode != null && httpCode.Equals(401.ToString()))
             {
                 return View(ResponseModel.Error("身份认证失败，请重新登陆!"));
@@ -71,6 +72,7 @@ namespace SevenTiny.Cloud.Account.Controllers
 
             //将上次的值提供到前端
             loginResult.Data = userAccount;
+            ViewData["RedirectUrl"] = loginModel.RedirectUrl;
             return View("Login", loginResult.ToResponseModel());
         }
 
@@ -79,7 +81,7 @@ namespace SevenTiny.Cloud.Account.Controllers
         {
             //clear cookie
             Response.Cookies.Delete(AccountConst.KEY_AccessToken);
-            return Redirect("/UserAccount/Login");
+            return Redirect("/UserAccount/Login?_redirectUrl=/Home/Index");
         }
 
         [AllowAnonymous]
