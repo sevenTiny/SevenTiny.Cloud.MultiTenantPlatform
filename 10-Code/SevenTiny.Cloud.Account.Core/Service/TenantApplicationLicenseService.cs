@@ -40,6 +40,11 @@ namespace SevenTiny.Cloud.Account.Core.Service
             return _dbContext.Queryable<TenantApplicationLicense>().Where(t => t.IsDeleted == (int)TrueFalse.False && t.TenantId == tenantId).ToList();
         }
 
+        public List<TenantApplicationLicense> GetUnDeletedValidityEntitiesByTenantId(int tenantId)
+        {
+            return _dbContext.Queryable<TenantApplicationLicense>().Where(t => t.IsDeleted == (int)TrueFalse.False && t.TenantId == tenantId && DateTime.Now <= t.StartTime && t.ExpirationTime <= DateTime.Now).ToList();
+        }
+
         public new Result<TenantApplicationLicense> Add(TenantApplicationLicense entity)
         {
             return Result<TenantApplicationLicense>.Success("Add success")

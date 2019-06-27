@@ -14,12 +14,16 @@
         /// </summary>
         public const string SALT_AFTER = ".25913AEE-8F27-49DB-89AA-AD730CAB58F1";
 
-        public const string KEY_TENANTID = "TenantId";
-        public const string KEY_TENANTNAME = "TenantName";
-        public const string KEY_USERID = "UserId";
-        public const string KEY_USEREMAIL = "UserEmail";
-        public const string KEY_USERNAME = "UserName";
-        public const string KEY_ACCESSTOKEN = "_AccessToken";
-        public const string KEY_SYSTEMIDENTITY = "SystemIdentity";
+        public const string KEY_TenantId = "TenantId";
+        public const string KEY_TenantName = "TenantName";
+        public const string KEY_UserId = "UserId";
+        public const string KEY_UserEmail = "UserEmail";
+        public const string KEY_UserName = "UserName";
+        public const string KEY_AccessToken = "_AccessToken";
+        public const string KEY_SystemIdentity = "SystemIdentity";
+        public const string KEY_HasDevelopmentSystemPermission = "HasDevelopmentSystemPermission";
+        public const string KEY_HasSettingSystemPermission = "HasSettingSystemPermission";
+        public const string KEY_HasOfficialSystemPermission = "HasOfficialSystemPermission";
+        public const string KEY_UserIdentityLicense = "UserIdentityLicense";
     }
 }
