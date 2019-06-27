@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,8 +9,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using SevenTiny.Cloud.Account.AuthManagement;
 using SevenTiny.Cloud.Account.Core;
-using SevenTiny.Cloud.Account.Core.Const;
 using SevenTiny.Cloud.Infrastructure.Configs;
+using SevenTiny.Cloud.Infrastructure.Const;
+using System;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace SevenTiny.Cloud.Account
 {

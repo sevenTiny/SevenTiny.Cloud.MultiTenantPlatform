@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SevenTiny.Cloud.Account.Core.Const;
+using SevenTiny.Cloud.Infrastructure.Const;
 using System;
 using System.Linq;
 

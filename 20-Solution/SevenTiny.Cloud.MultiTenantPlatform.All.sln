@@ -37,7 +37,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Seventiny.Cloud.OfficialWeb
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.SevenTiny.Cloud.Account.Core", "..\10-Code\Test.SevenTiny.Cloud.Account.Core\Test.SevenTiny.Cloud.Account.Core.csproj", "{D86E79D5-D17E-46B7-BB41-BAFECE403A8D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenTiny.Cloud.Account.DTO", "..\10-Code\SevenTiny.Cloud.Account.DTO\SevenTiny.Cloud.Account.DTO.csproj", "{2221DA84-5DBC-4910-8677-C0A4F283A3B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.Account.DTO", "..\10-Code\SevenTiny.Cloud.Account.DTO\SevenTiny.Cloud.Account.DTO.csproj", "{2221DA84-5DBC-4910-8677-C0A4F283A3B5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

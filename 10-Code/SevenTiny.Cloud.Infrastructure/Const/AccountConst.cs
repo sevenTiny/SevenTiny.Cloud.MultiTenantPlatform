@@ -1,4 +1,4 @@
-﻿namespace SevenTiny.Cloud.Account.Core.Const
+﻿namespace SevenTiny.Cloud.Infrastructure.Const
 {
     /// <summary>
     /// 常量

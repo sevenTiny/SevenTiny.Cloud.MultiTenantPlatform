@@ -8,11 +8,11 @@ using Microsoft.AspNetCore.Mvc;
 using SevenTiny.Bantina;
 using SevenTiny.Bantina.Validation;
 using SevenTiny.Cloud.Account.AuthManagement;
-using SevenTiny.Cloud.Account.Core.Const;
 using SevenTiny.Cloud.Account.Core.Entity;
 using SevenTiny.Cloud.Account.Core.ServiceContract;
 using SevenTiny.Cloud.Account.DTO;
 using SevenTiny.Cloud.Account.Models;
+using SevenTiny.Cloud.Infrastructure.Const;
 
 namespace SevenTiny.Cloud.Account.Controllers
 {

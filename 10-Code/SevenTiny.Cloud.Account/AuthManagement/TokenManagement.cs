@@ -1,20 +1,13 @@
-﻿using SevenTiny.Bantina;
+﻿using Microsoft.IdentityModel.Tokens;
+using SevenTiny.Bantina;
+using SevenTiny.Cloud.Account.Core.Entity;
+using SevenTiny.Cloud.Account.Core.ServiceContract;
+using SevenTiny.Cloud.Infrastructure.Configs;
+using SevenTiny.Cloud.Infrastructure.Const;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using SevenTiny.Cloud.Account.Models;
-using SevenTiny.Cloud.Account.Core.Entity;
-using SevenTiny.Cloud.Infrastructure.Configs;
-using SevenTiny.Cloud.Account.Core.Const;
-using SevenTiny.Cloud.Account.Core.ServiceContract;
 
 namespace SevenTiny.Cloud.Account.AuthManagement
 {
