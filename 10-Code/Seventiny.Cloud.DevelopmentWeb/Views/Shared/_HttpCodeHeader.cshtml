@@ -1,9 +1,7 @@
 ﻿@using SevenTiny.Cloud.Infrastructure.Configs;
-@using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
 @{
-    ViewData["Title"] = "Detail";
-    Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
-    string applicationCode = Convert.ToString(ViewData["Application"]);
+    ViewData["Title"] = "没有权限";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <!--_header 作为公共模版分离出去-->
@@ -13,16 +11,14 @@
             <a aria-hidden="false" class="nav-toggle Hui-iconfont visible-xs" href="javascript:;">&#xe667;</a>
             <nav class="nav navbar-nav">
                 <ul class="cl">
-                    <li><a href="/Application/Select" class="dropDown_A">应用：@applicationCode </a></li>
-                    <li class="navbar-levelone"><a href="javascript:applicationDetailFrameOpen('/Application/Setting')">应用设置</a></li>
-                    <li class="navbar-levelone current"><a href="javascript:applicationDetailFrameOpen('/MetaObject/Setting')">对象管理</a></li>
+                    <li><a href="#" class="dropDown_A">SevenTiny Cloud DevelopmentWeb </a></li>
                 </ul>
             </nav>
             <nav id="Hui-userbar" class="nav navbar-nav navbar-userbar hidden-xs">
                 <ul class="cl">
-                    <li>@ViewData["UserIdentity"] </li>
+                    <li></li>
                     <li class="dropDown dropDown_hover">
-                        <a href="#" class="dropDown_A"> @ViewData["UserName"] <i class="Hui-iconfont">&#xe6d5;</i></a>
+                        <a href="#" class="dropDown_A"> @ViewData["UserName"]<i class="Hui-iconfont">&#xe6d5;</i></a>
                         <ul class="dropDown-menu menu radius box-shadow">
                             <li><a href="javascript:;" onClick="myselfinfo()">个人信息</a></li>
                             <li><a href="@UrlsConfig.Instance.Account/UserAccount/Login?_redirectUrl=@UrlsConfig.Instance.DevelopmentWebUrl/Home/Index">切换账户</a></li>
@@ -46,31 +42,11 @@
         </div>
     </div>
 </header>
-<!--/_header 作为公共模版分离出去-->
-<section class="Hui-article-box" style="top:0;left:0">
-    <div class="show_iframe" tyle="margin-bottom:50px;">
-        <div style="display:none" class="loading"></div>
-        <iframe id="application_detail_iframe" scrolling="no" frameborder="0" src="/MetaObject/Setting"></iframe>
-    </div>
-</section>
+@RenderBody()
 
 @await Html.PartialAsync($"~/Views/Shared/_FooterScripts.cshtml")
 @await Html.PartialAsync($"~/Views/Shared/_CommonScript.cshtml")
 <!--请在下方写此页面业务相关的脚本-->
 <script type="text/javascript">
-    //头部控件切换
-    $(function () {
-        $("body").Huitab({
-            tabBar: ".navbar-wrapper .navbar-levelone",
-            tabCon: ".Hui-aside .menu_dropdown",
-            className: "current",
-            index: 1,
-        });
-    });
-
-    //在frame中打开页面
-    function applicationDetailFrameOpen(url) {
-        $("#application_detail_iframe").prop("src", url);
-    }
 </script>
 <!--/请在上方写此页面业务相关的脚本-->

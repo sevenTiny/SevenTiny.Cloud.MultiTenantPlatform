@@ -2,8 +2,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Seventiny.Cloud.DevelopmentWeb.Filters;
+using Seventiny.Cloud.DevelopmentWeb.Helpers;
+using SevenTiny.Cloud.Infrastructure.Configs;
 using SevenTiny.Cloud.Infrastructure.Const;
 using SevenTiny.Cloud.Infrastructure.Context;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
 using System;
 using System.Linq;
 
@@ -12,6 +16,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
     /// <summary>
     /// 控制器基类
     /// </summary>
+    [DevelopmentAuthFilter]
     [Authorize]
     public class WebControllerBase : Controller
     {
@@ -113,8 +118,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
         /// <returns></returns>
         private string GetArgumentFromToken(string key)
         {
-            var auth = HttpContext.AuthenticateAsync()?.Result?.Principal?.Claims;
-            return auth?.FirstOrDefault(t => t.Type.Equals(key))?.Value;
+            return HttpContext.GetArgumentFromToken(key);
         }
 
         protected int CurrentTenantId
@@ -146,7 +150,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
                 var result = Convert.ToInt32(GetArgumentFromToken(AccountConst.KEY_UserId));
 
                 if (result <= 0)
-                    Response.Redirect("/UserAccount/Login");
+                    Response.Redirect($"{UrlsConfig.Instance.Account}/UserAccount/Login?_redirectUrl={UrlsConfig.Instance.DevelopmentWebUrl}/Home/Index");
 
                 return result;
             }
@@ -181,6 +185,15 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
                 var result = Convert.ToInt32(GetArgumentFromToken(AccountConst.KEY_SystemIdentity));
                 return result;
             }
+        }
+
+        /// <summary>
+        /// 将用户信息存到ViewData里面用于页面展示
+        /// </summary>
+        protected void SetUserInfoToViewData()
+        {
+            ViewData["UserIdentity"] = SystemIdentityTranslator.ToChinese(CurrentIdentity);
+            ViewData["UserName"] = CurrentUserName;
         }
     }
 }

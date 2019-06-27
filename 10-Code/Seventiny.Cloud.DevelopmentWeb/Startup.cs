@@ -135,7 +135,6 @@ namespace Seventiny.Cloud.DevelopmentWeb
             services.AddMvc(options =>
             {
                 options.Filters.Add<HttpGlobalExceptionFilter>();
-                options.Filters.Add<ActionExecuteFilter>();
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

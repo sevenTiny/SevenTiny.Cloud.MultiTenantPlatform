@@ -81,7 +81,9 @@ namespace SevenTiny.Cloud.Account.Controllers
         {
             //clear cookie
             Response.Cookies.Delete(AccountConst.KEY_AccessToken);
-            return Redirect("/UserAccount/Login?_redirectUrl=/Home/Index");
+            //传递跳转链接
+            string redirectUrl = Convert.ToString(Request.Query["_redirectUrl"]);
+            return Redirect($"/UserAccount/Login?_redirectUrl={redirectUrl}");
         }
 
         [AllowAnonymous]

@@ -128,6 +128,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
 
             SetApplictionSession(application.Id, application.Code);
             ViewData["Application"] = application.Code;
+            SetUserInfoToViewData();
 
             return View();
         }
