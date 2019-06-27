@@ -5,9 +5,12 @@ using System.Diagnostics;
 
 namespace Seventiny.Cloud.DevelopmentWeb.Controllers
 {
-    public class HomeController : ControllerBase
+    public class HomeController : WebControllerBase
     {
-        public HomeController() { }
+        public HomeController()
+        {
+
+        }
 
         public IActionResult Index()
         {

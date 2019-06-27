@@ -1,14 +1,24 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Seventiny.Cloud.DevelopmentWeb.Filters;
+using Seventiny.Cloud.DevelopmentWeb.Helpers;
+using SevenTiny.Cloud.Infrastructure.Configs;
+using SevenTiny.Cloud.Infrastructure.Const;
 using SevenTiny.Cloud.Infrastructure.Context;
+using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
 using System;
+using System.Linq;
 
 namespace Seventiny.Cloud.DevelopmentWeb.Controllers
 {
     /// <summary>
     /// 控制器基类
     /// </summary>
-    public class ControllerBase : Controller
+    [DevelopmentAuthFilter]
+    [Authorize]
+    public class WebControllerBase : Controller
     {
         protected void SetApplictionSession(int applicationId, string applicationCode)
         {
@@ -77,7 +87,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
                 return HttpContext.Session.GetString("MetaObjectCode") ?? throw new ArgumentNullException("MetaObjectCode is null,please select MetaObject first!"); ;
             }
         }
-        
+
         /// <summary>
         /// 请求上下文信息
         /// </summary>
@@ -91,13 +101,99 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
                     _applicationContext = new ApplicationContext
                     {
                         ApplicationCode = CurrentApplicationCode,
-                        TenantId = HttpContext.Session.GetInt32("TenantId").Value,
-                        UserId = HttpContext.Session.GetInt32("UserId").Value,
-                        UserEmail = HttpContext.Session.GetString("UserEmail")
+                        TenantId = CurrentTenantId,
+                        UserId = CurrentUserId,
+                        UserEmail = CurrentUserEmail
                     };
                 }
                 return _applicationContext;
             }
+        }
+
+
+        /// <summary>
+        /// 从Token串中获取参数
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        private string GetArgumentFromToken(string key)
+        {
+            return HttpContext.GetArgumentFromToken(key);
+        }
+
+        protected int CurrentTenantId
+        {
+            get
+            {
+                var result = Convert.ToInt32(GetArgumentFromToken(AccountConst.KEY_TenantId));
+
+                if (result <= 0)
+                    Response.Redirect("/UserAccount/Login");
+
+                return result;
+            }
+        }
+
+        protected string CurrentTenantName
+        {
+            get
+            {
+                var result = GetArgumentFromToken(AccountConst.KEY_TenantName);
+                return result ?? CurrentTenantId.ToString();
+            }
+        }
+
+        protected int CurrentUserId
+        {
+            get
+            {
+                var result = Convert.ToInt32(GetArgumentFromToken(AccountConst.KEY_UserId));
+
+                if (result <= 0)
+                    Response.Redirect($"{UrlsConfig.Instance.Account}/UserAccount/Login?_redirectUrl={UrlsConfig.Instance.DevelopmentWebUrl}/Home/Index");
+
+                return result;
+            }
+        }
+
+        protected string CurrentUserEmail
+        {
+            get
+            {
+                var result = GetArgumentFromToken(AccountConst.KEY_UserEmail);
+
+                if (string.IsNullOrEmpty(result))
+                    Response.Redirect("/UserAccount/Login");
+
+                return result;
+            }
+        }
+
+        protected string CurrentUserName
+        {
+            get
+            {
+                var result = GetArgumentFromToken(AccountConst.KEY_UserName);
+                return result ?? CurrentUserEmail;
+            }
+        }
+
+        protected int CurrentIdentity
+        {
+            get
+            {
+                var result = Convert.ToInt32(GetArgumentFromToken(AccountConst.KEY_SystemIdentity));
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// 将用户信息存到ViewData里面用于页面展示
+        /// </summary>
+        protected void SetUserInfoToViewData()
+        {
+            ViewData["UserIdentity"] = SystemIdentityTranslator.ToChinese(CurrentIdentity);
+            ViewData["UserName"] = CurrentUserName;
         }
     }
 }

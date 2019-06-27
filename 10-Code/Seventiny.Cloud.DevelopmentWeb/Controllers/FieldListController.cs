@@ -13,7 +13,7 @@ using System.Linq;
 
 namespace Seventiny.Cloud.DevelopmentWeb.Controllers
 {
-    public class FieldListController : ControllerBase
+    public class FieldListController : WebControllerBase
     {
         readonly IFieldListService fieldListService;
         readonly IMetaFieldService metaFieldService;
@@ -74,6 +74,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             entity.MetaObjectId = CurrentMetaObjectId;
             //组合编码
             entity.Code = $"{CurrentMetaObjectCode}.FieldList.{entity.Code}";
+            entity.CreateBy = CurrentUserId;
             fieldListService.Add(entity);
             return RedirectToAction("List");
         }
@@ -106,6 +107,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
                 return View("Update", checkResult.ToResponseModel());
             }
 
+            entity.ModifyBy = CurrentUserId;
             //更新操作
             fieldListService.Update(entity);
 

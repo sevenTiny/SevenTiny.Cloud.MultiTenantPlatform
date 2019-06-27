@@ -72,17 +72,17 @@ namespace SevenTiny.Cloud.Account
                         if (context.Response.StatusCode == 401)
                         {
                             //未登录重新登陆
-                            context.Response.Redirect("/UserAccount/Login?httpCode=401");
+                            context.Response.Redirect("/UserAccount/Login?_httpCode=401&_redirectUrl=/Home/Index");
                         }
                         else if (context.Response.StatusCode == 403)
                         {
                             //无权限跳转到拒绝页面
-                            context.Response.Redirect("/Home/HTTP403");
+                            context.Response.Redirect("/Home/HTTP403?_redirectUrl=/Home/Index");
                         }
                         else
                         {
                             //无权限跳转到拒绝页面
-                            context.Response.Redirect("/Home/HTTP403");
+                            context.Response.Redirect("/Home/HTTP403?_redirectUrl=/Home/Index");
                         }
                         return Task.CompletedTask;
                     },

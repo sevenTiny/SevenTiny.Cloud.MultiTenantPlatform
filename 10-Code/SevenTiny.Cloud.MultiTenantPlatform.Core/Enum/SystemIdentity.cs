@@ -1,8 +1,7 @@
-﻿namespace SevenTiny.Cloud.Account.Core.Enum
+﻿namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Enum
 {
     /// <summary>
     /// Account站点的身份，不同的身份对应不同的菜单界面权限
-    /// !!! 多租赁Core也有一个同样的枚举，如果要修改请同时改动
     /// </summary>
     public enum SystemIdentity
     {

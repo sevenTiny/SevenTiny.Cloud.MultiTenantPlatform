@@ -9,7 +9,7 @@ using System;
 
 namespace Seventiny.Cloud.DevelopmentWeb.Controllers
 {
-    public class IndexViewController : ControllerBase
+    public class IndexViewController : WebControllerBase
     {
         readonly IIndexViewService indexViewService;
         readonly IFieldListService interfaceFieldService;
@@ -84,6 +84,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             entity.MetaObjectId = CurrentMetaObjectId;
             //组合编码
             entity.Code = $"{CurrentMetaObjectCode}.IndexView.{entity.Code}";
+            entity.CreateBy = CurrentUserId;
             indexViewService.Add(entity);
 
             return RedirectToAction("List");
@@ -137,7 +138,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             {
                 return View("Add", ResponseModel.Error("条件不能为空", entity));
             }
-
+            entity.ModifyBy = CurrentUserId;
             indexViewService.Update(entity);
 
             return RedirectToAction("List");

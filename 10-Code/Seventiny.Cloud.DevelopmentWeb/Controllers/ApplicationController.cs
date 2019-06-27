@@ -6,7 +6,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
 
 namespace Seventiny.Cloud.DevelopmentWeb.Controllers
 {
-    public class ApplicationController : ControllerBase
+    public class ApplicationController : WebControllerBase
     {
         IApplicationService applicationService;
         IMetaObjectService metaObjectService;
@@ -65,6 +65,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
                 return View("Add", ResponseModel.Error("编码不合法，2-50位且只能包含字母和数字（字母开头）", application));
             }
 
+            application.CreateBy = CurrentUserId;
             var addResult = applicationService.Add(application);
             if (!addResult.IsSuccess)
             {
@@ -95,6 +96,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
                 return View("Update", ResponseModel.Error("Application Code Can Not Be Null！", application));
             }
 
+            application.ModifyBy = CurrentUserId;
             applicationService.Update(application);
             return RedirectToAction("List");
         }
@@ -126,6 +128,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
 
             SetApplictionSession(application.Id, application.Code);
             ViewData["Application"] = application.Code;
+            SetUserInfoToViewData();
 
             return View();
         }

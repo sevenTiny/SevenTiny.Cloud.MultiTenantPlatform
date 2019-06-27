@@ -8,7 +8,7 @@ using System;
 
 namespace Seventiny.Cloud.DevelopmentWeb.Controllers
 {
-    public class MetaObjectController : ControllerBase
+    public class MetaObjectController : WebControllerBase
     {
         IMetaObjectService metaObjectService;
 
@@ -55,6 +55,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
                 return View("Add", ResponseModel.Error("编码不合法，2-50位且只能包含字母和数字（字母开头）", metaObject));
             }
 
+            metaObject.CreateBy = CurrentUserId;
             var addResult = metaObjectService.AddMetaObject(CurrentApplicationId, CurrentApplicationCode, metaObject);
             if (!addResult.IsSuccess)
             {
@@ -91,6 +92,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             //    return View("Update", ResponseModel.Error("编码不合法，2-50位且只能包含字母和数字（字母开头）", metaObject));
             //}
 
+            metaObject.ModifyBy = CurrentUserId;
             if (metaObjectService.ExistSameNameWithOtherIdByApplicationId(CurrentApplicationId, metaObject.Id, metaObject.Name))
             {
                 return View("Update", ResponseModel.Error("MetaObject Name Has Been Exist！", metaObject));

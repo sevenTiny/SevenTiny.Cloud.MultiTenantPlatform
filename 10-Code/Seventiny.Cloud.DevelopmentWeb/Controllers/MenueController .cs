@@ -8,7 +8,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
 
 namespace Seventiny.Cloud.DevelopmentWeb.Controllers
 {
-    public class MenueController : ControllerBase
+    public class MenueController : WebControllerBase
     {
         IMenueService _menueService;
 
@@ -59,6 +59,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
                     return re;
                 })
                 .Continue(re => {
+            entity.CreateBy = CurrentUserId;
                     return _menueService.Add(entity);
                 });
 
@@ -89,6 +90,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
                 return View("Update", ResponseModel.Error("Code Can Not Be Null！", entity));
             }
 
+            entity.ModifyBy = CurrentUserId;
             _menueService.Update(entity);
             return RedirectToAction("List");
         }
