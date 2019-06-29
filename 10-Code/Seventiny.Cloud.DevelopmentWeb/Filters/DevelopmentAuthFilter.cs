@@ -14,15 +14,15 @@ namespace Seventiny.Cloud.DevelopmentWeb.Filters
         public override void OnResultExecuting(ResultExecutingContext context)
         {
             //判断是否有开发态权限
-            int HasDevelopmentSystemPermission = Convert.ToInt32(context.HttpContext.GetArgumentFromToken(AccountConst.KEY_HasDevelopmentSystemPermission));
-            if (HasDevelopmentSystemPermission == (int)TrueFalse.True)
-            {
-                base.OnResultExecuting(context);
-            }
-            else
-            {
-                context.HttpContext.Response.Redirect(RouteConst.Http403);
-            }
+            //int HasDevelopmentSystemPermission = Convert.ToInt32(context.HttpContext.GetArgumentFromToken(AccountConst.KEY_HasDevelopmentSystemPermission));
+            //if (HasDevelopmentSystemPermission == (int)TrueFalse.True)
+            //{
+            //    base.OnResultExecuting(context);
+            //}
+            //else
+            //{
+            //    context.HttpContext.Response.Redirect(RouteConst.Http403);
+            //}
         }
     }
 }

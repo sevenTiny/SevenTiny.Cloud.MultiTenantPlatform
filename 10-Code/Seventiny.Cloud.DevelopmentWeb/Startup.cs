@@ -33,6 +33,7 @@ namespace Seventiny.Cloud.DevelopmentWeb
         public void ConfigureServices(IServiceCollection services)
         {
             //add jwt
+            /*
             services
             .AddAuthentication(s =>
             {
@@ -113,7 +114,7 @@ namespace Seventiny.Cloud.DevelopmentWeb
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(AccountConfig.Instance.SecurityKey))//ÄÃµ½SecurityKey
                 };
             });
-
+            */
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -154,7 +155,7 @@ namespace Seventiny.Cloud.DevelopmentWeb
 
             //start 7tiny ---
             ///add jwt
-            app.UseAuthentication();
+            //app.UseAuthentication();
             //session support
             app.UseSession();
             //end 7tiny ---
