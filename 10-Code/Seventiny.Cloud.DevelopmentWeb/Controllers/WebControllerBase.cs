@@ -17,7 +17,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
     /// 控制器基类
     /// </summary>
     [DevelopmentAuthFilter]
-    //[Authorize]
+    [Authorize]
     public class WebControllerBase : Controller
     {
         protected void SetApplictionSession(int applicationId, string applicationCode)
