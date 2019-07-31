@@ -18,4 +18,11 @@
     <ProjectReference Include="..\SevenTiny.Cloud.Account.DTO\SevenTiny.Cloud.Account.DTO.csproj" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <None Update="Dockerfile">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
