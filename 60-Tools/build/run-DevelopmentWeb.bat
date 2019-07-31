@@ -1,0 +1,1 @@
+dotnet ..\..\10-Code\SevenTiny.Cloud.DevelopmentWeb\bin\Debug\netcoreapp2.2\publish\SevenTiny.Cloud.DevelopmentWeb.dll
