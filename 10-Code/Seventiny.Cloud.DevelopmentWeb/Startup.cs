@@ -53,7 +53,6 @@ namespace Seventiny.Cloud.DevelopmentWeb
                         if (!string.IsNullOrEmpty(tokenFromRequest))
                         {
                             context.Token = tokenFromRequest;
-                            context.Request.Cookies.Append(new KeyValuePair<string, string>("AccountConst.KEY_AccessToken", tokenFromRequest));
                             return Task.CompletedTask;
                         }
                         //如果cookie中有token，则直接从cookie获取
