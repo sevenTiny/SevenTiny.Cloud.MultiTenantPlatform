@@ -226,13 +226,13 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         /// <param name="conditionValueDic">参数</param>
         /// <param name="isIgnoreArgumentsCheck">是否忽略参数校验,如果为true，需要的参数未传递会抛出异常；如果为false，需要的参数不存在条件返回null</param>
         /// <returns></returns>
-        public FilterDefinition<BsonDocument> AnalysisConditionToFilterDefinitionByConditionId(QueryPiplineContext queryPiplineContext, Dictionary<string, object> conditionValueDic, bool isIgnoreArgumentsCheck = false)
+        public FilterDefinition<BsonDocument> AnalysisConditionToFilterDefinitionByConditionId(QueryPiplineContext queryPiplineContext, bool isIgnoreArgumentsCheck = false)
         {
             List<SearchConditionNode> conditions = GetListBySearchConditionId(queryPiplineContext.SearchConditionId);
-            return AnalysisConditionToFilterDefinition(queryPiplineContext, conditions, conditionValueDic, isIgnoreArgumentsCheck);
+            return AnalysisConditionToFilterDefinition(queryPiplineContext, conditions, isIgnoreArgumentsCheck);
         }
 
-        private FilterDefinition<BsonDocument> AnalysisConditionToFilterDefinition(QueryPiplineContext queryPiplineContext, List<SearchConditionNode> conditions, Dictionary<string, object> conditionValueDic, bool isIgnoreArgumentsCheck = false)
+        private FilterDefinition<BsonDocument> AnalysisConditionToFilterDefinition(QueryPiplineContext queryPiplineContext, List<SearchConditionNode> conditions, bool isIgnoreArgumentsCheck = false)
         {
             var bf = Builders<BsonDocument>.Filter;
             //全部字段字典缓存
@@ -350,7 +350,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                     string key = routeCondition.FieldCode;
                     var keyUpper = key.ToUpperInvariant();
                     //如果没有传递参数值，则抛出异常
-                    if (!conditionValueDic.ContainsKey(keyUpper))
+                    if (!queryPiplineContext.ArgumentsDic.ContainsKey(keyUpper))
                     {
                         //如果忽略参数检查，则直接返回null
                         if (isIgnoreArgumentsCheck)
@@ -359,7 +359,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
                         else
                             throw new ArgumentNullException(key, $"Conditions define field parameters [{key}] but do not provide values.");
                     }
-                    object argumentValue = conditionValueDic.SafeGet(keyUpper);
+                    object argumentValue = queryPiplineContext.ArgumentsDic.SafeGet(keyUpper);
                     //将值转化为字段同类型的类型值
                     object value = metaFieldService.CheckAndGetFieldValueByFieldType(metaFieldIdDic[routeCondition.FieldId], argumentValue).Data;
                     switch (routeCondition.ConditionType)

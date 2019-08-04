@@ -94,7 +94,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             indexPage.Title = indexView.Title;
             indexPage.Icon = indexView.Icon;
             //通过配置IndexView来分析
-            indexPage.LayoutType = (int)LayoutType.SearchForm_TableList;
+            indexPage.LayoutType = indexView.LayoutType;
 
             switch ((LayoutType)indexPage.LayoutType)
             {

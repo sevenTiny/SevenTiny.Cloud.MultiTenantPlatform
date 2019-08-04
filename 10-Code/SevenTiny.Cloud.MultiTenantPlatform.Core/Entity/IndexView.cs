@@ -27,5 +27,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Entity
         public int FieldListId { get; set; }
         [Column]
         public string FieldListName { get; set; }
+        [Column]
+        public int LayoutType { get; set; }//数据库表还未加字段！！！
     }
 }

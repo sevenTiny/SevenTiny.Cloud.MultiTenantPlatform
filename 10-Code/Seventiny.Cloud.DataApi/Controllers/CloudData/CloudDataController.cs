@@ -114,7 +114,7 @@ namespace Seventiny.Cloud.DataApi.Controllers
                     //缓存对象下的全部未删除字段信息
                     queryContext.MetaFieldsUnDeleted = metaFieldService.GetEntitiesUnDeletedByMetaObjectId(queryContext.MetaObjectId);
                     //组织查询条件
-                    filter = conditionAggregationService.AnalysisConditionToFilterDefinitionByConditionId(queryContext, queryContext.ArgumentsDic);
+                    filter = conditionAggregationService.AnalysisConditionToFilterDefinitionByConditionId(queryContext);
                     //缓存列字段信息
                     if (queryContext.InterfaceType == InterfaceType.SingleObject || queryContext.InterfaceType == InterfaceType.TableList)
                     {
@@ -247,7 +247,7 @@ namespace Seventiny.Cloud.DataApi.Controllers
                 queryContext.TriggerScriptsOfOneServiceType = _triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(queryContext.MetaObjectId, (int)ServiceType.Interface_Update);
 
                 //查询条件
-                FilterDefinition<BsonDocument> filter = conditionAggregationService.AnalysisConditionToFilterDefinitionByConditionId(queryContext, queryContext.ArgumentsDic);
+                FilterDefinition<BsonDocument> filter = conditionAggregationService.AnalysisConditionToFilterDefinitionByConditionId(queryContext);
 
                 //trigger before
                 bson = _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_Update_Before, bson, CurrentApplicationContext, queryContext.InterfaceCode, bson, filter);
@@ -294,7 +294,7 @@ namespace Seventiny.Cloud.DataApi.Controllers
                 queryContext.TriggerScriptsOfOneServiceType = _triggerScriptService.GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(queryContext.MetaObjectId, (int)ServiceType.Interface_Delete);
 
                 //查询条件
-                FilterDefinition<BsonDocument> filter = conditionAggregationService.AnalysisConditionToFilterDefinitionByConditionId(queryContext, queryContext.ArgumentsDic);
+                FilterDefinition<BsonDocument> filter = conditionAggregationService.AnalysisConditionToFilterDefinitionByConditionId(queryContext);
 
                 //trigger before
                 filter = _triggerScriptService.RunTriggerScript(queryContext, TriggerPoint.Before, TriggerScriptService.FunctionName_MetaObject_Interface_Delete_Before, filter, CurrentApplicationContext, queryContext.InterfaceCode, filter);

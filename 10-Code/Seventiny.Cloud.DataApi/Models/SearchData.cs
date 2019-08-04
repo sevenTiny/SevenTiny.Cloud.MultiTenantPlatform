@@ -19,7 +19,7 @@
         /// <summary>
         /// 字段编码
         /// </summary>
-        public string Name { get; set; }
+        public string Code { get; set; }
         /// <summary>
         /// 字段显示名称
         /// </summary>
