@@ -9,7 +9,7 @@ using SevenTiny.Bantina;
 
 namespace Seventiny.Cloud.DevelopmentWeb.Controllers
 {
-    public class DataSourceController : ControllerBase
+    public class DataSourceController : WebControllerBase
     {
         IDataSourceService _dataSourceService;
         ITriggerScriptService _triggerScriptService;
@@ -63,7 +63,11 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
                      entity.DataSourceType = (int)DataSourceType.Script;
                      return re;
                  })
-                 .Continue(re => _dataSourceService.Add(entity));
+                 .Continue(re =>
+                 {
+                     entity.CreateBy = CurrentUserId;
+                     return _dataSourceService.Add(entity);
+                 });
 
             if (result.IsSuccess)
                 return RedirectToAction("ScriptDataSourceList");
@@ -83,7 +87,11 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
                 .ContinueAssert(!string.IsNullOrEmpty(entity.Script), "数据源内容不能为空")
                 .Continue(re => _dataSourceService.CheckSameCodeOrName(entity))
                 .Continue(re => _triggerScriptService.CompilateAndCheckScript(entity.Script, CurrentApplicationCode))
-                .Continue(re => _dataSourceService.Update(entity));
+                .Continue(re =>
+                {
+                    entity.ModifyBy = CurrentUserId;
+                    return _dataSourceService.Update(entity);
+                });
 
             if (result.IsSuccess)
                 return RedirectToAction("ScriptDataSourceList");
@@ -101,7 +109,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
         public IActionResult AddJsonDataSource()
         {
             var defaultScript =
-@"{
+    @"{
     ""Key"":7tiny
 }";
             return View(ResponseModel.Success(new DataSource { Script = defaultScript }));
@@ -127,7 +135,11 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
                     entity.DataSourceType = (int)DataSourceType.Json;
                     return re;
                 })
-                 .Continue(re => _dataSourceService.Add(entity));
+                 .Continue(re =>
+                 {
+                     entity.CreateBy = CurrentUserId;
+                     return _dataSourceService.Add(entity);
+                 });
 
             if (result.IsSuccess)
                 return RedirectToAction("JsonDataSourceList");
@@ -158,7 +170,11 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
                     return re;
                 })
                 .Continue(re => _dataSourceService.CheckSameCodeOrName(entity))
-                .Continue(re => _dataSourceService.Update(entity));
+                .Continue(re =>
+                {
+                    entity.ModifyBy = CurrentUserId;
+                    return _dataSourceService.Update(entity);
+                });
 
             if (result.IsSuccess)
                 return RedirectToAction("JsonDataSourceList");

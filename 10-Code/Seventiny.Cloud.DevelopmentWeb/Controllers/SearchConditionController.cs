@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Seventiny.Cloud.DevelopmentWeb.Controllers
 {
-    public class SearchConditionController : ControllerBase
+    public class SearchConditionController : WebControllerBase
     {
         private readonly ISearchConditionService searchConditionService;
         private readonly IMetaFieldService metaFieldService;
@@ -66,6 +66,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             entity.MetaObjectId = CurrentMetaObjectId;
             //组合编码
             entity.Code = $"{CurrentMetaObjectCode}.SearchCondition.{entity.Code}";
+            entity.CreateBy = CurrentUserId;
             searchConditionService.Add(entity);
             return RedirectToAction("List");
         }
@@ -103,6 +104,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
                 return View("Update", checkResult.ToResponseModel());
             }
 
+            entity.ModifyBy = CurrentUserId;
             //更新操作
             searchConditionService.Update(entity);
 

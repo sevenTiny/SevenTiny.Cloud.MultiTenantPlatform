@@ -11,7 +11,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
 
 namespace Seventiny.Cloud.DevelopmentWeb.Controllers
 {
-    public class TriggerScriptController : ControllerBase
+    public class TriggerScriptController : WebControllerBase
     {
         readonly ITriggerScriptService triggerScriptService;
 
@@ -68,6 +68,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
 
             triggerScript.MetaObjectId = CurrentMetaObjectId;
             triggerScript.Code = $"{CurrentMetaObjectCode}.TriggerScript.{triggerScript.Code}";
+            triggerScript.CreateBy = CurrentUserId;
             triggerScriptService.Add(triggerScript);
 
             return RedirectToAction("List");
@@ -103,6 +104,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
                     return View("Update", ResponseModel.Error($"脚本存在错误：\r\n{checkResult2.Message}", triggerScript));
                 }
 
+                triggerScript.ModifyBy = CurrentUserId;
                 //更新操作
                 triggerScriptService.Update(triggerScript);
 

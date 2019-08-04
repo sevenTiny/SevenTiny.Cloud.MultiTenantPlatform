@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,8 +9,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using SevenTiny.Cloud.Account.AuthManagement;
 using SevenTiny.Cloud.Account.Core;
-using SevenTiny.Cloud.Account.Core.Const;
 using SevenTiny.Cloud.Infrastructure.Configs;
+using SevenTiny.Cloud.Infrastructure.Const;
+using System;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace SevenTiny.Cloud.Account
 {
@@ -51,14 +49,14 @@ namespace SevenTiny.Cloud.Account
                     OnMessageReceived = context =>
                     {
                         //如果request请求中有，则直接从request获取
-                        string tokenFromRequest = context.Request.Query[AccountConst.KEY_ACCESSTOKEN];
+                        string tokenFromRequest = context.Request.Query[AccountConst.KEY_AccessToken];
                         if (!string.IsNullOrEmpty(tokenFromRequest))
                         {
                             context.Token = tokenFromRequest;
                             return Task.CompletedTask;
                         }
                         //如果cookie中有token，则直接从cookie获取
-                        string tokenFromCookie = context.Request.Cookies[AccountConst.KEY_ACCESSTOKEN];
+                        string tokenFromCookie = context.Request.Cookies[AccountConst.KEY_AccessToken];
                         if (!string.IsNullOrEmpty(tokenFromCookie))
                         {
                             context.Token = tokenFromCookie;
@@ -74,17 +72,17 @@ namespace SevenTiny.Cloud.Account
                         if (context.Response.StatusCode == 401)
                         {
                             //未登录重新登陆
-                            context.Response.Redirect("/UserAccount/Login?httpCode=401");
+                            context.Response.Redirect("/UserAccount/Login?_httpCode=401&_redirectUrl=/Home/Index");
                         }
                         else if (context.Response.StatusCode == 403)
                         {
                             //无权限跳转到拒绝页面
-                            context.Response.Redirect("/Home/HTTP403");
+                            context.Response.Redirect("/Home/HTTP403?_redirectUrl=/Home/Index");
                         }
                         else
                         {
                             //无权限跳转到拒绝页面
-                            context.Response.Redirect("/Home/HTTP403");
+                            context.Response.Redirect("/Home/HTTP403?_redirectUrl=/Home/Index");
                         }
                         return Task.CompletedTask;
                     },

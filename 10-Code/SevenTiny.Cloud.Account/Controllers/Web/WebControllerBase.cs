@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SevenTiny.Cloud.Account.Core.Const;
+using SevenTiny.Cloud.Infrastructure.Const;
 using System;
 using System.Linq;
 
@@ -24,7 +24,7 @@ namespace SevenTiny.Cloud.Account.Controllers
         {
             get
             {
-                var result = Convert.ToInt32(GetArgumentFromToken(AccountConst.KEY_TENANTID));
+                var result = Convert.ToInt32(GetArgumentFromToken(AccountConst.KEY_TenantId));
 
                 if (result <= 0)
                     Response.Redirect("/UserAccount/Login");
@@ -37,7 +37,7 @@ namespace SevenTiny.Cloud.Account.Controllers
         {
             get
             {
-                var result = GetArgumentFromToken(AccountConst.KEY_TENANTNAME);
+                var result = GetArgumentFromToken(AccountConst.KEY_TenantName);
                 return result ?? CurrentTenantId.ToString();
             }
         }
@@ -46,7 +46,7 @@ namespace SevenTiny.Cloud.Account.Controllers
         {
             get
             {
-                var result = Convert.ToInt32(GetArgumentFromToken(AccountConst.KEY_USERID));
+                var result = Convert.ToInt32(GetArgumentFromToken(AccountConst.KEY_UserId));
 
                 if (result <= 0)
                     Response.Redirect("/UserAccount/Login");
@@ -59,7 +59,7 @@ namespace SevenTiny.Cloud.Account.Controllers
         {
             get
             {
-                var result = GetArgumentFromToken(AccountConst.KEY_USEREMAIL);
+                var result = GetArgumentFromToken(AccountConst.KEY_UserEmail);
 
                 if (string.IsNullOrEmpty(result))
                     Response.Redirect("/UserAccount/Login");
@@ -72,7 +72,7 @@ namespace SevenTiny.Cloud.Account.Controllers
         {
             get
             {
-                var result = GetArgumentFromToken(AccountConst.KEY_USERNAME);
+                var result = GetArgumentFromToken(AccountConst.KEY_UserName);
                 return result ?? CurrentUserEmail;
             }
         }
@@ -81,7 +81,7 @@ namespace SevenTiny.Cloud.Account.Controllers
         {
             get
             {
-                var result = Convert.ToInt32(GetArgumentFromToken(AccountConst.KEY_SYSTEMIDENTITY));
+                var result = Convert.ToInt32(GetArgumentFromToken(AccountConst.KEY_SystemIdentity));
                 return result;
             }
         }

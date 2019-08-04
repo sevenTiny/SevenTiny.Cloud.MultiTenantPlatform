@@ -41,6 +41,12 @@ namespace SevenTiny.Cloud.Account.Controllers
             return View();
         }
 
+        public IActionResult ErrorPage(ErrorType errorType)
+        {
+            ViewData["ErrorType"] = errorType;
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

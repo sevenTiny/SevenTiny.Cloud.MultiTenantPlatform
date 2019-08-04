@@ -8,11 +8,12 @@ using Microsoft.AspNetCore.Mvc;
 using SevenTiny.Bantina;
 using SevenTiny.Bantina.Validation;
 using SevenTiny.Cloud.Account.AuthManagement;
-using SevenTiny.Cloud.Account.Core.Const;
 using SevenTiny.Cloud.Account.Core.Entity;
+using SevenTiny.Cloud.Account.Core.Enum;
 using SevenTiny.Cloud.Account.Core.ServiceContract;
 using SevenTiny.Cloud.Account.DTO;
 using SevenTiny.Cloud.Account.Models;
+using SevenTiny.Cloud.Infrastructure.Const;
 
 namespace SevenTiny.Cloud.Account.Controllers
 {
@@ -31,7 +32,14 @@ namespace SevenTiny.Cloud.Account.Controllers
         [AllowAnonymous]
         public IActionResult Login()
         {
-            var httpCode = Convert.ToString(Request.Query["httpCode"]);
+            var httpCode = Convert.ToString(Request.Query["_httpCode"]);
+            //传递跳转链接
+            string redirectUrl = Convert.ToString(Request.Query["_redirectUrl"]);
+            //如果没传该参数，得到错误
+            if (string.IsNullOrEmpty(redirectUrl))
+                return Redirect("/Home/ErrorPage?errorType=" + (int)ErrorType.NoRedirect);
+
+            ViewData["RedirectUrl"] = redirectUrl;
             if (httpCode != null && httpCode.Equals(401.ToString()))
             {
                 return View(ResponseModel.Error("身份认证失败，请重新登陆!"));
@@ -52,18 +60,19 @@ namespace SevenTiny.Cloud.Account.Controllers
                 //get token
                 var token = _tokenManagement.GetToken(loginResult.Data).Data;
                 //set token to cookie
-                Response.Cookies.Append(AccountConst.KEY_ACCESSTOKEN, token);
+                Response.Cookies.Append(AccountConst.KEY_AccessToken, token);
                 //concat url
                 string redireUrl = loginModel.RedirectUrl;
                 if (redireUrl.Contains('?'))
-                    redireUrl = $"{redireUrl}&{AccountConst.KEY_ACCESSTOKEN}={token}";
+                    redireUrl = $"{redireUrl}&{AccountConst.KEY_AccessToken}={token}";
                 else
-                    redireUrl = $"{redireUrl}?{AccountConst.KEY_ACCESSTOKEN}={token}";
+                    redireUrl = $"{redireUrl}?{AccountConst.KEY_AccessToken}={token}";
                 return Redirect(redireUrl);
             }
 
             //将上次的值提供到前端
             loginResult.Data = userAccount;
+            ViewData["RedirectUrl"] = loginModel.RedirectUrl;
             return View("Login", loginResult.ToResponseModel());
         }
 
@@ -71,8 +80,10 @@ namespace SevenTiny.Cloud.Account.Controllers
         public IActionResult Logout()
         {
             //clear cookie
-            Response.Cookies.Delete(AccountConst.KEY_ACCESSTOKEN);
-            return Redirect("/UserAccount/Login");
+            Response.Cookies.Delete(AccountConst.KEY_AccessToken);
+            //传递跳转链接
+            string redirectUrl = Convert.ToString(Request.Query["_redirectUrl"]);
+            return Redirect($"/UserAccount/Login?_redirectUrl={redirectUrl}");
         }
 
         [AllowAnonymous]

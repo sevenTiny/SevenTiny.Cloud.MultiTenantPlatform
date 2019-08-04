@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using SevenTiny.Cloud.Account.Core.Const;
+using SevenTiny.Cloud.Infrastructure.Const;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,7 +19,7 @@ namespace SevenTiny.Cloud.Account.AuthManagement
             if (isAuthenticated)
             {
                 //token 还有效
-                var identity = Convert.ToInt32(httpContext.User.Claims.SingleOrDefault(s => s.Type == AccountConst.KEY_SYSTEMIDENTITY).Value);
+                var identity = Convert.ToInt32(httpContext.User.Claims.SingleOrDefault(s => s.Type == AccountConst.KEY_SystemIdentity).Value);
                 foreach (var item in requirement.UserPermissions)
                 {
                     if (item.RoutesToUpper.Contains(requestUrl))

@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Seventiny.Cloud.DevelopmentWeb.Controllers
 {
-    public class FormController : ControllerBase
+    public class FormController : WebControllerBase
     {
         readonly IFormService _formService;
         readonly IMetaFieldService metaFieldService;
@@ -63,6 +63,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
             entity.MetaObjectId = CurrentMetaObjectId;
             //组合编码
             entity.Code = $"{CurrentMetaObjectCode}.Form.{entity.Code}";
+            entity.CreateBy = CurrentUserId;
             _formService.Add(entity);
             return RedirectToAction("List");
         }
@@ -95,6 +96,7 @@ namespace Seventiny.Cloud.DevelopmentWeb.Controllers
                 return View("Update", checkResult.ToResponseModel());
             }
 
+            entity.ModifyBy = CurrentUserId;
             //更新操作
             _formService.Update(entity);
 
