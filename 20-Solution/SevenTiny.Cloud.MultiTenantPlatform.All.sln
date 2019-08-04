@@ -22,9 +22,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.Account", "..\10-Code\SevenTiny.Cloud.Account\SevenTiny.Cloud.Account.csproj", "{A4D8A839-555A-4112-9D5F-7D630AC7C200}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Components", "Components", "{ECD1D272-5AF8-41D0-A69E-0358BB9BDBDB}"
-	ProjectSection(SolutionItems) = preProject
-		ReadMe.md = ReadMe.md
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Account", "Account", "{B84432E6-89E2-45D5-9F58-02EF9461E1CB}"
 EndProject

@@ -12,6 +12,7 @@ using System.Text;
 using SevenTiny.Cloud.MultiTenantPlatform.UI.Enum;
 using SevenTiny.Bantina;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.DataAccess;
+using SevenTiny.Cloud.MultiTenantPlatform.UI.UIMetaData.ListView;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
 {
@@ -19,19 +20,19 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
     {
         public IndexViewService(
             MultiTenantPlatformDbContext multiTenantPlatformDbContext,
-            IFieldListService _interfaceFieldService,
+            IFieldListService fieldListService,
             ISearchConditionService _searchConditionService,
             ISearchConditionNodeService _searchConditionAggregationService
             ) : base(multiTenantPlatformDbContext)
         {
             dbContext = multiTenantPlatformDbContext;
-            this.interfaceFieldService = _interfaceFieldService;
+            this._fieldListService = fieldListService;
             this.searchConditionService = _searchConditionService;
             searchConditionAggregationService = _searchConditionAggregationService;
         }
 
         readonly MultiTenantPlatformDbContext dbContext;
-        readonly IFieldListService interfaceFieldService;
+        readonly IFieldListService _fieldListService;
         readonly ISearchConditionService searchConditionService;
         readonly ISearchConditionNodeService searchConditionAggregationService;
 
@@ -39,7 +40,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
         public new Result<IndexView> Add(IndexView entity)
         {
             //查询并将名字赋予字段
-            var interfaceField = interfaceFieldService.GetById(entity.FieldListId);
+            var interfaceField = _fieldListService.GetById(entity.FieldListId);
             var searchCondition = searchConditionService.GetById(entity.SearchConditionId);
             entity.FieldListName = interfaceField.Name;
             entity.SearchConditionName = searchCondition.Name;
@@ -59,7 +60,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             IndexView myEntity = GetById(entity.Id);
             if (myEntity != null)
             {
-                var interfaceField = interfaceFieldService.GetById(entity.FieldListId);
+                var interfaceField = _fieldListService.GetById(entity.FieldListId);
                 var searchCondition = searchConditionService.GetById(entity.SearchConditionId);
 
                 myEntity.FieldListId = entity.FieldListId;
@@ -82,6 +83,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             return Result<IndexView>.Success();
         }
 
+        /// <summary>
+        /// 构建视图UI组件
+        /// </summary>
+        /// <param name="indexView"></param>
+        /// <returns></returns>
         public IndexPageComponent GetIndexPageComponentByIndexView(IndexView indexView)
         {
             var indexPage = new IndexPageComponent();
@@ -90,28 +96,45 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Service
             //通过配置IndexView来分析
             indexPage.LayoutType = (int)LayoutType.SearchForm_TableList;
 
-            //构建searchForm
-            var conditionAggregations = searchConditionAggregationService.GetConditionItemsBySearchConditionId(indexView.SearchConditionId);
-            if (conditionAggregations != null && conditionAggregations.Any())
+            switch ((LayoutType)indexPage.LayoutType)
             {
-                List<SearchItem> searchItems = new List<SearchItem>();
-                foreach (var item in conditionAggregations)
-                {
-                    searchItems.Add(new SearchItem
+                case LayoutType.SearchForm_TableList:
+                    #region 构建SearchForm
+                    var conditionAggregations = searchConditionAggregationService.GetConditionItemsBySearchConditionId(indexView.SearchConditionId);
+                    if (conditionAggregations != null && conditionAggregations.Any())
                     {
-                        Name = item.FieldCode,
-                        Text = item.Text,
-                        Visible = TrueFalseTranslator.ToBoolean(item.Visible),
-                        Value = item.Value,
-                        //字段类型
-                        Type = item.FieldType,
-                        ValueType = item.ValueType
-                    });
-                }
-                indexPage.SearchForm = new SearchFormComponent { SearchItems = searchItems.ToArray() };
+                        List<SearchItem> searchItems = new List<SearchItem>();
+                        foreach (var item in conditionAggregations)
+                        {
+                            searchItems.Add(new SearchItem
+                            {
+                                Name = item.FieldCode,
+                                Text = item.Text,
+                                Visible = TrueFalseTranslator.ToBoolean(item.Visible),
+                                Value = item.Value,
+                                //字段类型
+                                Type = item.FieldType,
+                                ValueType = item.ValueType
+                            });
+                        }
+                        indexPage.SearchFormComponent = new SearchFormComponent { SearchItems = searchItems.ToArray() };
+                    }
+                    #endregion
+
+                    #region 构建TableList
+                    var fieldList = _fieldListService.GetById(indexView.FieldListId);
+                    if (fieldList != null)
+                    {
+                        indexPage.ListViewComponent = new ListViewComponent { Code = fieldList.Code };//title icon等需要完善补充tablelist
+                    }
+                    #endregion
+                    break;
+                default:
+                    break;
             }
 
-            //构建buttonList
+            #region 构建ButtonList
+            #endregion
 
             return indexPage;
         }

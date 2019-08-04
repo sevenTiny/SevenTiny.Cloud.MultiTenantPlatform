@@ -15,7 +15,7 @@
             switch (layoutType)
             {
                 case LayoutType.SearchForm_TableList:
-                    return "搜索表单列表布局";
+                    return "搜索表单+列表布局";
                 default:
                     break;
             }

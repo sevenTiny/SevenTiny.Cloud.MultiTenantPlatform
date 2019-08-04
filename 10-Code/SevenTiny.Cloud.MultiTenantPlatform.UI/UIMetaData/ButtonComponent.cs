@@ -11,6 +11,11 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.UI.UIMetaData
     public class ButtonComponent
     {
         /// <summary>
+        /// 编码
+        /// </summary>
+        [JsonProperty("code")]
+        public string Code { get; set; }
+        /// <summary>
         /// 按钮标题
         /// </summary>
         [JsonProperty("title")]
@@ -21,7 +26,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.UI.UIMetaData
         [JsonProperty("icon")]
         public string Icon { get; set; }
         /// <summary>
-        /// 显示
+        /// 是否显示
         /// </summary>
         [JsonProperty("visible")]
         public bool Visible { get; set; }
@@ -31,7 +36,7 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.UI.UIMetaData
         [JsonProperty("disable")]
         public bool Disable { get; set; }
         /// <summary>
-        /// 按钮说明
+        /// 提示信息
         /// </summary>
         [JsonProperty("tips")]
         public string Tips { get; set; }

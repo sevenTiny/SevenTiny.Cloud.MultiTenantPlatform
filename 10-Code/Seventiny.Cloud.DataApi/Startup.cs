@@ -27,7 +27,7 @@ namespace Seventiny.Cloud.DataApi
         public void ConfigureServices(IServiceCollection services)
         {
             //start 7tiny ---
-            string[] urls = new[] { "http://localhost:4444" };
+            string[] urls = new[] { "http://localhost:39011" };
             services.AddCors(options =>
             options.AddPolicy("AllowSameDomain",
             builder => builder.WithOrigins(urls).AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin().AllowCredentials())

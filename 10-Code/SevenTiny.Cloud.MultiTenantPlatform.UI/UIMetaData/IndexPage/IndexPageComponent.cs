@@ -1,8 +1,13 @@
 ﻿using Newtonsoft.Json;
 using SevenTiny.Cloud.MultiTenantPlatform.UI.Enum;
+using SevenTiny.Cloud.MultiTenantPlatform.UI.UIMetaData.ListView;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.UI.UIMetaData.IndexPage
 {
+    /// <summary>
+    /// 视图组件
+    /// </summary>
+    [JsonObject("indexpage_component")]
     public class IndexPageComponent
     {
         /// <summary>
@@ -16,15 +21,20 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.UI.UIMetaData.IndexPage
         [JsonProperty("icon")]
         public string Icon { get; set; }
         /// <summary>
-        /// 搜索表单
+        /// 搜索表单组件
         /// </summary>
         [JsonProperty("search_form", NullValueHandling = NullValueHandling.Ignore)]
-        public SearchFormComponent SearchForm { get; set; }
+        public SearchFormComponent SearchFormComponent { get; set; }
         /// <summary>
-        /// 按钮列表
+        /// 按钮组件集合
         /// </summary>
-        [JsonProperty("button_list", NullValueHandling = NullValueHandling.Ignore)]
-        public ButtonComponent[] ButtonList { get; set; }
+        [JsonProperty("button_components", NullValueHandling = NullValueHandling.Ignore)]
+        public ButtonComponent[] ButtonComponents { get; set; }
+        /// <summary>
+        /// 列表组件
+        /// </summary>
+        [JsonProperty("listview_component", NullValueHandling = NullValueHandling.Ignore)]
+        public ListViewComponent ListViewComponent { get; set; }
         /// <summary>
         /// 布局类型
         /// </summary>
