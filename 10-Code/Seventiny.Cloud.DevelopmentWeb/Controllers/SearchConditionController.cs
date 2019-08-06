@@ -6,7 +6,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Seventiny.Cloud.DevelopmentWeb.Controllers
+namespace SevenTiny.Cloud.DevelopmentWeb.Controllers
 {
     public class SearchConditionController : WebControllerBase
     {

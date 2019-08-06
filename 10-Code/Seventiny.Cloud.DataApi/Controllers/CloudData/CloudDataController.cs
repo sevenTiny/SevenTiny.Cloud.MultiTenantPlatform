@@ -7,7 +7,7 @@ using SevenTiny.Bantina.Extensions;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Service;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
-using Seventiny.Cloud.DataApi.Models;
+using SevenTiny.Cloud.DataApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +15,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
 using SevenTiny.Cloud.Infrastructure.ValueObject;
 using SevenTiny.Cloud.Infrastructure.Context;
 
-namespace Seventiny.Cloud.DataApi.Controllers
+namespace SevenTiny.Cloud.DataApi.Controllers
 {
     //[Produces("application/json")]
     [EnableCors("AllowSameDomain")]

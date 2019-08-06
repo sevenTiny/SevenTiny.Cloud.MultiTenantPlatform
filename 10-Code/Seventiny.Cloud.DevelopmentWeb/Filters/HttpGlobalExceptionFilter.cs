@@ -7,7 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace Seventiny.Cloud.DevelopmentWeb.Filters
+namespace SevenTiny.Cloud.DevelopmentWeb.Filters
 {
     /// <summary>
     /// 全局异常过滤器

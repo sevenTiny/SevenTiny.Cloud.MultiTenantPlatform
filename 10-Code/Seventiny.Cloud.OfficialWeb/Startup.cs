@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Seventiny.Cloud.OfficialWeb
+namespace SevenTiny.Cloud.OfficialWeb
 {
     public class Startup
     {

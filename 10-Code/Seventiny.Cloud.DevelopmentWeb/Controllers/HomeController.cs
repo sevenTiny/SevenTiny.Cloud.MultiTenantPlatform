@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
 using System.Diagnostics;
 
-namespace Seventiny.Cloud.DevelopmentWeb.Controllers
+namespace SevenTiny.Cloud.DevelopmentWeb.Controllers
 {
     public class HomeController : WebControllerBase
     {

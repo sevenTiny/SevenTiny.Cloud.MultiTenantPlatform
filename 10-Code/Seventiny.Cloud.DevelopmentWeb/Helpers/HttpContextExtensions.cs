@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using System.Linq;
 
-namespace Seventiny.Cloud.DevelopmentWeb.Helpers
+namespace SevenTiny.Cloud.DevelopmentWeb.Helpers
 {
     public static class HttpContextExtensions
     {

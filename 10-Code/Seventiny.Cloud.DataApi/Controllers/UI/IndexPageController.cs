@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using Seventiny.Cloud.DataApi.Models;
+using SevenTiny.Cloud.DataApi.Models;
 using SevenTiny.Bantina.Extensions;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
 using System;
 using System.Collections.Generic;
 
-namespace Seventiny.Cloud.DataApi.Controllers
+namespace SevenTiny.Cloud.DataApi.Controllers
 {
     [EnableCors("AllowSameDomain")]
     [Route("api/UI/[controller]")]

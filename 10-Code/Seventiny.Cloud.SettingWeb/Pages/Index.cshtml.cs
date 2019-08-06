@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Seventiny.Cloud.SettingWeb.Pages
+namespace SevenTiny.Cloud.SettingWeb.Pages
 {
     public class IndexModel : PageModel
     {

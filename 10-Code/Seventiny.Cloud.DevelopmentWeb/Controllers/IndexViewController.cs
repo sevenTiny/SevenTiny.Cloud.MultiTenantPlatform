@@ -7,7 +7,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
 using System;
 
-namespace Seventiny.Cloud.DevelopmentWeb.Controllers
+namespace SevenTiny.Cloud.DevelopmentWeb.Controllers
 {
     public class IndexViewController : WebControllerBase
     {

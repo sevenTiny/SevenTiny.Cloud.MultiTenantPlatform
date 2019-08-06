@@ -11,7 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Seventiny.Cloud.DevelopmentWeb.Controllers
+namespace SevenTiny.Cloud.DevelopmentWeb.Controllers
 {
     public class FieldListController : WebControllerBase
     {

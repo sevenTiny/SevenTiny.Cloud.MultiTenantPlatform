@@ -3,4 +3,4 @@ ARG source
 WORKDIR /publish
 EXPOSE 80
 COPY /. /publish
-ENTRYPOINT ["dotnet", "Seventiny.Cloud.DevelopmentWeb.dll"]
+ENTRYPOINT ["dotnet", "SevenTiny.Cloud.DevelopmentWeb.dll"]

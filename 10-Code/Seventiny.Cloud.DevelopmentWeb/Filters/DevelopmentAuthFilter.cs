@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
-using Seventiny.Cloud.DevelopmentWeb.Helpers;
+using SevenTiny.Cloud.DevelopmentWeb.Helpers;
 using SevenTiny.Cloud.Infrastructure.Const;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
 using System;
@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Seventiny.Cloud.DevelopmentWeb.Filters
+namespace SevenTiny.Cloud.DevelopmentWeb.Filters
 {
     public class DevelopmentAuthFilter : ActionFilterAttribute
     {

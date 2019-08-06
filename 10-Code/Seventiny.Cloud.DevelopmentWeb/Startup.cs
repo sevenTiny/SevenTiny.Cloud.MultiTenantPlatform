@@ -12,13 +12,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using Seventiny.Cloud.DevelopmentWeb.Filters;
+using SevenTiny.Cloud.DevelopmentWeb.Filters;
 using SevenTiny.Cloud.Infrastructure.Configs;
 using SevenTiny.Cloud.Infrastructure.Const;
 using SevenTiny.Cloud.Infrastructure.Context;
 using SevenTiny.Cloud.MultiTenantPlatform.Core;
 
-namespace Seventiny.Cloud.DevelopmentWeb
+namespace SevenTiny.Cloud.DevelopmentWeb
 {
     public class Startup
     {

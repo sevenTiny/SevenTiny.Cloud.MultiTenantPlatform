@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using Newtonsoft.Json.Linq;
-using Seventiny.Cloud.DataApi.Models;
+using SevenTiny.Cloud.DataApi.Models;
 using SevenTiny.Bantina.Extensions;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.Service;
@@ -12,7 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Seventiny.Cloud.DataApi.Controllers
+namespace SevenTiny.Cloud.DataApi.Controllers
 {
     [EnableCors("AllowSameDomain")]
     [Route("api/BatchCloudData")]

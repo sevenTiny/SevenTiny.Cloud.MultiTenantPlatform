@@ -15,7 +15,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Seventiny.Cloud.DevelopmentWeb": {
+    "SevenTiny.Cloud.DevelopmentWeb": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

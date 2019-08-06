@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Seventiny.Cloud.DataApi
+namespace SevenTiny.Cloud.DataApi
 {
     public class Program
     {

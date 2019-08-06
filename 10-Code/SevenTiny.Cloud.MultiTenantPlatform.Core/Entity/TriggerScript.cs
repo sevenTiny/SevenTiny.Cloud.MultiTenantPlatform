@@ -1,4 +1,4 @@
-﻿using Seventiny.Cloud.ScriptEngine;
+﻿using SevenTiny.Cloud.ScriptEngine;
 using SevenTiny.Bantina.Bankinate.Attributes;
 
 namespace SevenTiny.Cloud.MultiTenantPlatform.Core.Entity

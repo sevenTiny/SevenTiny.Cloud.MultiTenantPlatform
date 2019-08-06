@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SevenTiny.Cloud.MultiTenantPlatform.Core;
 
-namespace Seventiny.Cloud.DataApi
+namespace SevenTiny.Cloud.DataApi
 {
     public class Startup
     {

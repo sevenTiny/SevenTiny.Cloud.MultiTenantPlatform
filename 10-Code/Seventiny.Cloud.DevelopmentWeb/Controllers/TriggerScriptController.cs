@@ -9,7 +9,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
 
-namespace Seventiny.Cloud.DevelopmentWeb.Controllers
+namespace SevenTiny.Cloud.DevelopmentWeb.Controllers
 {
     public class TriggerScriptController : WebControllerBase
     {

@@ -7,7 +7,7 @@ using SevenTiny.Cloud.Account.Core.Service;
 using System;
 using Xunit;
 
-namespace Test.Seventiny.Cloud.Account.Core
+namespace Test.SevenTiny.Cloud.Account.Core
 {
     public class UnitTest1
     {

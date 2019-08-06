@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Seventiny.Cloud.DataApi": {
+    "SevenTiny.Cloud.DataApi": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "api/values",

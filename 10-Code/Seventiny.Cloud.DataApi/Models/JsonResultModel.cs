@@ -2,7 +2,7 @@
 using SevenTiny.Bantina;
 using SevenTiny.Cloud.Infrastructure.ValueObject;
 
-namespace Seventiny.Cloud.DataApi.Models
+namespace SevenTiny.Cloud.DataApi.Models
 {
     public class JsonResultModel
     {

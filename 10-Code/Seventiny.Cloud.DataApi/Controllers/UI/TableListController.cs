@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using Seventiny.Cloud.DataApi.Models;
+using SevenTiny.Cloud.DataApi.Models;
 using SevenTiny.Bantina.Extensions;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
 using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
@@ -10,7 +10,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.UI.Enum;
 using System;
 using System.Collections.Generic;
 
-namespace Seventiny.Cloud.DataApi.Controllers
+namespace SevenTiny.Cloud.DataApi.Controllers
 {
     [EnableCors("AllowSameDomain")]
     [Route("api/UI/[controller]")]

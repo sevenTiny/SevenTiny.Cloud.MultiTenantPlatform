@@ -1,6 +1,6 @@
 ﻿using SevenTiny.Bantina;
 
-namespace Seventiny.Cloud.DataApi.Models
+namespace SevenTiny.Cloud.DataApi.Models
 {
     public class UIIndexPageQueryArgs
     {

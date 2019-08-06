@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Seventiny.Cloud.DataApi.Models;
+using SevenTiny.Cloud.DataApi.Models;
 using SevenTiny.Cloud.Infrastructure.Context;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Seventiny.Cloud.DataApi.Controllers
+namespace SevenTiny.Cloud.DataApi.Controllers
 {
     public abstract class ApiControllerBase : ControllerBase
     {

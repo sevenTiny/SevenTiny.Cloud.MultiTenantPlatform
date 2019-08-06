@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Seventiny.Cloud.DevelopmentWeb.Helpers;
+using SevenTiny.Cloud.DevelopmentWeb.Helpers;
 using SevenTiny.Cloud.Infrastructure.Configs;
 using SevenTiny.Cloud.Infrastructure.Const;
 
-namespace Seventiny.Cloud.DevelopmentWeb.Controllers
+namespace SevenTiny.Cloud.DevelopmentWeb.Controllers
 {
     /// <summary>
     /// 该控制器集成Base，因为不受权限控制

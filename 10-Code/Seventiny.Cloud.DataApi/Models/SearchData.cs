@@ -1,4 +1,4 @@
-﻿namespace Seventiny.Cloud.DataApi.Models
+﻿namespace SevenTiny.Cloud.DataApi.Models
 {
     /// <summary>
     /// 搜索条件实体

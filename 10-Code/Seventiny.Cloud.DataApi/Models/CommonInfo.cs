@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Seventiny.Cloud.DataApi.Models
+namespace SevenTiny.Cloud.DataApi.Models
 {
     /// <summary>
     /// EntityInfo Standard Property

@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Seventiny.Cloud.DevelopmentWeb.Filters;
-using Seventiny.Cloud.DevelopmentWeb.Helpers;
+using SevenTiny.Cloud.DevelopmentWeb.Filters;
+using SevenTiny.Cloud.DevelopmentWeb.Helpers;
 using SevenTiny.Cloud.Infrastructure.Configs;
 using SevenTiny.Cloud.Infrastructure.Const;
 using SevenTiny.Cloud.Infrastructure.Context;
@@ -11,7 +11,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
 using System;
 using System.Linq;
 
-namespace Seventiny.Cloud.DevelopmentWeb.Controllers
+namespace SevenTiny.Cloud.DevelopmentWeb.Controllers
 {
     /// <summary>
     /// 控制器基类
