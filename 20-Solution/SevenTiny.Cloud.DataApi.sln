@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.Infrastruct
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenantPlatform.Core", "..\10-Code\SevenTiny.Cloud.MultiTenantPlatform.Core\SevenTiny.Cloud.MultiTenantPlatform.Core.csproj", "{FA26B98A-6D41-4E39-873E-79A90692AA66}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Seventiny.Cloud.DataApi", "..\10-Code\Seventiny.Cloud.DataApi\Seventiny.Cloud.DataApi.csproj", "{AB11F9F1-12B3-454B-84C4-FF881E06B963}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Components", "Components", "{ECD1D272-5AF8-41D0-A69E-0358BB9BDBDB}"
 	ProjectSection(SolutionItems) = preProject
 		ReadMe.md = ReadMe.md
@@ -19,6 +17,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MultiTenantPlatform", "MultiTenantPlatform", "{C818DFEF-2D8E-4FD3-851F-C3AFDDFE3E2A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenantPlatform.UI", "..\10-Code\SevenTiny.Cloud.MultiTenantPlatform.UI\SevenTiny.Cloud.MultiTenantPlatform.UI.csproj", "{C920C71D-0EC5-482E-96DB-C0A74F53FFFC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.DataApi", "..\10-Code\SevenTiny.Cloud.DataApi\SevenTiny.Cloud.DataApi.csproj", "{16D39D9C-7F99-4778-B99D-D37101D159CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,14 +34,14 @@ Global
 		{FA26B98A-6D41-4E39-873E-79A90692AA66}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA26B98A-6D41-4E39-873E-79A90692AA66}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA26B98A-6D41-4E39-873E-79A90692AA66}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AB11F9F1-12B3-454B-84C4-FF881E06B963}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AB11F9F1-12B3-454B-84C4-FF881E06B963}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AB11F9F1-12B3-454B-84C4-FF881E06B963}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AB11F9F1-12B3-454B-84C4-FF881E06B963}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C920C71D-0EC5-482E-96DB-C0A74F53FFFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C920C71D-0EC5-482E-96DB-C0A74F53FFFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C920C71D-0EC5-482E-96DB-C0A74F53FFFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C920C71D-0EC5-482E-96DB-C0A74F53FFFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16D39D9C-7F99-4778-B99D-D37101D159CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16D39D9C-7F99-4778-B99D-D37101D159CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16D39D9C-7F99-4778-B99D-D37101D159CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16D39D9C-7F99-4778-B99D-D37101D159CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -49,9 +49,9 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{087F46A9-1D6C-42E1-99ED-5BB5BAD18FEB} = {ECD1D272-5AF8-41D0-A69E-0358BB9BDBDB}
 		{FA26B98A-6D41-4E39-873E-79A90692AA66} = {C818DFEF-2D8E-4FD3-851F-C3AFDDFE3E2A}
-		{AB11F9F1-12B3-454B-84C4-FF881E06B963} = {C2B695A9-F5A6-4B33-A156-1EE934683EC7}
 		{C818DFEF-2D8E-4FD3-851F-C3AFDDFE3E2A} = {ECD1D272-5AF8-41D0-A69E-0358BB9BDBDB}
 		{C920C71D-0EC5-482E-96DB-C0A74F53FFFC} = {C818DFEF-2D8E-4FD3-851F-C3AFDDFE3E2A}
+		{16D39D9C-7F99-4778-B99D-D37101D159CD} = {C2B695A9-F5A6-4B33-A156-1EE934683EC7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9275BAE2-A702-407D-B637-BDFE92758D51}
