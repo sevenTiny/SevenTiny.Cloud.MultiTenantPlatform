@@ -13,10 +13,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using SevenTiny.Cloud.DevelopmentWeb.Filters;
-using SevenTiny.Cloud.Infrastructure.Configs;
-using SevenTiny.Cloud.Infrastructure.Const;
-using SevenTiny.Cloud.Infrastructure.Context;
-using SevenTiny.Cloud.MultiTenantPlatform.Core;
+using SevenTiny.Cloud.MultiTenant.Infrastructure.Configs;
+using SevenTiny.Cloud.MultiTenant.Infrastructure.Const;
+using SevenTiny.Cloud.MultiTenant.Infrastructure.Context;
+using SevenTiny.Cloud.MultiTenant.Core;
 
 namespace SevenTiny.Cloud.DevelopmentWeb
 {

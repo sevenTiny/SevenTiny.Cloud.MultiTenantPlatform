@@ -4,9 +4,9 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using SevenTiny.Cloud.DataApi.Models;
 using SevenTiny.Bantina.Extensions;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
-using SevenTiny.Cloud.MultiTenantPlatform.UI.Enum;
+using SevenTiny.Cloud.MultiTenant.Core.ServiceContract;
+using SevenTiny.Cloud.MultiTenant.Core.ValueObject;
+using SevenTiny.Cloud.MultiTenant.UI.Enum;
 using System;
 using System.Collections.Generic;
 

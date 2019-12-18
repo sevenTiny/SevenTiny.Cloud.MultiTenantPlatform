@@ -4,16 +4,16 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using Newtonsoft.Json.Linq;
 using SevenTiny.Bantina.Extensions;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.Service;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
+using SevenTiny.Cloud.MultiTenant.Core.Enum;
+using SevenTiny.Cloud.MultiTenant.Core.Service;
+using SevenTiny.Cloud.MultiTenant.Core.ServiceContract;
 using SevenTiny.Cloud.DataApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.ValueObject;
-using SevenTiny.Cloud.Infrastructure.ValueObject;
-using SevenTiny.Cloud.Infrastructure.Context;
+using SevenTiny.Cloud.MultiTenant.Core.ValueObject;
+using SevenTiny.Cloud.MultiTenant.Infrastructure.ValueObject;
+using SevenTiny.Cloud.MultiTenant.Infrastructure.Context;
 
 namespace SevenTiny.Cloud.DataApi.Controllers
 {

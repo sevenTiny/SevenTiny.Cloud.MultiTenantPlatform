@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SevenTiny.Cloud.DataApi.Models;
 using SevenTiny.Bantina.Extensions;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
+using SevenTiny.Cloud.MultiTenant.Core.ServiceContract;
 using System;
 using System.Collections.Generic;
 

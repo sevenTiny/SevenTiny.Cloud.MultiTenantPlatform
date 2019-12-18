@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SevenTiny.Bantina;
-using SevenTiny.Cloud.Infrastructure.ValueObject;
+using SevenTiny.Cloud.MultiTenant.Infrastructure.ValueObject;
 
-namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Models
+namespace SevenTiny.Cloud.MultiTenant.Web.Models
 {
     public class JsonResultModel
     {

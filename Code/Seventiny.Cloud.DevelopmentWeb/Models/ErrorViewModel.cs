@@ -1,6 +1,6 @@
 using System;
 
-namespace SevenTiny.Cloud.MultiTenantPlatform.Web.Models
+namespace SevenTiny.Cloud.MultiTenant.Web.Models
 {
     public class ErrorViewModel
     {

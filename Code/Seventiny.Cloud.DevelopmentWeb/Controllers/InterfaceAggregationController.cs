@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SevenTiny.Bantina.Validation;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
-using SevenTiny.Cloud.Infrastructure.Configs;
-using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
+using SevenTiny.Cloud.MultiTenant.Core.Entity;
+using SevenTiny.Cloud.MultiTenant.Core.Enum;
+using SevenTiny.Cloud.MultiTenant.Core.ServiceContract;
+using SevenTiny.Cloud.MultiTenant.Infrastructure.Configs;
+using SevenTiny.Cloud.MultiTenant.Web.Models;
 
 namespace SevenTiny.Cloud.DevelopmentWeb.Controllers
 {

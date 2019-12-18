@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SevenTiny.Bantina.Validation;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
-using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
+using SevenTiny.Cloud.MultiTenant.Core.Entity;
+using SevenTiny.Cloud.MultiTenant.Core.Enum;
+using SevenTiny.Cloud.MultiTenant.Core.ServiceContract;
+using SevenTiny.Cloud.MultiTenant.Web.Models;
 using System;
 
 namespace SevenTiny.Cloud.DevelopmentWeb.Controllers
@@ -38,7 +38,7 @@ namespace SevenTiny.Cloud.DevelopmentWeb.Controllers
 
         public IActionResult Add()
         {
-            var indexView = new SevenTiny.Cloud.MultiTenantPlatform.Core.Entity.IndexView();
+            var indexView = new SevenTiny.Cloud.MultiTenant.Core.Entity.IndexView();
             indexView.Icon = "bars";
             ViewData["InterfaceFields"] = interfaceFieldService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
             ViewData["SearchConditions"] = searchConditionService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);

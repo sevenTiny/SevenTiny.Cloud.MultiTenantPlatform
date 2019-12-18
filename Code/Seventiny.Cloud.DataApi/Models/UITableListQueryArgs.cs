@@ -1,5 +1,5 @@
 ﻿using SevenTiny.Bantina;
-using SevenTiny.Cloud.Infrastructure.ValueObject;
+using SevenTiny.Cloud.MultiTenant.Infrastructure.ValueObject;
 
 namespace SevenTiny.Cloud.DataApi.Models
 {

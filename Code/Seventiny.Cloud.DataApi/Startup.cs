@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using SevenTiny.Cloud.MultiTenantPlatform.Core;
+using SevenTiny.Cloud.MultiTenant.Core;
 
 namespace SevenTiny.Cloud.DataApi
 {

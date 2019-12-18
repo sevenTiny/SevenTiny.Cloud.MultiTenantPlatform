@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SevenTiny.Cloud.DataApi.Models;
-using SevenTiny.Cloud.Infrastructure.Context;
+using SevenTiny.Cloud.MultiTenant.Infrastructure.Context;
 using System;
 using System.Collections.Generic;
 using System.Linq;

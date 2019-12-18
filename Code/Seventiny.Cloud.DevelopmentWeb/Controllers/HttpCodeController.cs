@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SevenTiny.Cloud.DevelopmentWeb.Helpers;
-using SevenTiny.Cloud.Infrastructure.Configs;
-using SevenTiny.Cloud.Infrastructure.Const;
+using SevenTiny.Cloud.MultiTenant.Infrastructure.Configs;
+using SevenTiny.Cloud.MultiTenant.Infrastructure.Const;
 
 namespace SevenTiny.Cloud.DevelopmentWeb.Controllers
 {

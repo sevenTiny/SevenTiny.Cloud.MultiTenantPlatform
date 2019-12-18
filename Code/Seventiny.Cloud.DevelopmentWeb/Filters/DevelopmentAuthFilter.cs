@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using SevenTiny.Cloud.DevelopmentWeb.Helpers;
-using SevenTiny.Cloud.Infrastructure.Const;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
+using SevenTiny.Cloud.MultiTenant.Infrastructure.Const;
+using SevenTiny.Cloud.MultiTenant.Core.Enum;
 using System;
 using System.Collections.Generic;
 using System.Linq;

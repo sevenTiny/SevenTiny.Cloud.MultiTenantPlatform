@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SevenTiny.Bantina.Validation;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
-using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
+using SevenTiny.Cloud.MultiTenant.Core.ServiceContract;
+using SevenTiny.Cloud.MultiTenant.Web.Models;
 
 namespace SevenTiny.Cloud.DevelopmentWeb.Controllers
 {
@@ -44,12 +44,12 @@ namespace SevenTiny.Cloud.DevelopmentWeb.Controllers
 
         public IActionResult Add()
         {
-            var application = new SevenTiny.Cloud.MultiTenantPlatform.Core.Entity.Application();
+            var application = new SevenTiny.Cloud.MultiTenant.Core.Entity.Application();
             application.Icon = "cloud";
             return View(ResponseModel.Success(application));
         }
 
-        public IActionResult AddLogic(SevenTiny.Cloud.MultiTenantPlatform.Core.Entity.Application application)
+        public IActionResult AddLogic(SevenTiny.Cloud.MultiTenant.Core.Entity.Application application)
         {
             if (string.IsNullOrEmpty(application.Name))
             {
@@ -81,7 +81,7 @@ namespace SevenTiny.Cloud.DevelopmentWeb.Controllers
             return View(ResponseModel.Success(application));
         }
 
-        public IActionResult UpdateLogic(SevenTiny.Cloud.MultiTenantPlatform.Core.Entity.Application application)
+        public IActionResult UpdateLogic(SevenTiny.Cloud.MultiTenant.Core.Entity.Application application)
         {
             if (application.Id == 0)
             {

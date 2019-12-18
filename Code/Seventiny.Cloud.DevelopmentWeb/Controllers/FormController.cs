@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SevenTiny.Bantina.Validation;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.Entity;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.ServiceContract;
-using SevenTiny.Cloud.Infrastructure.ValueObject;
-using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
+using SevenTiny.Cloud.MultiTenant.Core.Entity;
+using SevenTiny.Cloud.MultiTenant.Core.ServiceContract;
+using SevenTiny.Cloud.MultiTenant.Infrastructure.ValueObject;
+using SevenTiny.Cloud.MultiTenant.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

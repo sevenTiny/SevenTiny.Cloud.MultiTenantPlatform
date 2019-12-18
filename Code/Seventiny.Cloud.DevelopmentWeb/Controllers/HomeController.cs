@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SevenTiny.Cloud.MultiTenantPlatform.Web.Models;
+using SevenTiny.Cloud.MultiTenant.Web.Models;
 using System.Diagnostics;
 
 namespace SevenTiny.Cloud.DevelopmentWeb.Controllers

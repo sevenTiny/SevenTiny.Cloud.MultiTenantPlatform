@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SevenTiny.Cloud.DevelopmentWeb.Filters;
 using SevenTiny.Cloud.DevelopmentWeb.Helpers;
-using SevenTiny.Cloud.Infrastructure.Configs;
-using SevenTiny.Cloud.Infrastructure.Const;
-using SevenTiny.Cloud.Infrastructure.Context;
-using SevenTiny.Cloud.MultiTenantPlatform.Core.Enum;
+using SevenTiny.Cloud.MultiTenant.Infrastructure.Configs;
+using SevenTiny.Cloud.MultiTenant.Infrastructure.Const;
+using SevenTiny.Cloud.MultiTenant.Infrastructure.Context;
+using SevenTiny.Cloud.MultiTenant.Core.Enum;
 using System;
 using System.Linq;
 
