@@ -7,13 +7,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{96B1B369-C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{C2B695A9-F5A6-4B33-A156-1EE934683EC7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.Infrastructure", "..\10-Code\SevenTiny.Cloud.Infrastructure\SevenTiny.Cloud.Infrastructure.csproj", "{087F46A9-1D6C-42E1-99ED-5BB5BAD18FEB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.Infrastructure", "..\Code\SevenTiny.Cloud.Infrastructure\SevenTiny.Cloud.Infrastructure.csproj", "{087F46A9-1D6C-42E1-99ED-5BB5BAD18FEB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenantPlatform.Core", "..\10-Code\SevenTiny.Cloud.MultiTenantPlatform.Core\SevenTiny.Cloud.MultiTenantPlatform.Core.csproj", "{FA26B98A-6D41-4E39-873E-79A90692AA66}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenantPlatform.Core", "..\Code\SevenTiny.Cloud.MultiTenantPlatform.Core\SevenTiny.Cloud.MultiTenantPlatform.Core.csproj", "{FA26B98A-6D41-4E39-873E-79A90692AA66}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.Account.Core", "..\10-Code\SevenTiny.Cloud.Account.Core\SevenTiny.Cloud.Account.Core.csproj", "{671B42A7-8E7D-4614-A7AA-E2E9F4DEFCC2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.Account.Core", "..\Code\SevenTiny.Cloud.Account.Core\SevenTiny.Cloud.Account.Core.csproj", "{671B42A7-8E7D-4614-A7AA-E2E9F4DEFCC2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.Account", "..\10-Code\SevenTiny.Cloud.Account\SevenTiny.Cloud.Account.csproj", "{A4D8A839-555A-4112-9D5F-7D630AC7C200}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.Account", "..\Code\SevenTiny.Cloud.Account\SevenTiny.Cloud.Account.csproj", "{A4D8A839-555A-4112-9D5F-7D630AC7C200}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Components", "Components", "{ECD1D272-5AF8-41D0-A69E-0358BB9BDBDB}"
 EndProject
@@ -21,23 +21,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Account", "Account", "{B844
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MultiTenantPlatform", "MultiTenantPlatform", "{C818DFEF-2D8E-4FD3-851F-C3AFDDFE3E2A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.SevenTiny.Cloud.Infrastructure", "..\10-Code\Tests\Test.SevenTiny.Cloud.Infrastructure\Test.SevenTiny.Cloud.Infrastructure.csproj", "{C70D4F41-9023-42A0-AB83-C2797F831278}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.SevenTiny.Cloud.Infrastructure", "..\Code\Tests\Test.SevenTiny.Cloud.Infrastructure\Test.SevenTiny.Cloud.Infrastructure.csproj", "{C70D4F41-9023-42A0-AB83-C2797F831278}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenantPlatform.UI", "..\10-Code\SevenTiny.Cloud.MultiTenantPlatform.UI\SevenTiny.Cloud.MultiTenantPlatform.UI.csproj", "{C920C71D-0EC5-482E-96DB-C0A74F53FFFC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenantPlatform.UI", "..\Code\SevenTiny.Cloud.MultiTenantPlatform.UI\SevenTiny.Cloud.MultiTenantPlatform.UI.csproj", "{C920C71D-0EC5-482E-96DB-C0A74F53FFFC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.Account.DTO", "..\10-Code\SevenTiny.Cloud.Account.DTO\SevenTiny.Cloud.Account.DTO.csproj", "{2221DA84-5DBC-4910-8677-C0A4F283A3B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.Account.DTO", "..\Code\SevenTiny.Cloud.Account.DTO\SevenTiny.Cloud.Account.DTO.csproj", "{2221DA84-5DBC-4910-8677-C0A4F283A3B5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.SevenTiny.Cloud.MultiTenantPlatform.Core", "..\10-Code\Tests\Test.SevenTiny.Cloud.MultiTenantPlatform.Core\Test.SevenTiny.Cloud.MultiTenantPlatform.Core.csproj", "{2E8CF28A-D46D-431B-AE0C-3EF04F63BB2B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.SevenTiny.Cloud.MultiTenantPlatform.Core", "..\Code\Tests\Test.SevenTiny.Cloud.MultiTenantPlatform.Core\Test.SevenTiny.Cloud.MultiTenantPlatform.Core.csproj", "{2E8CF28A-D46D-431B-AE0C-3EF04F63BB2B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Seventiny.Cloud.Account.Core", "..\10-Code\Tests\Test.SevenTiny.Cloud.Account.Core\Test.Seventiny.Cloud.Account.Core.csproj", "{60073F15-4103-47E1-8B4E-5AAACE6F1573}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Seventiny.Cloud.Account.Core", "..\Code\Tests\Test.SevenTiny.Cloud.Account.Core\Test.Seventiny.Cloud.Account.Core.csproj", "{60073F15-4103-47E1-8B4E-5AAACE6F1573}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.SettingWeb", "..\10-Code\SevenTiny.Cloud.SettingWeb\SevenTiny.Cloud.SettingWeb.csproj", "{B2703EE0-FD50-4A29-8229-1ACE60F96A64}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.SettingWeb", "..\Code\SevenTiny.Cloud.SettingWeb\SevenTiny.Cloud.SettingWeb.csproj", "{B2703EE0-FD50-4A29-8229-1ACE60F96A64}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.DataApi", "..\10-Code\SevenTiny.Cloud.DataApi\SevenTiny.Cloud.DataApi.csproj", "{705E33B1-48A5-46A6-939F-24EF350AD9F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.DataApi", "..\Code\SevenTiny.Cloud.DataApi\SevenTiny.Cloud.DataApi.csproj", "{705E33B1-48A5-46A6-939F-24EF350AD9F0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.DevelopmentWeb", "..\10-Code\SevenTiny.Cloud.DevelopmentWeb\SevenTiny.Cloud.DevelopmentWeb.csproj", "{1510E7EE-2CC9-4961-BED3-C5D187514D64}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.DevelopmentWeb", "..\Code\SevenTiny.Cloud.DevelopmentWeb\SevenTiny.Cloud.DevelopmentWeb.csproj", "{1510E7EE-2CC9-4961-BED3-C5D187514D64}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.OfficialWeb", "..\10-Code\SevenTiny.Cloud.OfficialWeb\SevenTiny.Cloud.OfficialWeb.csproj", "{10A4CD3F-8CFB-4F11-B29F-545926655AC6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.OfficialWeb", "..\Code\SevenTiny.Cloud.OfficialWeb\SevenTiny.Cloud.OfficialWeb.csproj", "{10A4CD3F-8CFB-4F11-B29F-545926655AC6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

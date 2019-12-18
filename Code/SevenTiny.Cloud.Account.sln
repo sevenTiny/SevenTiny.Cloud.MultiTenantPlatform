@@ -5,11 +5,11 @@ VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{C2B695A9-F5A6-4B33-A156-1EE934683EC7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.Infrastructure", "..\10-Code\SevenTiny.Cloud.Infrastructure\SevenTiny.Cloud.Infrastructure.csproj", "{087F46A9-1D6C-42E1-99ED-5BB5BAD18FEB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.Infrastructure", "..\Code\SevenTiny.Cloud.Infrastructure\SevenTiny.Cloud.Infrastructure.csproj", "{087F46A9-1D6C-42E1-99ED-5BB5BAD18FEB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.Account.Core", "..\10-Code\SevenTiny.Cloud.Account.Core\SevenTiny.Cloud.Account.Core.csproj", "{671B42A7-8E7D-4614-A7AA-E2E9F4DEFCC2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.Account.Core", "..\Code\SevenTiny.Cloud.Account.Core\SevenTiny.Cloud.Account.Core.csproj", "{671B42A7-8E7D-4614-A7AA-E2E9F4DEFCC2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.Account", "..\10-Code\SevenTiny.Cloud.Account\SevenTiny.Cloud.Account.csproj", "{A4D8A839-555A-4112-9D5F-7D630AC7C200}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.Account", "..\Code\SevenTiny.Cloud.Account\SevenTiny.Cloud.Account.csproj", "{A4D8A839-555A-4112-9D5F-7D630AC7C200}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Components", "Components", "{ECD1D272-5AF8-41D0-A69E-0358BB9BDBDB}"
 	ProjectSection(SolutionItems) = preProject
@@ -18,7 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Components", "Components", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Account", "Account", "{B84432E6-89E2-45D5-9F58-02EF9461E1CB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.Account.DTO", "..\10-Code\SevenTiny.Cloud.Account.DTO\SevenTiny.Cloud.Account.DTO.csproj", "{2221DA84-5DBC-4910-8677-C0A4F283A3B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.Account.DTO", "..\Code\SevenTiny.Cloud.Account.DTO\SevenTiny.Cloud.Account.DTO.csproj", "{2221DA84-5DBC-4910-8677-C0A4F283A3B5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
