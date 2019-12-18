@@ -5,9 +5,7 @@ VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00-Test", "00-Test", "{96B1B369-C366-4046-95BD-478CB3145B74}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{C2B695A9-F5A6-4B33-A156-1EE934683EC7}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Components", "Components", "{ECD1D272-5AF8-41D0-A69E-0358BB9BDBDB}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{C2B695A9-F5A6-4B33-A156-1EE934683EC7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.SettingWeb", "SevenTiny.Cloud.SettingWeb\SevenTiny.Cloud.SettingWeb.csproj", "{B2703EE0-FD50-4A29-8229-1ACE60F96A64}"
 EndProject
@@ -17,19 +15,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.Development
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.OfficialWeb", "SevenTiny.Cloud.OfficialWeb\SevenTiny.Cloud.OfficialWeb.csproj", "{10A4CD3F-8CFB-4F11-B29F-545926655AC6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenTiny.Cloud.MultiTenant.DataAccess", "SevenTiny.Cloud.MultiTenant.DataAccess\SevenTiny.Cloud.MultiTenant.DataAccess.csproj", "{AF501DAA-4AA3-4CB0-958B-FF213C0A7829}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenant.DataAccess", "SevenTiny.Cloud.MultiTenant.DataAccess\SevenTiny.Cloud.MultiTenant.DataAccess.csproj", "{AF501DAA-4AA3-4CB0-958B-FF213C0A7829}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenTiny.Cloud.MultiTenant.Infrastructure", "SevenTiny.Cloud.MultiTenant.Infrastructure\SevenTiny.Cloud.MultiTenant.Infrastructure.csproj", "{7723D23F-0F12-44FD-B594-9780D9418CF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenant.Infrastructure", "SevenTiny.Cloud.MultiTenant.Infrastructure\SevenTiny.Cloud.MultiTenant.Infrastructure.csproj", "{7723D23F-0F12-44FD-B594-9780D9418CF0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenTiny.Cloud.MultiTenant.Core", "SevenTiny.Cloud.MultiTenant.Core\SevenTiny.Cloud.MultiTenant.Core.csproj", "{4FBAE9CA-E13A-461B-B857-E5B0F5961885}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenant.Core", "SevenTiny.Cloud.MultiTenant.Core\SevenTiny.Cloud.MultiTenant.Core.csproj", "{4FBAE9CA-E13A-461B-B857-E5B0F5961885}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenTiny.Cloud.MultiTenant.DataAccess.GRpc", "SevenTiny.Cloud.MultiTenant.DataAccess.GRpc\SevenTiny.Cloud.MultiTenant.DataAccess.GRpc.csproj", "{478677CA-F5C1-4609-80B2-4DC2C07466B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenant.DataAccess.GRpc", "SevenTiny.Cloud.MultiTenant.DataAccess.GRpc\SevenTiny.Cloud.MultiTenant.DataAccess.GRpc.csproj", "{478677CA-F5C1-4609-80B2-4DC2C07466B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.SevenTiny.Cloud.MultiTenant.Core", "Tests\Test.SevenTiny.Cloud.MultiTenant.Core\Test.SevenTiny.Cloud.MultiTenant.Core.csproj", "{657D2D21-F3CB-444C-A170-476A13523721}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.SevenTiny.Cloud.MultiTenant.Core", "Tests\Test.SevenTiny.Cloud.MultiTenant.Core\Test.SevenTiny.Cloud.MultiTenant.Core.csproj", "{657D2D21-F3CB-444C-A170-476A13523721}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenTiny.Cloud.MultiTenant.UI", "SevenTiny.Cloud.MultiTenant.UI\SevenTiny.Cloud.MultiTenant.UI.csproj", "{4557A89A-BC72-4479-936B-E8DE5FF2A750}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenant.UI", "SevenTiny.Cloud.MultiTenant.UI\SevenTiny.Cloud.MultiTenant.UI.csproj", "{4557A89A-BC72-4479-936B-E8DE5FF2A750}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.SevenTiny.Cloud.MultiTenant.Infrastructure", "Tests\Test.SevenTiny.Cloud.MultiTenant.Infrastructure\Test.SevenTiny.Cloud.MultiTenant.Infrastructure.csproj", "{E6D5D993-19ED-49DB-BE46-972143CDCD40}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.SevenTiny.Cloud.MultiTenant.Infrastructure", "Tests\Test.SevenTiny.Cloud.MultiTenant.Infrastructure\Test.SevenTiny.Cloud.MultiTenant.Infrastructure.csproj", "{E6D5D993-19ED-49DB-BE46-972143CDCD40}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -90,12 +88,8 @@ Global
 		{705E33B1-48A5-46A6-939F-24EF350AD9F0} = {C2B695A9-F5A6-4B33-A156-1EE934683EC7}
 		{1510E7EE-2CC9-4961-BED3-C5D187514D64} = {C2B695A9-F5A6-4B33-A156-1EE934683EC7}
 		{10A4CD3F-8CFB-4F11-B29F-545926655AC6} = {C2B695A9-F5A6-4B33-A156-1EE934683EC7}
-		{AF501DAA-4AA3-4CB0-958B-FF213C0A7829} = {ECD1D272-5AF8-41D0-A69E-0358BB9BDBDB}
-		{7723D23F-0F12-44FD-B594-9780D9418CF0} = {ECD1D272-5AF8-41D0-A69E-0358BB9BDBDB}
-		{4FBAE9CA-E13A-461B-B857-E5B0F5961885} = {ECD1D272-5AF8-41D0-A69E-0358BB9BDBDB}
 		{478677CA-F5C1-4609-80B2-4DC2C07466B3} = {C2B695A9-F5A6-4B33-A156-1EE934683EC7}
 		{657D2D21-F3CB-444C-A170-476A13523721} = {96B1B369-C366-4046-95BD-478CB3145B74}
-		{4557A89A-BC72-4479-936B-E8DE5FF2A750} = {ECD1D272-5AF8-41D0-A69E-0358BB9BDBDB}
 		{E6D5D993-19ED-49DB-BE46-972143CDCD40} = {96B1B369-C366-4046-95BD-478CB3145B74}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
