@@ -17,7 +17,7 @@ using SevenTiny.Cloud.MultiTenant.Domain.ValueObject;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
-    public class TriggerScriptService : MetaObjectManageRepository<TriggerScript>, ITriggerScriptService
+    public class TriggerScriptService : MetaObjectCommonRepositoryBase<TriggerScript>, ITriggerScriptService
     {
         public TriggerScriptService(
             MultiTenantPlatformDbContext multiTenantPlatformDbContext,

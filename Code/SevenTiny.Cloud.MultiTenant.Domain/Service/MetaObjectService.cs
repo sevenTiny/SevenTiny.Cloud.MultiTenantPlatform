@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
-    public class MetaObjectService : CommonInfoRepository<MetaObject>, IMetaObjectService
+    public class MetaObjectService : CommonRepositoryBase<MetaObject>, IMetaObjectService
     {
         public MetaObjectService(
             MultiTenantPlatformDbContext multiTenantPlatformDbContext,
@@ -46,10 +46,10 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
             => dbContext.Queryable<MetaObject>().Where(t => t.ApplicationId == applicationId && t.IsDeleted == (int)IsDeleted.Deleted).ToList();
 
         public MetaObject GetMetaObjectByCodeOrNameWithApplicationId(int applicationId, string code, string name)
-            => dbContext.Queryable<MetaObject>().Where(t => (t.ApplicationId == applicationId && t.Name.Equals(name)) || (t.ApplicationId == applicationId && t.Code.Equals(code))).ToOne();
+            => dbContext.Queryable<MetaObject>().Where(t => (t.ApplicationId == applicationId && t.Name.Equals(name)) || (t.ApplicationId == applicationId && t.Code.Equals(code))).FirstOrDefault();
 
         public MetaObject GetMetaObjectByCodeAndApplicationId(int applicationId, string code)
-            => dbContext.Queryable<MetaObject>().Where(t => t.ApplicationId == applicationId && t.Code.Equals(code)).ToOne();
+            => dbContext.Queryable<MetaObject>().Where(t => t.ApplicationId == applicationId && t.Code.Equals(code)).FirstOrDefault();
 
         public new Result<MetaObject> Update(MetaObject metaObject)
         {

@@ -1,13 +1,14 @@
 ﻿using SevenTiny.Bantina;
 using SevenTiny.Cloud.MultiTenant.Domain.DataAccess;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
+using SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract;
 using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Repository
 {
-    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
+    public class RepositoryBase<TEntity> : IRepositoryBase<TEntity> where TEntity : class
     {
-        public Repository(MultiTenantPlatformDbContext multiTenantPlatformDbContext)
+        public RepositoryBase(MultiTenantPlatformDbContext multiTenantPlatformDbContext)
         {
             dbContext = multiTenantPlatformDbContext;
         }
@@ -20,7 +21,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Repository
             return Result<TEntity>.Success();
         }
 
-        public Result<IList<TEntity>> Add(IList<TEntity> entities)
+        public Result<IList<TEntity>> BatchAdd(IList<TEntity> entities)
         {
             dbContext.Add<TEntity>(entities);
             return Result<IList<TEntity>>.Success();

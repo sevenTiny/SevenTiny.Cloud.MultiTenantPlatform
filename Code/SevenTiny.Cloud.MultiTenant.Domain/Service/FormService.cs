@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
-    public class FormService : MetaObjectManageRepository<Form>, IFormService
+    public class FormService : MetaObjectCommonRepositoryBase<Form>, IFormService
     {
         public FormService(MultiTenantPlatformDbContext multiTenantPlatformDbContext) : base(multiTenantPlatformDbContext)
         {

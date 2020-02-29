@@ -1,12 +1,13 @@
 ﻿using SevenTiny.Bantina.Bankinate;
 using SevenTiny.Bantina.Bankinate.Attributes;
+using System;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Entity
 {
     [TableCaching]
-    public class MetaObject : CommonInfo
+    public class MetaObject : CommonBase
     {
         [Column]
-        public int ApplicationId { get; set; }
+        public Guid ApplicationId { get; set; }
     }
 }

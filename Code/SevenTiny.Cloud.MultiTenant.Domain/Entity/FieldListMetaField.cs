@@ -1,4 +1,5 @@
 ﻿using SevenTiny.Bantina.Bankinate.Attributes;
+using System;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Entity
 {
@@ -12,7 +13,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Entity
         [Key]
         [AutoIncrease]
         [Column]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         [Column]
         public int FieldListId { get; set; }
         [Column]

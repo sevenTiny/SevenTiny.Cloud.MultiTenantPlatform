@@ -1,4 +1,5 @@
 ﻿using SevenTiny.Bantina.Bankinate.Attributes;
+using System;
 using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Entity
@@ -14,7 +15,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Entity
         [Key]
         [AutoIncrease]
         [Column]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         [Column("`Name`")]
         public string Name { get; set; }
         [Column("Icon")]
@@ -23,9 +24,9 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Entity
         /// 标识是属于哪个Condition
         /// </summary>
         [Column]
-        public int SearchConditionId { get; set; }
+        public Guid SearchConditionId { get; set; }
         [Column]
-        public int ParentId { get; set; }
+        public Guid ParentId { get; set; }
         /// <summary>
         /// 连接节点没有field，field=-1。可以通过该字段判断是否为连接节点
         /// </summary>

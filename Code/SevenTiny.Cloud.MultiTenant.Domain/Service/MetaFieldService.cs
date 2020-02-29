@@ -16,7 +16,7 @@ using SevenTiny.Cloud.MultiTenant.Infrastructure.Const;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
-    public class MetaFieldService : MetaObjectManageRepository<MetaField>, IMetaFieldService
+    public class MetaFieldService : MetaObjectCommonRepositoryBase<MetaField>, IMetaFieldService
     {
         public MetaFieldService(MultiTenantPlatformDbContext multiTenantPlatformDbContext) : base(multiTenantPlatformDbContext)
         {

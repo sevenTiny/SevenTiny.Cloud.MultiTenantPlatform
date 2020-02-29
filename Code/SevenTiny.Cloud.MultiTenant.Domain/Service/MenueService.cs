@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
-    public class MenueService : CommonInfoRepository<Menue>, IMenueService
+    public class MenueService : CommonRepositoryBase<Menue>, IMenueService
     {
         public MenueService(
             MultiTenantPlatformDbContext multiTenantPlatformDbContext
@@ -54,7 +54,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
                 .Continue(re =>
                 {
                     //check metaobject of name or code exist?
-                    Menue obj = dbContext.Queryable<Menue>().Where(t => t.Code.Equals(entity.Code)).ToOne();
+                    Menue obj = dbContext.Queryable<Menue>().Where(t => t.Code.Equals(entity.Code)).FirstOrDefault();
                     if (obj != null)
                     {
                         if (obj.Code.Equals(entity.Code))

@@ -1,12 +1,12 @@
 ﻿using SevenTiny.Bantina;
 using System.Collections.Generic;
 
-namespace SevenTiny.Cloud.MultiTenant.Domain.Repository
+namespace SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract
 {
-    public interface IRepository<TEntity> where TEntity : class
+    public interface IRepositoryBase<TEntity> where TEntity : class
     {
         Result<TEntity> Add(TEntity entity);
-        Result<IList<TEntity>> Add(IList<TEntity> entities);
+        Result<IList<TEntity>> BatchAdd(IList<TEntity> entities);
         Result<TEntity> Update(TEntity entity);
         Result<TEntity> Delete(TEntity entity);
     }

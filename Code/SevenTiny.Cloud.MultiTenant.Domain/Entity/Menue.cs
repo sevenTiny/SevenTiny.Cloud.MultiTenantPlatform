@@ -7,7 +7,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Entity
 {
     [Table]
     [TableCaching]
-    public class Menue : CommonInfo
+    public class Menue : CommonBase
     {
         [Column]
         public int ApplicationId { get; set; }

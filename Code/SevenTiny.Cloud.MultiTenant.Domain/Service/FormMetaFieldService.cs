@@ -13,7 +13,7 @@ using System.Text.RegularExpressions;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
-    public class FormMetaFieldService : Repository<FormMetaField>, IFormMetaFieldService
+    public class FormMetaFieldService : RepositoryBase<FormMetaField>, IFormMetaFieldService
     {
         public FormMetaFieldService(
             MultiTenantPlatformDbContext multiTenantPlatformDbContext,
@@ -41,7 +41,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
                     item.FieldType = meta.FieldType;
                 }
             }
-            return base.Add(entities);
+            return base.BatchAdd(entities);
         }
 
         public List<FormMetaField> GetByFormId(int formId)
@@ -67,7 +67,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 
         public FormMetaField GetById(int id)
         {
-            return dbContext.Queryable<FormMetaField>().Where(t => t.Id == id).ToOne();
+            return dbContext.Queryable<FormMetaField>().Where(t => t.Id == id).FirstOrDefault();
         }
 
         public new Result<FormMetaField> Update(FormMetaField entity)

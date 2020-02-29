@@ -3,7 +3,7 @@
 namespace SevenTiny.Cloud.MultiTenant.Domain.Entity
 {
     [TableCaching]
-    public class DataSource : CommonInfo
+    public class DataSource : CommonBase
     {
         /// <summary>
         /// 应用Id

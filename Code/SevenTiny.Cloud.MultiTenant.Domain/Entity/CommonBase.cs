@@ -6,12 +6,12 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Entity
     /// <summary>
     /// EntityInfo Standard Property
     /// </summary>
-    public abstract class CommonInfo
+    public abstract class CommonBase
     {
         [Key]
         [Column]
         [AutoIncrease]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         [Column("`Name`")]
         public string Name { get; set; }
         [Column("`Code`")]

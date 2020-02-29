@@ -23,17 +23,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenant
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenant.Application", "SevenTiny.Cloud.MultiTenant.Application\SevenTiny.Cloud.MultiTenant.Application.csproj", "{1E0B7628-183C-45B6-A182-9D47B4865A13}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenTiny.Cloud.MultiTenant.Domain", "SevenTiny.Cloud.MultiTenant.Domain\SevenTiny.Cloud.MultiTenant.Domain.csproj", "{A0C3AE61-1863-46E9-A350-6C189A6A6C30}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenant.Domain", "SevenTiny.Cloud.MultiTenant.Domain\SevenTiny.Cloud.MultiTenant.Domain.csproj", "{A0C3AE61-1863-46E9-A350-6C189A6A6C30}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02-External", "02-External", "{EFD2E479-ED8A-4682-80E6-BF2FAA878406}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenTiny.Cloud.MultiTenant.DataApi", "SevenTiny.Cloud.MultiTenant.DataApi\SevenTiny.Cloud.MultiTenant.DataApi.csproj", "{FBC79C13-8C18-4B31-836C-5F8D5C42CDF2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenant.DataApi", "SevenTiny.Cloud.MultiTenant.DataApi\SevenTiny.Cloud.MultiTenant.DataApi.csproj", "{FBC79C13-8C18-4B31-836C-5F8D5C42CDF2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenTiny.Cloud.MultiTenant.Development", "SevenTiny.Cloud.MultiTenant.Development\SevenTiny.Cloud.MultiTenant.Development.csproj", "{263A8EDA-79D9-45BC-A991-3788A6142068}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenTiny.Cloud.MultiTenant.Repository", "SevenTiny.Cloud.MultiTenant.Repository\SevenTiny.Cloud.MultiTenant.Repository.csproj", "{AB1F57AD-EF33-450C-A819-103C1185E672}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenTiny.Cloud.MultiTenant.RepositoryContract", "SevenTiny.Cloud.MultiTenant.RepositoryContract\SevenTiny.Cloud.MultiTenant.RepositoryContract.csproj", "{E55C7AF9-770C-482C-B2DD-037420C07001}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenant.Development", "SevenTiny.Cloud.MultiTenant.Development\SevenTiny.Cloud.MultiTenant.Development.csproj", "{263A8EDA-79D9-45BC-A991-3788A6142068}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03-Business", "03-Business", "{B4E215C8-C6B0-44E3-83B9-AB759332B242}"
 EndProject
@@ -87,14 +83,6 @@ Global
 		{263A8EDA-79D9-45BC-A991-3788A6142068}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{263A8EDA-79D9-45BC-A991-3788A6142068}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{263A8EDA-79D9-45BC-A991-3788A6142068}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AB1F57AD-EF33-450C-A819-103C1185E672}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AB1F57AD-EF33-450C-A819-103C1185E672}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AB1F57AD-EF33-450C-A819-103C1185E672}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AB1F57AD-EF33-450C-A819-103C1185E672}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E55C7AF9-770C-482C-B2DD-037420C07001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E55C7AF9-770C-482C-B2DD-037420C07001}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E55C7AF9-770C-482C-B2DD-037420C07001}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E55C7AF9-770C-482C-B2DD-037420C07001}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -109,8 +97,6 @@ Global
 		{A0C3AE61-1863-46E9-A350-6C189A6A6C30} = {B4E215C8-C6B0-44E3-83B9-AB759332B242}
 		{FBC79C13-8C18-4B31-836C-5F8D5C42CDF2} = {C2B695A9-F5A6-4B33-A156-1EE934683EC7}
 		{263A8EDA-79D9-45BC-A991-3788A6142068} = {C2B695A9-F5A6-4B33-A156-1EE934683EC7}
-		{AB1F57AD-EF33-450C-A819-103C1185E672} = {B4E215C8-C6B0-44E3-83B9-AB759332B242}
-		{E55C7AF9-770C-482C-B2DD-037420C07001} = {B4E215C8-C6B0-44E3-83B9-AB759332B242}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9275BAE2-A702-407D-B637-BDFE92758D51}

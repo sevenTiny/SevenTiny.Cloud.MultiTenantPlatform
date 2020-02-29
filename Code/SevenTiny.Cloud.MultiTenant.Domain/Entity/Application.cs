@@ -6,7 +6,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Entity
 {
     [Table]
     [TableCaching]
-    public class Application: CommonInfo
+    public class Application: CommonBase
     {
         [Column]
         public string Icon { get; set; }

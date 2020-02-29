@@ -15,7 +15,7 @@ using System.Linq.Expressions;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
-    public class SearchConditionNodeService : Repository<SearchConditionNode>, ISearchConditionNodeService
+    public class SearchConditionNodeService : RepositoryBase<SearchConditionNode>, ISearchConditionNodeService
     {
         public SearchConditionNodeService(
             MultiTenantPlatformDbContext multiTenantPlatformDbContext,
@@ -94,7 +94,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
                         };
                         base.Add(newParentCondition);
                         //查询刚才插入的节点
-                        newParentCondition = dbContext.Queryable<SearchConditionNode>().Where(t => t.FieldName.Contains(tempKey)).ToOne();
+                        newParentCondition = dbContext.Queryable<SearchConditionNode>().Where(t => t.FieldName.Contains(tempKey)).FirstOrDefault();
 
                         //将兄弟节点的父节点指向新插入的节点
                         brotherCondition.ParentId = newParentCondition.Id;
@@ -413,7 +413,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 
         public new Result<SearchConditionNode> Update(SearchConditionNode entity)
         {
-            var myEntity = dbContext.Queryable<SearchConditionNode>().Where(t => t.Id == entity.Id).ToOne();
+            var myEntity = dbContext.Queryable<SearchConditionNode>().Where(t => t.Id == entity.Id).FirstOrDefault();
             if (myEntity != null)
             {
                 myEntity.Text = entity.Text;
@@ -425,7 +425,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 
         public SearchConditionNode GetById(int id)
         {
-            return dbContext.Queryable<SearchConditionNode>().Where(t => t.Id == id).ToOne();
+            return dbContext.Queryable<SearchConditionNode>().Where(t => t.Id == id).FirstOrDefault();
         }
     }
 }

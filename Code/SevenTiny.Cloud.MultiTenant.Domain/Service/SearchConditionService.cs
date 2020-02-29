@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
-    public class SearchConditionService : MetaObjectManageRepository<SearchCondition>, ISearchConditionService
+    public class SearchConditionService : MetaObjectCommonRepositoryBase<SearchCondition>, ISearchConditionService
     {
         public SearchConditionService(
             MultiTenantPlatformDbContext multiTenantPlatformDbContext

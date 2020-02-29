@@ -5,7 +5,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Entity
 {
     [Table]
     [TableCaching]
-    public class TriggerScript : MetaObjectManageInfo
+    public class TriggerScript : MetaObjectCommonBase
     {
         /// <summary>
         /// 触发器类型

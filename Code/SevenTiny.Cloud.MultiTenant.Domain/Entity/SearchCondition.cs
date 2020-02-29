@@ -9,7 +9,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Entity
     /// </summary>
     [Table]
     [TableCaching]
-    public class SearchCondition : MetaObjectManageInfo
+    public class SearchCondition : MetaObjectCommonBase
     {
         public List<SearchConditionNode> ConditionFields { get; set; }
     }

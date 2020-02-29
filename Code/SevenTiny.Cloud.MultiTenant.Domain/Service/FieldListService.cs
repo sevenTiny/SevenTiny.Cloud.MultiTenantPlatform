@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
-    public class FieldListService : MetaObjectManageRepository<FieldList>, IFieldListService
+    public class FieldListService : MetaObjectCommonRepositoryBase<FieldList>, IFieldListService
     {
         public FieldListService(MultiTenantPlatformDbContext multiTenantPlatformDbContext) : base(multiTenantPlatformDbContext)
         {

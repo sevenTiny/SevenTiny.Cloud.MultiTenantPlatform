@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
-    public class FieldListMetaFieldService : Repository<FieldListMetaField>, IFieldListMetaFieldService
+    public class FieldListMetaFieldService : RepositoryBase<FieldListMetaField>, IFieldListMetaFieldService
     {
         public FieldListMetaFieldService(
             MultiTenantPlatformDbContext multiTenantPlatformDbContext,
@@ -39,7 +39,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
                     item.FieldType = meta.FieldType;
                 }
             }
-            return base.Add(entities);
+            return base.BatchAdd(entities);
         }
 
         public List<FieldListMetaField> GetByFieldListId(int fieldListId)

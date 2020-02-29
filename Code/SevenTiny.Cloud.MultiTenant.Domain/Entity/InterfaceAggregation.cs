@@ -7,7 +7,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Entity
     /// </summary>
     [Table]
     [TableCaching]
-    public class InterfaceAggregation : MetaObjectManageInfo
+    public class InterfaceAggregation : MetaObjectCommonBase
     {
         /// <summary>
         /// 接口类型

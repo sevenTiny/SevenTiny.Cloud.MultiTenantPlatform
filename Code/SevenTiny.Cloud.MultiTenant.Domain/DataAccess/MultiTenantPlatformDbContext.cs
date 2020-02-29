@@ -1,5 +1,6 @@
 ﻿using SevenTiny.Bantina.Bankinate;
 using SevenTiny.Bantina.Bankinate.Attributes;
+using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Infrastructure.Configs;
 using System;
 
@@ -17,5 +18,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.DataAccess
             //CacheMediaType = CacheMediaType.Local;
             //CacheMediaServer = $"{RedisConfig.Get("101", "Server")}:{RedisConfig.Get("101", "Port")}";//redis服务器地址以及端口号
         }
+
+        public DbSet<Application> Application { get; set; }
     }
 }

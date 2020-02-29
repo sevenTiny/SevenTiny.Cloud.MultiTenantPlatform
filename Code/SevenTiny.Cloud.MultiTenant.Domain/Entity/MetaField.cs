@@ -5,7 +5,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Entity
 {
     [Table]
     [TableCaching]
-    public class MetaField : MetaObjectManageInfo
+    public class MetaField : MetaObjectCommonBase
     {
         //=DataType
         [Column]

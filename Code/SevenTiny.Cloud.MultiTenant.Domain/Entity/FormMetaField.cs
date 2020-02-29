@@ -15,11 +15,11 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Entity
         [Key]
         [AutoIncrease]
         [Column]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         [Column]
-        public int FormId { get; set; }
+        public Guid FormId { get; set; }
         [Column]
-        public int MetaFieldId { get; set; }
+        public Guid MetaFieldId { get; set; }
         /// <summary>
         /// 名称
         /// </summary>

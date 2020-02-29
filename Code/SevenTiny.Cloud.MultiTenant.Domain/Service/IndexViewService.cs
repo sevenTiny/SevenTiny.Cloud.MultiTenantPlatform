@@ -16,7 +16,7 @@ using SevenTiny.Cloud.MultiTenant.UI.UIMetaData.ListView;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
-    public class IndexViewService : MetaObjectManageRepository<IndexView>, IIndexViewService
+    public class IndexViewService : MetaObjectCommonRepositoryBase<IndexView>, IIndexViewService
     {
         public IndexViewService(
             MultiTenantPlatformDbContext multiTenantPlatformDbContext,

@@ -8,7 +8,7 @@ using System;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
-    public class InterfaceAggregationService : MetaObjectManageRepository<InterfaceAggregation>, IInterfaceAggregationService
+    public class InterfaceAggregationService : MetaObjectCommonRepositoryBase<InterfaceAggregation>, IInterfaceAggregationService
     {
         readonly MultiTenantPlatformDbContext dbContext;
         readonly IFieldListService _fieldListService;
@@ -101,7 +101,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 
         public InterfaceAggregation GetByInterfaceAggregationCode(string interfaceAggregationCode)
         {
-            var interfaceAggregation = dbContext.Queryable<InterfaceAggregation>().Where(t => t.Code.Equals(interfaceAggregationCode)).ToOne();
+            var interfaceAggregation = dbContext.Queryable<InterfaceAggregation>().Where(t => t.Code.Equals(interfaceAggregationCode)).FirstOrDefault();
             return interfaceAggregation;
         }
     }

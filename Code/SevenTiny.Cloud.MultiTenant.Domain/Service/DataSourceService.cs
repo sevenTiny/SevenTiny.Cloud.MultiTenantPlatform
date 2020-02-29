@@ -10,7 +10,7 @@ using System.Text;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
-    public class DataSourceService : CommonInfoRepository<DataSource>, IDataSourceService
+    public class DataSourceService : CommonRepositoryBase<DataSource>, IDataSourceService
     {
         MultiTenantPlatformDbContext _dbContext;
 
@@ -27,7 +27,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 
         public Result CheckSameCodeOrName(DataSource entity)
         {
-            var obj = _dbContext.Queryable<DataSource>().Where(t => t.Id != entity.Id && (t.Code.Equals(entity.Code) || t.Name.Equals(entity.Name))).ToOne();
+            var obj = _dbContext.Queryable<DataSource>().Where(t => t.Id != entity.Id && (t.Code.Equals(entity.Code) || t.Name.Equals(entity.Name))).FirstOrDefault();
             if (obj != null)
             {
                 if (obj.Code.Equals(entity.Code))

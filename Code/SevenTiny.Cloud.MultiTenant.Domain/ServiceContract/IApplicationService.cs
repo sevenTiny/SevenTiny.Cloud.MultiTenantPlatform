@@ -3,7 +3,7 @@ using SevenTiny.Cloud.MultiTenant.Domain.Repository;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.ServiceContract
 {
-    public interface IApplicationService : ICommonInfoRepository<Application>
+    public interface IApplicationService : ICommonServiceBase<Application>
     {
     }
 }

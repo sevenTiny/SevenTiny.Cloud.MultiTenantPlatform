@@ -7,7 +7,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Entity
     /// </summary>
     [Table]
     [TableCaching]
-    public class IndexView : MetaObjectManageInfo
+    public class IndexView : MetaObjectCommonBase
     {
         /// <summary>
         /// 页面标题
