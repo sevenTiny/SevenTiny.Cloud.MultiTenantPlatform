@@ -1,0 +1,74 @@
+﻿@using SevenTiny.Cloud.MultiTenant.Domain.Entity;
+@using SevenTiny.Cloud.MultiTenant.Domain.Enum;
+
+@{
+    ViewData["Title"] = "List";
+    Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
+    List<TriggerScript> entities = Model as List<TriggerScript> ?? new List<TriggerScript>();
+}
+
+<article class="cl pd-20">
+    <div class="cl pd-5 bg-1 bk-gray">
+        <span class="l">
+            <a class="btn btn-primary radius" href="/TriggerScript/Add"><i class="Hui-iconfont">&#xe600;</i> 新建触发器脚本</a>
+        </span>
+        <span class="r">共有数据：<strong>@entities.Count</strong> 条</span>
+    </div>
+    <div class="mt-20">
+        <table class="table table-border table-bordered table-bg table-hover table-sort table-responsive">
+            <thead>
+                <tr class="text-c">
+                    <th>ID</th>
+                    <th>名称</th>
+                    <th>编码</th>
+                    <th>服务类型</th>
+                    <th>服务方法</th>
+                    <th>触发点</th>
+                    <th>失败策略</th>
+                    <th>脚本语言</th>
+                    <th>描述</th>
+                    <th>排序</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in entities)
+                {
+                <tr class="text-c">
+                    <td>@item.Id</td>
+                    <td><a class="ml-5" href="/TriggerScript/Update/@item.Id" title="@item.Description" style="font-weight:bold;color:dodgerblue" data-toggle="tooltip" data-placement="top">@item.Name</a></td>
+                    <td>@item.Code</td>
+                    <td>@Enum.GetName(typeof(ServiceType), item.ServiceType)</td>
+                    <td>@Enum.GetName(typeof(ServiceMethod), item.ServiceMethod)</td>
+                    <td>@Enum.GetName(typeof(TriggerPoint), item.TriggerPoint)</td>
+                    <td>@Enum.GetName(typeof(OnFailurePolicy), item.OnFailurePolicy)</td>
+                    <td>C#</td>
+                    <td>@item.Description</td>
+                    <td>@item.SortNumber</td>
+                    <td class="f-14 td-manage">
+                        <a style="text-decoration: none" class="ml-5" href="/TriggerScript/Update/@item.Id" title="编辑" data-toggle="tooltip" data-placement="top"><i class="Hui-iconfont">&#xe6df;</i></a>
+                        <a style="text-decoration: none" class="ml-5" onClick="ajax_delete_table(this, '/TriggerScript/LogicDelete/@item.Id')" href="javascript:;" title="删除" data-toggle="tooltip" data-placement="top"><i class="Hui-iconfont">&#xe6e2;</i></a>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</article>
+
+@await Html.PartialAsync($"~/Views/Shared/_FooterScripts.cshtml")
+@await Html.PartialAsync($"~/Views/Shared/_CommonScript.cshtml")
+<script type="text/javascript" src="~/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript">
+    $('.table-sort').dataTable({
+        "aLengthMenu": [[50, 100, -1], ["50", "100", "All"]],//二组数组，第一组数量，
+        "aaSorting": [9, "asc"],//默认第几个排序
+        "bStateSave": true,//状态保存
+        "aoColumnDefs": [
+            { "bVisible": false, "aTargets": [0] }, //控制列的隐藏显示
+            { "orderable": false, "aTargets": [10] }// 不参与排序的列
+        ]
+    });
+</script>
+<!--/请在上方写此页面业务相关的脚本-->

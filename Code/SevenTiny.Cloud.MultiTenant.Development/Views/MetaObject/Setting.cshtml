@@ -1,0 +1,109 @@
+﻿@using SevenTiny.Cloud.MultiTenant.Domain.Entity;
+@{
+    ViewData["Title"] = "Setting";
+    Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
+    var metaObjectList = ViewData["MetaObjects"] as List<MetaObject> ?? new List<MetaObject>();
+    string applicationCode = Convert.ToString(ViewData["Application"]);
+    int applicationId = Convert.ToInt32(ViewData["ApplicationId"]);
+}
+<link href="~/lib/bootstrap-select/bootstrap-customOfSelect.css" rel="stylesheet" />
+<link href="~/lib/bootstrap-select/bootstrap-select.css" rel="stylesheet" />
+
+<!--对象选择-->
+<article style="margin: 44px 0 0 0;">
+    <div class="row cl pt-10  pb-10 pl-20 pr-20 bg-1" style="background-color:#eeeeeefa">
+        <label class="form-label col-md-2 col-xs-2"><span class="" style="line-height:35px;"><b>选择对象：</b></span></label>
+        <div class="formControls col-4 col-xs-4 customOfSelect">
+            <select id="sl_metaObject" class="selectpicker show-tick form-control" data-live-search="true" data-style="btn-default" onchange="switchMetaObject()">
+                <option value="0">-- 全部对象 --</option>
+                @foreach (var item in metaObjectList)
+                {
+                    <option value="@item.Id">@item.Name</option>
+                }
+            </select>
+        </div>
+    </div>
+</article>
+
+<!--_menu 作为公共模版分离出去-->
+<aside class="Hui-aside mt-15">
+    <div class="menu_dropdown bk_2">
+    </div>
+    <div class="menu_dropdown bk_2">
+        <dl id="menu-objsetting">
+            <dt id="field" onclick="mainFrameOpenCheckMetaObjectId('/MetaField/List?metaObjectId='+getMetaObjectId())"><i class="Hui-iconfont">&#xe6ec;</i> 字段</dt>
+        </dl>
+        <dl id="menu-objsetting">
+            <dt onclick="mainFrameOpenCheckMetaObjectId('/Form/List')"><i class="Hui-iconfont">&#xe627;</i> 表单</dt>
+        </dl>
+        <dl id="menu-objsetting">
+            <dt onclick="mainFrameOpenCheckMetaObjectId('/FieldList/List')"><i class="Hui-iconfont">&#xe6f3;</i> 列表</dt>
+        </dl>
+        <dl id="menu-objsetting">
+            <dt onclick="mainFrameOpenCheckMetaObjectId('/SearchCondition/List')"><i class="Hui-iconfont">&#xe683;</i> 搜索条件</dt>
+        </dl>
+        <dl id="menu-objsetting">
+            <dt onclick="mainFrameOpenCheckMetaObjectId('/IndexView/List')"><i class="Hui-iconfont">&#xe72b;</i> 视图</dt>
+        </dl>
+        @*<dl id="menu-objsetting">
+                <dt onclick="mainFrameOpenCheckMetaObjectId('/Home/Error')"><i class="Hui-iconfont">&#xe616;</i> 详情页</dt>
+            </dl>
+            <dl id="menu-objsetting">
+                <dt onclick="mainFrameOpenCheckMetaObjectId('/Home/Error')"><i class="Hui-iconfont">&#xe616;</i> 功能按钮</dt>
+            </dl>*@
+        <dl id="menu-objsetting">
+            <dt onclick="mainFrameOpenCheckMetaObjectId('/InterfaceAggregation/List')"><i class="Hui-iconfont">&#xe6f1;</i> 自定义接口</dt>
+        </dl>
+        <dl id="menu-objsetting">
+            <dt onclick="mainFrameOpenCheckMetaObjectId('/TriggerScript/List')"><i class="Hui-iconfont">&#xe6a2;</i> 触发器</dt>
+        </dl>
+    </div>
+</aside>
+<div class="dislpayArrow hidden-xs mt-15"><a id="a_displaynavbar" class="pngfix" href="javascript:void(0);" onClick="displaynavbar(this)"></a></div>
+<!--/_menu 作为公共模版分离出去-->
+
+<section class="Hui-article-box mt-15">
+    <div class="show_iframe" style="margin-bottom:50px;">
+        <div style="display:none" class="loading"></div>
+        <iframe id="main_iframe" scrolling="auto" frameborder="0" src="/MetaObject/List?applicationId=@applicationId&applicationCode=@applicationCode"></iframe>
+    </div>
+</section>
+
+<script src="~/js/jquery-1.11.3.min.js"></script>
+<script src="~/lib/bootstrap-select/bootstrap.js"></script>
+<script src="~/lib/bootstrap-select/bootstrap-select.js"></script>
+@await Html.PartialAsync($"~/Views/Shared/_FooterScriptsNoJq.cshtml")
+@await Html.PartialAsync($"~/Views/Shared/_CommonScript.cshtml")
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript">
+    //在frame中打开页面
+    function mainFrameOpen(url) {
+        $("#main_iframe").prop("src", url);
+    }
+
+    //在frame中打开页面(检查对象选择情况)
+    function mainFrameOpenCheckMetaObjectId(url) {
+        if (getMetaObjectId() == 0) {
+            layer.msg('请先选择对象', { icon: 2, time: 2000 });
+            return
+        }
+        mainFrameOpen(url)
+    }
+
+    //获取当前选择的对象id
+    function getMetaObjectId() {
+        return $("#sl_metaObject").val();
+    }
+
+    //切换对象
+    function switchMetaObject() {
+        //如果选择对象选择全部，则切换到对象列表
+        if (getMetaObjectId() == 0) {
+            mainFrameOpen('/MetaObject/List')
+        } else {
+            //否则，切换到字段列表
+            $("#field").click()
+        }
+    }
+</script>

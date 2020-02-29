@@ -6,7 +6,7 @@ using MongoDB.Bson;
 using Newtonsoft.Json;
 using MongoDB.Bson.Serialization;
 
-namespace Test.SevenTiny.Cloud.MultiTenant.Core.BsonFormat
+namespace Test.SevenTiny.Cloud.MultiTenant.Domain.BsonFormat
 {
     public class BsonDocumentFormatTest
     {
