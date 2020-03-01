@@ -6,14 +6,14 @@ using System;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
-    public class MetaObjectCommonServiceBase<TEntity> : IMetaObjectCommonServiceBase<TEntity> where TEntity : MetaObjectCommonBase
+    public class MetaObjectCommonServiceBase<TEntity> : CommonServiceBase<TEntity>, IMetaObjectCommonServiceBase<TEntity> where TEntity : MetaObjectCommonBase
     {
-        public MetaObjectCommonServiceBase(IMetaObjectCommonRepositoryBase<TEntity> metaObjectCommonRepositoryBase)
+        public MetaObjectCommonServiceBase(IMetaObjectCommonRepositoryBase<TEntity> metaObjectCommonRepositoryBase) : base(metaObjectCommonRepositoryBase)
         {
             _metaObjectCommonRepositoryBase = metaObjectCommonRepositoryBase;
         }
 
-        IMetaObjectCommonRepositoryBase<TEntity> _metaObjectCommonRepositoryBase;
+        protected IMetaObjectCommonRepositoryBase<TEntity> _metaObjectCommonRepositoryBase;
 
         /// <summary>
         /// 检查是否有相同名称的编码或名称

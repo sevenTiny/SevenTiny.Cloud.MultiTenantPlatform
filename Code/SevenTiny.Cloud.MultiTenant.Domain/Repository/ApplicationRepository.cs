@@ -12,9 +12,6 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Repository
     {
         public ApplicationRepository(MultiTenantPlatformDbContext multiTenantPlatformDbContext) : base(multiTenantPlatformDbContext)
         {
-            _dbContext = multiTenantPlatformDbContext;
         }
-
-        MultiTenantPlatformDbContext _dbContext;
     }
 }

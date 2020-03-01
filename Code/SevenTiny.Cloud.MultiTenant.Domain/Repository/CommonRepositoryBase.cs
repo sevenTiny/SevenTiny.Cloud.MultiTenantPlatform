@@ -12,10 +12,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Repository
     {
         public CommonRepositoryBase(MultiTenantPlatformDbContext multiTenantPlatformDbContext) : base(multiTenantPlatformDbContext)
         {
-            _dbContext = multiTenantPlatformDbContext;
         }
-
-        MultiTenantPlatformDbContext _dbContext;
 
         public new Result<TEntity> Update(TEntity entity)
         {
@@ -59,52 +56,25 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Repository
         public TEntity GetByCode(string code)
             => _dbContext.Queryable<TEntity>().Where(t => t.Code.Equals(code)).FirstOrDefault();
 
-        public List<TEntity> GetEntitiesDeleted()
+        public List<TEntity> GetListDeleted()
             => _dbContext.Queryable<TEntity>().Where(t => t.IsDeleted == (int)IsDeleted.Deleted).ToList();
 
-        public List<TEntity> GetEntitiesUnDeleted()
+        public List<TEntity> GetListUnDeleted()
             => _dbContext.Queryable<TEntity>().Where(t => t.IsDeleted == (int)IsDeleted.UnDeleted).ToList();
 
         /// <summary>
-        /// 通过名称或编码查询数据是否存在，通常用在新增操作，校验名称或编码是否已经被使用
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="code"></param>
-        /// <returns></returns>
-        public TEntity GetByNameOrCode(string name, string code)
-            => _dbContext.Queryable<TEntity>().Where(t => t.Code.Equals(code) || t.Name.Equals(name)).FirstOrDefault();
-
-        /// <summary>
-        /// 通过名称或编码查询但是id不同的数据，通常用在修改操作，校验名称或编码是否已经被其他数据使用
+        /// 通过编码查询但是id不同的数据，通常用在修改编码操作，校验编码是否已经被其他数据使用
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="name"></param>
         /// <param name="code"></param>
         /// <returns></returns>
-        public TEntity GetByNameOrCodeWithNotSameId(Guid id, string name, string code)
-            => _dbContext.Queryable<TEntity>().Where(t => t.Id != id && (t.Code.Equals(code) || t.Name.Equals(name))).FirstOrDefault();
+        public TEntity GetByCodeWithoutSameId(Guid id, string code)
+            => _dbContext.Queryable<TEntity>().Where(t => t.Id != id && t.Code.Equals(code)).FirstOrDefault();
 
-        public bool CheckExistSameNameOrCodeWithNotSameId(Guid id, string name, string code)
-            => _dbContext.Queryable<TEntity>().Where(t => t.Id != id && (t.Code.Equals(code) || t.Name.Equals(name))).Any();
+        public bool CheckCodeExistWithoutSameId(Guid id, string code)
+            => _dbContext.Queryable<TEntity>().Where(t => t.Id != id && t.Code.Equals(code)).Any();
 
-        /// <summary>
-        /// 通过名称查询但是id不同的数据，通常用在修改操作，校验名称是否已经被其他数据使用
-        /// 注：用于编码不可修改的场景
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="name"></param>
-        /// <param name="code"></param>
-        /// <returns></returns>
-        public TEntity GetByNameWithNotSameId(Guid id, string name)
-            => _dbContext.Queryable<TEntity>().Where(t => t.Id != id && t.Name.Equals(name)).FirstOrDefault();
-
-        /// <summary>
-        /// 注：用于编码不可修改的场景
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public bool CheckExistSameNameWithNotSameId(Guid id, string name)
-            => _dbContext.Queryable<TEntity>().Where(t => t.Id != id && t.Name.Equals(name)).Any();
+        public bool CheckCodeExist(string code)
+            => _dbContext.Queryable<TEntity>().Where(t => t.Code.Equals(code)).Any();
     }
 }

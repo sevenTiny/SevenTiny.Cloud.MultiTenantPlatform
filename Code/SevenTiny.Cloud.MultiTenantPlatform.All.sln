@@ -31,7 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenant
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SevenTiny.Cloud.MultiTenant.Development", "SevenTiny.Cloud.MultiTenant.Development\SevenTiny.Cloud.MultiTenant.Development.csproj", "{263A8EDA-79D9-45BC-A991-3788A6142068}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03-Business", "03-Business", "{B4E215C8-C6B0-44E3-83B9-AB759332B242}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04-Business", "04-Business", "{B4E215C8-C6B0-44E3-83B9-AB759332B242}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

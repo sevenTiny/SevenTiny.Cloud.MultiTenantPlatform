@@ -10,32 +10,32 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Repository
     {
         public RepositoryBase(MultiTenantPlatformDbContext multiTenantPlatformDbContext)
         {
-            dbContext = multiTenantPlatformDbContext;
+            _dbContext = multiTenantPlatformDbContext;
         }
 
-        MultiTenantPlatformDbContext dbContext;
+        protected MultiTenantPlatformDbContext _dbContext;
 
         public Result<TEntity> Add(TEntity entity)
         {
-            dbContext.Add(entity);
+            _dbContext.Add(entity);
             return Result<TEntity>.Success();
         }
 
         public Result<IList<TEntity>> BatchAdd(IList<TEntity> entities)
         {
-            dbContext.Add<TEntity>(entities);
+            _dbContext.Add<TEntity>(entities);
             return Result<IList<TEntity>>.Success();
         }
 
         public Result<TEntity> Update(TEntity entity)
         {
-            dbContext.Update(entity);
+            _dbContext.Update(entity);
             return Result<TEntity>.Success();
         }
 
         public Result<TEntity> Delete(TEntity entity)
         {
-            dbContext.Delete<TEntity>(entity);
+            _dbContext.Delete<TEntity>(entity);
             return Result<TEntity>.Success();
         }
     }

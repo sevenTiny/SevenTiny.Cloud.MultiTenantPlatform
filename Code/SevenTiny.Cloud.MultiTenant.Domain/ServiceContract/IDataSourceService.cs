@@ -1,14 +1,13 @@
 ﻿using SevenTiny.Bantina;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Domain.Enum;
-using SevenTiny.Cloud.MultiTenant.Domain.Repository;
+using System;
 using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.ServiceContract
 {
-    public interface IDataSourceService : ICommonInfoRepository<DataSource>
+    public interface IDataSourceService : ICommonServiceBase<DataSource>
     {
-        List<DataSource> GetListByAppIdAndDataSourceType(int applicationId, DataSourceType dataSourceType);
-        Result CheckSameCodeOrName(DataSource entity);
+        Result<DataSource> Update(DataSource entity);
     }
 }

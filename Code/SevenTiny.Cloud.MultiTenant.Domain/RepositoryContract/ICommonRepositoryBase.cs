@@ -12,12 +12,11 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract
         Result<TEntity> Recover(Guid id);
         TEntity GetById(Guid id);
         TEntity GetByCode(string code);
-        List<TEntity> GetEntitiesDeleted();
-        List<TEntity> GetEntitiesUnDeleted();
-        TEntity GetByNameOrCode(string name, string code);
-        TEntity GetByNameOrCodeWithNotSameId(Guid id, string name, string code);
-        bool CheckExistSameNameOrCodeWithNotSameId(Guid id, string name, string code);
-        TEntity GetByNameWithNotSameId(Guid id, string name);
-        bool CheckExistSameNameWithNotSameId(Guid id, string name);
+        List<TEntity> GetListDeleted();
+        List<TEntity> GetListUnDeleted();
+
+        TEntity GetByCodeWithoutSameId(Guid id, string code);
+        bool CheckCodeExist(string code);
+        bool CheckCodeExistWithoutSameId(Guid id, string code);
     }
 }
