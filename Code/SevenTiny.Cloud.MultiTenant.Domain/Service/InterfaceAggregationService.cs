@@ -1,5 +1,5 @@
 ﻿using SevenTiny.Bantina;
-using SevenTiny.Cloud.MultiTenant.Domain.DataAccess;
+using SevenTiny.Cloud.MultiTenant.Domain.DbContext;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Domain.Enum;
 using SevenTiny.Cloud.MultiTenant.Domain.Repository;
@@ -8,7 +8,7 @@ using System;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
-    public class InterfaceAggregationService : MetaObjectCommonRepositoryBase<InterfaceAggregation>, IInterfaceAggregationService
+    internal class InterfaceAggregationService : MetaObjectCommonRepositoryBase<InterfaceAggregation>, IInterfaceAggregationService
     {
         readonly MultiTenantPlatformDbContext dbContext;
         readonly IFieldListService _fieldListService;

@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace SevenTiny.Cloud.MultiTenant.UI.UIMetaData
+namespace SevenTiny.Cloud.MultiTenant.Domain.ValueObject.UIMetaData
 {
     public class BaseComponent
     {

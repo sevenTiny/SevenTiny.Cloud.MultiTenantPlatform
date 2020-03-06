@@ -1,6 +1,6 @@
 ﻿using SevenTiny.Bantina;
 using SevenTiny.Bantina.Validation;
-using SevenTiny.Cloud.MultiTenant.Domain.DataAccess;
+using SevenTiny.Cloud.MultiTenant.Domain.DbContext;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Domain.Enum;
 using SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract;
@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
-    public class MetaObjectService : CommonServiceBase<MetaObject>, IMetaObjectService
+    internal class MetaObjectService : CommonServiceBase<MetaObject>, IMetaObjectService
     {
         public MetaObjectService(IMetaObjectRepository metaObjectRepository) : base(metaObjectRepository)
         {

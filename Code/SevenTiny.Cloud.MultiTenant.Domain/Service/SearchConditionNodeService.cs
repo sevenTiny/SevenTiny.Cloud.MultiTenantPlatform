@@ -2,7 +2,7 @@
 using MongoDB.Driver;
 using SevenTiny.Bantina;
 using SevenTiny.Bantina.Extensions;
-using SevenTiny.Cloud.MultiTenant.Domain.DataAccess;
+using SevenTiny.Cloud.MultiTenant.Domain.DbContext;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Domain.Enum;
 using SevenTiny.Cloud.MultiTenant.Domain.Repository;
@@ -15,7 +15,7 @@ using System.Linq.Expressions;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
-    public class SearchConditionNodeService : RepositoryBase<SearchConditionNode>, ISearchConditionNodeService
+    internal class SearchConditionNodeService : RepositoryBase<SearchConditionNode>, ISearchConditionNodeService
     {
         public SearchConditionNodeService(
             MultiTenantPlatformDbContext multiTenantPlatformDbContext,

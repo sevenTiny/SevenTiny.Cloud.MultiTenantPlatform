@@ -6,7 +6,7 @@ using SevenTiny.Cloud.MultiTenantPlatform.DataApi.Models;
 using SevenTiny.Bantina.Extensions;
 using SevenTiny.Cloud.MultiTenant.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenant.Domain.ValueObject;
-using SevenTiny.Cloud.MultiTenant.UI.Enum;
+using SevenTiny.Cloud.MultiTenant.Domain.Enum;
 using System;
 using System.Collections.Generic;
 

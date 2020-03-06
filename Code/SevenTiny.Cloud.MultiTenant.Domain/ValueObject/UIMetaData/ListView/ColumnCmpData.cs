@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SevenTiny.Cloud.MultiTenant.UI.UIMetaData.ListView
+namespace SevenTiny.Cloud.MultiTenant.Domain.ValueObject.UIMetaData.ListView
 {
     public class ColumnCmpData
     {

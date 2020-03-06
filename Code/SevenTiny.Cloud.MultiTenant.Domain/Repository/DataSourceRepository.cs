@@ -1,4 +1,4 @@
-﻿using SevenTiny.Cloud.MultiTenant.Domain.DataAccess;
+﻿using SevenTiny.Cloud.MultiTenant.Domain.DbContext;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Domain.Enum;
 using SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract;
@@ -8,7 +8,7 @@ using System.Text;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Repository
 {
-    public class DataSourceRepository : CommonRepositoryBase<DataSource>, IDataSourceRepository
+    internal class DataSourceRepository : CommonRepositoryBase<DataSource>, IDataSourceRepository
     {
         public DataSourceRepository(MultiTenantPlatformDbContext multiTenantPlatformDbContext) : base(multiTenantPlatformDbContext)
         {

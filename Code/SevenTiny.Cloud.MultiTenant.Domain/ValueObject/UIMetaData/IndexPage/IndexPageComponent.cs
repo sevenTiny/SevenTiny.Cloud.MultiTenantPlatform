@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
-using SevenTiny.Cloud.MultiTenant.UI.Enum;
-using SevenTiny.Cloud.MultiTenant.UI.UIMetaData.ListView;
+using SevenTiny.Cloud.MultiTenant.Domain.Enum;
+using SevenTiny.Cloud.MultiTenant.Domain.ValueObject.UIMetaData.ListView;
 
-namespace SevenTiny.Cloud.MultiTenant.UI.UIMetaData.IndexPage
+namespace SevenTiny.Cloud.MultiTenant.Domain.ValueObject.UIMetaData.IndexPage
 {
     /// <summary>
     /// 视图组件

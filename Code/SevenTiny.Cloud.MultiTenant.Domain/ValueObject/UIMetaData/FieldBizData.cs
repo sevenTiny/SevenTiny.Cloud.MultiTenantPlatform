@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
-using SevenTiny.Cloud.MultiTenant.UI.UIMetaData.UserInfo;
+using SevenTiny.Cloud.MultiTenant.Domain.ValueObject.UIMetaData.UserInfo;
 using System.Collections.Generic;
 
-namespace SevenTiny.Cloud.MultiTenant.UI.UIMetaData
+namespace SevenTiny.Cloud.MultiTenant.Domain.ValueObject.UIMetaData
 {
     /// <summary>
     /// 业务字段

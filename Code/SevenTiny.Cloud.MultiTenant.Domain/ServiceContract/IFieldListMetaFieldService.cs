@@ -2,7 +2,7 @@
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Domain.Repository;
 using SevenTiny.Cloud.MultiTenant.Domain.ValueObject;
-using SevenTiny.Cloud.MultiTenant.UI.UIMetaData.ListView;
+using SevenTiny.Cloud.MultiTenant.Domain.ValueObject.UIMetaData.ListView;
 using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.ServiceContract

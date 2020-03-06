@@ -6,14 +6,14 @@ using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenant.Domain.ValueObject;
 using SevenTiny.Cloud.MultiTenant.UI.DataAccess;
-using SevenTiny.Cloud.MultiTenant.UI.UIMetaData.ListView;
+using SevenTiny.Cloud.MultiTenant.Domain.ValueObject.UIMetaData.ListView;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
-    public class DataAccessService : IDataAccessService
+    internal class DataAccessService : IDataAccessService
     {
         readonly MultiTenantDataDbContext db;
         readonly IMetaFieldService metaFieldService;

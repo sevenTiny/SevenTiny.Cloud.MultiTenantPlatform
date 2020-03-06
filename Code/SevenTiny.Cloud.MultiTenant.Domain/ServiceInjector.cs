@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SevenTiny.Cloud.ScriptEngine;
-using SevenTiny.Cloud.MultiTenant.Domain.DataAccess;
+using SevenTiny.Cloud.MultiTenant.Domain.DbContext;
 using SevenTiny.Cloud.MultiTenant.Infrastructure.DependencyInjection;
 using SevenTiny.Cloud.MultiTenant.UI.DataAccess;
 using System.Reflection;

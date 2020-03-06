@@ -7,7 +7,7 @@ using System;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
-    public class CommonServiceBase<TEntity> : ICommonServiceBase<TEntity> where TEntity : CommonBase
+    internal class CommonServiceBase<TEntity> : ICommonServiceBase<TEntity> where TEntity : CommonBase
     {
         public CommonServiceBase(ICommonRepositoryBase<TEntity> commonRepositoryBase)
         {

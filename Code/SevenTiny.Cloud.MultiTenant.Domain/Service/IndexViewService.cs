@@ -2,21 +2,21 @@
 using SevenTiny.Cloud.MultiTenant.Domain.Enum;
 using SevenTiny.Cloud.MultiTenant.Domain.Repository;
 using SevenTiny.Cloud.MultiTenant.Domain.ServiceContract;
-using SevenTiny.Cloud.MultiTenant.UI.UIMetaData.IndexPage;
+using SevenTiny.Cloud.MultiTenant.Domain.ValueObject.UIMetaData.IndexPage;
 using SevenTiny.Cloud.MultiTenant.Infrastructure.ValueObject;
 using SevenTiny.Cloud.MultiTenant.Infrastructure.Caching;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using SevenTiny.Cloud.MultiTenant.UI.Enum;
+using SevenTiny.Cloud.MultiTenant.Domain.Enum;
 using SevenTiny.Bantina;
-using SevenTiny.Cloud.MultiTenant.Domain.DataAccess;
-using SevenTiny.Cloud.MultiTenant.UI.UIMetaData.ListView;
+using SevenTiny.Cloud.MultiTenant.Domain.DbContext;
+using SevenTiny.Cloud.MultiTenant.Domain.ValueObject.UIMetaData.ListView;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
-    public class IndexViewService : MetaObjectCommonRepositoryBase<IndexView>, IIndexViewService
+    internal class IndexViewService : MetaObjectCommonRepositoryBase<IndexView>, IIndexViewService
     {
         public IndexViewService(
             MultiTenantPlatformDbContext multiTenantPlatformDbContext,

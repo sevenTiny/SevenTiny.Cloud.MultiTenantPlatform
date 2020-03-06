@@ -1,6 +1,6 @@
 ﻿using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Domain.Repository;
-using SevenTiny.Cloud.MultiTenant.UI.UIMetaData.IndexPage;
+using SevenTiny.Cloud.MultiTenant.Domain.ValueObject.UIMetaData.IndexPage;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.ServiceContract
 {

@@ -1,4 +1,4 @@
-﻿using SevenTiny.Cloud.MultiTenant.Domain.DataAccess;
+﻿using SevenTiny.Cloud.MultiTenant.Domain.DbContext;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract;
 using System;
@@ -7,7 +7,7 @@ using System.Text;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Repository
 {
-    public class IndexViewRepository : MetaObjectCommonRepositoryBase<IndexView>, IIndexViewRepository
+    internal class IndexViewRepository : MetaObjectCommonRepositoryBase<IndexView>, IIndexViewRepository
     {
         public IndexViewRepository(MultiTenantPlatformDbContext multiTenantPlatformDbContext) : base(multiTenantPlatformDbContext)
         {

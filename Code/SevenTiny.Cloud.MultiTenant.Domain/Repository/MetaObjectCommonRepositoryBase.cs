@@ -1,5 +1,5 @@
 ﻿using SevenTiny.Bantina;
-using SevenTiny.Cloud.MultiTenant.Domain.DataAccess;
+using SevenTiny.Cloud.MultiTenant.Domain.DbContext;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Domain.Enum;
 using SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract;
@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Repository
 {
-    public class MetaObjectCommonRepositoryBase<TEntity> : CommonRepositoryBase<TEntity>, IMetaObjectCommonRepositoryBase<TEntity> where TEntity : MetaObjectCommonBase
+    internal class MetaObjectCommonRepositoryBase<TEntity> : CommonRepositoryBase<TEntity>, IMetaObjectCommonRepositoryBase<TEntity> where TEntity : MetaObjectCommonBase
     {
         public MetaObjectCommonRepositoryBase(MultiTenantPlatformDbContext multiTenantPlatformDbContext) : base(multiTenantPlatformDbContext)
         {

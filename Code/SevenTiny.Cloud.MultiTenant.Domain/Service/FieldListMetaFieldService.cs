@@ -1,17 +1,17 @@
 ﻿using SevenTiny.Bantina;
-using SevenTiny.Cloud.MultiTenant.Domain.DataAccess;
+using SevenTiny.Cloud.MultiTenant.Domain.DbContext;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Domain.Enum;
 using SevenTiny.Cloud.MultiTenant.Domain.Repository;
 using SevenTiny.Cloud.MultiTenant.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenant.Domain.ValueObject;
-using SevenTiny.Cloud.MultiTenant.UI.UIMetaData.ListView;
+using SevenTiny.Cloud.MultiTenant.Domain.ValueObject.UIMetaData.ListView;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
-    public class FieldListMetaFieldService : RepositoryBase<FieldListMetaField>, IFieldListMetaFieldService
+    internal class FieldListMetaFieldService : RepositoryBase<FieldListMetaField>, IFieldListMetaFieldService
     {
         public FieldListMetaFieldService(
             MultiTenantPlatformDbContext multiTenantPlatformDbContext,

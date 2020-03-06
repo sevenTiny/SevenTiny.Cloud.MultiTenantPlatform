@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace SevenTiny.Cloud.MultiTenant.UI.UIMetaData.ListView
+namespace SevenTiny.Cloud.MultiTenant.Domain.ValueObject.UIMetaData.ListView
 {
     /// <summary>
     /// 视图组件中返回的列表信息

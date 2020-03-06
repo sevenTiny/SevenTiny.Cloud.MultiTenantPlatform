@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
 using SevenTiny.Bantina;
-using SevenTiny.Cloud.MultiTenant.Domain.DataAccess;
+using SevenTiny.Cloud.MultiTenant.Domain.DbContext;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Domain.Enum;
 using SevenTiny.Cloud.MultiTenant.Domain.Repository;
@@ -16,7 +16,7 @@ using SevenTiny.Cloud.MultiTenant.Infrastructure.Const;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
-    public class MetaFieldService : MetaObjectCommonRepositoryBase<MetaField>, IMetaFieldService
+    internal class MetaFieldService : MetaObjectCommonRepositoryBase<MetaField>, IMetaFieldService
     {
         public MetaFieldService(MultiTenantPlatformDbContext multiTenantPlatformDbContext) : base(multiTenantPlatformDbContext)
         {

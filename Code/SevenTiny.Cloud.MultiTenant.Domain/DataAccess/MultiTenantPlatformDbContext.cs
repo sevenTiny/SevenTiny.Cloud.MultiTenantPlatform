@@ -4,10 +4,10 @@ using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Infrastructure.Configs;
 using System;
 
-namespace SevenTiny.Cloud.MultiTenant.Domain.DataAccess
+namespace SevenTiny.Cloud.MultiTenant.Domain.DbContext
 {
     [DataBase("MultiTenantPlatformWeb")]
-    public class MultiTenantPlatformDbContext : MySqlDbContext<MultiTenantPlatformDbContext>
+    internal class MultiTenantPlatformDbContext : MySqlDbContext<MultiTenantPlatformDbContext>
     {
         public MultiTenantPlatformDbContext() : base(ConnectionStringsConfig.Instance.MultiTenantPlatformWeb)
         {

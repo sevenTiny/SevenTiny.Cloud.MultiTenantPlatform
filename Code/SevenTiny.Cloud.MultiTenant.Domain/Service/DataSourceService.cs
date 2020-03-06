@@ -1,6 +1,6 @@
 ﻿using SevenTiny.Bantina;
 using SevenTiny.Bantina.Validation;
-using SevenTiny.Cloud.MultiTenant.Domain.DataAccess;
+using SevenTiny.Cloud.MultiTenant.Domain.DbContext;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Domain.Enum;
 using SevenTiny.Cloud.MultiTenant.Domain.Repository;
@@ -12,7 +12,7 @@ using System.Text;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
-    public class DataSourceService : CommonServiceBase<DataSource>, IDataSourceService
+    internal class DataSourceService : CommonServiceBase<DataSource>, IDataSourceService
     {
         public DataSourceService(IDataSourceRepository sourceRepository) : base(sourceRepository)
         {

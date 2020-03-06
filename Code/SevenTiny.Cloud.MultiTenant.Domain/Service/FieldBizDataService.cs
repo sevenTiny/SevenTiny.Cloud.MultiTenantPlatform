@@ -1,13 +1,13 @@
 ﻿using MongoDB.Bson;
 using SevenTiny.Cloud.MultiTenant.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenant.Domain.ValueObject;
-using SevenTiny.Cloud.MultiTenant.UI.UIMetaData;
+using SevenTiny.Cloud.MultiTenant.Domain.ValueObject.UIMetaData;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
-    public class FieldBizDataService : IFieldBizDataService
+    internal class FieldBizDataService : IFieldBizDataService
     {
         readonly IFieldListMetaFieldService fieldAggregationService;
         public FieldBizDataService(IFieldListMetaFieldService _fieldAggregationService)

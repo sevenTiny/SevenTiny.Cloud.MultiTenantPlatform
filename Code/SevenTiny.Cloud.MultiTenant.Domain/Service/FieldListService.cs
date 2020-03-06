@@ -1,5 +1,5 @@
 ﻿using SevenTiny.Bantina;
-using SevenTiny.Cloud.MultiTenant.Domain.DataAccess;
+using SevenTiny.Cloud.MultiTenant.Domain.DbContext;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Domain.Repository;
 using SevenTiny.Cloud.MultiTenant.Domain.ServiceContract;
@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
-    public class FieldListService : MetaObjectCommonRepositoryBase<FieldList>, IFieldListService
+    internal class FieldListService : MetaObjectCommonRepositoryBase<FieldList>, IFieldListService
     {
         public FieldListService(MultiTenantPlatformDbContext multiTenantPlatformDbContext) : base(multiTenantPlatformDbContext)
         {

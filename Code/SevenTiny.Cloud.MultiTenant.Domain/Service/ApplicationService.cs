@@ -1,5 +1,5 @@
 ﻿using SevenTiny.Bantina;
-using SevenTiny.Cloud.MultiTenant.Domain.DataAccess;
+using SevenTiny.Cloud.MultiTenant.Domain.DbContext;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Domain.Repository;
 using SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract;
@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
-    public class ApplicationService : CommonServiceBase<Application>, IApplicationService
+    internal class ApplicationService : CommonServiceBase<Application>, IApplicationService
     {
         public ApplicationService(IApplicationRepository applicationRepository) : base(applicationRepository)
         {

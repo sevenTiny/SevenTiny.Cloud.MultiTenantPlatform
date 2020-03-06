@@ -7,17 +7,17 @@ using SevenTiny.Cloud.MultiTenant.Infrastructure.Caching;
 using System;
 using System.Collections.Generic;
 using SevenTiny.Bantina;
-using SevenTiny.Cloud.MultiTenant.Domain.DataAccess;
+using SevenTiny.Cloud.MultiTenant.Domain.DbContext;
 using SevenTiny.Cloud.ScriptEngine;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using SevenTiny.Cloud.MultiTenant.UI.UIMetaData.ListView;
+using SevenTiny.Cloud.MultiTenant.Domain.ValueObject.UIMetaData.ListView;
 using System.Linq;
 using SevenTiny.Cloud.MultiTenant.Domain.ValueObject;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
-    public class TriggerScriptService : MetaObjectCommonRepositoryBase<TriggerScript>, ITriggerScriptService
+    internal class TriggerScriptService : MetaObjectCommonRepositoryBase<TriggerScript>, ITriggerScriptService
     {
         public TriggerScriptService(
             MultiTenantPlatformDbContext multiTenantPlatformDbContext,
@@ -287,9 +287,9 @@ public void {FunctionName_MetaObject_Interface_Delete_After}(ApplicationContext 
 => Get_DefaultScript_MetaObject_Interface_QueryCondition(FunctionName_MetaObject_Interface_TableList_Before);
         private string DefaultScript_MetaObject_Interface_TableList_After
 => $@"{DefaultCommonUsing}
-using SevenTiny.Cloud.MultiTenant.UI.UIMetaData;
-using SevenTiny.Cloud.MultiTenant.UI.UIMetaData.ListView;
-using SevenTiny.Cloud.MultiTenant.UI.UIMetaData.UserInfo;
+using SevenTiny.Cloud.MultiTenant.Domain.ValueObject.UIMetaData;
+using SevenTiny.Cloud.MultiTenant.Domain.ValueObject.UIMetaData.ListView;
+using SevenTiny.Cloud.MultiTenant.Domain.ValueObject.UIMetaData.UserInfo;
 {DefaultCommonClassInnerCode}
 public TableListComponent {FunctionName_MetaObject_Interface_TableList_After}(ApplicationContext applicationContext,string interfaceCode, TableListComponent tableListComponent)
 {{
@@ -300,9 +300,9 @@ public TableListComponent {FunctionName_MetaObject_Interface_TableList_After}(Ap
 => Get_DefaultScript_MetaObject_Interface_QueryCondition(FunctionName_MetaObject_Interface_SingleObject_Before);
         private string DefaultScript_MetaObject_Interface_SingleObject_After
 => $@"{DefaultCommonUsing}
-using SevenTiny.Cloud.MultiTenant.UI.UIMetaData;
-using SevenTiny.Cloud.MultiTenant.UI.UIMetaData.ListView;
-using SevenTiny.Cloud.MultiTenant.UI.UIMetaData.UserInfo;
+using SevenTiny.Cloud.MultiTenant.Domain.ValueObject.UIMetaData;
+using SevenTiny.Cloud.MultiTenant.Domain.ValueObject.UIMetaData.ListView;
+using SevenTiny.Cloud.MultiTenant.Domain.ValueObject.UIMetaData.UserInfo;
 {DefaultCommonClassInnerCode}
 public SingleObjectComponent {FunctionName_MetaObject_Interface_SingleObject_After}(ApplicationContext applicationContext,string interfaceCode,SingleObjectComponent singleObjectComponent)
 {{

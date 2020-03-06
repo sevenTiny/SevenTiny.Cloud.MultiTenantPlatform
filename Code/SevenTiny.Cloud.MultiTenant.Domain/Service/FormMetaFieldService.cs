@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson;
 using SevenTiny.Bantina;
 using SevenTiny.Bantina.Extensions;
-using SevenTiny.Cloud.MultiTenant.Domain.DataAccess;
+using SevenTiny.Cloud.MultiTenant.Domain.DbContext;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Domain.Enum;
 using SevenTiny.Cloud.MultiTenant.Domain.Repository;
@@ -13,7 +13,7 @@ using System.Text.RegularExpressions;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
-    public class FormMetaFieldService : RepositoryBase<FormMetaField>, IFormMetaFieldService
+    internal class FormMetaFieldService : RepositoryBase<FormMetaField>, IFormMetaFieldService
     {
         public FormMetaFieldService(
             MultiTenantPlatformDbContext multiTenantPlatformDbContext,

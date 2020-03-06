@@ -1,4 +1,4 @@
-﻿namespace SevenTiny.Cloud.MultiTenant.UI.CloudEntity
+﻿namespace SevenTiny.Cloud.MultiTenant.Domain.ValueObject
 {
     /// <summary>
     /// MetaData

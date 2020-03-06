@@ -1,5 +1,5 @@
 ﻿using SevenTiny.Bantina;
-using SevenTiny.Cloud.MultiTenant.Domain.DataAccess;
+using SevenTiny.Cloud.MultiTenant.Domain.DbContext;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Domain.Enum;
 using SevenTiny.Cloud.MultiTenant.Domain.Repository;
@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
-    public class MenueService : CommonRepositoryBase<Menue>, IMenueService
+    internal class MenueService : CommonRepositoryBase<Menue>, IMenueService
     {
         public MenueService(
             MultiTenantPlatformDbContext multiTenantPlatformDbContext
