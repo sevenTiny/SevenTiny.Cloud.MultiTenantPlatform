@@ -239,7 +239,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
         public new Result Delete(int id)
         {
             //先检查引用关系
-            if (dbContext.Queryable<FieldListMetaField>().Where(t => t.MetaFieldId == id).Any())
+            if (dbContext.Queryable<ListViewField>().Where(t => t.MetaFieldId == id).Any())
             {
                 return Result.Error("字段列表存在相关字段的引用关系，请先解除引用关系");
             }

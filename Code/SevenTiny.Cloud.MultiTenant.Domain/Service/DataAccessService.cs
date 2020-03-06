@@ -19,14 +19,14 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
         readonly IMetaFieldService metaFieldService;
         readonly IMetaObjectService metaObjectService;
         readonly IFieldBizDataService fieldBizDataService;
-        readonly IFieldListMetaFieldService fieldListAggregationService;
+        readonly IConfigFieldService fieldListAggregationService;
 
         public DataAccessService(
             MultiTenantDataDbContext _db,
             IMetaFieldService _metaFieldService,
             IMetaObjectService _metaObjectService,
             IFieldBizDataService _fieldBizDataService,
-            IFieldListMetaFieldService _fieldListAggregationService
+            IConfigFieldService _fieldListAggregationService
             )
         {
             db = _db;

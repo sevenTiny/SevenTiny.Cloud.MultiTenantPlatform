@@ -22,7 +22,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.ValueObject
 
         public int ApplicationId { get; set; }
         public string ApplicationCode { get; set; }
-        public Application Application { get; set; }
+        public CloudApplication Application { get; set; }
 
         public int MetaObjectId { get; set; }
         public string MetaObjectCode { get; set; }
@@ -69,7 +69,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.ValueObject
         /// <summary>
         /// 当前FieldListId对应的全部FieldListMetaFields
         /// </summary>
-        public List<FieldListMetaField> FieldListMetaFieldsOfFieldListId { get; set; }
+        public List<ListViewField> FieldListMetaFieldsOfFieldListId { get; set; }
         /// <summary>
         /// 当前FieldListMetaFieldsOfFieldListId映射的MetaFields
         /// </summary>

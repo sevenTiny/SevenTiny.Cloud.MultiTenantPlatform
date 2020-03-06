@@ -9,8 +9,8 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
     internal class FieldBizDataService : IFieldBizDataService
     {
-        readonly IFieldListMetaFieldService fieldAggregationService;
-        public FieldBizDataService(IFieldListMetaFieldService _fieldAggregationService)
+        readonly IConfigFieldService fieldAggregationService;
+        public FieldBizDataService(IConfigFieldService _fieldAggregationService)
         {
             fieldAggregationService = _fieldAggregationService;
         }

@@ -20,7 +20,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
     {
         public IndexViewService(
             MultiTenantPlatformDbContext multiTenantPlatformDbContext,
-            IFieldListService fieldListService,
+            IListViewService fieldListService,
             ISearchConditionService _searchConditionService,
             ISearchConditionNodeService _searchConditionAggregationService
             ) : base(multiTenantPlatformDbContext)
@@ -32,7 +32,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
         }
 
         readonly MultiTenantPlatformDbContext dbContext;
-        readonly IFieldListService _fieldListService;
+        readonly IListViewService _fieldListService;
         readonly ISearchConditionService searchConditionService;
         readonly ISearchConditionNodeService searchConditionAggregationService;
 

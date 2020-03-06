@@ -3,7 +3,7 @@
 namespace SevenTiny.Cloud.MultiTenant.Domain.Entity
 {
     /// <summary>
-    /// 组织接口
+    /// 视图
     /// </summary>
     [Table]
     [TableCaching]

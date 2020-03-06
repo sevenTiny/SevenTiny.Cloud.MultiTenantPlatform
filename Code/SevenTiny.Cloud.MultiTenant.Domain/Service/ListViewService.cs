@@ -8,11 +8,9 @@ using System.Linq;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
-    internal class SearchConditionService : MetaObjectCommonRepositoryBase<SearchCondition>, ISearchConditionService
+    internal class ListViewService : MetaObjectCommonRepositoryBase<ListView>, IListViewService
     {
-        public SearchConditionService(
-            MultiTenantPlatformDbContext multiTenantPlatformDbContext
-            ) : base(multiTenantPlatformDbContext)
+        public ListViewService(MultiTenantPlatformDbContext multiTenantPlatformDbContext) : base(multiTenantPlatformDbContext)
         {
             dbContext = multiTenantPlatformDbContext;
         }
@@ -23,52 +21,53 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
         /// 更新对象
         /// </summary>
         /// <param name="metaField"></param>
-        public new Result<SearchCondition> Update(SearchCondition searchCondition)
+        public new Result<ListView> Update(ListView interfaceField)
         {
-            SearchCondition myfield = GetById(searchCondition.Id);
+            ListView myfield = GetById(interfaceField.Id);
             if (myfield != null)
             {
                 //编码不允许修改
-                myfield.Name = searchCondition.Name;
-                myfield.Group = searchCondition.Group;
-                myfield.SortNumber = searchCondition.SortNumber;
-                myfield.Description = searchCondition.Description;
+                myfield.Name = interfaceField.Name;
+                myfield.Group = interfaceField.Group;
+                myfield.SortNumber = interfaceField.SortNumber;
+                myfield.Description = interfaceField.Description;
                 myfield.ModifyBy = -1;
                 myfield.ModifyTime = DateTime.Now;
             }
             base.Update(myfield);
-            return Result<SearchCondition>.Success();
+            return Result<ListView>.Success();
         }
 
         /// <summary>
         /// 根据id删除配置字段，校验是否被引用
         /// </summary>
         /// <param name="id"></param>
-        public new Result<SearchCondition> Delete(int id)
+        public new Result<ListView> Delete(int id)
         {
-            if (dbContext.Queryable<CloudInterface>().Where(t => t.SearchConditionId == id).Any())
+            if (dbContext.Queryable<CloudInterface>().Where(t => t.ListViewId == id).Any())
             {
                 //存在引用关系，先删除引用该数据的数据
-                return Result<SearchCondition>.Error("存在引用关系，先删除引用该数据的数据");
+                return Result<ListView>.Error("存在引用关系，先删除引用该数据的数据");
             }
             else
             {
                 base.Delete(id);
-                return Result<SearchCondition>.Success();
+                return Result<ListView>.Success();
             }
         }
 
         public new void DeleteByMetaObjectId(int metaObjectId)
         {
-            var searchContions = base.GetEntitiesByMetaObjectId(metaObjectId);
+            var fieldLists = base.GetEntitiesByMetaObjectId(metaObjectId);
+            
             TransactionHelper.Transaction(() =>
             {
-                if (searchContions != null && searchContions.Any())
+                if (fieldLists!=null && fieldLists.Any())
                 {
                     //删除字段配置下的所有字段
-                    foreach (var item in searchContions)
+                    foreach (var item in fieldLists)
                     {
-                        dbContext.Delete<SearchConditionNode>(t => t.SearchConditionId == item.Id);
+                        dbContext.Delete<ListViewField>(t => t.ListViewId == item.Id);
                     }
                 }
                 //删除字段配置
