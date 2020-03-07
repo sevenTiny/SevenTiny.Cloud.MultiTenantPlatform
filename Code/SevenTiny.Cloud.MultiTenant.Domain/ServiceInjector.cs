@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SevenTiny.Cloud.ScriptEngine;
+using SevenTiny.Cloud.ScriptEngine.CSharp;
 using SevenTiny.Cloud.MultiTenant.Domain.DbContext;
 using SevenTiny.Cloud.MultiTenant.Infrastructure.DependencyInjection;
-using SevenTiny.Cloud.MultiTenant.UI.DataAccess;
 using System.Reflection;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain
@@ -14,9 +14,8 @@ namespace SevenTiny.Cloud.MultiTenant.Domain
             services.AddScoped(Assembly.GetExecutingAssembly());
 
             //脚本引擎
-            services.AddSingleton<IScriptEngineProvider, ScriptEngineProvider>();
+            services.AddSingleton<IDynamicScriptEngine, CSharpDynamicScriptEngine>();
             services.AddScoped<MultiTenantPlatformDbContext>();
-            services.AddScoped<MultiTenantDataDbContext>();
         }
     }
 }

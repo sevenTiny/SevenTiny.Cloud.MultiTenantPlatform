@@ -3,7 +3,7 @@ using SevenTiny.Cloud.MultiTenant.Domain.Repository;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.ServiceContract
 {
-    public interface ICloudInterfaceService : IMetaObjectManageRepository<CloudInterface>
+    public interface ICloudInterfaceService : IMetaObjectCommonServiceBase<CloudInterface>
     {
         /// <summary>
         /// 获取组织接口对象通过接口编码

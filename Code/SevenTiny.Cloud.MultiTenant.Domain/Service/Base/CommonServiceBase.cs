@@ -46,8 +46,9 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
         {
             return Result<TEntity>.Success()
                 .ContinueEnsureArgumentNotNullOrEmpty(entity, nameof(entity))
+                .ContinueEnsureArgumentNotNullOrEmpty(entity.Code, nameof(entity.Code))
                 //校验编码是否已经存在
-                .Continue(_ => CheckCodeExistWithoutSameId(entity.Id, entity.Code).AsResult<TEntity>())
+                .Continue(_ => CheckCodeExist(entity.Code).AsResult<TEntity>())
                 .Continue(_ => _commonRepositoryBase.Add(entity));
         }
 
@@ -73,7 +74,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
             target.Group = source.Group;
             target.SortNumber = source.SortNumber;
             target.Description = source.Description;
-            target.ModifyBy = -1;
+            target.ModifyBy = source.ModifyBy;
             target.ModifyTime = DateTime.Now;
 
             return _commonRepositoryBase.Update(target);

@@ -24,13 +24,13 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Repository
             }
         }
 
-        public List<TEntity> GetEntitiesByMetaObjectId(Guid metaObjectId)
+        public List<TEntity> GetListByMetaObjectId(Guid metaObjectId)
             => _dbContext.Queryable<TEntity>().Where(t => t.MetaObjectId == metaObjectId).ToList();
 
-        public List<TEntity> GetEntitiesDeletedByMetaObjectId(Guid metaObjectId)
+        public List<TEntity> GetListDeletedByMetaObjectId(Guid metaObjectId)
             => _dbContext.Queryable<TEntity>().Where(t => t.IsDeleted == (int)IsDeleted.Deleted && t.MetaObjectId == metaObjectId).ToList();
 
-        public List<TEntity> GetEntitiesUnDeletedByMetaObjectId(Guid metaObjectId)
+        public List<TEntity> GetListUnDeletedByMetaObjectId(Guid metaObjectId)
             => _dbContext.Queryable<TEntity>().Where(t => t.IsDeleted == (int)IsDeleted.UnDeleted && t.MetaObjectId == metaObjectId).ToList();
 
         /// <summary>

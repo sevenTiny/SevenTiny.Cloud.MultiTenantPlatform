@@ -4,16 +4,16 @@
     Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
 
     ResponseModel result = Model as ResponseModel ?? new ResponseModel();
-    FieldList fieldList = result.Data as FieldList ?? new FieldList();
+    ListView fieldList = result.Data as ListView ?? new ListView();
 }
 @{
     ViewData["Level_1"] = "对象设置";
-    ViewData["Level_2"] = "新增字段列表";
+    ViewData["Level_2"] = "新增表单";
 }
 @await Html.PartialAsync("~/Views/Shared/PartialNav.cshtml")
 
 <article class="page-container">
-    <form class="form form-horizontal validate" id="form-article-add" method="post" action="/FieldList/AddLogic">
+    <form class="form form-horizontal validate" id="form-article-add" method="post" action="/Form/AddLogic">
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>名称：</label>
             <div class="formControls col-xs-8 col-sm-9">

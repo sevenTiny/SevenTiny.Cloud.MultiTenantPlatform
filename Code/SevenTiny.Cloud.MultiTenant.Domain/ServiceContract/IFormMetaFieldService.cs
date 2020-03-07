@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.ServiceContract
 {
-    public interface IFormMetaFieldService : IRepository<ConfigField>
+    public interface IFormMetaFieldService : ICommonServiceBase<ConfigField>
     {
         Result<IList<ConfigField>> Add(int metaObjectId, IList<ConfigField> entities);
         ConfigField GetById(int id);

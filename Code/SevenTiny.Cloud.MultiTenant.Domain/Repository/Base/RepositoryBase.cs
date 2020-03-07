@@ -1,6 +1,5 @@
 ﻿using SevenTiny.Bantina;
 using SevenTiny.Cloud.MultiTenant.Domain.DbContext;
-using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract;
 using System.Collections.Generic;
 

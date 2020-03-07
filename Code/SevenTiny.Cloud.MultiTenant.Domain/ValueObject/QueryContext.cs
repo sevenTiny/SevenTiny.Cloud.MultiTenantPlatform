@@ -20,18 +20,18 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.ValueObject
         public string InterfaceCode { get; set; }
         public Dictionary<string, object> ArgumentsDic { get; set; }
 
-        public int ApplicationId { get; set; }
+        public Guid ApplicationId { get; set; }
         public string ApplicationCode { get; set; }
         public CloudApplication Application { get; set; }
 
-        public int MetaObjectId { get; set; }
+        public Guid MetaObjectId { get; set; }
         public string MetaObjectCode { get; set; }
         public MetaObject MetaObject { get; set; }
 
-        public int SearchConditionId { get; set; }
-        public int FieldListId { get; set; }
-        public int FormId { get; set; }
-        public int DataSourceId { get; set; }
+        public Guid SearchConditionId { get; set; }
+        public Guid FieldListId { get; set; }
+        public Guid FormId { get; set; }
+        public Guid DataSourceId { get; set; }
         public InterfaceType InterfaceType { get; set; }
 
         private List<MetaField> _MetaFieldsUnDeleted;
@@ -52,7 +52,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.ValueObject
         /// <summary>
         /// 对象下全部字段转化成以id为key的字典
         /// </summary>
-        public Dictionary<int, MetaField> MetaFieldsUnDeletedIdDic { get; private set; }
+        public Dictionary<Guid, MetaField> MetaFieldsUnDeletedIdDic { get; private set; }
         /// <summary>
         /// 对象下的全部字段转化为以大写的code为key的字典
         /// </summary>
@@ -69,7 +69,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.ValueObject
         /// <summary>
         /// 当前FieldListId对应的全部FieldListMetaFields
         /// </summary>
-        public List<ListViewField> FieldListMetaFieldsOfFieldListId { get; set; }
+        public List<ConfigField> FieldListMetaFieldsOfFieldListId { get; set; }
         /// <summary>
         /// 当前FieldListMetaFieldsOfFieldListId映射的MetaFields
         /// </summary>

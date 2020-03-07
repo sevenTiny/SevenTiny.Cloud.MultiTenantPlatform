@@ -6,45 +6,33 @@ using SevenTiny.Cloud.MultiTenant.Web.Models;
 using SevenTiny.Cloud.MultiTenant.Domain.Enum;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Bantina;
+using SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract;
+using System;
 
 namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 {
     public class DataSourceController : WebControllerBase
     {
+        IDataSourceRepository _dataSourceRepository;
         IDataSourceService _dataSourceService;
         ITriggerScriptService _triggerScriptService;
 
-        public DataSourceController(
-            IDataSourceService dataSourceService,
-        ITriggerScriptService triggerScriptService
-            )
+        public DataSourceController(IDataSourceRepository dataSourceRepository, IDataSourceService dataSourceService, ITriggerScriptService triggerScriptService)
         {
             _dataSourceService = dataSourceService;
             _triggerScriptService = triggerScriptService;
+            _dataSourceRepository = dataSourceRepository;
         }
 
         private Result CommonAddCheck(string dataSourceType, DataSource entity)
         {
             return Result.Success()
-                .ContinueAssert(!string.IsNullOrEmpty(entity.Name), "名称不能为空")
-                .ContinueAssert(!string.IsNullOrEmpty(entity.Code), "编码不能为空")
-                .ContinueAssert(entity.Code.IsAlnum(2, 50), "编码不合法，2-50位且只能包含字母和数字（字母开头）")
-                .ContinueAssert(!string.IsNullOrEmpty(entity.Script), "数据源内容不能为空")
-                .Continue(re =>
-                {
-                    string tempCode = entity.Code;
-                    entity.ApplicationId = CurrentApplicationId;
-                    entity.Code = $"{CurrentApplicationCode}.{dataSourceType}.{entity.Code}";
-
-                    //检查编码或名称重复
-                    var checkResult = _dataSourceService.CheckSameCodeOrName(entity);
-                    if (!checkResult.IsSuccess)
-                    {
-                        return checkResult;
-                    }
-                    entity.Code = tempCode;
-                    return re;
-                });
+                .ContinueEnsureArgumentNotNullOrEmpty(entity, nameof(entity))
+                .ContinueEnsureArgumentNotNullOrEmpty(entity.Name, nameof(entity.Name))
+                .ContinueEnsureArgumentNotNullOrEmpty(entity.Code, nameof(entity.Code))
+                .ContinueAssert(_ => entity.Code.IsAlnum(2, 50), "编码不合法，2-50位且只能包含字母和数字（字母开头）")
+                .ContinueEnsureArgumentNotNullOrEmpty(entity.Script, nameof(entity.Script))
+                ;
         }
 
         #region ScriptDataSource
@@ -60,6 +48,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
                  .Continue(re =>
                  {
                      entity.Code = $"{CurrentApplicationCode}.ScriptDataSource.{entity.Code}";
+                     entity.ApplicationId = CurrentApplicationId;
                      entity.DataSourceType = (int)DataSourceType.Script;
                      return re;
                  })
@@ -75,17 +64,16 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
                 return View("AddScriptDataSource", ResponseModel.Error(result.Message, entity));
         }
 
-        public IActionResult UpdateScriptDataSource(int id)
+        public IActionResult UpdateScriptDataSource(Guid id)
         {
-            return View(ResponseModel.Success(_dataSourceService.GetById(id)));
+            return View(ResponseModel.Success(_dataSourceRepository.GetById(id)));
         }
         public IActionResult UpdateScriptDataSourceLogic(DataSource entity)
         {
             var result = Result.Success()
-                .ContinueAssert(!string.IsNullOrEmpty(entity.Name), "名称不能为空")
-                .ContinueAssert(!string.IsNullOrEmpty(entity.Code), "编码不能为空")
-                .ContinueAssert(!string.IsNullOrEmpty(entity.Script), "数据源内容不能为空")
-                .Continue(re => _dataSourceService.CheckSameCodeOrName(entity))
+                .ContinueEnsureArgumentNotNullOrEmpty(entity, nameof(entity))
+                .ContinueEnsureArgumentNotNullOrEmpty(entity.Name, nameof(entity.Name))
+                .ContinueEnsureArgumentNotNullOrEmpty(entity.Script, nameof(entity.Script))
                 .Continue(re => _triggerScriptService.CompilateAndCheckScript(entity.Script, CurrentApplicationCode))
                 .Continue(re =>
                 {
@@ -101,7 +89,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult ScriptDataSourceList()
         {
-            return View(_dataSourceService.GetListByAppIdAndDataSourceType(CurrentApplicationId, DataSourceType.Script));
+            return View(_dataSourceRepository.GetListByApplicationIdAndDataSourceType(CurrentApplicationId, DataSourceType.Script));
         }
         #endregion
 
@@ -119,6 +107,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
             var result = CommonAddCheck("JsonDataSource", entity)
                 .Continue(re =>
                 {
+                    entity.ApplicationId = CurrentApplicationId;
                     try
                     {
                         Newtonsoft.Json.JsonConvert.DeserializeObject(entity.Script);
@@ -147,16 +136,16 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
                 return View("AddJsonDataSource", ResponseModel.Error(result.Message, entity));
         }
 
-        public IActionResult UpdateJsonDataSource(int id)
+        public IActionResult UpdateJsonDataSource(Guid id)
         {
-            return View(ResponseModel.Success(_dataSourceService.GetById(id)));
+            return View(ResponseModel.Success(_dataSourceRepository.GetById(id)));
         }
         public IActionResult UpdateJsonDataSourceLogic(DataSource entity)
         {
             var result = Result.Success()
-                .ContinueAssert(!string.IsNullOrEmpty(entity.Name), "名称不能为空")
-                .ContinueAssert(!string.IsNullOrEmpty(entity.Code), "编码不能为空")
-                .ContinueAssert(!string.IsNullOrEmpty(entity.Script), "数据源内容不能为空")
+                .ContinueEnsureArgumentNotNullOrEmpty(entity, nameof(entity))
+                .ContinueEnsureArgumentNotNullOrEmpty(entity.Name, nameof(entity.Name))
+                .ContinueEnsureArgumentNotNullOrEmpty(entity.Script, nameof(entity.Script))
                 .Continue(re =>
                 {
                     try
@@ -169,7 +158,6 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
                     }
                     return re;
                 })
-                .Continue(re => _dataSourceService.CheckSameCodeOrName(entity))
                 .Continue(re =>
                 {
                     entity.ModifyBy = CurrentUserId;
@@ -184,25 +172,14 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult JsonDataSourceList()
         {
-            return View(_dataSourceService.GetListByAppIdAndDataSourceType(CurrentApplicationId, DataSourceType.Json));
+            return View(_dataSourceRepository.GetListByApplicationIdAndDataSourceType(CurrentApplicationId, DataSourceType.Json));
         }
         #endregion
 
-        public IActionResult LogicDelete(int id)
+        public IActionResult LogicDelete(Guid id)
         {
-            _dataSourceService.LogicDelete(id);
+            _dataSourceRepository.LogicDelete(id);
             return JsonResultModel.Success("删除成功");
-        }
-
-        public IActionResult Delete(int id)
-        {
-            return _dataSourceService.Delete(id).ToJsonResultModel();
-        }
-
-        public IActionResult Recover(int id)
-        {
-            _dataSourceService.Recover(id);
-            return JsonResultModel.Success("恢复成功");
         }
     }
 }

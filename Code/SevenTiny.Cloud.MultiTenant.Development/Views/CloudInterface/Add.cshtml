@@ -4,14 +4,14 @@
     ViewData["Title"] = "Add";
     Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
 
-    List<FieldList> fieldList = ViewData["InterfaceFields"] as List<FieldList> ?? new List<FieldList>();
+    List<ListView> fieldList = ViewData["InterfaceFields"] as List<ListView> ?? new List<ListView>();
     List<SearchCondition> searchConditions = ViewData["SearchConditions"] as List<SearchCondition> ?? new List<SearchCondition>();
-    List<Form> forms = ViewData["Forms"] as List<Form> ?? new List<Form>();
+    List<FormView> forms = ViewData["Forms"] as List<FormView> ?? new List<FormView>();
     List<DataSource> scriptDataSources = ViewData["ScriptDataSources"] as List<DataSource> ?? new List<DataSource>();
     List<DataSource> jsonDataSources = ViewData["JsonDataSources"] as List<DataSource> ?? new List<DataSource>();
 
     ResponseModel result = Model as ResponseModel ?? new ResponseModel();
-    InterfaceAggregation entity = result.Data as InterfaceAggregation ?? new InterfaceAggregation();
+    CloudInterface entity = result.Data as CloudInterface ?? new CloudInterface();
 }
 @{
     ViewData["Level_1"] = "标准接口";
@@ -20,7 +20,7 @@
 @await Html.PartialAsync("~/Views/Shared/PartialNav.cshtml")
 
 <article class="page-container">
-    <form class="form form-horizontal validate" id="form-article-add" method="post" action="/InterfaceAggregation/AddLogic">
+    <form class="form form-horizontal validate" id="form-article-add" method="post" action="/CloudInterface/AddLogic">
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>名称：</label>
             <div class="formControls col-xs-8 col-sm-9">
@@ -156,10 +156,10 @@
 <!--请在下方写此页面业务相关的脚本-->
 <script type="text/javascript">
     $("#interfaceType").val(@entity.InterfaceType)
-    $("#sl_formId").val(@entity.FormId);
+    $("#sl_formId").val(@entity.FormViewId);
     $("#sl_jsonDataSourceId").val(@entity.DataSourceId);
     $("#sl_scriptDataSourceId").val(@entity.DataSourceId);
-    $("#sl_fieldListId").val(@entity.FieldListId);
+    $("#sl_fieldListId").val(@entity.ListViewId);
     $("#sl_searchConditionId").val(@entity.SearchConditionId);
 
     //初始化预置显隐

@@ -7,7 +7,7 @@
     Array trueFalse = Enum.GetValues(typeof(TrueFalse));
 
     ResponseModel result = Model as ResponseModel ?? new ResponseModel();
-    FormMetaField formMetaField = result.Data as FormMetaField ?? new FormMetaField();
+    ConfigField formMetaField = result.Data as ConfigField ?? new ConfigField();
 }
 
 <article class="page-container">
@@ -22,7 +22,7 @@
         <div class="row cl">
             <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>显示名称：</label>
             <div class="formControls col-xs-10 col-sm-9">
-                <input type="text" class="input-text" value="@formMetaField.Text" name="Text" required>
+                <input type="text" class="input-text" value="@formMetaField.Name" name="Name" required>
             </div>
         </div>
         <div class="row cl">

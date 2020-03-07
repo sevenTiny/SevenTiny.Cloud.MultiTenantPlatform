@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using SevenTiny.Bantina;
 using SevenTiny.Bantina.Validation;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
+using SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract;
 using SevenTiny.Cloud.MultiTenant.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenant.Web.Models;
 using System;
@@ -10,27 +11,24 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 {
     public class MetaObjectController : WebControllerBase
     {
-        IMetaObjectService metaObjectService;
-
-        public MetaObjectController(IMetaObjectService _metaObjectService)
+        public MetaObjectController(IMetaObjectService metaObjectService, IMetaObjectRepository metaObjectRepository)
         {
-            metaObjectService = _metaObjectService;
+            _metaObjectService = metaObjectService;
+            _metaObjectRepository = metaObjectRepository;
         }
+
+        IMetaObjectService _metaObjectService;
+        IMetaObjectRepository _metaObjectRepository;
 
         public IActionResult Setting()
         {
-            ViewData["MetaObjects"] = metaObjectService.GetMetaObjectsUnDeletedByApplicationId(CurrentApplicationId);
+            ViewData["MetaObjects"] = _metaObjectRepository.GetMetaObjectListUnDeletedByApplicationId(CurrentApplicationId);
             return View();
         }
 
         public IActionResult List()
         {
-            return View(metaObjectService.GetMetaObjectsUnDeletedByApplicationId(CurrentApplicationId));
-        }
-
-        public IActionResult DeleteList()
-        {
-            return View(metaObjectService.GetMetaObjectsDeletedByApplicationId(CurrentApplicationId));
+            return View(_metaObjectRepository.GetMetaObjectListUnDeletedByApplicationId(CurrentApplicationId));
         }
 
         public IActionResult Add()
@@ -39,90 +37,56 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
             return View(ResponseModel.Success(metaObject));
         }
 
-        public IActionResult AddLogic(MetaObject metaObject)
+        public IActionResult AddLogic(MetaObject entity)
         {
-            if (string.IsNullOrEmpty(metaObject.Name))
-            {
-                return View("Add", ResponseModel.Error("MetaObject Name Can Not Be Null！", metaObject));
-            }
-            if (string.IsNullOrEmpty(metaObject.Code))
-            {
-                return View("Add", ResponseModel.Error("MetaObject Code Can Not Be Null！", metaObject));
-            }
-            //校验code格式
-            if (!metaObject.Code.IsAlnum(2, 50))
-            {
-                return View("Add", ResponseModel.Error("编码不合法，2-50位且只能包含字母和数字（字母开头）", metaObject));
-            }
-
-            metaObject.CreateBy = CurrentUserId;
-            var addResult = metaObjectService.AddMetaObject(CurrentApplicationId, CurrentApplicationCode, metaObject);
-            if (!addResult.IsSuccess)
-            {
-                return View("Add", addResult.ToResponseModel());
-            }
+            var result = Result.Success()
+                .ContinueEnsureArgumentNotNullOrEmpty(entity, nameof(entity))
+                .ContinueEnsureArgumentNotNullOrEmpty(entity.Name, nameof(entity.Name))
+                .ContinueEnsureArgumentNotNullOrEmpty(entity.Code, nameof(entity.Code))
+                .ContinueAssert(_ => entity.Code.IsAlnum(2, 50), "编码不合法，2-50位且只能包含字母和数字（字母开头）")
+                .Continue(_ =>
+                {
+                    entity.CreateBy = CurrentUserId;
+                    return _metaObjectService.Add(CurrentApplicationId, CurrentApplicationCode, entity);
+                });
 
             return RedirectToAction("List");
         }
 
-        public IActionResult Update(int id)
+        public IActionResult Update(Guid id)
         {
-            var metaObject = metaObjectService.GetById(id);
+            var metaObject = _metaObjectRepository.GetById(id);
             return View(ResponseModel.Success(metaObject));
 
         }
 
-        public IActionResult UpdateLogic(MetaObject metaObject)
+        public IActionResult UpdateLogic(MetaObject entity)
         {
-            if (metaObject.Id == 0)
-            {
-                return View("Update", ResponseModel.Error("MetaObject Id Can Not Be Null！", metaObject));
-            }
-            if (string.IsNullOrEmpty(metaObject.Name))
-            {
-                return View("Update", ResponseModel.Error("MetaObject Name Can Not Be Null！", metaObject));
-            }
-            if (string.IsNullOrEmpty(metaObject.Code))
-            {
-                return View("Update", ResponseModel.Error("MetaObject Code Can Not Be Null！", metaObject));
-            }
-            //校验code格式，编辑时界面会将'.'传递到后台，不能用下面正则校验，且编辑操作并不会更新编码，无需在此校验
-            //if (!metaObject.Code.IsAlnum(2, 50))
-            //{
-            //    return View("Update", ResponseModel.Error("编码不合法，2-50位且只能包含字母和数字（字母开头）", metaObject));
-            //}
+            var result = Result.Success()
+               .ContinueEnsureArgumentNotNullOrEmpty(entity, nameof(entity))
+               .ContinueEnsureArgumentNotNullOrEmpty(entity.Name, nameof(entity.Name))
+               .ContinueAssert(_ => entity.Id != Guid.Empty, "Id Can Not Be Null")
+               .Continue(_ =>
+               {
+                   entity.ModifyBy = CurrentUserId;
+                   return _metaObjectService.UpdateWithOutCode(entity);
+               });
 
-            metaObject.ModifyBy = CurrentUserId;
-            if (metaObjectService.ExistSameNameWithOtherIdByApplicationId(CurrentApplicationId, metaObject.Id, metaObject.Name))
-            {
-                return View("Update", ResponseModel.Error("MetaObject Name Has Been Exist！", metaObject));
-            }
+            if (!result.IsSuccess)
+                return View("Update", result.ToResponseModel());
 
-            metaObjectService.Update(metaObject);
             return RedirectToAction("List");
         }
 
-        public IActionResult Delete(int id)
+        public IActionResult LogicDelete(Guid id)
         {
-            metaObjectService.Delete(id);
+            _metaObjectRepository.LogicDelete(id);
             return JsonResultModel.Success("删除成功");
         }
 
-        public IActionResult LogicDelete(int id)
+        public IActionResult Switch(Guid id)
         {
-            metaObjectService.LogicDelete(id);
-            return JsonResultModel.Success("删除成功");
-        }
-
-        public IActionResult Recover(int id)
-        {
-            metaObjectService.Recover(id);
-            return JsonResultModel.Success("恢复成功");
-        }
-
-        public IActionResult Switch(int id)
-        {
-            var obj = metaObjectService.GetById(id);
+            var obj = _metaObjectRepository.GetById(id);
             SetMetaObjectSession(id, obj.Code);
 
             //这里换成当前MetaObject的MetaFields列表

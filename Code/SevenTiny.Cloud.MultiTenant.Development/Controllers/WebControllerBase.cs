@@ -20,33 +20,33 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
     [Authorize]
     public class WebControllerBase : Controller
     {
-        protected void SetApplictionSession(int applicationId, string applicationCode)
+        protected void SetApplictionSession(Guid applicationId, string applicationCode)
         {
-            HttpContext.Session.SetInt32("ApplicationId", applicationId);
+            HttpContext.Session.SetString("ApplicationId", applicationId.ToString());
             HttpContext.Session.SetString("ApplicationCode", applicationCode);
         }
 
-        protected void SetMetaObjectSession(int metaObjectId, string metaObjectCode)
+        protected void SetMetaObjectSession(Guid metaObjectId, string metaObjectCode)
         {
-            HttpContext.Session.SetInt32("MetaObjectId", metaObjectId);
+            HttpContext.Session.SetString("MetaObjectId", metaObjectId.ToString());
             HttpContext.Session.SetString("MetaObjectCode", metaObjectCode);
         }
 
         /// <summary>
         /// 当前应用Id
         /// </summary>
-        protected int CurrentApplicationId
+        protected Guid CurrentApplicationId
         {
             get
             {
-                //先将应用名赋值到ViewData
-                string appName = CurrentApplicationCode;
-                var applicationId = HttpContext.Session.GetInt32("ApplicationId");
+                var applicationId = HttpContext.Session.GetString("ApplicationId");
 
-                if (applicationId == null)
+                if (string.IsNullOrEmpty(applicationId))
+                {
                     Response.Redirect("/Application/Select");
+                }
 
-                return applicationId ?? throw new ArgumentNullException("ApplicationId is null,please select application first!");
+                return Guid.Parse(applicationId);
             }
         }
         /// <summary>
@@ -69,11 +69,16 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
         /// <summary>
         /// 当前对象Id
         /// </summary>
-        protected int CurrentMetaObjectId
+        protected Guid CurrentMetaObjectId
         {
             get
             {
-                return HttpContext.Session.GetInt32("MetaObjectId") ?? throw new ArgumentNullException("MetaObjectId is null,please select MetaObject first!"); ;
+                var id = HttpContext.Session.GetString("MetaObjectId");
+
+                if (string.IsNullOrEmpty(id))
+                    throw new ArgumentNullException("MetaObjectId is null,please select MetaObject first!");
+
+                return Guid.Parse(id);
             }
         }
 

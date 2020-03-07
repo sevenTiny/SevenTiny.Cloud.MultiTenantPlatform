@@ -1,19 +1,17 @@
 ﻿using MongoDB.Bson;
-using MongoDB.Driver;
 using SevenTiny.Bantina;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Domain.Enum;
-using SevenTiny.Cloud.MultiTenant.Domain.Repository;
 using SevenTiny.Cloud.MultiTenant.Domain.ValueObject;
-using SevenTiny.Cloud.MultiTenant.Domain.ValueObject.UIMetaData.ListView;
+using System;
 using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.ServiceContract
 {
-    public interface ITriggerScriptService : IMetaObjectManageRepository<TriggerScript>
+    public interface ITriggerScriptService : IMetaObjectCommonServiceBase<TriggerScript>
     {
         Result CompilateAndCheckScript(string script, string applicationCode);
-        List<TriggerScript> GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(int metaObjectId, int scriptType);
+        List<TriggerScript> GetTriggerScriptListUnDeletedByMetaObjectIdAndServiceType(Guid metaObjectId, int scriptType);
         string GetDefaultMetaObjectTriggerScriptByServiceTypeBefore(int serviceType);
         string GetDefaultMetaObjectTriggerScriptByServiceTypeAfter(int serviceType);
         string GetDefaultDataSourceTriggerScript();

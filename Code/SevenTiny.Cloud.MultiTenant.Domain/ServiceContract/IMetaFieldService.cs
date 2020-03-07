@@ -2,39 +2,39 @@
 using MongoDB.Driver;
 using SevenTiny.Bantina;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
-using SevenTiny.Cloud.MultiTenant.Domain.Repository;
 using SevenTiny.Cloud.MultiTenant.Domain.ValueObject;
 using SevenTiny.Cloud.MultiTenant.Infrastructure.ValueObject;
+using System;
 using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.ServiceContract
 {
-    public interface IMetaFieldService : IMetaObjectManageRepository<MetaField>
+    public interface IMetaFieldService : IMetaObjectCommonServiceBase<MetaField>
     {
         /// <summary>
         /// 获取字段的字典形式
         /// </summary>
         /// <param name="metaObjectId"></param>
         /// <returns></returns>
-        Dictionary<string, MetaField> GetMetaFieldDicUnDeleted(int metaObjectId);
+        Dictionary<string, MetaField> GetMetaFieldDicUnDeleted(Guid metaObjectId);
         /// <summary>
         /// 获取字段的字典形式，key是大写的
         /// ToUpperInvariant方法是微软优化过的，性能要高很多
         /// </summary>
         /// <param name="metaObjectId"></param>
         /// <returns></returns>
-        Dictionary<string, MetaField> GetMetaFieldUpperKeyDicUnDeleted(int metaObjectId);
+        Dictionary<string, MetaField> GetMetaFieldUpperKeyDicUnDeleted(Guid metaObjectId);
         /// <summary>
         /// 获取字段的字典形式，key是Id
         /// </summary>
         /// <param name="metaObjectId"></param>
         /// <returns></returns>
-        Dictionary<int, MetaField> GetMetaFieldDicIdObjUnDeleted(int metaObjectId);
+        Dictionary<Guid, MetaField> GetMetaFieldIdDicUnDeleted(Guid metaObjectId);
         /// <summary>
         /// 预置系统字段
         /// </summary>
         /// <param name="metaObjectId"></param>
-        void PresetFields(int metaObjectId);
+        void PresetFields(Guid metaObjectId);
         /// <summary>
         /// 获取预置字段的字典形式
         /// </summary>
@@ -48,14 +48,14 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.ServiceContract
         /// <param name="fieldId"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        Result<dynamic> CheckAndGetFieldValueByFieldType(int fieldId, object value);
+        Result<dynamic> CheckAndGetFieldValueByFieldType(Guid fieldId, object value);
         Result<dynamic> CheckAndGetFieldValueByFieldType(MetaField metaField, object value);
         /// <summary>
         /// 获取字段列表集合通过字段id集合
         /// </summary>
         /// <param name="ids"></param>
         /// <returns></returns>
-        List<MetaField> GetByIds(int metaObjectId, int[] ids);
+        List<MetaField> GetByIds(Guid metaObjectId, Guid[] ids);
         /// <summary>
         /// 生成mongodb的排序字段配置
         /// </summary>

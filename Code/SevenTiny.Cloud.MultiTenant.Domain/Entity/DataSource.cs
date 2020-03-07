@@ -1,4 +1,5 @@
 ﻿using SevenTiny.Bantina.Bankinate.Attributes;
+using System;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Entity
 {
@@ -9,7 +10,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Entity
         /// 应用Id
         /// </summary>
         [Column]
-        public int ApplicationId { get; set; }
+        public Guid ApplicationId { get; set; }
         /// <summary>
         /// 触发器类型
         /// </summary>

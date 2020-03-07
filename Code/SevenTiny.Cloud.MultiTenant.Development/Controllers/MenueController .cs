@@ -3,19 +3,22 @@ using Microsoft.AspNetCore.Mvc;
 using SevenTiny.Bantina;
 using SevenTiny.Bantina.Validation;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
+using SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract;
 using SevenTiny.Cloud.MultiTenant.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenant.Web.Models;
+using System;
 
 namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 {
     public class MenueController : WebControllerBase
     {
         IMenueService _menueService;
+        IMenueRepository _menueRepository;
 
-        public MenueController(
-            IMenueService menueService)
+        public MenueController(IMenueService menueService, IMenueRepository menueRepository)
         {
             _menueService = menueService;
+            _menueRepository = menueRepository;
         }
 
         public IActionResult Setting()
@@ -25,13 +28,8 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult List()
         {
-            var list = _menueService.GetUnDeletedEntitiesByApplicationId(CurrentApplicationId);
+            var list = _menueRepository.GetListUnDeletedByMetaObjectId(CurrentMetaObjectId);
             return View(list);
-        }
-
-        public JsonResult AnalysisMenue()
-        {
-            return _menueService.AnalysisMenueTree().ToJsonResultModel();
         }
 
         public IActionResult Add()
@@ -43,74 +41,56 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult AddLogic(Menue entity)
         {
-            var result =  Result.Success("Add succeed!")
-                .ContinueAssert(!string.IsNullOrEmpty(entity.Name), "Name Can Not Be Null！")
-                .ContinueAssert(!string.IsNullOrEmpty(entity.Code), "Code Can Not Be Null！")
-                .Continue(re =>
+            var result = Result.Success("Add succeed!")
+                .ContinueEnsureArgumentNotNullOrEmpty(entity, nameof(entity))
+                .ContinueEnsureArgumentNotNullOrEmpty(entity.Name, nameof(entity.Name))
+                .ContinueEnsureArgumentNotNullOrEmpty(entity.Code, nameof(entity.Code))
+                .ContinueAssert(_ => entity.Code.IsAlnum(2, 50), "编码不合法，2-50位且只能包含字母和数字（字母开头）")
+                .Continue(_ =>
                 {
-                    if (!entity.Code.IsAlnum(2, 50))
-                        return Result.Error("编码不合法，2-50位且只能包含字母和数字（字母开头）");
-                    return re;
-                })
-                .Continue(re =>
-                {
-                    entity.ApplicationId = CurrentApplicationId;
-                    entity.ApplicationCode = CurrentApplicationCode;
-                    return re;
-                })
-                .Continue(re => {
-            entity.CreateBy = CurrentUserId;
+                    entity.Code = $"{CurrentMetaObjectCode}.Menue.{entity.Code}";
+                    entity.CreateBy = CurrentUserId;
+
                     return _menueService.Add(entity);
                 });
 
-            if (result.IsSuccess)
-                return Redirect("List");
-            else
+            if (!result.IsSuccess)
                 return View("Add", result.ToResponseModel());
+
+            return Redirect("List");
         }
 
-        public IActionResult Update(int id)
+        public IActionResult Update(Guid id)
         {
-            var application = _menueService.GetById(id);
+            var application = _menueRepository.GetById(id);
             return View(ResponseModel.Success(application));
         }
 
         public IActionResult UpdateLogic(Menue entity)
         {
-            if (entity.Id == 0)
-            {
-                return View("Update", ResponseModel.Error("Id Can Not Be Null！", entity));
-            }
-            if (string.IsNullOrEmpty(entity.Name))
-            {
-                return View("Update", ResponseModel.Error(" Name Can Not Be Null！", entity));
-            }
-            if (string.IsNullOrEmpty(entity.Code))
-            {
-                return View("Update", ResponseModel.Error("Code Can Not Be Null！", entity));
-            }
+            var result = Result.Success()
+                .ContinueEnsureArgumentNotNullOrEmpty(entity, nameof(entity))
+                .ContinueEnsureArgumentNotNullOrEmpty(entity.Id, nameof(entity.Id))
+                .ContinueAssert(_ => entity.Id != Guid.Empty, "id can not be null")
+                .ContinueEnsureArgumentNotNullOrEmpty(entity.Name, nameof(entity.Name))
+                .ContinueEnsureArgumentNotNullOrEmpty(entity.Code, nameof(entity.Code))
+                .Continue(_ =>
+                {
+                    entity.ModifyBy = CurrentUserId;
+                    return _menueService.Update(entity);
+                });
 
-            entity.ModifyBy = CurrentUserId;
-            _menueService.Update(entity);
+
+            if (!result.IsSuccess)
+                return View("Update", result.ToResponseModel()); ;
+
             return RedirectToAction("List");
         }
 
-        public IActionResult LogicDelete(int id)
+        public IActionResult LogicDelete(Guid id)
         {
-            _menueService.LogicDelete(id);
+            _menueRepository.LogicDelete(id);
             return JsonResultModel.Success("删除成功");
-        }
-
-        public IActionResult Delete(int id)
-        {
-            _menueService.Delete(id);
-            return JsonResultModel.Success("删除成功");
-        }
-
-        public IActionResult Recover(int id)
-        {
-            _menueService.Recover(id);
-            return JsonResultModel.Success("恢复成功");
         }
     }
 }

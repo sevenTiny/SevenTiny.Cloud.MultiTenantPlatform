@@ -4,7 +4,7 @@
     ViewData["Title"] = "Add";
     Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
 
-    List<FieldList> fieldList = ViewData["InterfaceFields"] as List<FieldList> ?? new List<FieldList>();
+    List<ListView> fieldList = ViewData["InterfaceFields"] as List<ListView> ?? new List<ListView>();
     List<SearchCondition> searchConditions = ViewData["SearchConditions"] as List<SearchCondition> ?? new List<SearchCondition>();
 
     ResponseModel result = Model as ResponseModel ?? new ResponseModel();

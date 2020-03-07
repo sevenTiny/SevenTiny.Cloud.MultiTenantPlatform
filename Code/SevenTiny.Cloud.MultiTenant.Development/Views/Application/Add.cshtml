@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
 
     var result = Model as ResponseModel ?? new ResponseModel();
-    var application = result?.Data as Application ?? new Application();
+    var application = result?.Data as CloudApplication ?? new CloudApplication();
 }
 
 @{

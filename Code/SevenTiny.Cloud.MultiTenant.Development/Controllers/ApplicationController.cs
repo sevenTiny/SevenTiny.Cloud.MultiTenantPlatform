@@ -1,23 +1,25 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SevenTiny.Bantina;
 using SevenTiny.Bantina.Validation;
+using SevenTiny.Cloud.MultiTenant.Domain.Entity;
+using SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract;
 using SevenTiny.Cloud.MultiTenant.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenant.Web.Models;
+using System;
 
 namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 {
     public class ApplicationController : WebControllerBase
     {
-        IApplicationService applicationService;
-        IMetaObjectService metaObjectService;
-
-        public ApplicationController(
-            IApplicationService _applicationService,
-            IMetaObjectService _metaObjectService)
+        public ApplicationController(ICloudApplicationService applicationService, ICloudApplicationRepository cloudApplicationRepository)
         {
-            applicationService = _applicationService;
-            metaObjectService = _metaObjectService;
+            _applicationService = applicationService;
+            _cloudApplicationRepository = cloudApplicationRepository;
         }
+
+        ICloudApplicationService _applicationService;
+        ICloudApplicationRepository _cloudApplicationRepository;
 
         public IActionResult Setting()
         {
@@ -26,97 +28,73 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult Select()
         {
-            var list = applicationService.GetEntitiesUnDeleted();
+            var list = _cloudApplicationRepository.GetListUnDeleted();
             return View(list);
         }
 
         public IActionResult List()
         {
-            var list = applicationService.GetEntitiesUnDeleted();
-            return View(list);
-        }
-
-        public IActionResult DeleteList()
-        {
-            var list = applicationService.GetEntitiesDeleted();
+            var list = _cloudApplicationRepository.GetListUnDeleted();
             return View(list);
         }
 
         public IActionResult Add()
         {
-            var application = new SevenTiny.Cloud.MultiTenant.Domain.Entity.Application();
+            var application = new CloudApplication
+            {
+                Icon = "cloud"
+            };
             application.Icon = "cloud";
             return View(ResponseModel.Success(application));
         }
 
-        public IActionResult AddLogic(SevenTiny.Cloud.MultiTenant.Domain.Entity.Application application)
+        public IActionResult AddLogic(CloudApplication entity)
         {
-            if (string.IsNullOrEmpty(application.Name))
-            {
-                return View("Add", ResponseModel.Error("Application Name Can Not Be Null！", application));
-            }
-            if (string.IsNullOrEmpty(application.Code))
-            {
-                return View("Add", ResponseModel.Error("Application Code Can Not Be Null！", application));
-            }
-            //校验code格式
-            if (!application.Code.IsAlnum(2, 50))
-            {
-                return View("Add", ResponseModel.Error("编码不合法，2-50位且只能包含字母和数字（字母开头）", application));
-            }
+            var result = Result.Success()
+                .ContinueEnsureArgumentNotNullOrEmpty(entity, nameof(entity))
+                .ContinueEnsureArgumentNotNullOrEmpty(entity.Name, nameof(entity.Name))
+                .ContinueEnsureArgumentNotNullOrEmpty(entity.Code, nameof(entity.Code))
+                .ContinueAssert(_ => entity.Code.IsAlnum(2, 50), "编码不合法，2-50位且只能包含字母和数字（字母开头）")
+                .Continue(_ =>
+                {
+                    entity.CreateBy = CurrentUserId;
+                    return _applicationService.Add(entity);
+                });
 
-            application.CreateBy = CurrentUserId;
-            var addResult = applicationService.Add(application);
-            if (!addResult.IsSuccess)
-            {
-                return View("Add", addResult.ToResponseModel());
-            }
+            if (!result.IsSuccess)
+                return View("Add", result.ToResponseModel());
 
             return RedirectToAction("List");
         }
 
-        public IActionResult Update(int id)
+        public IActionResult Update(Guid id)
         {
-            var application = applicationService.GetById(id);
+            var application = _cloudApplicationRepository.GetById(id);
             return View(ResponseModel.Success(application));
         }
 
-        public IActionResult UpdateLogic(SevenTiny.Cloud.MultiTenant.Domain.Entity.Application application)
+        public IActionResult UpdateLogic(CloudApplication entity)
         {
-            if (application.Id == 0)
-            {
-                return View("Update", ResponseModel.Error("Application Id Can Not Be Null！", application));
-            }
-            if (string.IsNullOrEmpty(application.Name))
-            {
-                return View("Update", ResponseModel.Error("Application Name Can Not Be Null！", application));
-            }
-            if (string.IsNullOrEmpty(application.Code))
-            {
-                return View("Update", ResponseModel.Error("Application Code Can Not Be Null！", application));
-            }
+            var result = Result.Success()
+               .ContinueEnsureArgumentNotNullOrEmpty(entity, nameof(entity))
+               .ContinueEnsureArgumentNotNullOrEmpty(entity.Name, nameof(entity.Name))
+               .ContinueAssert(_ => entity.Id != Guid.Empty, "Id Can Not Be Null")
+               .Continue(_ =>
+               {
+                   entity.ModifyBy = CurrentUserId;
+                   return _applicationService.UpdateWithOutCode(entity);
+               });
 
-            application.ModifyBy = CurrentUserId;
-            applicationService.Update(application);
+            if (!result.IsSuccess)
+                return View("Update", result.ToResponseModel());
+
             return RedirectToAction("List");
         }
 
-        public IActionResult LogicDelete(int id)
+        public IActionResult LogicDelete(Guid id)
         {
-            applicationService.LogicDelete(id);
+            _cloudApplicationRepository.LogicDelete(id);
             return JsonResultModel.Success("删除成功");
-        }
-
-        public IActionResult Delete(int id)
-        {
-            applicationService.Delete(id);
-            return JsonResultModel.Success("删除成功");
-        }
-
-        public IActionResult Recover(int id)
-        {
-            applicationService.Recover(id);
-            return JsonResultModel.Success("恢复成功");
         }
 
         public IActionResult Detail(string app)
@@ -124,7 +102,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
             if (string.IsNullOrEmpty(app))
                 return Redirect("/Application/Select");
 
-            var application = applicationService.GetByCode(app);
+            var application = _cloudApplicationRepository.GetByCode(app);
 
             SetApplictionSession(application.Id, application.Code);
             ViewData["Application"] = application.Code;

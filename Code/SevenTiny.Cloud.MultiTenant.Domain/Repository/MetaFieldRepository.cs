@@ -12,5 +12,8 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Repository
         public MetaFieldRepository(MultiTenantPlatformDbContext multiTenantPlatformDbContext) : base(multiTenantPlatformDbContext)
         {
         }
+
+        public List<MetaField> GetSystemAndCustomListUnDeleted(Guid metaObjectId)
+        => _dbContext.MetaField.Where(t => t.MetaObjectId == metaObjectId || t.MetaObjectId == Guid.Empty).ToList();
     }
 }

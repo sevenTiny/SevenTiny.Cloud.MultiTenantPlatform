@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract
 {
-    public interface IMenueRepository : ICommonRepositoryBase<Menue>
+    public interface IMenueRepository : IMetaObjectCommonRepositoryBase<Menue>
     {
     }
 }

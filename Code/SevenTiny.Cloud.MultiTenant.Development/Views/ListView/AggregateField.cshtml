@@ -1,5 +1,5 @@
 ﻿@using SevenTiny.Cloud.MultiTenant.Domain.Entity;
-@using SevenTiny.Cloud.MultiTenant.Infrastructure.ValueObject;
+@using SevenTiny.Cloud.MultiTenant.Domain.ValueObject;
 @{
     ViewData["Title"] = "AggregateField";
     Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
@@ -139,7 +139,7 @@
     //编辑字段事件
     function editField(item) {
         //item拿的是该条数据的id
-        layer_show('自定义列表字段', '/FieldList/FieldListMetaFieldUpdate?id=' + item, window.innerWidth / 1.5, window.innerHeight / 1.5);
+        layer_show('自定义列表字段', '/ListView/FieldListMetaFieldUpdate?id=' + item, window.innerWidth / 1.5, window.innerHeight / 1.5);
     }
 
     //修改字段位置
@@ -161,7 +161,7 @@
 
         $.ajax({
             type: 'POST',
-            url: '/FieldList/AggregateFieldAddLogic/' + @id,
+            url: '/ListView/AggregateFieldAddLogic/' + @id,
             dataType: 'json',
             data: {
                 "metaFieldIds": str
@@ -171,7 +171,7 @@
 
                 if (data.success) {
                     setTimeout(function () {
-                        window.location = '/FieldList/List';
+                        window.location = '/ListView/List';
                      }, 1000);
                 }
             },

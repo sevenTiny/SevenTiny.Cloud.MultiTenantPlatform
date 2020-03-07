@@ -8,12 +8,12 @@ namespace SevenTiny.Cloud.MultiTenantPlatform.DataApi.Models
     {
         public static JsonResult Success(string msg, object data = null)
         {
-            return new JsonResult(new { success = true, msg = msg, data = data });
+            return new JsonResult(new { success = true, message = msg, data = data });
         }
 
         public static JsonResult Error(string msg)
         {
-            return new JsonResult(new { success = false, msg = msg });
+            return new JsonResult(new { success = false, message = msg });
         }
     }
     public static class JsonResultModelExtension

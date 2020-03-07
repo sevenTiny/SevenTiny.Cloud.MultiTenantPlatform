@@ -7,5 +7,6 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract
 {
     public interface ITriggerScriptRepository : IMetaObjectCommonRepositoryBase<TriggerScript>
     {
+        List<TriggerScript> GetUnDeletedListByMetaObjectIdAndServiceType(Guid metaObjectId, int serviceType);
     }
 }

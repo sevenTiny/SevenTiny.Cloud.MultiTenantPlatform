@@ -5,7 +5,7 @@
     ViewData["Title"] = "Description";
     Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
 
-    InterfaceAggregation entity = Model as InterfaceAggregation ?? new InterfaceAggregation();
+    CloudInterface entity = Model as CloudInterface ?? new CloudInterface();
     InterfaceType interfaceType = (InterfaceType)entity.InterfaceType;
 
     //构建参数显示

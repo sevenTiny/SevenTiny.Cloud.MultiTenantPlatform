@@ -4,7 +4,7 @@ using SevenTiny.Cloud.MultiTenant.Domain.ValueObject.UIMetaData.IndexPage;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.ServiceContract
 {
-    public interface IIndexViewService : IMetaObjectManageRepository<IndexView>
+    public interface IIndexViewService : IMetaObjectCommonServiceBase<IndexView>
     {
         /// <summary>
         /// 构建视图页组件

@@ -6,6 +6,7 @@ using SevenTiny.Cloud.MultiTenant.Domain.DbContext;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Domain.Enum;
 using SevenTiny.Cloud.MultiTenant.Domain.Repository;
+using SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract;
 using SevenTiny.Cloud.MultiTenant.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenant.Domain.ValueObject;
 using System;
@@ -15,60 +16,37 @@ using System.Linq.Expressions;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
-    internal class SearchConditionNodeService : RepositoryBase<SearchConditionNode>, ISearchConditionNodeService
+    internal class SearchConditionNodeService : CommonServiceBase<SearchConditionNode>, ISearchConditionNodeService
     {
-        public SearchConditionNodeService(
-            MultiTenantPlatformDbContext multiTenantPlatformDbContext,
-            IMetaFieldService _metaFieldService
-            ) : base(multiTenantPlatformDbContext)
+        public SearchConditionNodeService(IMetaFieldService metaFieldService, IMetaFieldRepository metaFieldRepository, ISearchConditionNodeRepository searchConditionNodeRepository) : base(searchConditionNodeRepository)
         {
-            dbContext = multiTenantPlatformDbContext;
-            metaFieldService = _metaFieldService;
+            _searchConditionNodeRepository = searchConditionNodeRepository;
+            _metaFieldRepository = metaFieldRepository;
+            _metaFieldService = metaFieldService;
         }
 
-        readonly MultiTenantPlatformDbContext dbContext;
-        readonly IMetaFieldService metaFieldService;
-
-        public List<SearchConditionNode> GetListBySearchConditionId(int searchConditionId)
-        {
-            return dbContext.Queryable<SearchConditionNode>().Where(t => t.SearchConditionId == searchConditionId).ToList();
-        }
-
-        public List<SearchConditionNode> GetConditionItemsBySearchConditionId(int searchConditionId)
-        {
-            return dbContext.Queryable<SearchConditionNode>().Where(t => t.SearchConditionId == searchConditionId && t.FieldId != -1).ToList();
-        }
-
-        public List<SearchConditionNode> GetParametersConditionItemsBySearchConditionId(int searchConditionId)
-        {
-            int valueType = (int)ConditionValueType.Parameter;
-            return dbContext.Queryable<SearchConditionNode>().Where(t => t.SearchConditionId == searchConditionId && t.FieldId != -1 && t.ValueType == valueType).ToList();
-        }
-
-        public Result<SearchConditionNode> Delete(int id)
-        {
-            dbContext.Delete<SearchConditionNode>(t => t.Id == id);
-            return Result<SearchConditionNode>.Success();
-        }
+        ISearchConditionNodeRepository _searchConditionNodeRepository;
+        IMetaFieldRepository _metaFieldRepository;
+        IMetaFieldService _metaFieldService;
 
         //组织接口搜索条件
-        public Result<SearchConditionNode> AggregateCondition(int interfaceConditionId, int brotherNodeId, int conditionJointTypeId, int fieldId, int conditionTypeId, string conditionValue, int conditionValueTypeId)
+        public Result<SearchConditionNode> AggregateCondition(Guid interfaceConditionId, Guid brotherNodeId, int conditionJointTypeId, Guid fieldId, int conditionTypeId, string conditionValue, int conditionValueTypeId)
         {
             //如果不是参数传递值，则根据传入的字段校验数据
             if (conditionValueTypeId != (int)ConditionValueType.Parameter)
             {
-                if (!metaFieldService.CheckAndGetFieldValueByFieldType(fieldId, conditionValue).IsSuccess)
+                if (!_metaFieldService.CheckAndGetFieldValueByFieldType(fieldId, conditionValue).IsSuccess)
                     return Result<SearchConditionNode>.Error("字段值和字段定义的类型不匹配");
             }
 
             return TransactionHelper.Transaction(() =>
             {
-                int parentId = brotherNodeId;
+                Guid parentId = brotherNodeId;
                 //如果兄弟节点!=-1，说明当前树有值。反之，则构建新树
-                if (parentId != -1)
+                if (parentId != Guid.Empty)
                 {
                     //判断是否有树存在
-                    List<SearchConditionNode> conditionListExist = GetListBySearchConditionId(interfaceConditionId);
+                    List<SearchConditionNode> conditionListExist = _searchConditionNodeRepository.GetListBySearchConditionId(interfaceConditionId);
                     //查看当前兄弟节点的父节点id
                     SearchConditionNode brotherCondition = conditionListExist.FirstOrDefault(t => t.Id == brotherNodeId);
                     parentId = brotherCondition.ParentId;
@@ -78,50 +56,51 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
                     if (parentCondition == null || parentCondition.ConditionType != conditionJointTypeId)
                     {
                         //先添加一个父节点，然后把兄弟节点的父节点指向新建的父节点
-                        string tempKey = DateTime.Now.ToString("yyyyMMddhhmmss");
                         SearchConditionNode newParentCondition = new SearchConditionNode
                         {
+                            Id = Guid.NewGuid(),
+                            Code = Guid.Empty.ToString(),
                             SearchConditionId = interfaceConditionId,
-                            ParentId = conditionListExist.Count > 0 ? parentId : -1,//如果有树，则插入节点的父节点为刚才的兄弟节点的父节点，否则，插入-1作为根节点
-                            FieldId = -1,//连接节点没有field
+                            ParentId = conditionListExist.Count > 0 ? parentId : Guid.Empty,//如果有树，则插入节点的父节点为刚才的兄弟节点的父节点，否则，插入-1作为根节点
+                            MetaFieldId = Guid.Empty,//连接节点没有field
                             FieldCode = "-1",
-                            FieldName = tempKey,
-                            FieldType = -1,
+                            FieldName = string.Empty,
+                            MetaFieldType = -1,
                             ConditionType = conditionJointTypeId,
                             Name = ConditionJointTranslator.ToLabelWithExplain(conditionJointTypeId),
                             Value = "-1",
                             ValueType = -1
                         };
                         base.Add(newParentCondition);
-                        //查询刚才插入的节点
-                        newParentCondition = dbContext.Queryable<SearchConditionNode>().Where(t => t.FieldName.Contains(tempKey)).FirstOrDefault();
 
                         //将兄弟节点的父节点指向新插入的节点
                         brotherCondition.ParentId = newParentCondition.Id;
-                        base.Update(brotherCondition);
+
+                        _searchConditionNodeRepository.Update(brotherCondition);
 
                         //重新赋值parentId
                         parentId = newParentCondition.Id;
                     }
                 }
                 //检验是否没有条件节点
-                if (parentId == -1)
+                if (parentId == Guid.Empty)
                 {
-                    if (dbContext.Queryable<SearchConditionNode>().Where(t => t.Id == parentId).Any())
+                    if (_searchConditionNodeRepository.GetById(parentId) != null)
                     {
                         return Result<SearchConditionNode>.Error("已经存在条件节点，请查证后操作！");
                     }
                 }
                 //新增节点
-                MetaField metaField = metaFieldService.GetById(fieldId);
+                MetaField metaField = _metaFieldRepository.GetById(fieldId);
                 SearchConditionNode newCondition = new SearchConditionNode
                 {
+                    Code = Guid.NewGuid().ToString(),
                     SearchConditionId = interfaceConditionId,
                     ParentId = parentId,
-                    FieldId = fieldId,
+                    MetaFieldId = fieldId,
                     FieldName = metaField.Name,
                     FieldCode = metaField.Code,
-                    FieldType = metaField.FieldType,
+                    MetaFieldType = metaField.FieldType,
                     ConditionType = conditionTypeId,
                     Name = $"{metaField.Name} {ConditionTypeTranslator.ToLabel(conditionTypeId)} {conditionValue}",
                     Value = conditionValue,
@@ -136,12 +115,12 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
         }
 
         //删除某个节点
-        public Result<SearchConditionNode> DeleteAggregateCondition(int nodeId, int searchConditionId)
+        public Result<SearchConditionNode> DeleteAggregateCondition(Guid nodeId, Guid searchConditionId)
         {
             //将要删除的节点id集合
-            List<int> willBeDeleteIds = new List<int>();
+            var willBeDeleteIds = new List<Guid>();
 
-            List<SearchConditionNode> allConditions = GetListBySearchConditionId(searchConditionId);
+            List<SearchConditionNode> allConditions = _searchConditionNodeRepository.GetListBySearchConditionId(searchConditionId);
             if (allConditions == null || !allConditions.Any())
             {
                 return Result<SearchConditionNode>.Success("删除成功！");
@@ -152,9 +131,9 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
                 return Result<SearchConditionNode>.Success("删除成功！");
             }
             //获取父节点id
-            int parentId = conditionAggregation.ParentId;
+            Guid parentId = conditionAggregation.ParentId;
             //如果是顶级节点，直接删除
-            if (parentId == -1)
+            if (parentId == Guid.Empty)
             {
                 DeleteNodeAndChildrenNodes(allConditions, nodeId);
                 return Result<SearchConditionNode>.Success("删除成功！");
@@ -177,9 +156,9 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
                 //将兄弟节点的父节点指向父节点的父节点
                 brotherNode.ParentId = parentNode.ParentId;
                 //更新兄弟节点
-                base.Update(brotherNode);
+                _searchConditionNodeRepository.Update(brotherNode);
                 //将父节点删除
-                this.Delete(parentId);
+                _searchConditionNodeRepository.Delete(parentId);
                 //删除要删除的节点以及下级节点
                 DeleteNodeAndChildrenNodes(allConditions, nodeId);
             }
@@ -191,20 +170,19 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 
             return Result<SearchConditionNode>.Success("删除成功！");
 
-            //删除节点级所有下级节点
-            void DeleteNodeAndChildrenNodes(List<SearchConditionNode> sourceConditions, int currentNodeId)
+            //删除节点及所有下级节点
+            void DeleteNodeAndChildrenNodes(List<SearchConditionNode> sourceConditions, Guid currentNodeId)
             {
                 FindDeleteNodeAndChildrenNodes(sourceConditions, currentNodeId);
-                Expression<Func<SearchConditionNode, bool>> func = t => t.Id == nodeId;
+                _searchConditionNodeRepository.Delete(nodeId);
                 foreach (var item in willBeDeleteIds)
                 {
-                    func = func.Or(tt => tt.Id == item);
+                    _searchConditionNodeRepository.Delete(item);
                 }
-                dbContext.Delete(func);
             }
 
             //遍历整棵树，找到要删除的节点以及下级节点
-            void FindDeleteNodeAndChildrenNodes(List<SearchConditionNode> sourceConditions, int currentNodeId)
+            void FindDeleteNodeAndChildrenNodes(List<SearchConditionNode> sourceConditions, Guid currentNodeId)
             {
                 var children = sourceConditions.Where(t => t.ParentId == currentNodeId).ToList();
                 if (children != null && children.Any())
@@ -228,7 +206,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
         /// <returns></returns>
         public FilterDefinition<BsonDocument> AnalysisConditionToFilterDefinitionByConditionId(QueryPiplineContext queryPiplineContext, bool isIgnoreArgumentsCheck = false)
         {
-            List<SearchConditionNode> conditions = GetListBySearchConditionId(queryPiplineContext.SearchConditionId);
+            List<SearchConditionNode> conditions = _searchConditionNodeRepository.GetListBySearchConditionId(queryPiplineContext.SearchConditionId);
             return AnalysisConditionToFilterDefinition(queryPiplineContext, conditions, isIgnoreArgumentsCheck);
         }
 
@@ -236,14 +214,14 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
         {
             var bf = Builders<BsonDocument>.Filter;
             //全部字段字典缓存
-            Dictionary<int, MetaField> metaFieldIdDic = queryPiplineContext.MetaFieldsUnDeletedIdDic;
+            Dictionary<Guid, MetaField> metaFieldIdDic = queryPiplineContext.MetaFieldsUnDeletedIdDic;
 
             //获取全部条件表达式
             if (conditions == null || !conditions.Any())
             {
                 return null;
             }
-            SearchConditionNode condition = conditions.FirstOrDefault(t => t.ParentId == -1);
+            SearchConditionNode condition = conditions.FirstOrDefault(t => t.ParentId == Guid.Empty);
             if (condition == null)
             {
                 return null;
@@ -361,7 +339,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
                     }
                     object argumentValue = queryPiplineContext.ArgumentsDic.SafeGet(keyUpper);
                     //将值转化为字段同类型的类型值
-                    object value = metaFieldService.CheckAndGetFieldValueByFieldType(metaFieldIdDic[routeCondition.FieldId], argumentValue).Data;
+                    object value = _metaFieldService.CheckAndGetFieldValueByFieldType(metaFieldIdDic[routeCondition.MetaFieldId], argumentValue).Data;
                     switch (routeCondition.ConditionType)
                     {
                         case (int)ConditionType.Equal:
@@ -384,7 +362,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
                 else
                 {
                     //校验字段以及转换字段值为目标类型
-                    var convertResult = metaFieldService.CheckAndGetFieldValueByFieldType(metaFieldIdDic[routeCondition.FieldId], routeCondition.Value);
+                    var convertResult = _metaFieldService.CheckAndGetFieldValueByFieldType(metaFieldIdDic[routeCondition.MetaFieldId], routeCondition.Value);
                     if (!convertResult.IsSuccess)
                     {
                         throw new ArgumentException("配置的字段值不符合字段的类型");
@@ -411,21 +389,12 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
             }
         }
 
-        public new Result<SearchConditionNode> Update(SearchConditionNode entity)
+        public Result<SearchConditionNode> Update(SearchConditionNode entity)
         {
-            var myEntity = dbContext.Queryable<SearchConditionNode>().Where(t => t.Id == entity.Id).FirstOrDefault();
-            if (myEntity != null)
-            {
-                myEntity.Text = entity.Text;
-                myEntity.Visible = entity.Visible;
-            }
-            base.Update(myEntity);
-            return Result<SearchConditionNode>.Success();
-        }
-
-        public SearchConditionNode GetById(int id)
-        {
-            return dbContext.Queryable<SearchConditionNode>().Where(t => t.Id == id).FirstOrDefault();
+            return base.UpdateWithOutCode(entity, target => {
+                target.Text = entity.Text;
+                target.Visible = entity.Visible;
+            });
         }
     }
 }

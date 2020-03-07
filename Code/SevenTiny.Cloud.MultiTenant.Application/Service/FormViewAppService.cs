@@ -2,17 +2,13 @@
 using SevenTiny.Cloud.MultiTenant.Application.ServiceContract;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract;
-using SevenTiny.Cloud.MultiTenant.Domain.ServiceContract;
 using System;
 
 namespace SevenTiny.Cloud.MultiTenant.Application.Service
 {
     internal class FormViewAppService : IFormViewAppService
     {
-        public FormViewAppService(
-            IFormViewRepository formViewRepository,
-            ICloudInterfaceRepository cloudInterfaceRepository
-            )
+        public FormViewAppService(IFormViewRepository formViewRepository, ICloudInterfaceRepository cloudInterfaceRepository)
         {
             _formViewRepository = formViewRepository;
             _cloudInterfaceRepository = cloudInterfaceRepository;

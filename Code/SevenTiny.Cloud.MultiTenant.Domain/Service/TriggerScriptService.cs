@@ -1,38 +1,31 @@
-﻿using SevenTiny.Cloud.MultiTenant.Domain.Entity;
+﻿using MongoDB.Driver;
+using SevenTiny.Bantina;
+using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Domain.Enum;
-using SevenTiny.Cloud.MultiTenant.Domain.Repository;
+using SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract;
 using SevenTiny.Cloud.MultiTenant.Domain.ServiceContract;
-using SevenTiny.Cloud.MultiTenant.Infrastructure.ValueObject;
-using SevenTiny.Cloud.MultiTenant.Infrastructure.Caching;
+using SevenTiny.Cloud.MultiTenant.Domain.ValueObject;
+using SevenTiny.Cloud.ScriptEngine;
 using System;
 using System.Collections.Generic;
-using SevenTiny.Bantina;
-using SevenTiny.Cloud.MultiTenant.Domain.DbContext;
-using SevenTiny.Cloud.ScriptEngine;
-using MongoDB.Bson;
-using MongoDB.Driver;
-using SevenTiny.Cloud.MultiTenant.Domain.ValueObject.UIMetaData.ListView;
 using System.Linq;
-using SevenTiny.Cloud.MultiTenant.Domain.ValueObject;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
-    internal class TriggerScriptService : MetaObjectCommonRepositoryBase<TriggerScript>, ITriggerScriptService
+    internal class TriggerScriptService : MetaObjectCommonServiceBase<TriggerScript>, ITriggerScriptService
     {
-        public TriggerScriptService(
-            MultiTenantPlatformDbContext multiTenantPlatformDbContext,
-            IScriptEngineProvider scriptEngineProvider,
-            IDataSourceService dataSourceService
-            ) : base(multiTenantPlatformDbContext)
+        public TriggerScriptService(IDataSourceRepository dataSourceRepository, IDynamicScriptEngine dynamicScriptEngine, IDataSourceService dataSourceService, ITriggerScriptRepository triggerScriptRepository) : base(triggerScriptRepository)
         {
-            _dbContext = multiTenantPlatformDbContext;
-            _scriptEngineProvider = scriptEngineProvider;
+            _dynamicScriptEngine = dynamicScriptEngine;
             _dataSourceService = dataSourceService;
+            _triggerScriptRepository = triggerScriptRepository;
+            _dataSourceRepository = dataSourceRepository;
         }
 
-        readonly MultiTenantPlatformDbContext _dbContext;
-        readonly IScriptEngineProvider _scriptEngineProvider;
+        readonly IDynamicScriptEngine _dynamicScriptEngine;
         readonly IDataSourceService _dataSourceService;
+        ITriggerScriptRepository _triggerScriptRepository;
+        IDataSourceRepository _dataSourceRepository;
 
         public new Result<TriggerScript> Add(TriggerScript triggerScript)
         {
@@ -44,28 +37,19 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
         /// <summary>
         /// 更新对象
         /// </summary>
-        /// <param name="triggerScript"></param>
-        public new Result<TriggerScript> Update(TriggerScript triggerScript)
+        /// <param name="source"></param>
+        public Result<TriggerScript> Update(TriggerScript source)
         {
-            TriggerScript myfield = GetById(triggerScript.Id);
-            if (myfield != null)
+            return base.UpdateWithOutCode(source, _ =>
             {
                 //编码不允许修改
-                myfield.ServiceType = triggerScript.ServiceType;
-                myfield.ServiceMethod = triggerScript.ServiceMethod;
-                myfield.TriggerPoint = triggerScript.TriggerPoint;
-                myfield.Language = triggerScript.Language;
-                myfield.OnFailurePolicy = triggerScript.OnFailurePolicy;
-                myfield.Script = triggerScript.Script;
-
-                myfield.Name = triggerScript.Name;
-                myfield.Group = triggerScript.Group;
-                myfield.SortNumber = triggerScript.SortNumber;
-                myfield.Description = triggerScript.Description;
-                myfield.ModifyBy = -1;
-                myfield.ModifyTime = DateTime.Now;
-            }
-            return base.Update(myfield);
+                source.ServiceType = source.ServiceType;
+                source.ServiceMethod = source.ServiceMethod;
+                source.TriggerPoint = source.TriggerPoint;
+                source.Language = source.Language;
+                source.OnFailurePolicy = source.OnFailurePolicy;
+                source.Script = source.Script;
+            });
         }
 
         public Result CompilateAndCheckScript(string script, string applicationCode)
@@ -73,16 +57,21 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
             var dynamicScript = new DynamicScript
             {
                 Script = script,
-                Language = DynamicScriptLanguage.CSharp,
-                ProjectName = applicationCode,
-                FunctionName = "Test"//这里
+                Language = DynamicScriptLanguage.Csharp,
+                FunctionName = "Test",//这里
             };
-            return _scriptEngineProvider.CheckScript(dynamicScript);
+
+            var result = _dynamicScriptEngine.CheckScript(dynamicScript);
+
+            if (result.IsSuccess)
+                return Result.Success(result.Message);
+
+            return Result.Error(result.Message);
         }
 
-        public List<TriggerScript> GetTriggerScriptsUnDeletedByMetaObjectIdAndServiceType(int metaObjectId, int serviceType)
+        public List<TriggerScript> GetTriggerScriptListUnDeletedByMetaObjectIdAndServiceType(Guid metaObjectId, int serviceType)
         {
-            return _dbContext.Queryable<TriggerScript>().Where(t => t.MetaObjectId == metaObjectId && t.ServiceType == serviceType).ToList();
+            return _triggerScriptRepository.GetUnDeletedListByMetaObjectIdAndServiceType(metaObjectId, serviceType);
         }
 
         #region Execute Script
@@ -95,9 +84,8 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
                 {
                     var dynamicScript = script.ToDynamicScript();
                     dynamicScript.FunctionName = functionName;
-                    dynamicScript.ProjectName = queryPiplineContext.ApplicationCode;
                     dynamicScript.Parameters = parameters;
-                    var executeResult = _scriptEngineProvider.RunScript<T>(dynamicScript);
+                    var executeResult = _dynamicScriptEngine.Execute<T>(dynamicScript);
                     if (!executeResult.IsSuccess && (OnFailurePolicy)script.OnFailurePolicy == OnFailurePolicy.Break)
                         throw new Exception(executeResult.Message);
                     else
@@ -109,16 +97,15 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 
         public object RunDataSourceScript(QueryPiplineContext queryPiplineContext, params object[] parameters)
         {
-            var dataSource = _dataSourceService.GetById(queryPiplineContext.DataSourceId);
+            var dataSource = _dataSourceRepository.GetById(queryPiplineContext.DataSourceId);
             if (dataSource != null)
             {
                 var dynamicScript = new DynamicScript();
                 dynamicScript.Script = dataSource.Script;
-                dynamicScript.Language = DynamicScriptLanguage.CSharp;
+                dynamicScript.Language = DynamicScriptLanguage.Csharp;
                 dynamicScript.FunctionName = FunctionName_DataSource;
-                dynamicScript.ProjectName = queryPiplineContext.ApplicationCode;
                 dynamicScript.Parameters = parameters;
-                var executeResult = _scriptEngineProvider.RunScript<object>(dynamicScript);
+                var executeResult = _dynamicScriptEngine.Execute<object>(dynamicScript);
                 if (executeResult.IsSuccess)
                     return executeResult.Data;
                 else

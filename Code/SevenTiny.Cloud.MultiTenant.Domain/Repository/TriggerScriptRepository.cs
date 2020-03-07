@@ -3,7 +3,6 @@ using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Repository
 {
@@ -12,5 +11,8 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Repository
         public TriggerScriptRepository(MultiTenantPlatformDbContext multiTenantPlatformDbContext) : base(multiTenantPlatformDbContext)
         {
         }
+
+        public List<TriggerScript> GetUnDeletedListByMetaObjectIdAndServiceType(Guid metaObjectId, int serviceType)
+            => _dbContext.Queryable<TriggerScript>().Where(t => t.MetaObjectId == metaObjectId && t.ServiceType == serviceType).ToList();
     }
 }

@@ -10,15 +10,9 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Entity
     /// </summary>
     [Table]
     [TableCaching]
-    public class SearchConditionNode
+    public class SearchConditionNode : CommonBase
     {
-        [Key]
-        [AutoIncrease]
         [Column]
-        public Guid Id { get; set; }
-        [Column("`Name`")]
-        public string Name { get; set; }
-        [Column("Icon")]
         public string Icon { get; set; }
         /// <summary>
         /// 标识是属于哪个Condition
@@ -31,7 +25,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Entity
         /// 连接节点没有field，field=-1。可以通过该字段判断是否为连接节点
         /// </summary>
         [Column]
-        public int FieldId { get; set; }
+        public Guid MetaFieldId { get; set; }
         [Column]
         public string FieldCode { get; set; }
         [Column]
@@ -40,7 +34,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Entity
         /// 字段类型
         /// </summary>
         [Column]
-        public int FieldType { get; set; }
+        public int MetaFieldType { get; set; }
         [Column]
         public int ConditionType { get; set; }
         [Column]

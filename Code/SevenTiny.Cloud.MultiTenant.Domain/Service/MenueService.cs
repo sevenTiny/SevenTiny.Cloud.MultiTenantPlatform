@@ -3,6 +3,7 @@ using SevenTiny.Cloud.MultiTenant.Domain.DbContext;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Domain.Enum;
 using SevenTiny.Cloud.MultiTenant.Domain.Repository;
+using SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract;
 using SevenTiny.Cloud.MultiTenant.Domain.ServiceContract;
 using System;
 using System.Collections.Generic;
@@ -10,88 +11,19 @@ using System.Linq;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
-    internal class MenueService : CommonRepositoryBase<Menue>, IMenueService
+    internal class MenueService : MetaObjectCommonServiceBase<Menue>, IMenueService
     {
-        public MenueService(
-            MultiTenantPlatformDbContext multiTenantPlatformDbContext
-            ) : base(multiTenantPlatformDbContext)
+        public MenueService(IMenueRepository menueRepository) : base(menueRepository)
         {
-            dbContext = multiTenantPlatformDbContext;
         }
 
-        MultiTenantPlatformDbContext dbContext;
-
-        public new Result Update(Menue obj)
+        public Result Update(Menue entity)
         {
-            var app = GetById(obj.Id);
-            if (app != null)
-            {
-                app.Name = obj.Name;
-                app.Icon = obj.Icon;
-                app.LinkType = obj.LinkType;
-                app.Address = obj.Address;
-
-                app.Group = obj.Group;
-                app.SortNumber = obj.SortNumber;
-                app.Description = obj.Description;
-                app.ModifyBy = -1;
-                app.ModifyTime = DateTime.Now;
-
-                base.Update(app);
-            }
-            return Result.Success();
-        }
-
-        public new Result Delete(int id)
-        {
-            base.Delete(id);
-            return Result.Success();
-        }
-
-        public new Result<Menue> Add(Menue entity)
-        {
-            return Result<Menue>.Success()
-                .Continue(re =>
-                {
-                    //check metaobject of name or code exist?
-                    Menue obj = dbContext.Queryable<Menue>().Where(t => t.Code.Equals(entity.Code)).FirstOrDefault();
-                    if (obj != null)
-                    {
-                        if (obj.Code.Equals(entity.Code))
-                        {
-                            return Result<Menue>.Error("Code Has Been Exist！", entity);
-                        }
-                    }
-                    return re;
-                })
-                .Continue(re =>
-                {
-                    entity.Code = $"{entity.ApplicationCode}.Menue.{entity.Code}";
-                    return re;
-                })
-                .Continue(re =>
-                {
-                    return base.Add(entity);
-                });
-        }
-
-        public Result<List<Menue>> AnalysisMenueTree()
-        {
-            //var menues = dbContext.Queryable<Menue>().ToList();
-            //var roots = menues?.Where(t => t.ParentId == -1)?.ToList();
-            //if (roots != null && roots.Any())
-            //{
-            //    foreach (var item in roots)
-            //    {
-            //        item.Children = menues.Where(t => t.ParentId == item.Id).ToList();
-            //    }
-            //}
-            return Result<List<Menue>>.Success("", null);
-        }
-
-        public List<Menue> GetUnDeletedEntitiesByApplicationId(int applicationId)
-        {
-            return dbContext.Queryable<Menue>().Where(t => t.ApplicationId == applicationId && t.IsDeleted == (int)IsDeleted.UnDeleted).ToList();
+            return base.UpdateWithOutCode(entity, target => {
+                target.Icon = entity.Icon;
+                target.LinkType = entity.LinkType;
+                target.Address = entity.Address;
+            });
         }
     }
 }

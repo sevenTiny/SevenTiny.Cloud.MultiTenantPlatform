@@ -1,30 +1,32 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SevenTiny.Bantina;
 using SevenTiny.Bantina.Validation;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
+using SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract;
 using SevenTiny.Cloud.MultiTenant.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenant.Web.Models;
+using System;
 
 namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 {
     public class MetaFieldController : WebControllerBase
     {
-        readonly IMetaFieldService metaFieldService;
-        readonly IMetaObjectService metaObjectService;
+        readonly IMetaFieldService _metaFieldService;
+        readonly IMetaFieldRepository _metaFieldRepository;
+        readonly IMetaObjectRepository _metaObjectRepository;
 
-        public MetaFieldController(
-            IMetaFieldService _metaFieldService,
-            IMetaObjectService _metaObjectService
-            )
+        public MetaFieldController(IMetaFieldService metaFieldService, IMetaObjectRepository metaObjectRepository, IMetaFieldRepository metaFieldRepository)
         {
-            metaFieldService = _metaFieldService;
-            metaObjectService = _metaObjectService;
+            _metaFieldService = metaFieldService;
+            _metaObjectRepository = metaObjectRepository;
+            _metaFieldRepository = metaFieldRepository;
         }
 
-        public IActionResult List(int metaObjectId)
+        public IActionResult List(Guid metaObjectId)
         {
             //如果传递过来是0，表示没有选择对象
-            if (metaObjectId == 0)
+            if (metaObjectId == Guid.Empty)
             {
                 ViewBag.IsSuccess = false;
                 ViewBag.Message = "请先选择对象";
@@ -32,19 +34,14 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
             }
 
             //这里是选择对象的入口，预先设置Session
-            HttpContext.Session.SetInt32("MetaObjectId", metaObjectId);
-            var obj = metaObjectService.GetById(metaObjectId);
+            HttpContext.Session.SetString("MetaObjectId", metaObjectId.ToString());
+            var obj = _metaObjectRepository.GetById(metaObjectId);
             if (obj != null)
             {
                 HttpContext.Session.SetString("MetaObjectCode", obj.Code);
             }
 
-            return View(metaFieldService.GetEntitiesUnDeletedByMetaObjectId(metaObjectId));
-        }
-
-        public IActionResult DeleteList()
-        {
-            return View(metaFieldService.GetEntitiesDeletedByMetaObjectId(CurrentMetaObjectId));
+            return View(_metaFieldRepository.GetListDeletedByMetaObjectId(metaObjectId));
         }
 
         public IActionResult Add()
@@ -52,85 +49,53 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
             return View();
         }
 
-        public IActionResult AddLogic(MetaField metaField)
+        public IActionResult AddLogic(MetaField entity)
         {
-            if (string.IsNullOrEmpty(metaField.Name))
-            {
-                return View("Add", ResponseModel.Error("名称不能为空", metaField));
-            }
-            if (string.IsNullOrEmpty(metaField.Code))
-            {
-                return View("Add", ResponseModel.Error("编码不能为空", metaField));
-            }
-            //校验code格式
-            if (!metaField.Code.IsAlnum(2, 50))
-            {
-                return View("Add", ResponseModel.Error("编码不合法，2-50位且只能包含字母和数字（字母开头）", metaField));
-            }
+            var result = Result.Success()
+                .ContinueEnsureArgumentNotNullOrEmpty(entity, nameof(entity))
+                .ContinueEnsureArgumentNotNullOrEmpty(entity.Name, nameof(entity.Name))
+                .ContinueEnsureArgumentNotNullOrEmpty(entity.Code, nameof(entity.Code))
+                .ContinueAssert(_ => entity.Code.IsAlnum(2, 50), "编码不合法，2-50位且只能包含字母和数字（字母开头）")
+                .Continue(_ =>
+                {
+                    entity.MetaObjectId = CurrentMetaObjectId;
+                    entity.CreateBy = CurrentUserId;
+                    return _metaFieldRepository.Add(entity);
+                });
 
-            //检查编码或名称重复
-            var checkResult = metaFieldService.CheckSameCodeOrName(CurrentMetaObjectId, metaField);
-            if (!checkResult.IsSuccess)
-            {
-                return View("Add", checkResult.ToResponseModel());
-            }
-
-            metaField.MetaObjectId = CurrentMetaObjectId;
-            metaField.CreateBy = CurrentUserId;
-            metaFieldService.Add(metaField);
+            if (!result.IsSuccess)
+                return View("Add", result.ToResponseModel());
 
             return Redirect("/MetaField/List?metaObjectId=" + CurrentMetaObjectId);
         }
 
-        public IActionResult Update(int id)
+        public IActionResult Update(Guid id)
         {
-            var metaObject = metaFieldService.GetById(id);
+            var metaObject = _metaFieldRepository.GetById(id);
             return View(ResponseModel.Success(metaObject));
         }
 
-        public IActionResult UpdateLogic(MetaField metaField)
+        public IActionResult UpdateLogic(MetaField entity)
         {
-            if (metaField.Id == 0)
-            {
-                return View("Update", ResponseModel.Error("MetaField Id 不能为空", metaField));
-            }
-            if (string.IsNullOrEmpty(metaField.Name))
-            {
-                return View("Update", ResponseModel.Error("MetaField Name 不能为空", metaField));
-            }
-            if (string.IsNullOrEmpty(metaField.Code))
-            {
-                return View("Update", ResponseModel.Error("MetaField Code 不能为空", metaField));
-            }
-            //校验code格式，编码不允许修改，这里无需判断
-            //if (!metaField.Code.IsAlnum(2, 50))
-            //{
-            //    return View("Update", ResponseModel.Error("编码不合法，2-50位且只能包含字母和数字（字母开头）", metaField));
-            //}
+            var result = Result.Success()
+               .ContinueEnsureArgumentNotNullOrEmpty(entity, nameof(entity))
+               .ContinueEnsureArgumentNotNullOrEmpty(entity.Name, nameof(entity.Name))
+               .ContinueAssert(_ => entity.Id != Guid.Empty, "Id Can Not Be Null")
+               .Continue(_ =>
+               {
+                   entity.ModifyBy = CurrentUserId;
+                   return _metaFieldService.UpdateWithOutCode(entity);
+               });
 
-            //检查编码或名称重复
-            var checkResult = metaFieldService.CheckSameCodeOrName(CurrentMetaObjectId, metaField);
-            if (!checkResult.IsSuccess)
-            {
-                return View("Update", checkResult.ToResponseModel());
-            }
-
-            metaField.ModifyBy = CurrentUserId;
-            //更新操作
-            metaFieldService.Update(metaField);
+            if (!result.IsSuccess)
+                return View("Update", result.ToResponseModel());
 
             return Redirect("/MetaField/List?metaObjectId=" + CurrentMetaObjectId);
         }
 
-        public IActionResult Delete(int id)
+        public IActionResult LogicDelete(Guid id)
         {
-            return metaFieldService.Delete(id).ToJsonResultModel();
-        }
-
-        public IActionResult Recover(int id)
-        {
-            metaFieldService.Recover(id);
-            return JsonResultModel.Success("恢复成功");
+            return _metaFieldRepository.LogicDelete(id).ToJsonResultModel();
         }
     }
 }

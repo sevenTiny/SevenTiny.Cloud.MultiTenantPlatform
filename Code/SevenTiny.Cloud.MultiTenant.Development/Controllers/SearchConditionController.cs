@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SevenTiny.Bantina;
 using SevenTiny.Bantina.Validation;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
+using SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract;
 using SevenTiny.Cloud.MultiTenant.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenant.Web.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,29 +13,29 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 {
     public class SearchConditionController : WebControllerBase
     {
-        private readonly ISearchConditionService searchConditionService;
-        private readonly IMetaFieldService metaFieldService;
-        readonly ISearchConditionNodeService conditionAggregationService;
+        ISearchConditionService _searchConditionService;
+        ISearchConditionRepository _searchConditionRepository;
+        ISearchConditionNodeRepository _searchConditionNodeRepository;
+        ISearchConditionNodeService _searchConditionNodeService;
+        IMetaFieldRepository _metaFieldRepository;
 
-        public SearchConditionController(
-            ISearchConditionService _searchConditionService,
-            IMetaFieldService _metaFieldService,
-            ISearchConditionNodeService _conditionAggregationService
-            )
+        public SearchConditionController(IMetaFieldRepository metaFieldRepository, ISearchConditionNodeService searchConditionNodeService, ISearchConditionNodeRepository searchConditionNodeRepository, ISearchConditionRepository searchConditionRepository, ISearchConditionService searchConditionService, IMetaFieldService _metaFieldService, ISearchConditionNodeService _conditionAggregationService)
         {
-            searchConditionService = _searchConditionService;
-            metaFieldService = _metaFieldService;
-            conditionAggregationService = _conditionAggregationService;
+            _searchConditionService = searchConditionService;
+            _searchConditionRepository = searchConditionRepository;
+            _searchConditionNodeRepository = searchConditionNodeRepository;
+            _searchConditionNodeService = searchConditionNodeService;
+            _metaFieldRepository = metaFieldRepository;
         }
 
         public IActionResult List()
         {
-            return View(searchConditionService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId));
+            return View(_searchConditionRepository.GetListUnDeletedByMetaObjectId(CurrentMetaObjectId));
         }
 
-        public IActionResult SearchItemList(int id)
+        public IActionResult SearchItemList(Guid id)
         {
-            return View(conditionAggregationService.GetConditionItemsBySearchConditionId(id));
+            return View(_searchConditionNodeRepository.GetListBySearchConditionId(id));
         }
 
         public IActionResult Add()
@@ -42,110 +45,87 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult AddLogic(SearchCondition entity)
         {
-            if (string.IsNullOrEmpty(entity.Name))
-            {
-                return View("Add", ResponseModel.Error("名称不能为空", entity));
-            }
-            if (string.IsNullOrEmpty(entity.Code))
-            {
-                return View("Add", ResponseModel.Error("编码不能为空", entity));
-            }
-            //校验code格式
-            if (!entity.Code.IsAlnum(2, 50))
-            {
-                return View("Add", ResponseModel.Error("编码不合法，2-50位且只能包含字母和数字（字母开头）", entity));
-            }
+            var result = Result.Success()
+                .ContinueEnsureArgumentNotNullOrEmpty(entity, nameof(entity))
+                .ContinueEnsureArgumentNotNullOrEmpty(entity.Name, nameof(entity.Name))
+                .ContinueEnsureArgumentNotNullOrEmpty(entity.Code, nameof(entity.Code))
+                .ContinueAssert(_ => entity.Code.IsAlnum(2, 50), "编码不合法，2-50位且只能包含字母和数字（字母开头）")
+                .Continue(_ =>
+                {
+                    entity.MetaObjectId = CurrentMetaObjectId;
+                    //组合编码
+                    entity.Code = $"{CurrentMetaObjectCode}.SearchCondition.{entity.Code}";
+                    entity.CreateBy = CurrentUserId;
+                    return _searchConditionRepository.Add(entity);
+                });
 
-            //检查编码或名称重复
-            var checkResult = searchConditionService.CheckSameCodeOrName(CurrentMetaObjectId, entity);
-            if (!checkResult.IsSuccess)
-            {
-                return View("Add", checkResult.ToResponseModel());
-            }
+            if (!result.IsSuccess)
+                return View("Add", result.ToResponseModel());
 
-            entity.MetaObjectId = CurrentMetaObjectId;
-            //组合编码
-            entity.Code = $"{CurrentMetaObjectCode}.SearchCondition.{entity.Code}";
-            entity.CreateBy = CurrentUserId;
-            searchConditionService.Add(entity);
             return RedirectToAction("List");
         }
 
-        public IActionResult Update(int id)
+        public IActionResult Update(Guid id)
         {
-            var entity = searchConditionService.GetById(id);
+            var entity = _searchConditionRepository.GetById(id);
             return View(ResponseModel.Success(entity));
         }
 
         public IActionResult UpdateLogic(SearchCondition entity)
         {
-            if (entity.Id == 0)
-            {
-                return View("Update", ResponseModel.Error("MetaField Id 不能为空", entity));
-            }
-            if (string.IsNullOrEmpty(entity.Name))
-            {
-                return View("Update", ResponseModel.Error("MetaField Name 不能为空", entity));
-            }
-            if (string.IsNullOrEmpty(entity.Code))
-            {
-                return View("Update", ResponseModel.Error("MetaField Code 不能为空", entity));
-            }
-            //校验code格式，编码不更新
-            //if (!entity.Code.IsAlnum(2, 50))
-            //{
-            //    return View("Update", ResponseModel.Error("编码不合法，2-50位且只能包含字母和数字（字母开头）", entity));
-            //}
+            var result = Result.Success()
+               .ContinueEnsureArgumentNotNullOrEmpty(entity, nameof(entity))
+               .ContinueEnsureArgumentNotNullOrEmpty(entity.Name, nameof(entity.Name))
+               .ContinueAssert(_ => entity.Id != Guid.Empty, "Id Can Not Be Null")
+               .Continue(_ =>
+               {
+                   entity.ModifyBy = CurrentUserId;
+                   return _searchConditionService.UpdateWithOutCode(entity);
+               });
 
-            //检查编码或名称重复
-            var checkResult = searchConditionService.CheckSameCodeOrName(CurrentMetaObjectId, entity);
-            if (!checkResult.IsSuccess)
-            {
-                return View("Update", checkResult.ToResponseModel());
-            }
-
-            entity.ModifyBy = CurrentUserId;
-            //更新操作
-            searchConditionService.Update(entity);
+            if (!result.IsSuccess)
+                return View("Update", result.ToResponseModel());
 
             return RedirectToAction("List");
         }
 
-        public IActionResult SearchItemUpdate(int id)
+        public IActionResult SearchItemUpdate(Guid id)
         {
-            var entity = conditionAggregationService.GetById(id);
+            var entity = _searchConditionNodeRepository.GetById(id);
             return View(ResponseModel.Success(entity));
         }
 
         public IActionResult SearchItemUpdateLogic(SearchConditionNode entity)
         {
-            if (entity.Id == 0)
-            {
-                return View("Update", ResponseModel.Error("Id不能为空", entity));
-            }
-            if (string.IsNullOrEmpty(entity.Text))
-            {
-                return View("Update", ResponseModel.Error("显示名称不能为空", entity));
-            }
+            var result = Result.Success()
+               .ContinueEnsureArgumentNotNullOrEmpty(entity, nameof(entity))
+               .ContinueEnsureArgumentNotNullOrEmpty(entity.Name, nameof(entity.Name))
+               .ContinueAssert(_ => entity.Id != Guid.Empty, "Id Can Not Be Null")
+               .Continue(_ =>
+               {
+                   entity.ModifyBy = CurrentUserId;
 
-            //更新操作
-            var result = conditionAggregationService.Update(entity);
-            if (result.IsSuccess)
-            {
-                return View("SearchItemUpdate", ResponseModel.Success(1, "修改成功"));
-            }
-            return View("SearchItemUpdate", result.ToResponseModel());
+                   if (string.IsNullOrEmpty(entity.Text))
+                       entity.Text = entity.Name;
+
+                   return _searchConditionNodeService.UpdateWithOutCode(entity);
+               });
+
+            if (!result.IsSuccess)
+                return View("SearchItemUpdate", result.ToResponseModel());
+
+            return View("SearchItemUpdate", ResponseModel.Success(1, "修改成功"));
         }
 
-        public IActionResult Delete(int id)
+        public IActionResult Delete(Guid id)
         {
-            return searchConditionService.Delete(id).ToJsonResultModel();
+            return _searchConditionRepository.Delete(id).ToJsonResultModel();
         }
 
-        public IActionResult AggregationCondition(int id)
+        public IActionResult AggregationCondition(Guid id)
         {
-            ViewData["AggregationConditions"] = conditionAggregationService.GetListBySearchConditionId(id);
-            ViewData["MetaFields"] = metaFieldService.GetEntitiesUnDeletedByMetaObjectId(CurrentMetaObjectId);
+            ViewData["AggregationConditions"] = _searchConditionNodeRepository.GetListBySearchConditionId(id);
+            ViewData["MetaFields"] = _metaFieldRepository.GetListUnDeletedByMetaObjectId(CurrentMetaObjectId);
             ViewData["searchConditionId"] = id;
             return View();
         }
@@ -155,16 +135,16 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
         /// </summary>
         /// <param name="id">搜索条件id，指明该条件组织树是属于那个搜索条件的</param>
         /// <returns></returns>
-        public IActionResult AggregateConditionAddLogic(int id)
+        public IActionResult AggregateConditionAddLogic(Guid id)
         {
-            int brotherNodeId = int.Parse(Request.Form["brotherNodeId"]);
-            int conditionJointTypeId = int.Parse(Request.Form["conditionJointTypeId"]);
-            int fieldId = int.Parse(Request.Form["fieldId"]);
-            int conditionTypeId = int.Parse(Request.Form["conditionTypeId"]);
-            int conditionValueTypeId = int.Parse(Request.Form["conditionValueTypeId"]);
+            var brotherNodeId = Guid.Parse(Request.Form["brotherNodeId"]);
+            var conditionJointTypeId = int.Parse(Request.Form["conditionJointTypeId"]);
+            var fieldId = Guid.Parse(Request.Form["fieldId"]);
+            var conditionTypeId = int.Parse(Request.Form["conditionTypeId"]);
+            var conditionValueTypeId = int.Parse(Request.Form["conditionValueTypeId"]);
             string conditionValue = Request.Form["conditionValue"];
 
-            var result = conditionAggregationService.AggregateCondition(id, brotherNodeId, conditionJointTypeId, fieldId, conditionTypeId, conditionValue, conditionValueTypeId);
+            var result = _searchConditionNodeService.AggregateCondition(id, brotherNodeId, conditionJointTypeId, fieldId, conditionTypeId, conditionValue, conditionValueTypeId);
             return result.ToJsonResultModel();
         }
 
@@ -174,25 +154,25 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
         /// <param name="id">节点id</param>
         /// <param name="searchConditionId">搜索条件id</param>
         /// <returns></returns>
-        public IActionResult AggregateConditionDeleteLogic(int id, int searchConditionId)
+        public IActionResult AggregateConditionDeleteLogic(Guid id, Guid searchConditionId)
         {
             //将要删除的节点id集合
-            return conditionAggregationService.DeleteAggregateCondition(id, searchConditionId).ToJsonResultModel();
+            return _searchConditionNodeService.DeleteAggregateCondition(id, searchConditionId).ToJsonResultModel();
         }
 
         [HttpGet]
-        public IActionResult AggregateConditionTreeView(int id)
+        public IActionResult AggregateConditionTreeView(Guid id)
         {
-            List<SearchConditionNode> conditions = conditionAggregationService.GetListBySearchConditionId(id);
+            List<SearchConditionNode> conditions = _searchConditionNodeRepository.GetListBySearchConditionId(id);
 
-            SearchConditionNode condition = conditions?.FirstOrDefault(t => t.ParentId == -1);
+            SearchConditionNode condition = conditions?.FirstOrDefault(t => t.ParentId == Guid.Empty);
             if (condition != null)
             {
                 condition.Children = GetTree(conditions, condition.Id);
             }
 
             //Tree Search
-            List<SearchConditionNode> GetTree(List<SearchConditionNode> source, int parentId)
+            List<SearchConditionNode> GetTree(List<SearchConditionNode> source, Guid parentId)
             {
                 var childs = source.Where(t => t.ParentId == parentId).ToList();
                 if (childs == null)
