@@ -13,6 +13,8 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Helpers
         /// <returns></returns>
         public static string GetArgumentFromToken(this HttpContext httpContext, string key)
         {
+            //7tinytemp
+            return "1";
             var auth = httpContext.AuthenticateAsync()?.Result?.Principal?.Claims;
             return auth?.FirstOrDefault(t => t.Type.Equals(key))?.Value;
         }

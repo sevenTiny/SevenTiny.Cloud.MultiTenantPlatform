@@ -49,6 +49,13 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
                 .ContinueEnsureArgumentNotNullOrEmpty(entity.Code, nameof(entity.Code))
                 //校验编码是否已经存在
                 .Continue(_ => CheckCodeExist(entity.Code).AsResult<TEntity>())
+                //校验Id并赋值
+                .Continue(_ =>
+                {
+                    if (entity.Id == Guid.Empty)
+                        entity.Id = Guid.NewGuid();
+                    return _;
+                })
                 .Continue(_ => _commonRepositoryBase.Add(entity));
         }
 

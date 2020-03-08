@@ -9,7 +9,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain
 {
     public static class ServiceInjector
     {
-        public static void InjectCore(this IServiceCollection services)
+        public static void InjectDomain(this IServiceCollection services)
         {
             services.AddScoped(Assembly.GetExecutingAssembly());
 

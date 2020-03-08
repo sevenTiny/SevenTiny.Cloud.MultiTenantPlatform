@@ -1,7 +1,7 @@
 ﻿@using SevenTiny.Cloud.MultiTenant.Domain.Entity
 @{
     Layout = "";
-    List<CloudApplication> applications = Model as List<CloudApplication>;
+    List<CloudApplication> applications = Model as List<CloudApplication> ?? new List<CloudApplication>();
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -18,12 +18,12 @@
     <div class="container-fluid">
         <nav class="row" style="padding: 15px 80px; background-color: #CCCCCC; height: 80px;border-bottom:2px solid #0099FF">
             <a class="" href="#" style="color: #333333; font-size: 30px;">应用选择</a>
-            <a class="" href="/Application/List" style="color: #333333; font-size: 20px;float:right">应用管理</a>
+            <a class="" href="/CloudApplication/List" style="color: #333333; font-size: 20px;float:right">应用管理</a>
         </nav>
         @foreach (var item in applications)
         {
             string icon = string.IsNullOrEmpty(item.Icon) ? "cloud" : item.Icon;
-            <a href="/Application/Detail?App=@item.Code" title="选择应用">
+            <a href="/CloudApplication/Detail?applicationId=@item.Id&applicationCode=@item.Code" title="选择应用">
                 <div class="row" style="padding: 0 10px;color:#0099CC">
                     <h3 class="col-md-2">
                         <span class="fa fa-@icon" style="margin: 20px; float: right;"></span>

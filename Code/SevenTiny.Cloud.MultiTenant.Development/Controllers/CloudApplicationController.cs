@@ -10,9 +10,9 @@ using System;
 
 namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 {
-    public class ApplicationController : WebControllerBase
+    public class CloudApplicationController : WebControllerBase
     {
-        public ApplicationController(ICloudApplicationService applicationService, ICloudApplicationRepository cloudApplicationRepository)
+        public CloudApplicationController(ICloudApplicationService applicationService, ICloudApplicationRepository cloudApplicationRepository)
         {
             _applicationService = applicationService;
             _cloudApplicationRepository = cloudApplicationRepository;
@@ -50,7 +50,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult AddLogic(CloudApplication entity)
         {
-            var result = Result.Success()
+            var result = Result<CloudApplication>.Success()
                 .ContinueEnsureArgumentNotNullOrEmpty(entity, nameof(entity))
                 .ContinueEnsureArgumentNotNullOrEmpty(entity.Name, nameof(entity.Name))
                 .ContinueEnsureArgumentNotNullOrEmpty(entity.Code, nameof(entity.Code))
@@ -60,6 +60,8 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
                     entity.CreateBy = CurrentUserId;
                     return _applicationService.Add(entity);
                 });
+
+            result.Data = entity;
 
             if (!result.IsSuccess)
                 return View("Add", result.ToResponseModel());
@@ -75,7 +77,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult UpdateLogic(CloudApplication entity)
         {
-            var result = Result.Success()
+            var result = Result<CloudApplication>.Success()
                .ContinueEnsureArgumentNotNullOrEmpty(entity, nameof(entity))
                .ContinueEnsureArgumentNotNullOrEmpty(entity.Name, nameof(entity.Name))
                .ContinueAssert(_ => entity.Id != Guid.Empty, "Id Can Not Be Null")
@@ -84,6 +86,8 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
                    entity.ModifyBy = CurrentUserId;
                    return _applicationService.UpdateWithOutCode(entity);
                });
+
+            result.Data = entity;
 
             if (!result.IsSuccess)
                 return View("Update", result.ToResponseModel());
@@ -97,15 +101,13 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
             return JsonResultModel.Success("删除成功");
         }
 
-        public IActionResult Detail(string app)
+        public IActionResult Detail(Guid applicationId, string applicationCode)
         {
-            if (string.IsNullOrEmpty(app))
-                return Redirect("/Application/Select");
+            if (string.IsNullOrEmpty(applicationCode))
+                return Redirect("/CloudApplication/Select");
 
-            var application = _cloudApplicationRepository.GetByCode(app);
-
-            SetApplictionSession(application.Id, application.Code);
-            ViewData["Application"] = application.Code;
+            SetApplictionSession(applicationId, applicationCode);
+            ViewData["Application"] = applicationCode;
             SetUserInfoToViewData();
 
             return View();

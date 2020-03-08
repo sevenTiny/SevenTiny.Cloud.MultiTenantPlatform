@@ -13,7 +13,7 @@
     StringBuilder builder = new StringBuilder();
     foreach (var item in searchConditionNodes)
     {
-        builder.Append($"&{item.FieldCode}=");
+        builder.Append($"&{item.MetaFieldCode}=");
     }
     string argsExtends = builder.ToString();
     //接口域地址

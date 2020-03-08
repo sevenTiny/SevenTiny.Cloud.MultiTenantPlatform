@@ -34,7 +34,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Entity
         /// 列表名称
         /// </summary>
         [Column]
-        public string FieldListName { get; set; }
+        public string ListViewName { get; set; }
         /// <summary>
         /// 表单Id
         /// </summary>
@@ -44,7 +44,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Entity
         /// 表单名称
         /// </summary>
         [Column]
-        public string FormName { get; set; }
+        public string FormViewName { get; set; }
         /// <summary>
         /// 数据源Id
         /// </summary>

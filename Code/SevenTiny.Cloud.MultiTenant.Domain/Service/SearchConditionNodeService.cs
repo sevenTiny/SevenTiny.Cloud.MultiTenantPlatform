@@ -63,8 +63,8 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
                             SearchConditionId = interfaceConditionId,
                             ParentId = conditionListExist.Count > 0 ? parentId : Guid.Empty,//如果有树，则插入节点的父节点为刚才的兄弟节点的父节点，否则，插入-1作为根节点
                             MetaFieldId = Guid.Empty,//连接节点没有field
-                            FieldCode = "-1",
-                            FieldName = string.Empty,
+                            MetaFieldCode = "-1",
+                            MetaFieldName = string.Empty,
                             MetaFieldType = -1,
                             ConditionType = conditionJointTypeId,
                             Name = ConditionJointTranslator.ToLabelWithExplain(conditionJointTypeId),
@@ -98,8 +98,8 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
                     SearchConditionId = interfaceConditionId,
                     ParentId = parentId,
                     MetaFieldId = fieldId,
-                    FieldName = metaField.Name,
-                    FieldCode = metaField.Code,
+                    MetaFieldName = metaField.Name,
+                    MetaFieldCode = metaField.Code,
                     MetaFieldType = metaField.FieldType,
                     ConditionType = conditionTypeId,
                     Name = $"{metaField.Name} {ConditionTypeTranslator.ToLabel(conditionTypeId)} {conditionValue}",
@@ -108,7 +108,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
                     Text = metaField.Name,
                     Visible = (int)TrueFalse.True
                 };
-                base.Add(newCondition);
+                _searchConditionNodeRepository.Add(newCondition);
 
                 return Result<SearchConditionNode>.Success("保存成功！");
             });
@@ -325,7 +325,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
                 if (routeCondition.Value.Equals("?"))
                 {
                     //从参数获取到值
-                    string key = routeCondition.FieldCode;
+                    string key = routeCondition.MetaFieldCode;
                     var keyUpper = key.ToUpperInvariant();
                     //如果没有传递参数值，则抛出异常
                     if (!queryPiplineContext.ArgumentsDic.ContainsKey(keyUpper))
@@ -371,17 +371,17 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
                     switch (routeCondition.ConditionType)
                     {
                         case (int)ConditionType.Equal:
-                            return bf.Eq(routeCondition.FieldCode, convertResult.Data);
+                            return bf.Eq(routeCondition.MetaFieldCode, convertResult.Data);
                         case (int)ConditionType.GreaterThan:
-                            return bf.Gt(routeCondition.FieldCode, convertResult.Data);
+                            return bf.Gt(routeCondition.MetaFieldCode, convertResult.Data);
                         case (int)ConditionType.GreaterThanEqual:
-                            return bf.Gte(routeCondition.FieldCode, convertResult.Data);
+                            return bf.Gte(routeCondition.MetaFieldCode, convertResult.Data);
                         case (int)ConditionType.LessThan:
-                            return bf.Lt(routeCondition.FieldCode, convertResult.Data);
+                            return bf.Lt(routeCondition.MetaFieldCode, convertResult.Data);
                         case (int)ConditionType.LessThanEqual:
-                            return bf.Lte(routeCondition.FieldCode, convertResult.Data);
+                            return bf.Lte(routeCondition.MetaFieldCode, convertResult.Data);
                         case (int)ConditionType.NotEqual:
-                            return bf.Ne(routeCondition.FieldCode, convertResult.Data);
+                            return bf.Ne(routeCondition.MetaFieldCode, convertResult.Data);
                         default:
                             return Builders<BsonDocument>.Filter.Empty;
                     }

@@ -17,7 +17,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
     /// 控制器基类
     /// </summary>
     [DevelopmentAuthFilter]
-    [Authorize]
+    //[Authorize]
     public class WebControllerBase : Controller
     {
         protected void SetApplictionSession(Guid applicationId, string applicationCode)
@@ -43,7 +43,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
                 if (string.IsNullOrEmpty(applicationId))
                 {
-                    Response.Redirect("/Application/Select");
+                    Response.Redirect("/CloudApplication/Select");
                 }
 
                 return Guid.Parse(applicationId);
@@ -59,7 +59,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
                 var applicationCode = HttpContext.Session.GetString("ApplicationCode");
 
                 if (string.IsNullOrEmpty(applicationCode))
-                    Response.Redirect("/Application/Select");
+                    Response.Redirect("/CloudApplication/Select");
 
                 ViewData["Application"] = applicationCode ?? throw new ArgumentNullException("ApplicationCode is null,please select application first!");
                 return applicationCode;

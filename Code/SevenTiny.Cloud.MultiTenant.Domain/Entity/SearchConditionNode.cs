@@ -27,9 +27,9 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Entity
         [Column]
         public Guid MetaFieldId { get; set; }
         [Column]
-        public string FieldCode { get; set; }
+        public string MetaFieldCode { get; set; }
         [Column]
-        public string FieldName { get; set; }
+        public string MetaFieldName { get; set; }
         /// <summary>
         /// 字段类型
         /// </summary>
