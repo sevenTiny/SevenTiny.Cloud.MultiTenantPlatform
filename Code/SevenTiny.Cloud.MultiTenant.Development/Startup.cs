@@ -133,10 +133,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development
             services.AddControllersWithViews(options =>
             {
                 options.Filters.Add<HttpGlobalExceptionFilter>();
-            })
-                .AddNewtonsoftJson();
-
-            var aa = ConnectionStringsConfig.Instance;
+            }).AddRazorRuntimeCompilation();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

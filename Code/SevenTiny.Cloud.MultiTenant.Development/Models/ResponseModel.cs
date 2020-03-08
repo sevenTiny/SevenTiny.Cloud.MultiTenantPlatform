@@ -27,12 +27,13 @@ namespace SevenTiny.Cloud.MultiTenant.Web.Models
 
     public static class ResponseModelExtension
     {
-        public static ResponseModel ToResponseModel(this Result result)
+        public static ResponseModel ToResponseModel(this Result result, object data = null)
             =>
             new ResponseModel
             {
                 IsSuccess = result.IsSuccess,
                 Message = result.Message,
+                Data = data
             };
         public static ResponseModel ToResponseModel<T>(this Result<T> result)
             =>

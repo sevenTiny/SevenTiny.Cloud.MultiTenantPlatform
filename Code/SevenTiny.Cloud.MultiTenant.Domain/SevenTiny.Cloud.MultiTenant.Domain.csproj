@@ -6,11 +6,11 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="SevenTiny.Bantina.Bankinate.Core" Version="1.0.23" />
+    <PackageReference Include="SevenTiny.Bantina.Bankinate.Core" Version="1.0.24" />
     <PackageReference Include="SevenTiny.Bantina.Bankinate.MongoDb" Version="1.0.11" />
-    <PackageReference Include="SevenTiny.Bantina.Bankinate.MySql" Version="1.0.20" />
-    <PackageReference Include="Seventiny.Cloud.ScriptEngine" Version="1.0.45" />
-    <PackageReference Include="SevenTiny.Cloud.ScriptEngine.CSharp" Version="1.0.2" />
+    <PackageReference Include="SevenTiny.Bantina.Bankinate.MySql" Version="1.0.21" />
+    <PackageReference Include="Seventiny.Cloud.ScriptEngine" Version="1.0.48" />
+    <PackageReference Include="SevenTiny.Cloud.ScriptEngine.CSharp" Version="1.0.5" />
   </ItemGroup>
 
   <ItemGroup>

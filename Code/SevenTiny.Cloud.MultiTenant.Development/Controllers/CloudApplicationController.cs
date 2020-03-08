@@ -61,10 +61,8 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
                     return _applicationService.Add(entity);
                 });
 
-            result.Data = entity;
-
             if (!result.IsSuccess)
-                return View("Add", result.ToResponseModel());
+                return View("Add", result.ToResponseModel(entity));
 
             return RedirectToAction("List");
         }
@@ -87,10 +85,8 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
                    return _applicationService.UpdateWithOutCode(entity);
                });
 
-            result.Data = entity;
-
             if (!result.IsSuccess)
-                return View("Update", result.ToResponseModel());
+                return View("Update", result.ToResponseModel(entity));
 
             return RedirectToAction("List");
         }
