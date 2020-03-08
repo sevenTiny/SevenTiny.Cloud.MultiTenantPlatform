@@ -8,7 +8,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.ServiceContract
     {
         Result CheckCodeExist(string code);
         Result CheckCodeExistWithoutSameId(Guid id, string code);
-        Result<TEntity> Add(TEntity entity);
-        Result<TEntity> UpdateWithOutCode(TEntity source, Action<TEntity> updateFieldAction = null);
+        Result Add(TEntity entity);
+        Result UpdateWithOutCode(TEntity source, Action<TEntity> updateFieldAction = null);
     }
 }

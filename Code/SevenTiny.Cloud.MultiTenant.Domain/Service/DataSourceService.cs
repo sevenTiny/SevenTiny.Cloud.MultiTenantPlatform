@@ -25,7 +25,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
         /// 更新对象
         /// </summary>
         /// <param name="entity"></param>
-        public Result<DataSource> Update(DataSource entity)
+        public Result Update(DataSource entity)
         {
             return UpdateWithOutCode(entity, target =>
             {

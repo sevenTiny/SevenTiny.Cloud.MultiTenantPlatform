@@ -11,9 +11,9 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.ServiceContract
 {
     public interface ISearchConditionNodeService : ICommonServiceBase<SearchConditionNode>
     {
-        Result<SearchConditionNode> AggregateCondition(Guid interfaceConditionId, Guid brotherNodeId, int conditionJointTypeId, Guid fieldId, int conditionTypeId, string conditionValue, int conditionValueTypeId);
+        Result AggregateCondition(Guid interfaceConditionId, Guid brotherNodeId, int conditionJointTypeId, Guid fieldId, int conditionTypeId, string conditionValue, int conditionValueTypeId);
 
-        Result<SearchConditionNode> DeleteAggregateCondition(Guid nodeId, Guid searchConditionId);
+        Result DeleteAggregateCondition(Guid nodeId, Guid searchConditionId);
 
         /// <summary>
         /// 将条件配置解析成mongodb可以执行的条件
@@ -24,6 +24,6 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.ServiceContract
         /// <param name="isIgnoreArgumentsCheck">是否忽略参数校验,如果为true，需要的参数未传递会抛出异常；如果为false，需要的参数不存在条件返回null</param>
         /// <returns></returns>
         FilterDefinition<BsonDocument> AnalysisConditionToFilterDefinitionByConditionId(QueryPiplineContext queryPiplineContext, bool isIgnoreArgumentsCheck = false);
-        Result<SearchConditionNode> Update(SearchConditionNode entity);
+        Result Update(SearchConditionNode entity);
     }
 }

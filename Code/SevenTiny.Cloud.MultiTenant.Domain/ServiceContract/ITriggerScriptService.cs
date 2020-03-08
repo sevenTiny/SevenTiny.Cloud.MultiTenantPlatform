@@ -15,6 +15,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.ServiceContract
         string GetDefaultMetaObjectTriggerScriptByServiceTypeBefore(int serviceType);
         string GetDefaultMetaObjectTriggerScriptByServiceTypeAfter(int serviceType);
         string GetDefaultDataSourceTriggerScript();
+        Result Update(TriggerScript source);
 
         #region Execute Script
         T RunTriggerScript<T>(QueryPiplineContext queryPiplineContext, TriggerPoint triggerPoint, string functionName, T result, params object[] parameters);

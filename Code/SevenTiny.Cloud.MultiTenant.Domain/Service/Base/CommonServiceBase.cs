@@ -42,13 +42,13 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
                 .ContinueAssert(_ => !_commonRepositoryBase.CheckCodeExistWithoutSameId(id, code), $"编码[{code}]已存在");
         }
 
-        public Result<TEntity> Add(TEntity entity)
+        public Result Add(TEntity entity)
         {
-            return Result<TEntity>.Success()
+            return Result.Success()
                 .ContinueEnsureArgumentNotNullOrEmpty(entity, nameof(entity))
                 .ContinueEnsureArgumentNotNullOrEmpty(entity.Code, nameof(entity.Code))
                 //校验编码是否已经存在
-                .Continue(_ => CheckCodeExist(entity.Code).AsResult<TEntity>())
+                .Continue(_ => CheckCodeExist(entity.Code))
                 //校验Id并赋值
                 .Continue(_ =>
                 {
@@ -66,12 +66,12 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
         /// <param name="source"></param>
         /// <param name="updateFieldAction"></param>
         /// <returns></returns>
-        public Result<TEntity> UpdateWithOutCode(TEntity source, Action<TEntity> updateFieldAction = null)
+        public Result UpdateWithOutCode(TEntity source, Action<TEntity> updateFieldAction = null)
         {
             TEntity target = _commonRepositoryBase.GetById(source.Id);
 
             if (target == null)
-                return Result<TEntity>.Error($"没有查到Id[{source.Id}]对应的数据.");
+                return Result.Error($"没有查到Id[{source.Id}]对应的数据.");
 
             //个性化字段赋值
             updateFieldAction?.Invoke(target);

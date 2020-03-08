@@ -6,6 +6,6 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.ServiceContract
 {
     public interface IMetaObjectService : ICommonServiceBase<MetaObject>
     {
-        Result<MetaObject> Add(Guid applicationId, string applicationCode, MetaObject metaObject);
+        Result Add(Guid applicationId, string applicationCode, MetaObject metaObject);
     }
 }

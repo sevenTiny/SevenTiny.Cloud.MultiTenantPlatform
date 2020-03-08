@@ -6,6 +6,6 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.ServiceContract
 {
     public interface IMetaObjectCommonServiceBase<TEntity> : ICommonServiceBase<TEntity> where TEntity : MetaObjectCommonBase
     {
-        Result<TEntity> CheckHasSameCodeOrNameWithSameMetaObjectId(Guid metaObjectId, TEntity entity);
+        Result CheckHasSameCodeOrNameWithSameMetaObjectId(Guid metaObjectId, TEntity entity);
     }
 }

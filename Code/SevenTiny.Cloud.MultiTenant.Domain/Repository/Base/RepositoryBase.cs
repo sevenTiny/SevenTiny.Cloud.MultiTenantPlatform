@@ -14,10 +14,10 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Repository
 
         protected MultiTenantPlatformDbContext _dbContext;
 
-        public Result<TEntity> Add(TEntity entity)
+        public Result Add(TEntity entity)
         {
             _dbContext.Add(entity);
-            return Result<TEntity>.Success(data: entity);
+            return Result.Success();
         }
 
         public Result<IList<TEntity>> BatchAdd(IList<TEntity> entities)
@@ -26,16 +26,16 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Repository
             return Result<IList<TEntity>>.Success(data: entities);
         }
 
-        public Result<TEntity> Update(TEntity entity)
+        public Result Update(TEntity entity)
         {
             _dbContext.Update(entity);
-            return Result<TEntity>.Success(data: entity);
+            return Result.Success();
         }
 
-        public Result<TEntity> Delete(TEntity entity)
+        public Result Delete(TEntity entity)
         {
             _dbContext.Delete<TEntity>(entity);
-            return Result<TEntity>.Success(data: entity);
+            return Result.Success();
         }
 
         public void TransactionBegin()

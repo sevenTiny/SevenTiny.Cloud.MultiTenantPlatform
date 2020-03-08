@@ -27,7 +27,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
         ITriggerScriptRepository _triggerScriptRepository;
         IDataSourceRepository _dataSourceRepository;
 
-        public new Result<TriggerScript> Add(TriggerScript triggerScript)
+        public new Result Add(TriggerScript triggerScript)
         {
             triggerScript.ScriptType = (int)ScriptType.MetaObject;
             triggerScript.ServiceMethod = (int)ServiceMethod.Post;
@@ -38,7 +38,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
         /// 更新对象
         /// </summary>
         /// <param name="source"></param>
-        public Result<TriggerScript> Update(TriggerScript source)
+        public Result Update(TriggerScript source)
         {
             return base.UpdateWithOutCode(source, _ =>
             {

@@ -30,7 +30,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
         IMetaFieldService _metaFieldService;
 
         //组织接口搜索条件
-        public Result<SearchConditionNode> AggregateCondition(Guid interfaceConditionId, Guid brotherNodeId, int conditionJointTypeId, Guid fieldId, int conditionTypeId, string conditionValue, int conditionValueTypeId)
+        public Result AggregateCondition(Guid interfaceConditionId, Guid brotherNodeId, int conditionJointTypeId, Guid fieldId, int conditionTypeId, string conditionValue, int conditionValueTypeId)
         {
             //如果不是参数传递值，则根据传入的字段校验数据
             if (conditionValueTypeId != (int)ConditionValueType.Parameter)
@@ -110,12 +110,12 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
                 };
                 _searchConditionNodeRepository.Add(newCondition);
 
-                return Result<SearchConditionNode>.Success("保存成功！");
+                return Result.Success("保存成功！");
             });
         }
 
         //删除某个节点
-        public Result<SearchConditionNode> DeleteAggregateCondition(Guid nodeId, Guid searchConditionId)
+        public Result DeleteAggregateCondition(Guid nodeId, Guid searchConditionId)
         {
             //将要删除的节点id集合
             var willBeDeleteIds = new List<Guid>();
@@ -389,7 +389,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
             }
         }
 
-        public Result<SearchConditionNode> Update(SearchConditionNode entity)
+        public Result Update(SearchConditionNode entity)
         {
             return base.UpdateWithOutCode(entity, target => {
                 target.Text = entity.Text;

@@ -20,9 +20,9 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 
         IMetaObjectRepository _metaObjectRepository;
 
-        public Result<MetaObject> Add(Guid applicationId, string applicationCode, MetaObject metaObject)
+        public Result Add(Guid applicationId, string applicationCode, MetaObject metaObject)
         {
-            return Result<MetaObject>.Success()
+            return Result.Success()
                 .ContinueEnsureArgumentNotNullOrEmpty(applicationCode, nameof(applicationCode))
                 .ContinueEnsureArgumentNotNullOrEmpty(metaObject, nameof(metaObject))
                 .ContinueEnsureArgumentNotNullOrEmpty(metaObject.Name, nameof(metaObject.Name))

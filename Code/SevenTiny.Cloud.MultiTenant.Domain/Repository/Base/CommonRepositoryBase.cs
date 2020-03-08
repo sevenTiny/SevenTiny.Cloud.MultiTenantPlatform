@@ -14,21 +14,21 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Repository
         {
         }
 
-        public new Result<TEntity> Update(TEntity entity)
+        public new Result Update(TEntity entity)
         {
             entity.ModifyTime = DateTime.Now;
 
             base.Update(entity);
-            return Result<TEntity>.Success();
+            return Result.Success();
         }
 
-        public Result<TEntity> Delete(Guid id)
+        public Result Delete(Guid id)
         {
             _dbContext.Delete<TEntity>(t => t.Id.Equals(id));
-            return Result<TEntity>.Success();
+            return Result.Success();
         }
 
-        public Result<TEntity> LogicDelete(Guid id)
+        public Result LogicDelete(Guid id)
         {
             var entity = GetById(id);
             if (entity != null)
@@ -36,10 +36,10 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Repository
                 entity.IsDeleted = (int)IsDeleted.Deleted;
                 _dbContext.Update(entity);
             }
-            return Result<TEntity>.Success();
+            return Result.Success();
         }
 
-        public Result<TEntity> Recover(Guid id)
+        public Result Recover(Guid id)
         {
             var entity = GetById(id);
             if (entity != null)
@@ -47,7 +47,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Repository
                 entity.IsDeleted = (int)IsDeleted.UnDeleted;
                 _dbContext.Update(entity);
             }
-            return Result<TEntity>.Success();
+            return Result.Success();
         }
 
         public TEntity GetById(Guid id)

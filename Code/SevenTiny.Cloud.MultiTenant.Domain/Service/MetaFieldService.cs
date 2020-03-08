@@ -44,7 +44,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
         /// 更新对象
         /// </summary>
         /// <param name="metaField"></param>
-        public Result<MetaField> Update(MetaField metaField)
+        public Result Update(MetaField metaField)
         {
             return base.UpdateWithOutCode(metaField, target =>
             {

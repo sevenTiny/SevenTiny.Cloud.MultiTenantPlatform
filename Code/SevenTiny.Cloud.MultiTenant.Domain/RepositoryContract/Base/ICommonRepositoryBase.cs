@@ -12,9 +12,9 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Result<TEntity> Delete(Guid id);
-        Result<TEntity> LogicDelete(Guid id);
-        Result<TEntity> Recover(Guid id);
+        Result Delete(Guid id);
+        Result LogicDelete(Guid id);
+        Result Recover(Guid id);
         TEntity GetById(Guid id);
         TEntity GetByCode(string code);
         List<TEntity> GetListAll();
