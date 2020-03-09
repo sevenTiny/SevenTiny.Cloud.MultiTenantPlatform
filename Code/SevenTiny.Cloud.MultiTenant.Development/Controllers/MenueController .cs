@@ -55,7 +55,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
                 });
 
             if (!result.IsSuccess)
-                return View("Add", result.ToResponseModel());
+                return View("Add", result.ToResponseModel(entity));
 
             return Redirect("List");
         }
@@ -82,7 +82,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
 
             if (!result.IsSuccess)
-                return View("Update", result.ToResponseModel()); ;
+                return View("Update", result.ToResponseModel(entity)); ;
 
             return RedirectToAction("List");
         }

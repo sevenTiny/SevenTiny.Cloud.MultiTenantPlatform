@@ -34,7 +34,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
                     metaObject.Code = string.Concat(applicationCode, ".", metaObject.Code);
                     return _;
                 })
-                .Continue(_ => _metaObjectRepository.Add(metaObject));
+                .Continue(_ => base.Add(metaObject));
         }
     }
 }

@@ -28,6 +28,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult List()
         {
+            var a = _metaObjectRepository.GetMetaObjectListUnDeletedByApplicationId(CurrentApplicationId);
             return View(_metaObjectRepository.GetMetaObjectListUnDeletedByApplicationId(CurrentApplicationId));
         }
 
@@ -49,6 +50,9 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
                     entity.CreateBy = CurrentUserId;
                     return _metaObjectService.Add(CurrentApplicationId, CurrentApplicationCode, entity);
                 });
+
+            if (!result.IsSuccess)
+                return View("Add", result.ToResponseModel(entity));
 
             return RedirectToAction("List");
         }
@@ -73,7 +77,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
                });
 
             if (!result.IsSuccess)
-                return View("Update", result.ToResponseModel());
+                return View("Update", result.ToResponseModel(entity));
 
             return RedirectToAction("List");
         }
