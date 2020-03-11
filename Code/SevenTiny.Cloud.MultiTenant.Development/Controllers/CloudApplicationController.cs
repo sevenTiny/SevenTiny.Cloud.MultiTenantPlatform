@@ -12,19 +12,16 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 {
     public class CloudApplicationController : WebControllerBase
     {
-        public CloudApplicationController(ICloudApplicationService applicationService, ICloudApplicationRepository cloudApplicationRepository)
+        public CloudApplicationController(ICloudApplicationService applicationService, ICloudApplicationRepository cloudApplicationRepository, IMetaObjectRepository metaObjectRepository)
         {
             _applicationService = applicationService;
             _cloudApplicationRepository = cloudApplicationRepository;
+            _metaObjectRepository = metaObjectRepository;
         }
 
         ICloudApplicationService _applicationService;
         ICloudApplicationRepository _cloudApplicationRepository;
-
-        public IActionResult Setting()
-        {
-            return View();
-        }
+        IMetaObjectRepository _metaObjectRepository;
 
         public IActionResult Select()
         {
@@ -103,8 +100,11 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
                 return Redirect("/CloudApplication/Select");
 
             SetApplictionSession(applicationId, applicationCode);
-            ViewData["Application"] = applicationCode;
             SetUserInfoToViewData();
+
+            ViewData["ApplicationCode"] = applicationCode;
+            ViewData["ApplicationId"] = applicationId;
+            ViewData["MetaObjects"] = _metaObjectRepository.GetMetaObjectListUnDeletedByApplicationId(applicationId);
 
             return View();
         }

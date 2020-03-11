@@ -3,10 +3,11 @@
 @{
     ViewData["Title"] = "Detail";
     Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
-    string applicationCode = Convert.ToString(ViewData["Application"]);
+    string applicationCode = Convert.ToString(ViewData["ApplicationCode"]);
+    string applicationId = Convert.ToString(ViewData["ApplicationId"]);
+    var metaObjectList = ViewData["MetaObjects"] as List<MetaObject> ?? new List<MetaObject>();
 }
 
-<!--_header 作为公共模版分离出去-->
 <header class="navbar-wrapper">
     <div class="navbar navbar-fixed-top">
         <div class="container-fluid cl">
@@ -14,14 +15,14 @@
             <nav class="nav navbar-nav">
                 <ul class="cl">
                     <li><a href="/CloudApplication/Select" class="dropDown_A">应用：@applicationCode </a></li>
-                    <li class="navbar-levelone"><a href="javascript:applicationDetailFrameOpen('/CloudApplication/Setting')">应用设置</a></li>
-                    <li class="navbar-levelone current"><a href="javascript:applicationDetailFrameOpen('/MetaObject/Setting')">对象管理</a></li>
+                    <li class="navbar-levelone"><a href="javascript:mainFrameOpen('/Home/Welcome')">应用设置</a></li>
+                    <li class="navbar-levelone current"><a href="javascript:mainFrameOpen('/MetaObject/List')">对象管理</a></li>
                 </ul>
             </nav>
             <nav id="Hui-userbar" class="nav navbar-nav navbar-userbar hidden-xs">
                 <ul class="cl">
                     <li>@ViewData["UserIdentity"] </li>
-                    <li class="dropDown dropDown_hover">
+                    <li class="dropDown dropDown_hover">    
                         <a href="#" class="dropDown_A"> @ViewData["UserName"] <i class="Hui-iconfont">&#xe6d5;</i></a>
                         <ul class="dropDown-menu menu radius box-shadow">
                             <li><a href="javascript:;" onClick="myselfinfo()">个人信息</a></li>
@@ -46,12 +47,151 @@
         </div>
     </div>
 </header>
-<!--/_header 作为公共模版分离出去-->
-<section class="Hui-article-box" style="top:0;left:0">
-    <div class="show_iframe" tyle="margin-bottom:50px;">
-        <div style="display:none" class="loading"></div>
-        <iframe id="application_detail_iframe" scrolling="no" frameborder="0" src="/MetaObject/Setting"></iframe>
+
+<aside class="Hui-aside">
+    <div class="menu_dropdown bk_2">
+        <dl id="menu-profile">
+            <dt><i class="Hui-iconfont">&#xe611; </i> 身份管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+            <dd>
+                <ul>
+                    <li><a data-href="article-list.html" data-title="字段" href="javascript:void(0)">身份列表</a></li>
+                </ul>
+            </dd>
+        </dl>
+        <dl id="menu-profile">
+            <dt><i class="Hui-iconfont">&#xe681; </i> 菜单设置<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+            <dd>
+                <ul>
+                    <li><a href="javascript:frameOpen('/Menue/List')">菜单列表</a></li>
+                </ul>
+            </dd>
+        </dl>
+        <dl id="menu-authentication">
+            <dt><i class="Hui-iconfont">&#xe61a; </i> 数据源<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+            <dd>
+                <ul>
+                    <li><a href="javascript:frameOpen('/DataSource/ScriptDataSourceList')">脚本数据源</a></li>
+                    <li><a href="javascript:frameOpen('/DataSource/JsonDataSourceList')">Json数据源</a></li>
+                </ul>
+            </dd>
+        </dl>
+        <dl id="menu-picture">
+            <dt><i class="Hui-iconfont">&#xe63e; </i> 文件管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+            <dd>
+                <ul>
+                    <li><a data-href="picture-list.html" data-title="图片管理" href="javascript:void(0)">图片管理</a></li>
+                </ul>
+            </dd>
+        </dl>
+        <dl id="menu-authentication">
+            <dt><i class="Hui-iconfont">&#xe6ba; </i> 流程管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+            <dd>
+                <ul>
+                    <li><a data-href="article-list.html" data-title="字段" href="javascript:void(0)">菜单</a></li>
+                </ul>
+            </dd>
+        </dl>
+        @*<dl id="menu-product">
+                <dt><i class="Hui-iconfont">&#xe620;</i> 产品管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+                <dd>
+                    <ul>
+                        <li><a data-href="product-brand.html" data-title="品牌管理" href="javascript:void(0)">品牌管理</a></li>
+                        <li><a data-href="product-category.html" data-title="分类管理" href="javascript:void(0)">分类管理</a></li>
+                        <li><a data-href="product-list.html" data-title="产品管理" href="javascript:void(0)">产品管理</a></li>
+                    </ul>
+                </dd>
+            </dl>
+            <dl id="menu-comments">
+                <dt><i class="Hui-iconfont">&#xe622;</i> 评论管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+                <dd>
+                    <ul>
+                        <li><a data-href="http://h-ui.duoshuo.com/admin/" data-title="评论列表" href="javascript:;">评论列表</a></li>
+                        <li><a data-href="feedback-list.html" data-title="意见反馈" href="javascript:void(0)">意见反馈</a></li>
+                    </ul>
+                </dd>
+            </dl>
+            <dl id="menu-member">
+                <dt><i class="Hui-iconfont">&#xe60d;</i> 会员管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+                <dd>
+                    <ul>
+                        <li><a data-href="member-list.html" data-title="会员列表" href="javascript:;">会员列表</a></li>
+                        <li><a data-href="member-del.html" data-title="删除的会员" href="javascript:;">删除的会员</a></li>
+                        <li><a data-href="member-level.html" data-title="等级管理" href="javascript:;">等级管理</a></li>
+                        <li><a data-href="member-scoreoperation.html" data-title="积分管理" href="javascript:;">积分管理</a></li>
+                        <li><a data-href="member-record-browse.html" data-title="浏览记录" href="javascript:void(0)">浏览记录</a></li>
+                        <li><a data-href="member-record-download.html" data-title="下载记录" href="javascript:void(0)">下载记录</a></li>
+                        <li><a data-href="member-record-share.html" data-title="分享记录" href="javascript:void(0)">分享记录</a></li>
+                    </ul>
+                </dd>
+            </dl>
+            <dl id="menu-admin">
+                <dt><i class="Hui-iconfont">&#xe62d;</i> 管理员管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+                <dd>
+                    <ul>
+                        <li><a data-href="admin-role.html" data-title="角色管理" href="javascript:void(0)">角色管理</a></li>
+                        <li><a data-href="admin-permission.html" data-title="权限管理" href="javascript:void(0)">权限管理</a></li>
+                        <li><a data-href="admin-list.html" data-title="管理员列表" href="javascript:void(0)">管理员列表</a></li>
+                    </ul>
+                </dd>
+            </dl>
+            <dl id="menu-tongji">
+                <dt><i class="Hui-iconfont">&#xe61a;</i> 系统统计<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+                <dd>
+                    <ul>
+                        <li><a data-href="charts-1.html" data-title="折线图" href="javascript:void(0)">折线图</a></li>
+                        <li><a data-href="charts-2.html" data-title="时间轴折线图" href="javascript:void(0)">时间轴折线图</a></li>
+                        <li><a data-href="charts-3.html" data-title="区域图" href="javascript:void(0)">区域图</a></li>
+                        <li><a data-href="charts-4.html" data-title="柱状图" href="javascript:void(0)">柱状图</a></li>
+                        <li><a data-href="charts-5.html" data-title="饼状图" href="javascript:void(0)">饼状图</a></li>
+                        <li><a data-href="charts-6.html" data-title="3D柱状图" href="javascript:void(0)">3D柱状图</a></li>
+                        <li><a data-href="charts-7.html" data-title="3D饼状图" href="javascript:void(0)">3D饼状图</a></li>
+                    </ul>
+                </dd>
+            </dl>
+            <dl id="menu-system">
+                <dt><i class="Hui-iconfont">&#xe62e;</i> 系统管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+                <dd>
+                    <ul>
+                        <li><a data-href="system-base.html" data-title="系统设置" href="javascript:void(0)">系统设置</a></li>
+                        <li><a data-href="system-category.html" data-title="栏目管理" href="javascript:void(0)">栏目管理</a></li>
+                        <li><a data-href="system-data.html" data-title="数据字典" href="javascript:void(0)">数据字典</a></li>
+                        <li><a data-href="system-shielding.html" data-title="屏蔽词" href="javascript:void(0)">屏蔽词</a></li>
+                        <li><a data-href="system-log.html" data-title="系统日志" href="javascript:void(0)">系统日志</a></li>
+                    </ul>
+                </dd>
+            </dl>*@
     </div>
+    <div class="menu_dropdown bk_1">
+        @foreach (var item in metaObjectList)
+        {
+            <dl id="menu-article">
+                <dt><i class="Hui-iconfont">&#xe72d;</i> @item.Name<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+                <dd>
+                    <ul>
+                        <li><a href="javascript:mainFrameOpen('/MetaField/List?metaObjectId='+getMetaObjectId())"><i class="Hui-iconfont">&#xe6ec;</i> 字段</a></li>
+                        <li><a href="javascript:mainFrameOpen('/Form/List')"><i class="Hui-iconfont">&#xe627;</i> 表单</a></li>
+                        <li><a href="javascript:mainFrameOpen('/ListView/List')"><i class="Hui-iconfont">&#xe6f3;</i> 列表</a></li>
+                        <li><a href="javascript:mainFrameOpen('/SearchCondition/List')"><i class="Hui-iconfont">&#xe683;</i> 搜索条件</a></li>
+                        <li><a href="javascript:mainFrameOpen('/IndexView/List')"><i class="Hui-iconfont">&#xe72b;</i> 视图</a></li>
+                        <li><a href="javascript:mainFrameOpen('/Home/Error')"><i class="Hui-iconfont">&#xe616;</i> 详情页</a></li>
+                        <li><a href="javascript:mainFrameOpen('/Home/Error')"><i class="Hui-iconfont">&#xe616;</i> 功能按钮</a></li>
+                        <li><a href="javascript:mainFrameOpen('/CloudInterface/List')"><i class="Hui-iconfont">&#xe6f1;</i> 自定义接口</a></li>
+                        <li><a href="javascript:mainFrameOpen('/TriggerScript/List')"><i class="Hui-iconfont">&#xe6a2;</i> 触发器</a></li>
+                    </ul>
+                </dd>
+            </dl>
+        }
+    </div>
+</aside>
+<div class="dislpayArrow hidden-xs"><a class="pngfix" href="javascript:void(0);" onClick="displaynavbar(this)"></a></div>
+
+<section class="Hui-article-box">
+    <article class="cl pd-20">
+        <div class="show_iframe" style="margin-bottom:50px;">
+            <div style="display:none" class="loading"></div>
+            <iframe id="main_iframe" scrolling="auto" frameborder="0" src="/MetaObject/List?applicationId=@applicationId&applicationCode=@applicationCode"></iframe>
+        </div>
+    </article>
 </section>
 
 @await Html.PartialAsync($"~/Views/Shared/_FooterScripts.cshtml")
@@ -69,8 +209,8 @@
     });
 
     //在frame中打开页面
-    function applicationDetailFrameOpen(url) {
-        $("#application_detail_iframe").prop("src", url);
+    function mainFrameOpen(url) {
+        $("#main_iframe").prop("src", url);
     }
 </script>
 <!--/请在上方写此页面业务相关的脚本-->

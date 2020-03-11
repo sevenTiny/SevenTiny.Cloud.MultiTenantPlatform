@@ -20,12 +20,6 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
         IMetaObjectService _metaObjectService;
         IMetaObjectRepository _metaObjectRepository;
 
-        public IActionResult Setting()
-        {
-            ViewData["MetaObjects"] = _metaObjectRepository.GetMetaObjectListUnDeletedByApplicationId(CurrentApplicationId);
-            return View();
-        }
-
         public IActionResult List()
         {
             var a = _metaObjectRepository.GetMetaObjectListUnDeletedByApplicationId(CurrentApplicationId);
