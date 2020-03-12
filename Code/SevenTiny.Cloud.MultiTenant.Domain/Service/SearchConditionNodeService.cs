@@ -36,7 +36,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
             if (conditionValueTypeId != (int)ConditionValueType.Parameter)
             {
                 if (!_metaFieldService.CheckAndGetFieldValueByFieldType(fieldId, conditionValue).IsSuccess)
-                    return Result<SearchConditionNode>.Error("字段值和字段定义的类型不匹配");
+                    return Result.Error("字段值和字段定义的类型不匹配");
             }
 
             return TransactionHelper.Transaction(() =>
@@ -87,7 +87,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
                 {
                     if (_searchConditionNodeRepository.GetById(parentId) != null)
                     {
-                        return Result<SearchConditionNode>.Error("已经存在条件节点，请查证后操作！");
+                        return Result.Error("已经存在条件节点，请查证后操作！");
                     }
                 }
                 //新增节点
@@ -123,12 +123,12 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
             List<SearchConditionNode> allConditions = _searchConditionNodeRepository.GetListBySearchConditionId(searchConditionId);
             if (allConditions == null || !allConditions.Any())
             {
-                return Result<SearchConditionNode>.Success("删除成功！");
+                return Result.Success("删除成功！");
             }
             SearchConditionNode conditionAggregation = allConditions.FirstOrDefault(t => t.Id == nodeId);
             if (conditionAggregation == null)
             {
-                return Result<SearchConditionNode>.Success("删除成功！");
+                return Result.Success("删除成功！");
             }
             //获取父节点id
             Guid parentId = conditionAggregation.ParentId;
@@ -136,7 +136,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
             if (parentId == Guid.Empty)
             {
                 DeleteNodeAndChildrenNodes(allConditions, nodeId);
-                return Result<SearchConditionNode>.Success("删除成功！");
+                return Result.Success("删除成功！");
             }
             //如果不是顶级节点，查询所有兄弟节点。
             //如果所有兄弟节点（包含自己）多余两个，则直接删除此节点;
@@ -144,7 +144,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
             if (conditionList.Count > 2)
             {
                 DeleteNodeAndChildrenNodes(allConditions, nodeId);
-                return Result<SearchConditionNode>.Success("删除成功！");
+                return Result.Success("删除成功！");
             }
             //如果兄弟节点为两个，则将父亲节点删除，将另一个兄弟节点作为父节点。
             else if (conditionList.Count == 2)
@@ -165,10 +165,10 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
             //如果没有兄弟节点，则直接将节点以及父节点都删除（如果数据不出问题，默认不存在此种情况，直接返回结果）
             else
             {
-                return Result<SearchConditionNode>.Success("删除成功！");
+                return Result.Success("删除成功！");
             }
 
-            return Result<SearchConditionNode>.Success("删除成功！");
+            return Result.Success("删除成功！");
 
             //删除节点及所有下级节点
             void DeleteNodeAndChildrenNodes(List<SearchConditionNode> sourceConditions, Guid currentNodeId)

@@ -6,6 +6,6 @@ namespace SevenTiny.Cloud.MultiTenant.Application.ServiceContract
 {
     public interface IFormViewAppService
     {
-        Result<FormView> Delete(Guid id);
+        Result Delete(Guid id);
     }
 }

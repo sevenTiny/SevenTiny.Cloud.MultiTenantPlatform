@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SevenTiny.Bantina;
 using SevenTiny.Bantina.Validation;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
@@ -25,23 +24,8 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult List(Guid metaObjectId)
         {
-            //如果传递过来是0，表示没有选择对象
-            if (metaObjectId == Guid.Empty)
-            {
-                ViewBag.IsSuccess = false;
-                ViewBag.Message = "请先选择对象";
-                return View();
-            }
-
-            //这里是选择对象的入口，预先设置Session
-            HttpContext.Session.SetString("MetaObjectId", metaObjectId.ToString());
-            var obj = _metaObjectRepository.GetById(metaObjectId);
-            if (obj != null)
-            {
-                HttpContext.Session.SetString("MetaObjectCode", obj.Code);
-            }
-
-            return View(_metaFieldRepository.GetListDeletedByMetaObjectId(metaObjectId));
+            SetMetaObjectInfoToSession(metaObjectId);
+            return View(_metaFieldRepository.GetListUnDeletedByMetaObjectId(metaObjectId));
         }
 
         public IActionResult Add()
@@ -60,7 +44,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
                 {
                     entity.MetaObjectId = CurrentMetaObjectId;
                     entity.CreateBy = CurrentUserId;
-                    return _metaFieldRepository.Add(entity);
+                    return _metaFieldService.Add(entity);
                 });
 
             if (!result.IsSuccess)

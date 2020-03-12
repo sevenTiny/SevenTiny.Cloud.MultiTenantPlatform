@@ -1,5 +1,6 @@
 ﻿using SevenTiny.Bantina.Bankinate.Attributes;
 using SevenTiny.Cloud.MultiTenant.Domain.Enum;
+using System;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Entity
 {
@@ -12,7 +13,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Entity
         public int FieldType { get; set; }
         //if field type is datasource
         [Column]
-        public int DataSourceId { get; set; } = -1;
+        public Guid DataSourceId { get; set; }
         [Column]
         public int IsSystem { get; set; } = (int)TrueFalse.False;
     }

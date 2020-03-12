@@ -47,7 +47,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult AddLogic(CloudApplication entity)
         {
-            var result = Result<CloudApplication>.Success()
+            var result = Result.Success()
                 .ContinueEnsureArgumentNotNullOrEmpty(entity, nameof(entity))
                 .ContinueEnsureArgumentNotNullOrEmpty(entity.Name, nameof(entity.Name))
                 .ContinueEnsureArgumentNotNullOrEmpty(entity.Code, nameof(entity.Code))
@@ -72,7 +72,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult UpdateLogic(CloudApplication entity)
         {
-            var result = Result<CloudApplication>.Success()
+            var result = Result.Success()
                .ContinueEnsureArgumentNotNullOrEmpty(entity, nameof(entity))
                .ContinueEnsureArgumentNotNullOrEmpty(entity.Name, nameof(entity.Name))
                .ContinueAssert(_ => entity.Id != Guid.Empty, "Id Can Not Be Null")
@@ -99,7 +99,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
             if (string.IsNullOrEmpty(applicationCode))
                 return Redirect("/CloudApplication/Select");
 
-            SetApplictionSession(applicationId, applicationCode);
+            SetApplictionInfoToSession(applicationId, applicationCode);
             SetUserInfoToViewData();
 
             ViewData["ApplicationCode"] = applicationCode;

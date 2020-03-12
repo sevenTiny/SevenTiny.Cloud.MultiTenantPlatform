@@ -6,6 +6,6 @@ namespace SevenTiny.Cloud.MultiTenant.Infrastructure.Const
 {
     public static class RouteConst
     {
-        public const string Http403 = "/HttpCode/Http403";
+        public const string Http403 = "/Home/Http403";
     }
 }

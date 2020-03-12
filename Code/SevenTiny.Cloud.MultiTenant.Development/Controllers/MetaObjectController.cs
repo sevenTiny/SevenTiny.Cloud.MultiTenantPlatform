@@ -81,14 +81,5 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
             _metaObjectRepository.LogicDelete(id);
             return JsonResultModel.Success("删除成功");
         }
-
-        public IActionResult Switch(Guid id)
-        {
-            var obj = _metaObjectRepository.GetById(id);
-            SetMetaObjectSession(id, obj.Code);
-
-            //这里换成当前MetaObject的MetaFields列表
-            return Redirect("/MetaField/List");
-        }
     }
 }

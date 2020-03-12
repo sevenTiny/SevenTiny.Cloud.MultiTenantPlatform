@@ -1,15 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SevenTiny.Cloud.MultiTenant.Development.Filters;
 using SevenTiny.Cloud.MultiTenant.Development.Helpers;
+using SevenTiny.Cloud.MultiTenant.Domain.Enum;
 using SevenTiny.Cloud.MultiTenant.Infrastructure.Configs;
 using SevenTiny.Cloud.MultiTenant.Infrastructure.Const;
 using SevenTiny.Cloud.MultiTenant.Infrastructure.Context;
-using SevenTiny.Cloud.MultiTenant.Domain.Enum;
 using System;
-using System.Linq;
 
 namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 {
@@ -20,16 +18,15 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
     //[Authorize]
     public class WebControllerBase : Controller
     {
-        protected void SetApplictionSession(Guid applicationId, string applicationCode)
+        protected void SetApplictionInfoToSession(Guid applicationId, string applicationCode)
         {
             HttpContext.Session.SetString("ApplicationId", applicationId.ToString());
             HttpContext.Session.SetString("ApplicationCode", applicationCode);
         }
 
-        protected void SetMetaObjectSession(Guid metaObjectId, string metaObjectCode)
+        protected void SetMetaObjectInfoToSession(Guid metaObjectId)
         {
             HttpContext.Session.SetString("MetaObjectId", metaObjectId.ToString());
-            HttpContext.Session.SetString("MetaObjectCode", metaObjectCode);
         }
 
         /// <summary>
@@ -42,9 +39,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
                 var applicationId = HttpContext.Session.GetString("ApplicationId");
 
                 if (string.IsNullOrEmpty(applicationId))
-                {
                     Response.Redirect("/CloudApplication/Select");
-                }
 
                 return Guid.Parse(applicationId);
             }
@@ -61,7 +56,8 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
                 if (string.IsNullOrEmpty(applicationCode))
                     Response.Redirect("/CloudApplication/Select");
 
-                ViewData["Application"] = applicationCode ?? throw new ArgumentNullException("ApplicationCode is null,please select application first!");
+                ViewData["ApplicationCode"] = applicationCode;
+
                 return applicationCode;
             }
         }
@@ -89,6 +85,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
         {
             get
             {
+                throw new NotImplementedException();
                 return HttpContext.Session.GetString("MetaObjectCode") ?? throw new ArgumentNullException("MetaObjectCode is null,please select MetaObject first!"); ;
             }
         }

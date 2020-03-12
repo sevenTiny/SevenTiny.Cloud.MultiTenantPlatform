@@ -36,7 +36,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult AddLogic(TriggerScript entity)
         {
-            var result = Result<TriggerScript>.Success()
+            var result = Result.Success()
                 .ContinueEnsureArgumentNotNullOrEmpty(entity, nameof(entity))
                 .ContinueEnsureArgumentNotNullOrEmpty(entity.Name, nameof(entity.Name))
                 .ContinueEnsureArgumentNotNullOrEmpty(entity.Code, nameof(entity.Code))
