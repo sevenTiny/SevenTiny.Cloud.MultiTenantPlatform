@@ -6,6 +6,10 @@
     Layout = $"~/Views/Shared/_LayoutHeaderStyle.cshtml";
     List<MetaField> metaFields = (Model as List<MetaField>) ?? new List<MetaField>();
 }
+@{
+    ViewData["Level_1"] = "字段列表";
+}
+@await Html.PartialAsync("~/Views/Shared/_PartialNavigation.cshtml")
 
 <article class="cl pd-20">
     <div class="cl pd-5 bg-1 bk-gray">

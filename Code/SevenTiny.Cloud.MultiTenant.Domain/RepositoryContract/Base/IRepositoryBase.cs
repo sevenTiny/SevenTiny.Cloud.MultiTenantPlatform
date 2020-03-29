@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract
 {
-    public interface IRepositoryBase<TEntity> where TEntity : class
+    internal interface IRepositoryBase<TEntity> where TEntity : class
     {
         Result Add(TEntity entity);
         Result<IList<TEntity>> BatchAdd(IList<TEntity> entities);

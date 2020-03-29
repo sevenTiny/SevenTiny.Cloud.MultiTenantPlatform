@@ -2,7 +2,6 @@
 using SevenTiny.Bantina.Validation;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Domain.Enum;
-using SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract;
 using SevenTiny.Cloud.MultiTenant.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenant.Infrastructure.Configs;
 using SevenTiny.Cloud.MultiTenant.Web.Models;
@@ -14,19 +13,19 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
         ISearchConditionService _searchConditionService;
         ISearchConditionNodeService _searchConditionNodeService;
         IDataSourceService _dataSourceService;
-        ICloudInterfaceRepository _cloudInterfaceRepository;
+        ICloudInterfaceService _cloudInterfaceService;
 
-        public CloudInterfaceController(ICloudInterfaceRepository cloudInterfaceRepository, ISearchConditionService _searchConditionService, ISearchConditionNodeService searchConditionNodeService, IDataSourceService dataSourceService)
+        public CloudInterfaceController(ICloudInterfaceService cloudInterfaceService, ISearchConditionService _searchConditionService, ISearchConditionNodeService searchConditionNodeService, IDataSourceService dataSourceService)
         {
             this._searchConditionService = _searchConditionService;
             _searchConditionNodeService = searchConditionNodeService;
             _dataSourceService = dataSourceService;
-            _cloudInterfaceRepository = cloudInterfaceRepository;
+            _cloudInterfaceService = cloudInterfaceService;
         }
 
         public IActionResult List()
         {
-            return View(_cloudInterfaceRepository.GetListUnDeletedByMetaObjectId(CurrentMetaObjectId));
+            return View(_cloudInterfaceService.GetListUnDeletedByMetaObjectId(CurrentMetaObjectId));
         }
 
         //private void SetDataSource()

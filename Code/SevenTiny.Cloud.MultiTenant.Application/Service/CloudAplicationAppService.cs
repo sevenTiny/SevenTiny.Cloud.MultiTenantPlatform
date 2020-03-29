@@ -1,7 +1,6 @@
 ﻿using SevenTiny.Bantina;
 using SevenTiny.Cloud.MultiTenant.Application.ServiceContract;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
-using SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract;
 using SevenTiny.Cloud.MultiTenant.Domain.ServiceContract;
 using System;
 
@@ -9,20 +8,16 @@ namespace SevenTiny.Cloud.MultiTenant.Application.Service
 {
     internal class CloudAplicationAppService : ICloudApplicationAppService
     {
-        public CloudAplicationAppService(
-            IMetaObjectAppService metaObjectAppService,
-
-            IMetaObjectRepository metaObjectRepository
-            )
+        public CloudAplicationAppService(IMetaObjectAppService metaObjectAppService, IMetaObjectService metaObjectService)
         {
             _metaObjectAppService = metaObjectAppService;
 
-            _metaObjectRepository = metaObjectRepository;
+            _metaObjectService = metaObjectService;
         }
 
         IMetaObjectAppService _metaObjectAppService;
 
-        IMetaObjectRepository _metaObjectRepository;
+        IMetaObjectService _metaObjectService;
 
         /// <summary>
         /// 删除
@@ -30,24 +25,24 @@ namespace SevenTiny.Cloud.MultiTenant.Application.Service
         /// <param name="id"></param>
         public Result<CloudApplication> Delete(Guid id)
         {
-            var metaObjects = _metaObjectRepository.GetListAll();
+            var metaObjects = _metaObjectService.GetListAll();
 
             return Result<CloudApplication>.Success()
                 .ContinueWithTryCatch(_ =>
                 {
-                    _metaObjectRepository.TransactionBegin();
+                    _metaObjectService.TransactionBegin();
 
                     metaObjects.ForEach(item =>
                     {
                         _metaObjectAppService.Delete(item.Id);
                     });
 
-                    _metaObjectRepository.TransactionCommit();
+                    _metaObjectService.TransactionCommit();
 
                     return _;
                 }, _ =>
                 {
-                    _metaObjectRepository.TransactionRollback();
+                    _metaObjectService.TransactionRollback();
                 });
         }
     }

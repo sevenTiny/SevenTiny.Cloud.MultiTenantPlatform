@@ -4,7 +4,6 @@ using SevenTiny.Bantina;
 using SevenTiny.Bantina.Validation;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Domain.Enum;
-using SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract;
 using SevenTiny.Cloud.MultiTenant.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenant.Infrastructure.ValueObject;
 using SevenTiny.Cloud.MultiTenant.Web.Models;
@@ -16,20 +15,18 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 {
     public class ListViewController : WebControllerBase
     {
-        readonly IListViewRepository _listViewRepository;
         readonly IListViewService _listViewService;
         readonly IMetaFieldService _metaFieldService;
 
-        public ListViewController(IMetaFieldService metaFieldService, IListViewRepository listViewRepository, IListViewService listViewService)
+        public ListViewController(IMetaFieldService metaFieldService, IListViewService listViewService)
         {
             _metaFieldService = metaFieldService;
-            _listViewRepository = listViewRepository;
             _listViewService = listViewService;
         }
 
         public IActionResult List()
         {
-            return View(_listViewRepository.GetListUnDeletedByMetaObjectId(CurrentMetaObjectId));
+            return View(_listViewService.GetListUnDeletedByMetaObjectId(CurrentMetaObjectId));
         }
 
         public IActionResult Add()
@@ -51,18 +48,18 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
                     entity.Code = $"{CurrentMetaObjectCode}.ListView.{entity.Code}";
                     entity.CreateBy = CurrentUserId;
 
-                    return _listViewRepository.Add(entity);
+                    return _listViewService.Add(entity);
                 });
 
             if (!result.IsSuccess)
-                return View("Add", result.ToResponseModel());
+                return View("Add", result.ToResponseModel(entity));
 
             return RedirectToAction("List");
         }
 
         public IActionResult Update(Guid id)
         {
-            var interfaceField = _listViewRepository.GetById(id);
+            var interfaceField = _listViewService.GetById(id);
             return View(ResponseModel.Success(interfaceField));
         }
 
@@ -79,14 +76,14 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
                });
 
             if (!result.IsSuccess)
-                return View("Update", result.ToResponseModel());
+                return View("Update", result.ToResponseModel(entity));
 
             return RedirectToAction("List");
         }
 
         public IActionResult LogicDelete(Guid id)
         {
-            _listViewRepository.LogicDelete(id);
+            _listViewService.LogicDelete(id);
             return JsonResultModel.Success("删除成功");
         }
 

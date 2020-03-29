@@ -34,7 +34,27 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
                     metaObject.Code = string.Concat(applicationCode, ".", metaObject.Code);
                     return _;
                 })
-                .Continue(_ => _metaObjectRepository.Add(metaObject));
+                .Continue(_ => base.Add(metaObject));
+        }
+
+        public List<MetaObject> GetMetaObjectListUnDeletedByApplicationId(Guid applicationId)
+        {
+            return _metaObjectRepository.GetMetaObjectListUnDeletedByApplicationId(applicationId);
+        }
+
+        public List<MetaObject> GetMetaObjectListDeletedByApplicationId(Guid applicationId)
+        {
+            return _metaObjectRepository.GetMetaObjectListDeletedByApplicationId(applicationId);
+        }
+
+        public MetaObject GetMetaObjectByCodeOrNameWithApplicationId(Guid applicationId, string code, string name)
+        {
+            return GetMetaObjectByCodeOrNameWithApplicationId(applicationId, code, name);
+        }
+
+        public MetaObject GetMetaObjectByCodeAndApplicationId(Guid applicationId, string code)
+        {
+            return GetMetaObjectByCodeAndApplicationId(applicationId, code);
         }
     }
 }

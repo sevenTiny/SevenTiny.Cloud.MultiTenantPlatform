@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract
 {
-    public interface ICommonRepositoryBase<TEntity> : IRepositoryBase<TEntity> where TEntity : CommonBase
+    internal interface ICommonRepositoryBase<TEntity> : IRepositoryBase<TEntity> where TEntity : CommonBase
     {
         /// <summary>
         /// 只有工具才可以调用真实删除接口，业务通常调用LogicDelete接口进行逻辑删除

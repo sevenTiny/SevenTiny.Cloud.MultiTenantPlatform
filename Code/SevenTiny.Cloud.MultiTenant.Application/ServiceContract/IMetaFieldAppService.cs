@@ -4,8 +4,8 @@ using System;
 
 namespace SevenTiny.Cloud.MultiTenant.Application.ServiceContract
 {
-    public interface IFormViewAppService
+    public interface IMetaFieldAppService
     {
-        Result Delete(Guid id);
+        Result Add(MetaField entity, Guid metaObjectId);
     }
 }

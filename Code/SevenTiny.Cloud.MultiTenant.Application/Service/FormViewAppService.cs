@@ -2,25 +2,26 @@
 using SevenTiny.Cloud.MultiTenant.Application.ServiceContract;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract;
+using SevenTiny.Cloud.MultiTenant.Domain.ServiceContract;
 using System;
 
 namespace SevenTiny.Cloud.MultiTenant.Application.Service
 {
     internal class FormViewAppService : IFormViewAppService
     {
-        public FormViewAppService(IFormViewRepository formViewRepository, ICloudInterfaceRepository cloudInterfaceRepository)
+        public FormViewAppService(IFormViewService formViewService, ICloudInterfaceService cloudInterfaceService)
         {
-            _formViewRepository = formViewRepository;
-            _cloudInterfaceRepository = cloudInterfaceRepository;
+            _formViewService = formViewService;
+            _cloudInterfaceService = cloudInterfaceService;
         }
 
-        IFormViewRepository _formViewRepository;
-        ICloudInterfaceRepository _cloudInterfaceRepository;
+        IFormViewService _formViewService;
+        ICloudInterfaceService _cloudInterfaceService;
 
-        Result<FormView> IFormViewAppService.Delete(Guid id)
-            => Result<FormView>.Success()
+        Result IFormViewAppService.Delete(Guid id)
+            => Result.Success()
                 //校验是否存在引用关系，先删除引用该数据的数据
-                .ContinueAssert(_ => !_cloudInterfaceRepository.CheckFormIdExist(id), "存在cloud接口的引用关系，先删除引用该数据的数据")
-                .Continue(_ => _formViewRepository.LogicDelete(id));
+                .ContinueAssert(_ => !_cloudInterfaceService.CheckFormIdExist(id), "存在cloud接口的引用关系，先删除引用该数据的数据")
+                .Continue(_ => _formViewService.LogicDelete(id));
     }
 }

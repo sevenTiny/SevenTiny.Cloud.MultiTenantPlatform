@@ -3,7 +3,7 @@ using System;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract
 {
-    public interface ICloudApplicationRepository : ICommonRepositoryBase<CloudApplication>
+    internal interface ICloudApplicationRepository : ICommonRepositoryBase<CloudApplication>
     {
     }
 }

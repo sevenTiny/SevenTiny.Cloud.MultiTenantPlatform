@@ -2,7 +2,7 @@
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract
 {
-    public interface IConfigFieldRepository : IMetaObjectCommonRepositoryBase<ConfigField>
+    internal interface IConfigFieldRepository : IMetaObjectCommonRepositoryBase<ConfigField>
     {
     }
 }

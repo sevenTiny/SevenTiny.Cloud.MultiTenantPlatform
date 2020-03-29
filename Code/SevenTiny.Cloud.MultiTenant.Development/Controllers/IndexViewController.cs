@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using SevenTiny.Bantina.Validation;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Domain.Enum;
-using SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract;
 using SevenTiny.Cloud.MultiTenant.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenant.Web.Models;
 using System;
@@ -14,22 +13,19 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
     {
         readonly IIndexViewService _indexViewService;
         readonly ISearchConditionService _searchConditionService;
-        IIndexViewRepository _indexViewRepository;
 
         public IndexViewController(
             IIndexViewService indexViewService,
-            ISearchConditionService searchConditionService,
-            IIndexViewRepository indexViewRepository
+            ISearchConditionService searchConditionService
             )
         {
             this._indexViewService = indexViewService;
             this._searchConditionService = searchConditionService;
-            _indexViewRepository = indexViewRepository;
         }
 
         public IActionResult List()
         {
-            return View(_indexViewRepository.GetListUnDeletedByMetaObjectId(CurrentMetaObjectId));
+            return View(_indexViewService.GetListUnDeletedByMetaObjectId(CurrentMetaObjectId));
         }
 
         //public IActionResult Add()

@@ -128,7 +128,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development
                 o.IdleTimeout = TimeSpan.FromDays(1);
             });
             //DI
-            services.InjectDomain();
+            SevenTiny.Cloud.MultiTenant.Bootstrapper.BootStrap.InjectDependency(services);
 
             services.AddControllersWithViews(options =>
             {

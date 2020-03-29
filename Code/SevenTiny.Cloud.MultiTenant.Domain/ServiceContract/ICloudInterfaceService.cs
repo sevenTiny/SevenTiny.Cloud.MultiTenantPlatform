@@ -1,5 +1,6 @@
 ﻿using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Domain.Repository;
+using System;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.ServiceContract
 {
@@ -11,5 +12,6 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.ServiceContract
         /// <param name="interfaceAggregationCode"></param>
         /// <returns></returns>
         CloudInterface GetByInterfaceAggregationCode(string interfaceAggregationCode);
+        bool CheckFormIdExist(Guid formId);
     }
 }

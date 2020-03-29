@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract
 {
-    public interface IFormViewRepository : IMetaObjectCommonRepositoryBase<FormView>
+    internal interface IFormViewRepository : IMetaObjectCommonRepositoryBase<FormView>
     {
     }
 }

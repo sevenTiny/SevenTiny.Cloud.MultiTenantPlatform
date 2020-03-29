@@ -12,29 +12,24 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 {
     public class CloudApplicationController : WebControllerBase
     {
-        public CloudApplicationController(ICloudApplicationService applicationService, ICloudApplicationRepository cloudApplicationRepository)
+        public CloudApplicationController(ICloudApplicationService applicationService,IMetaObjectService metaObjectService)
         {
             _applicationService = applicationService;
-            _cloudApplicationRepository = cloudApplicationRepository;
+            _metaObjectService = metaObjectService;
         }
 
         ICloudApplicationService _applicationService;
-        ICloudApplicationRepository _cloudApplicationRepository;
-
-        public IActionResult Setting()
-        {
-            return View();
-        }
+        IMetaObjectService _metaObjectService;
 
         public IActionResult Select()
         {
-            var list = _cloudApplicationRepository.GetListUnDeleted();
+            var list = _applicationService.GetListUnDeleted();
             return View(list);
         }
 
         public IActionResult List()
         {
-            var list = _cloudApplicationRepository.GetListUnDeleted();
+            var list = _applicationService.GetListUnDeleted();
             return View(list);
         }
 
@@ -50,7 +45,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult AddLogic(CloudApplication entity)
         {
-            var result = Result<CloudApplication>.Success()
+            var result = Result.Success()
                 .ContinueEnsureArgumentNotNullOrEmpty(entity, nameof(entity))
                 .ContinueEnsureArgumentNotNullOrEmpty(entity.Name, nameof(entity.Name))
                 .ContinueEnsureArgumentNotNullOrEmpty(entity.Code, nameof(entity.Code))
@@ -69,13 +64,13 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult Update(Guid id)
         {
-            var application = _cloudApplicationRepository.GetById(id);
+            var application = _applicationService.GetById(id);
             return View(ResponseModel.Success(application));
         }
 
         public IActionResult UpdateLogic(CloudApplication entity)
         {
-            var result = Result<CloudApplication>.Success()
+            var result = Result.Success()
                .ContinueEnsureArgumentNotNullOrEmpty(entity, nameof(entity))
                .ContinueEnsureArgumentNotNullOrEmpty(entity.Name, nameof(entity.Name))
                .ContinueAssert(_ => entity.Id != Guid.Empty, "Id Can Not Be Null")
@@ -93,7 +88,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult LogicDelete(Guid id)
         {
-            _cloudApplicationRepository.LogicDelete(id);
+            _applicationService.LogicDelete(id);
             return JsonResultModel.Success("删除成功");
         }
 
@@ -102,9 +97,12 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
             if (string.IsNullOrEmpty(applicationCode))
                 return Redirect("/CloudApplication/Select");
 
-            SetApplictionSession(applicationId, applicationCode);
-            ViewData["Application"] = applicationCode;
+            SetApplictionInfoToSession(applicationId, applicationCode);
             SetUserInfoToViewData();
+
+            ViewData["ApplicationCode"] = applicationCode;
+            ViewData["ApplicationId"] = applicationId;
+            ViewData["MetaObjects"] = _metaObjectService.GetMetaObjectListUnDeletedByApplicationId(applicationId);
 
             return View();
         }

@@ -1,4 +1,5 @@
-﻿using SevenTiny.Bantina.Logging;
+﻿using Microsoft.Extensions.Logging;
+using SevenTiny.Bantina.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,9 +12,9 @@ namespace Test.SevenTiny.Cloud.MultiTenant.Infrastructure
         [Fact]
         public void Log()
         {
-            ILog log = new LogManager();
+            ILogger log = new LogManager();
 
-            log.Error("123123");
+            log.LogError("123123");
         }
     }
 }
