@@ -1,0 +1,151 @@
+﻿@using SevenTiny.Cloud.MultiTenant.Domain.Entity;
+@using SevenTiny.Cloud.MultiTenant.Domain.Enum;
+@{
+    ViewData["Title"] = "Update";
+    Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
+
+    var result = Model as ResponseModel ?? new ResponseModel();
+    var entity = result.Data as TriggerScript ?? new TriggerScript();
+}
+
+@{
+    ViewData["Level_1"] = "对象管理";
+    ViewData["Level_2"] = "修改触发器脚本";
+}
+@await Html.PartialAsync("~/Views/Shared/_PartialNavigation.cshtml")
+
+<article class="page-container">
+    <form class="form form-horizontal validate" id="form-article-add" method="post" action="/TriggerScript/UpdateLogic">
+        <input type="text" class="input-text" value="@entity.Id" name="id" hidden>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>名称：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="@entity.Name" name="name" required minLength="2" maxlength="50">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>编码：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" style="background-color:#e8e8e8;" value="@entity.Code" name="code" readonly="readonly" required>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>服务类型：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <span class="select-box">
+                    <select id="ServiceType" name="ServiceType" class="select" style="background-color:#e8e8e8;" required>
+                        <option value="@entity.ServiceType">@Enum.GetName(typeof(ServiceType), entity.ServiceType)</option>
+                    </select>
+                </span>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>服务方法：</label>
+            <div class="formControls col-xs-4 col-sm-3">
+                <span class="select-box">
+                    <select id="ServiceMethod" name="ServiceMethod" class="select" style="background-color:#e8e8e8;" readonly="readonly" required>
+                        <option value="@entity.ServiceMethod">@Enum.GetName(typeof(ServiceMethod), ServiceMethod.Post)</option>
+                    </select>
+                </span>
+            </div>
+            <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>触发点：</label>
+            <div class="formControls col-xs-4 col-sm-4">
+                <span class="select-box">
+                    <select id="TriggerPoint" name="TriggerPoint" class="select" style="background-color:#e8e8e8;" readonly="readonly" required>
+                        <option value="@entity.TriggerPoint">@Enum.GetName(typeof(TriggerPoint), @entity.TriggerPoint)</option>
+                    </select>
+                </span>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>脚本语言：</label>
+            <div class="formControls col-xs-3 col-sm-3  ">
+                <span class="select-box">
+                    <select id="Language" name="Language" class="select" style="background-color:#e8e8e8;" readonly="readonly" required>
+                        <option value="1">C#</option>
+                    </select>
+                </span>
+            </div>
+            <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>失败策略：</label>
+            <div class="formControls col-xs-4 col-sm-4">
+                <span class="select-box">
+                    <select id="OnFailurePolicy" name="OnFailurePolicy" class="select" required>
+                        <option value="">--请选择--</option>
+                        @foreach (var item in Enum.GetValues(typeof(OnFailurePolicy)))
+                        {
+                            var value = (int)item;
+                            <option value="@value">@Enum.GetName(typeof(OnFailurePolicy), value)</option>
+                        }
+                    </select>
+                </span>
+            </div>
+        </div>        <div class="row cl">
+            <label class="form-label col-xs-2 col-sm-2"><span class="c-red">*</span>触发器脚本：</label>
+            <div class="formControls col-xs-9 col-sm-9">
+                <textarea id="codeTextArea" name="script" class="ignore">@entity.Script</textarea>
+                <span class="c-red">*提示：F11 全屏模式</span>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">分组：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="@entity.Group" name="group">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">排序值：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="@entity.SortNumber" name="sortNumber">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">描述：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <textarea name="description" class="textarea ignore" placeholder="说点什么...">@entity.Description</textarea>
+            </div>
+        </div>
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+                <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+                <button onClick="javascript:window.location = '/TriggerScript/List';" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+                @if (!result.IsSuccess)
+                {
+                    <br /><br /><pre><span class="c-red">@result.Message</span></pre>
+                }
+            </div>
+        </div>
+    </form>
+</article>
+
+<link href="~/lib/codemirror-5.43.0/codemirror.css" rel="stylesheet" />
+<link href="~/lib/codemirror-5.43.0/theme/cobalt.css" rel="stylesheet" />
+<link href="~/lib/codemirror-5.43.0/addon/display/fullscreen.css" rel="stylesheet" />
+@await Html.PartialAsync("~/Views/Shared/_FooterScripts.cshtml")
+@await Html.PartialAsync("~/Views/Shared/_CommonScript.cshtml")
+@await Html.PartialAsync("~/Views/Shared/_FormValidate.cshtml")
+<script src="~/lib/codemirror-5.43.0/codemirror.js"></script>
+<script src="~/lib/codemirror-5.43.0/mode/clike/clike.js"></script>
+<script src="~/lib/codemirror-5.43.0/addon/display/fullscreen.js"></script>
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript">
+    var editor = CodeMirror.fromTextArea($("#codeTextArea")[0], {
+        mode: 'text/x-csharp',//编辑器语言
+        theme: 'cobalt', //编辑器主题
+        extraKeys: {
+            "Ctrl": "autocomplete",
+            "F11": function (cm) {
+                cm.setOption("fullScreen", !cm.getOption("fullScreen"));
+            },
+            "Esc": function (cm) {
+                if (cm.getOption("fullScreen")) cm.setOption("fullScreen", false);
+            }
+        },//ctrl可以弹出选择项
+        lineNumbers: true,//显示行号
+        spellcheck: true,//拼写检查
+    });
+
+    $("#OnFailurePolicy").val(@entity.OnFailurePolicy);
+
+</script>
+<!--/请在上方写此页面业务相关的脚本-->

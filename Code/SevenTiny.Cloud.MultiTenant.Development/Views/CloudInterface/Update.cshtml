@@ -1,0 +1,259 @@
+﻿@using SevenTiny.Cloud.MultiTenant.Domain.Entity;
+@using SevenTiny.Cloud.MultiTenant.Domain.Enum;
+@{
+    ViewData["Title"] = "Update";
+    Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
+}
+@{
+    List<ListView> fieldList = ViewData["InterfaceFields"] as List<ListView> ?? new List<ListView>();
+    List<SearchCondition> searchConditions = ViewData["SearchConditions"] as List<SearchCondition> ?? new List<SearchCondition>();
+    List<FormView> forms = ViewData["Forms"] as List<FormView> ?? new List<FormView>();
+    List<DataSource> scriptDataSources = ViewData["ScriptDataSources"] as List<DataSource> ?? new List<DataSource>();
+    List<DataSource> jsonDataSources = ViewData["JsonDataSources"] as List<DataSource> ?? new List<DataSource>();
+
+    ResponseModel result = Model as ResponseModel ?? new ResponseModel();
+    CloudInterface entity = result.Data as CloudInterface ?? new CloudInterface();
+}
+
+@{
+    ViewData["Level_1"] = "标准接口";
+    ViewData["Level_2"] = "修改组织接口";
+}
+@await Html.PartialAsync("~/Views/Shared/_PartialNavigation.cshtml")
+
+<article class="page-container">
+    <form class="form form-horizontal validate" id="form-article-add" method="post" action="/CloudInterface/UpdateLogic">
+        <input type="text" class="input-text" value="@entity.Id" name="id" hidden>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>名称：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="@entity.Name" name="name" required minLength="2" maxlength="50">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>编码：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" style="background-color:#e8e8e8;" value="@entity.Code" name="code" readonly="readonly" required>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>接口类型：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <span class="select-box">
+                    <select id="interfaceType" name="interfaceType" class="select" onchange="switchInterfaceType()" required>
+                        <option value="">--请选择--</option>
+                        @foreach (var item in Enum.GetValues(typeof(InterfaceType)))
+                        {
+                            var value = (int)item;
+                            <option value="@value">@InterfaceTypeTranslator.ToChinese(value)</option>
+                        }
+                    </select>
+                </span>
+            </div>
+        </div>
+        <div class="row cl" id="formId">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>表单：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <span class="select-box">
+                    <select id="sl_formId" name="formId" class="select">
+                        <option value="">--请选择--</option>
+                        @foreach (var item in forms)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </span>
+            </div>
+        </div>
+        <div class="row cl" id="jsonDataSourceId">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>Json数据源：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <span class="select-box">
+                    <select id="sl_jsonDataSourceId" name="datasSourceId" class="select" required>
+                        <option value="">--请选择--</option>
+                        @foreach (var item in jsonDataSources)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </span>
+            </div>
+        </div>
+        <div class="row cl" id="scriptDataSourceId">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>触发器数据源：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <span class="select-box">
+                    <select id="sl_scriptDataSourceId" name="datasSourceId" class="select" required>
+                        <option value="">--请选择--</option>
+                        @foreach (var item in scriptDataSources)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </span>
+            </div>
+        </div>
+        <div class="row cl" id="fieldListId">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>字段配置：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <span class="select-box">
+                    <select id="sl_fieldListId" name="fieldListId" class="select" required>
+                        <option value="">--请选择--</option>
+                        @foreach (var item in fieldList)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </span>
+            </div>
+        </div>
+        <div class="row cl" id="searchConditionArea">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>搜索条件：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <span class="select-box">
+                    <select id="sl_searchConditionId" name="searchConditionId" class="select" required>
+                        <option value="">--请选择--</option>
+                        @foreach (var item in searchConditions)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </span>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">分组：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="@entity.Group" name="group">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">排序值：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="@entity.SortNumber" name="sortNumber">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">描述：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <textarea name="description" class="textarea ignore" placeholder="说点什么...">@entity.Description</textarea>
+            </div>
+        </div>
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+                <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+                <button onClick="javascript:history.back(-1);" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+                @if (!result.IsSuccess)
+                {
+                    <br /><br /><pre><span class="c-red">@result.Message</span></pre>
+                }
+            </div>
+        </div>
+    </form>
+</article>
+
+@await Html.PartialAsync("~/Views/Shared/_FooterScripts.cshtml")
+@await Html.PartialAsync("~/Views/Shared/_CommonScript.cshtml")
+@await Html.PartialAsync("~/Views/Shared/_FormValidate.cshtml")
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript">
+    $("#interfaceType").val(@entity.InterfaceType)
+    $("#sl_formId").val(@entity.FormViewId);
+    $("#sl_jsonDataSourceId").val(@entity.DataSourceId);
+    $("#sl_scriptDataSourceId").val(@entity.DataSourceId);
+    $("#sl_fieldListId").val(@entity.ListViewId);
+    $("#sl_searchConditionId").val(@entity.SearchConditionId);
+
+    //初始化预置显隐
+    switchInterfaceType()
+
+    //隐藏全部标签
+    function hideAll() {
+        $("#formId").hide()
+        $("#sl_formId").addClass("ignore")
+
+        $("#jsonDataSourceId").hide()
+        $("#sl_jsonDataSourceId").addClass("ignore")
+
+        $("#scriptDataSourceId").hide()
+        $("#sl_scriptDataSourceId").addClass("ignore")
+
+        $("#fieldListId").hide()
+        $("#sl_fieldListId").addClass("ignore")
+
+        $("#searchConditionArea").hide()
+        $("#sl_searchConditionId").addClass("ignore")
+    }
+
+    //切换接口类型
+    function switchInterfaceType() {
+        //接口类型
+        var interfaceType = $("#interfaceType").val()
+
+        //先隐藏全部
+        hideAll()
+        //根据不同场景显示不同的表单
+        //Add = 1,
+        if (interfaceType == 1) {
+            $("#formId").show()
+            $("#sl_formId").removeClass("ignore")
+        }
+        //BatchAdd = 2,
+        else if (interfaceType == 2) {
+            $("#formId").show()
+            $("#sl_formId").removeClass("ignore")
+        }
+        //Update = 3,
+        else if (interfaceType == 3) {
+            $("#formId").show()
+            $("#sl_formId").removeClass("ignore")
+
+            $("#searchConditionArea").show()
+            $("#sl_searchConditionId").removeClass("ignore")
+        }
+        //Delete = 4,
+        else if (interfaceType == 4) {
+            $("#searchConditionArea").show()
+            $("#sl_searchConditionId").removeClass("ignore")
+        }
+        //SingleObject = 5,
+        else if (interfaceType == 5) {
+            $("#searchConditionArea").show()
+            $("#sl_searchConditionId").removeClass("ignore")
+
+            $("#fieldListId").show()
+            $("#sl_fieldListId").removeClass("ignore")
+        }
+        //TableList = 6,
+        else if (interfaceType == 6) {
+            $("#searchConditionArea").show()
+            $("#sl_searchConditionId").removeClass("ignore")
+
+            $("#fieldListId").show()
+            $("#sl_fieldListId").removeClass("ignore")
+        }
+        //Count = 7,
+        else if (interfaceType == 7) {
+            $("#searchConditionArea").show()
+            $("#sl_searchConditionId").removeClass("ignore")
+        }
+        //JsonDataSource = 8,
+        else if (interfaceType == 8) {
+            $("#jsonDataSourceId").show()
+            $("#sl_jsonDataSourceId").removeClass("ignore")
+
+            $("#sl_jsonDataSourceId").prop("name","dataSourceId")
+            $("#sl_scriptDataSourceId").prop("name","xxx")
+        }
+        //TriggerScriptDataSource = 9
+        else if (interfaceType == 9) {
+            $("#scriptDataSourceId").show()
+            $("#sl_scriptDataSourceId").removeClass("ignore")
+
+            $("#sl_scriptDataSourceId").prop("name","dataSourceId")
+            $("#sl_jsonDataSourceId").prop("name","xxx")
+        }
+    }
+</script>
+<!--/请在上方写此页面业务相关的脚本-->

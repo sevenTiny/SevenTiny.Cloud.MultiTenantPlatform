@@ -1,0 +1,271 @@
+﻿@using SevenTiny.Cloud.MultiTenant.Domain.Entity;
+@using SevenTiny.Cloud.MultiTenant.Domain.Enum;
+
+@{
+    ViewData["Title"] = "Setting";
+    Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
+}
+
+<link href="~/css/jqueryTree.css" rel="stylesheet" />
+
+<article class="page-container">
+    <div class="opration">
+        <a class="btn btn-secondary-outline radius" href="javascript:history.back(-1);"><i class="Hui-iconfont">&#xe66b;</i> 返回</a>
+        <a class="btn btn-danger radius" href="javascript:history.back(-1);"><i class="Hui-iconfont">&#xe6a6;</i> 取消</a>
+        <a class="btn btn-primary radius" href="javascript:addCondition(this);"><i class="Hui-iconfont">&#xe632;</i> 添加</a>
+    </div>
+    <div class="row cl" style="margin-top:10px;">
+        <div class="col-xs-6 col-sm-6">
+            <form class="form form-horizontal" id="form-article-add" method="post" action="/">
+                插入点：
+                <div class="row cl">
+                    <label class="form-label col-xs-5 col-sm-3"><span class="c-red">*</span>父节点：</label>
+                    <div class="formControls col-xs-4 col-sm-5">
+                        <input type="text" class="input-text" style="background-color:#e8e8e8;" placeholder="在树形图中选择父节点" id="brotherNodeId" name="code" readonly="readonly">
+                    </div>
+                    <div class="formControls col-xs-2 col-sm-2">
+                        <a class="btn btn-danger-outline radius" href="javascript:delNode();"><i class="Hui-iconfont">&#xe6e2;</i> 删除节点</a>
+                    </div>
+                </div>
+                <br />
+                菜单配置：
+                <div class="row cl">
+                    <label class="form-label col-xs-5 col-sm-3"><span class="c-red">*</span>菜单编码：</label>
+                    <div class="formControls col-xs-7 col-sm-8">
+                        <input type="text" class="input-text" placeholder="菜单编码" value="" id="code" name="code">
+                    </div>
+                </div>
+                <div class="row cl">
+                    <label class="form-label col-xs-5 col-sm-3"><span class="c-red">*</span>菜单名称：</label>
+                    <div class="formControls col-xs-7 col-sm-8">
+                        <input type="text" class="input-text" placeholder="菜单名称" value="" id="name" name="name">
+                    </div>
+                </div>
+                <div class="row cl">
+                    <label class="form-label col-xs-5 col-sm-3"><span class="c-red">*</span>链接打开方式：</label>
+                    <div class="formControls col-xs-7 col-sm-8">
+                        <span class="select-box">
+                            <select name="linkType" class="input select" value="0" id="linkType">
+                                @foreach (var item in Enum.GetValues(typeof(LinkType)))
+                                {
+                                    int id = (int)item;
+                                    <option value="@id">@LinkTypeTranslator.ToChinese(id)</option>
+                                }
+                            </select>
+                        </span>
+                    </div>
+                </div>
+                <div class="row cl">
+                    <label class="form-label col-xs-5 col-sm-3">图标：</label>
+                    <div class="formControls col-xs-5 col-sm-6">
+                        <input type="text" class="input-text" value="" placeholder="" id="icon" name="icon">
+                    </div>
+                    <div class="formControls col-xs-2 col-sm-2">
+                        <a href="http://fontawesome.dashgame.com/" target="_blank" style="color:#0abb68">图标库</a>
+                    </div>
+                </div>
+                <div class="row cl">
+                    <label class="form-label col-xs-4 col-sm-3">分组：</label>
+                    <div class="formControls col-xs-8 col-sm-8">
+                        <input type="text" class="input-text" value="" id="group" name="group">
+                    </div>
+                </div>
+                <div class="row cl">
+                    <label class="form-label col-xs-5 col-sm-3">排序值：</label>
+                    <div class="formControls col-xs-7 col-sm-8">
+                        <input type="text" class="input-text" value="" id="sortNumber" name="sortNumber">
+                    </div>
+                </div>
+                <div class="row cl">
+                    <label class="form-label col-xs-4 col-sm-3">描述：</label>
+                    <div class="formControls col-xs-7 col-sm-8">
+                        <textarea id="description" name="description" class="textarea ignore" placeholder="说点什么..."></textarea>
+                    </div>
+                </div>
+                <div class="row cl">
+                    <div class="col-xs-12 col-sm-12">
+                        <span class="c-red" id="sp_result_error"></span>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="tree well col-xs-6 col-sm-6">
+            <center><label>菜单结构展示</label></center>
+            <ul id="rootUL"></ul>
+        </div>
+    </div>
+</article>
+@await Html.PartialAsync("~/Views/Shared/_FooterScripts.cshtml")
+@await Html.PartialAsync("~/Views/Shared/_CommonScript.cshtml")
+<!--请在下方写此页面业务相关的脚本-->
+<script>
+    $(function () {
+
+        var json =
+            [{
+                "name": "目前没有菜单项，点击获取根节点id",
+                "id": "-1",
+                "parentId": "-1",
+                "icon": "",
+                "children": []
+            }];
+
+        function tree(data) {
+            for (var i = 0; i < data.length; i++) {
+                var data2 = data[i];
+                if (data[i].parentId == -1) {
+                    $("#rootUL").append("<li data-name='" + data[i].id + "' title='" + data[i].id + "'><span><i class=''></i> " + data[i].name + "</span></li>");
+                } else {
+                    var children = $("li[data-name='" + data[i].parentId + "']").children("ul");
+                    if (children.length == 0) {
+                        $("li[data-name='" + data[i].parentId + "']").append("<ul></ul>")
+                    }
+                    $("li[data-name='" + data[i].parentId + "'] > ul").append(
+                        "<li data-name='" + data[i].id + "' title='" + data[i].id + "'>" +
+                        "<span>" +
+                        "<i class=''></i> " +
+                        data[i].name +
+                        "</span>" +
+                        "</li>")
+                }
+                for (var j = 0; j < data[i].children.length; j++) {
+                    var children = data[i].children[j];
+                    var children2 = $("li[data-name='" + children.parentId + "']").children("ul");
+                    if (children2.length == 0) {
+                        $("li[data-name='" + children.parentId + "']").append("<ul></ul>")
+                    }
+                    $("li[data-name='" + children.parentId + "'] > ul").append(
+                        "<li data-name='" + children.id + "' title='" + children.id + "'>" +
+                        "<span>" +
+                        "<i class=''></i> " +
+                        children.name +
+                        "</span>" +
+                        "</li>")
+                    var children2 = data[i].children[j].children;
+                    tree(children2)
+                }
+                tree(data[i]);
+            }
+        }
+
+        //获取树
+        $.ajax({
+            type: 'GET',
+            url: '/Menue/AnalysisMenue/',
+            dataType: 'json',
+            data: {},
+            success: function (data) {
+                if (data.success) {
+                    if (data.data != null && data.data.length > 0) {
+                        tree(data.data);
+                    } else {
+                        tree(json);
+                    }
+                }
+                bindingClass();
+            },
+            error: function (data) {
+                tree(json);
+                console.error(data.msg);
+                bindingClass();
+            },
+        });
+    });
+
+    function bindingClass() {
+        $('.tree li:has(ul)').addClass('parent_li')
+        //$('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', '关闭');
+        $('.tree li > span').on('click', function (e) {
+            var title = $(this).parent('li').prop('title');
+            if (!isNaN(title)) {
+                $("#brotherNodeId").val(title);
+            }
+            e.stopPropagation();
+        });
+    }
+
+    function cleanSpan() {
+        $("#sp_result_error").html("");//清空result msg span
+    }
+
+    var lock = false;
+
+    /* 添加条件 */
+    function addCondition(obj) {
+        cleanSpan();
+        //check parameters
+        if ($('#brotherNodeId').val() == '' || $('#brotherNodeId').val() == null) {
+            $("#sp_result_error").html("父节点不能为空，请点击选择树形图中的父节点！"); return;
+        }
+        if (!lock) {
+            lock = true;
+            //add
+            $.ajax({
+                type: 'POST',
+                url: '/Menue/AddLogic/',
+                dataType: 'json',
+                data: {
+                    "ParentId": $('#brotherNodeId').val(),
+                    "Code": $('#code').val(),
+                    "Name": $('#name').val(),
+                    "Icon": $('#icon').val(),
+                    "Group": $('#group').val(),
+                    "SortNumber": $('#sortNumber').val(),
+                    "Description": $('#description').val(),
+                    "LinkType": $('#linkType').val()
+                },
+                success: function (data) {
+                    if (data.success) {
+                        setTimeout(function () {
+                            window.location = '/Menue/AnalysisMenue/';
+                        }, 1000);
+                    } else {
+                        $("#sp_result_error").html(data.msg);
+                        layer.msg(data.msg, { icon: 2, time: 1000 });
+                    }
+                    lock = false;
+                },
+                error: function (data) {
+                    $("#sp_result_error").html(data.msg);
+                    lock = false;
+                },
+            });
+        } else {
+            layer.msg('您的点击太频繁了！', { icon: 2, time: 1000 });
+        }
+    }
+
+    /**删除节点 */
+    function delNode() {
+        layer.confirm('删除操作将永久删除该菜单节点！', function (index) {
+            var nodeId = $('#brotherNodeId').val();
+            if (nodeId == null || nodeId == '') {
+                layer.msg('请在树形图中选择要删除的菜单节点！', { icon: 2, time: 1000 });
+                return;
+            }
+            if (!lock) {
+                lock = true;
+                $.ajax({
+                    type: 'POST',
+                    url: '/Menue/LogicDelete/' + nodeId,
+                    dataType: 'json',
+                    success: function (data) {
+                        layer.msg(data.msg, { icon: 1, time: 1000 });
+                        if (data.success) {
+                            setTimeout(function () {
+                                window.location = '/Menue/AnalysisMenue/';
+                            }, 1000);
+                        }
+                        lock = false;
+                    },
+                    error: function (data) {
+                        console.log(data.msg);
+                        lock = false;
+                    }
+                });
+            } else {
+                layer.msg('您的点击太频繁了！', { icon: 2, time: 1000 });
+            }
+        });
+    }
+</script>

@@ -1,0 +1,78 @@
+﻿@using SevenTiny.Cloud.MultiTenant.Domain.Entity;
+@{
+    ViewData["Title"] = "Add";
+    Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
+
+    var result = Model as ResponseModel ?? new ResponseModel();
+    var application = result?.Data as CloudApplication ?? new CloudApplication();
+}
+
+@{
+    ViewData["Level_1"] = "应用管理";
+    ViewData["Level_2"] = "新增应用";
+}
+@await Html.PartialAsync("~/Views/Shared/_PartialNavigation.cshtml")
+
+<article class="page-container">
+    <form class="form form-horizontal validate" id="form-article-add" method="post" action="/CloudApplication/AddLogic">
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>名称：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="@application.Name" name="name" required minLength="2" maxlength="50">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>编码：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="@application.Code" name="code" required minLength="2" maxlength="50">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">图标：</label>
+            <div class="formControls col-xs-7 col-sm-8">
+                <input type="text" class="input-text" value="@application.Icon" name="icon">
+            </div>
+            <div class="formControls col-xs-1 col-sm-1">
+                <a href="http://fontawesome.dashgame.com/" target="_blank" style="color:#0abb68">图标库</a>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">分组：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="@application.Group" name="group">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">排序值：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="@application.SortNumber" name="sortNumber">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">描述：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <textarea name="description" class="textarea ignore" placeholder="说点什么...最多输入1000个字符">@application.Description</textarea>
+                <p class="textarea-numberbar"><em class="textarea-length">0</em>/1000</p>
+            </div>
+        </div>
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+                <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+                <button onClick="javascript:window.location='/CloudApplication/List';" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+                @if (!result.IsSuccess)
+                {
+                    <br /><br /><pre><span class="c-red">@result.Message</span></pre>
+                }
+            </div>
+        </div>
+    </form>
+</article>
+
+@await Html.PartialAsync("~/Views/Shared/_FooterScripts.cshtml")
+@await Html.PartialAsync("~/Views/Shared/_CommonScript.cshtml")
+@await Html.PartialAsync("~/Views/Shared/_FormValidate.cshtml")
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript">
+
+</script>
+<!--/请在上方写此页面业务相关的脚本-->

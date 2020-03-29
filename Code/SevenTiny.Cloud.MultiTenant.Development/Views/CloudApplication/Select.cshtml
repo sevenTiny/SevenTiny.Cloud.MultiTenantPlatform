@@ -1,0 +1,41 @@
+﻿@using SevenTiny.Cloud.MultiTenant.Domain.Entity
+@{
+    Layout = "";
+    List<CloudApplication> applications = Model as List<CloudApplication> ?? new List<CloudApplication>();
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>应用选择</title>
+    <link rel="stylesheet" href="~/css/bootstrap.min.css">
+    <link href="~/lib/font-awesome-4.7.0/css/font-awesome.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="container-fluid">
+        <nav class="row" style="padding: 15px 80px; background-color: #CCCCCC; height: 80px;border-bottom:2px solid #0099FF">
+            <a class="" href="#" style="color: #333333; font-size: 30px;">应用选择</a>
+            <a class="" href="/CloudApplication/List" style="color: #333333; font-size: 20px;float:right">应用管理</a>
+        </nav>
+        @foreach (var item in applications)
+        {
+            string icon = string.IsNullOrEmpty(item.Icon) ? "cloud" : item.Icon;
+            <a href="/CloudApplication/Detail?applicationId=@item.Id&applicationCode=@item.Code" title="选择应用">
+                <div class="row" style="padding: 0 10px;color:#0099CC">
+                    <h3 class="col-md-2">
+                        <span class="fa fa-@icon" style="margin: 20px; float: right;"></span>
+                    </h3>
+                    <div class="col-md-10" style="margin: 0;padding: 0">
+                        <h3>@item.Name</h3>
+                        @item.Description
+                    </div>
+                </div>
+            </a>
+            <hr style="border-bottom: 2px solid #CCCCCC;" />
+        }
+    </div>
+</body>
+</html>

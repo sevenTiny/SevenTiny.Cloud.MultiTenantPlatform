@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SevenTiny.Cloud.MultiTenant.Domain\SevenTiny.Cloud.MultiTenant.Domain.csproj" />
+    <ProjectReference Include="..\SevenTiny.Cloud.MultiTenant.Infrastructure\SevenTiny.Cloud.MultiTenant.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

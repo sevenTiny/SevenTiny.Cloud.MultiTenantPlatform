@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SevenTiny.Bantina" Version="1.0.56" />
+    <PackageReference Include="SevenTiny.Bantina.Configuration.Core" Version="1.0.31" />
+    <PackageReference Include="SevenTiny.Bantina.Configuration.MySql" Version="1.0.23" />
+    <PackageReference Include="SevenTiny.Bantina.Logging" Version="1.0.26" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="C:\Users\7tiny\.nuget\packages\seventiny.bantina.logging\1.0.26\contentFiles\any\netstandard2.0\SevenTinyConfig\log4net.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>

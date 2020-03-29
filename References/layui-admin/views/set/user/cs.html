@@ -1,0 +1,89 @@
+<html>
+
+<head>
+ <!-- 调用layui css 文件 S -->
+  <link rel="stylesheet" href="../../../layuiadmin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="../../../layuiadmin/style/admin.css" media="all">
+    <!-- 调用layui css 文件 E -->
+</head>
+
+<body>
+<div class="layui-fluid">
+<div class="layui-row layui-col-space15">
+<div class="layui-col-md12">
+<!-- 支付查询选项卡S -->
+<div class="layui-card">
+<div class="layui-card-header">修改密码</div>
+<div class="layui-card-body" pad15>
+		  
+<div class="layui-form" lay-filter="">
+
+<form action="{:__MYSELF__}" name="form1" method="post" class='layui-form'>
+        <div class="layui-form-item">
+          <label class="layui-form-label" >用户名：</label>
+		  <div class='layui-input-inline'>
+          <input  class="layui-input" type="text" value="{$euser.username}" readonly   >
+        </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">重置密码：</label>
+		  <div class='layui-input-inline'>
+          <input id="area" class="layui-input" type="text" value="" name="password1" >
+          <div class="jui-form-tip">为空时不修改密码</div>
+        </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">独立密码：</label>
+		  <div class='layui-input-inline'>
+          <input id="area" class="layui-input" type="text" value="" name="password2" >
+          <div class="jui-form-tip">为空时不修改密码</div>
+        </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">姓名：</label>
+		  <div class='layui-input-inline'>
+          <input id="J_brandUserInput" class="layui-input select-input" type="text" name="realname" value="{$euser.realname}" required="required" >
+          <div class="jui-form-tip"></div>
+        </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label" for="industry">公司名称：</label>
+		  <div class='layui-input-inline'>
+          <input id="industry" class="layui-input" type="text" name="company" value="{$euser.company}" required="required">
+          <div class="jui-form-tip"></div>
+        </div>
+        </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label"><span class="jui-label-required">手机：</label>
+		  <div class='layui-input-inline'>
+          <input id="shopNums" class="layui-input" type="text" name="mobilephone" value="{$euser.mobilephone}" seed="juiFormItem-shopNums" smartracker="on" data-widget-cid="widget-7" data-explain="">
+          <div class="jui-form-tip"></div>
+		  </div>
+        </div><if condition="$euser['is_backstage'] eq 1">             </if>
+        <div class="layui-form-item">
+          <label class="layui-form-label"></label>
+          <input id="J_submit" class="layui-btn" type="submit"   name="sub" value="提交"/>
+        </div>
+      </form>
+	  
+	 </div>
+	 </div>
+	 </div>
+	 </div>
+	 </div>
+	 </div>
+</body>
+<script>
+<!-- 调用layui js 文件 S -->
+  <script src="../../../layuiadmin/layui/layui.js"></script>
+  <script>
+  layui.config({
+    base: "../../../layuiadmin/" //静态资源所在路径
+  }).extend({
+    index: 'lib/index' //主入口模块
+  }).use(['index', 'set']);  
+  </script>
+  <!-- 调用layui js 文件 E -->
+</script>
+
+</html>

@@ -1,0 +1,112 @@
+﻿@using SevenTiny.Cloud.MultiTenant.Domain.Entity;
+@using SevenTiny.Cloud.MultiTenant.Domain.Enum;
+@using System.Linq;
+@{
+    ViewData["Title"] = "Update";
+    Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
+}
+@{
+    ResponseModel result = Model as ResponseModel ?? new ResponseModel();
+    MetaField metaField = result.Data as MetaField ?? new MetaField();
+    Array dataTypes = Enum.GetValues(typeof(DataType));
+    //不显示的数据类型
+    DataType[] dataTypesExclude = new[] { DataType.Unknown, DataType.StandradDate, DataType.StandradDateTime };
+}
+
+@{
+    ViewData["Level_1"] = "对象管理";
+    ViewData["Level_2"] = "修改字段";
+}
+@await Html.PartialAsync("~/Views/Shared/_PartialNavigation.cshtml")
+
+<article class="page-container">
+    <form class="form form-horizontal validate" id="form-article-add" method="post" action="/MetaField/UpdateLogic">
+        <input type="text" class="input-text" value="@metaField.Id" name="id" hidden>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>名称：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="@metaField.Name" name="name" required minLength="2" maxlength="50">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>编码：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" style="background-color:#e8e8e8;" value="@metaField.Code" name="code" readonly="readonly" required>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>字段类型：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <span class="select-box">
+                    <select name="fieldType" class="select" value="@metaField.FieldType" onchange="fieldTypeSwitch(this)" required>
+                        <option value="@metaField.FieldType">@DataTypeTranslator.ToLabel(metaField.FieldType)</option>
+                    </select>
+                </span>
+            </div>
+        </div>
+        @{
+            //如果字段类型是数据源，则默认显示数据源div
+            string dataSourceDivDisplay = (int)metaField.FieldType == 10 ? "display" : "none";
+        }
+        <div class="row cl" id="div_datasource" style="display:@dataSourceDivDisplay">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>数据源：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <span class="select-box">
+                    <select id="dataSourceId" name="dataSourceId" class="select" value="@metaField.DataSourceId" required>
+                        <option value="0">一级分类</option>
+                        <option value="11">├二级分类</option>
+                        <option value="12">├二级分类</option>
+                        <option value="13">├二级分类</option>
+                    </select>
+                </span>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">分组：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="@metaField.Group" name="group">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">排序值：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="@metaField.SortNumber" name="sortNumber">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">描述：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <textarea name="description" class="textarea ignore" placeholder="说点什么...">@metaField.Description</textarea>
+            </div>
+        </div>
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+                <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+                <button onClick="javascript:history.back(-1);" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+                @if (!result.IsSuccess)
+                {
+                    <br /><br /><pre><span class="c-red">@result.Message</span></pre>
+                }
+            </div>
+        </div>
+    </form>
+</article>
+
+@await Html.PartialAsync("~/Views/Shared/_FooterScripts.cshtml")
+@await Html.PartialAsync("~/Views/Shared/_CommonScript.cshtml")
+@await Html.PartialAsync("~/Views/Shared/_FormValidate.cshtml")
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript">
+
+    $("#dataSourceId").val(@metaField.DataSourceId);
+
+    //切换类型
+    function fieldTypeSwitch(obj) {
+        if ($(obj).val() == 10) {
+            $("#div_datasource").show();
+        } else {
+            $("#div_datasource").hide();
+        }
+    }
+</script>
+<!--/请在上方写此页面业务相关的脚本-->

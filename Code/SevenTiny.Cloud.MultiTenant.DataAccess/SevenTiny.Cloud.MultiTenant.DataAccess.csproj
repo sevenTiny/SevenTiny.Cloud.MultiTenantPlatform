@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SevenTiny.Bantina.Bankinate.Core" Version="1.0.25" />
+    <PackageReference Include="SevenTiny.Bantina.Bankinate.MongoDb" Version="1.0.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SevenTiny.Cloud.MultiTenant.Infrastructure\SevenTiny.Cloud.MultiTenant.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,147 @@
+﻿@using SevenTiny.Cloud.MultiTenant.Infrastructure.Configs;
+@using SevenTiny.Cloud.MultiTenant.Domain.Entity;
+@{
+    ViewData["Title"] = "Detail";
+    Layout = "~/Views/Shared/_LayoutHeaderStyle.cshtml";
+    string applicationCode = Convert.ToString(ViewData["ApplicationCode"]);
+    string applicationId = Convert.ToString(ViewData["ApplicationId"]);
+    var metaObjectList = ViewData["MetaObjects"] as List<MetaObject> ?? new List<MetaObject>();
+}
+
+<header class="navbar-wrapper">
+    <div class="navbar navbar-fixed-top">
+        <div class="container-fluid cl">
+            <a aria-hidden="false" class="nav-toggle Hui-iconfont visible-xs" href="javascript:;">&#xe667;</a>
+            <nav class="nav navbar-nav">
+                <ul class="cl">
+                    <li><a href="/CloudApplication/Select" class="dropDown_A">应用：@applicationCode </a></li>
+                    <li class="navbar-levelone"><a href="javascript:mainFrameOpen('/Home/Welcome?applicationId=@applicationId')">应用设置</a></li>
+                    <li class="navbar-levelone current"><a href="javascript:mainFrameOpen('/MetaObject/List?applicationId=@applicationId')">对象管理</a></li>
+                </ul>
+            </nav>
+            <nav id="Hui-userbar" class="nav navbar-nav navbar-userbar hidden-xs">
+                <ul class="cl">
+                    <li>@ViewData["UserIdentity"] </li>
+                    <li class="dropDown dropDown_hover">
+                        <a href="#" class="dropDown_A"> @ViewData["UserName"] <i class="Hui-iconfont">&#xe6d5;</i></a>
+                        <ul class="dropDown-menu menu radius box-shadow">
+                            <li><a href="javascript:;" onClick="myselfinfo()">个人信息</a></li>
+                            <li><a href="@UrlsConfig.Instance.Account/UserAccount/Login?_redirectUrl=@UrlsConfig.Instance.DevelopmentWebUrl/Home/Index">切换账户</a></li>
+                            <li><a href="@UrlsConfig.Instance.Account/UserAccount/Logout?_redirectUrl=@UrlsConfig.Instance.DevelopmentWebUrl/Home/Index">退出</a></li>
+                        </ul>
+                    </li>
+                    <li id="Hui-msg"> <a href="#" title="消息"><span class="badge badge-danger">1</span><i class="Hui-iconfont" style="font-size:18px">&#xe68a;</i></a> </li>
+                    <li id="Hui-skin" class="dropDown right dropDown_hover">
+                        <a href="javascript:;" class="dropDown_A" title="换肤"><i class="Hui-iconfont" style="font-size:18px">&#xe62a;</i></a>
+                        <ul class="dropDown-menu menu radius box-shadow">
+                            <li><a href="javascript:;" data-val="default" title="默认（黑色）">默认（黑色）</a></li>
+                            <li><a href="javascript:;" data-val="blue" title="蓝色">蓝色</a></li>
+                            <li><a href="javascript:;" data-val="green" title="绿色">绿色</a></li>
+                            <li><a href="javascript:;" data-val="red" title="红色">红色</a></li>
+                            <li><a href="javascript:;" data-val="yellow" title="黄色">黄色</a></li>
+                            <li><a href="javascript:;" data-val="orange" title="橙色">橙色</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<aside class="Hui-aside">
+    <div class="menu_dropdown bk_2">
+        <dl id="menu-profile">
+            <dt><i class="Hui-iconfont">&#xe611; </i> 身份管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+            <dd>
+                <ul>
+                    <li><a data-href="article-list.html" data-title="字段" href="javascript:void(0)">身份列表</a></li>
+                </ul>
+            </dd>
+        </dl>
+        <dl id="menu-profile">
+            <dt><i class="Hui-iconfont">&#xe681; </i> 菜单设置<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+            <dd>
+                <ul>
+                    <li><a href="javascript:frameOpen('/Menue/List?applicationId=@applicationId')">菜单列表</a></li>
+                </ul>
+            </dd>
+        </dl>
+        <dl id="menu-authentication">
+            <dt><i class="Hui-iconfont">&#xe61a; </i> 数据源<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+            <dd>
+                <ul>
+                    <li><a href="javascript:frameOpen('/DataSource/ScriptDataSourceList?applicationId=@applicationId')">脚本数据源</a></li>
+                    <li><a href="javascript:frameOpen('/DataSource/JsonDataSourceList?applicationId=@applicationId')">Json数据源</a></li>
+                </ul>
+            </dd>
+        </dl>
+        <dl id="menu-picture">
+            <dt><i class="Hui-iconfont">&#xe63e; </i> 文件管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+            <dd>
+                <ul>
+                    <li><a data-href="picture-list.html" data-title="图片管理" href="javascript:void(0)">图片管理</a></li>
+                </ul>
+            </dd>
+        </dl>
+        <dl id="menu-authentication">
+            <dt><i class="Hui-iconfont">&#xe6ba; </i> 流程管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+            <dd>
+                <ul>
+                    <li><a data-href="article-list.html" data-title="字段" href="javascript:void(0)">菜单</a></li>
+                </ul>
+            </dd>
+        </dl>
+    </div>
+    <div class="menu_dropdown bk_1">
+        @foreach (var item in metaObjectList)
+        {
+            <dl id="menu-article">
+                <dt title="@item.Name"><i class="Hui-iconfont">&#xe72d;</i> @item.Name.Substring(0, item.Name.Length <= 9 ? item.Name.Length : 9)<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+                <dd>
+                    <ul>
+                        <li><a href="javascript:mainFrameOpen('/MetaField/List?metaObjectId=@item.Id')"><i class="Hui-iconfont">&#xe6ec;</i> 字段</a></li>
+                        <li><a href="javascript:mainFrameOpen('/Form/List?metaObjectId=@item.Id')"><i class="Hui-iconfont">&#xe627;</i> 表单</a></li>
+                        <li><a href="javascript:mainFrameOpen('/ListView/List?metaObjectId=@item.Id')"><i class="Hui-iconfont">&#xe6f3;</i> 列表</a></li>
+                        <li><a href="javascript:mainFrameOpen('/SearchCondition/List?metaObjectId=@item.Id')"><i class="Hui-iconfont">&#xe683;</i> 搜索条件</a></li>
+                        <li><a href="javascript:mainFrameOpen('/IndexView/List?metaObjectId=@item.Id')"><i class="Hui-iconfont">&#xe72b;</i> 视图</a></li>
+                        <li><a href="javascript:mainFrameOpen('/Home/Http403')"><i class="Hui-iconfont">&#xe616;</i> 详情页</a></li>
+                        <li><a href="javascript:mainFrameOpen('/Home/Http403')"><i class="Hui-iconfont">&#xe616;</i> 功能按钮</a></li>
+                        <li><a href="javascript:mainFrameOpen('/CloudInterface/List')"><i class="Hui-iconfont">&#xe6f1;</i> 自定义接口</a></li>
+                        <li><a href="javascript:mainFrameOpen('/TriggerScript/List')"><i class="Hui-iconfont">&#xe6a2;</i> 触发器</a></li>
+                    </ul>
+                </dd>
+            </dl>
+        }
+    </div>
+</aside>
+<div class="dislpayArrow hidden-xs"><a class="pngfix" href="javascript:void(0);" onClick="displaynavbar(this)"></a></div>
+
+<section class="Hui-article-box">
+    <article class="cl pd-20">
+        <div class="show_iframe" style="margin-bottom:50px;">
+            <div style="display:none" class="loading"></div>
+            <iframe id="main_iframe" scrolling="auto" frameborder="0" src="/MetaObject/List?applicationId=@applicationId&applicationCode=@applicationCode"></iframe>
+        </div>
+    </article>
+</section>
+
+@await Html.PartialAsync($"~/Views/Shared/_FooterScripts.cshtml")
+@await Html.PartialAsync($"~/Views/Shared/_CommonScript.cshtml")
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript">
+    //头部控件切换
+    $(function () {
+        $("body").Huitab({
+            tabBar: ".navbar-wrapper .navbar-levelone",
+            tabCon: ".Hui-aside .menu_dropdown",
+            className: "current",
+            index: 1,
+        });
+    });
+
+    //在frame中打开页面
+    function mainFrameOpen(url) {
+        $("#main_iframe").prop("src", url);
+    }
+</script>
+<!--/请在上方写此页面业务相关的脚本-->

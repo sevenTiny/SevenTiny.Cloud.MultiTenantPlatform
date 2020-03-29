@@ -1,0 +1,14 @@
+﻿<!--导航栏，需要在页面为导航名称赋值-->
+<nav class="breadcrumb">
+    <i class="Hui-iconfont">&#xe67f;</i>
+    @ViewData["Level_1"]
+    @if (ViewData["Level_1"] != null && ViewData["Level_2"] != null)
+    {
+        <span class="c-999 en">&gt;</span>
+    }
+    @if (ViewData["Level_2"] != null)
+    {
+        <span class="c-666"> @ViewData["Level_2"]</span>
+    }
+    <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新"><i class="Hui-iconfont">&#xe68f;</i></a>
+</nav>
