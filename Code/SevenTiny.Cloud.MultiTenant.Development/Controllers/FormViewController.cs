@@ -2,7 +2,6 @@
 using SevenTiny.Bantina;
 using SevenTiny.Bantina.Validation;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
-using SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract;
 using SevenTiny.Cloud.MultiTenant.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenant.Web.Models;
 using System;
@@ -13,21 +12,16 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 {
     public class FormController : WebControllerBase
     {
-        public FormController(
-            IFormViewService formService,
-            IFormViewRepository formViewRepository
-            )
+        public FormController(IFormViewService formViewService)
         {
-            _formViewService = formService;
-            _formViewRepository = formViewRepository;
+            _formViewService = formViewService;
         }
 
         readonly IFormViewService _formViewService;
-        readonly IFormViewRepository _formViewRepository;
 
         public IActionResult List()
         {
-            return View(_formViewRepository.GetListUnDeletedByMetaObjectId(CurrentMetaObjectId));
+            return View(_formViewService.GetListUnDeletedByMetaObjectId(CurrentMetaObjectId));
         }
 
         public IActionResult Add()
@@ -62,7 +56,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult Update(Guid id)
         {
-            var entity = _formViewRepository.GetById(id);
+            var entity = _formViewService.GetById(id);
             return View(ResponseModel.Success(entity));
         }
 
@@ -86,7 +80,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult LogicDelete(Guid id)
         {
-            _formViewRepository.LogicDelete(id);
+            _formViewService.LogicDelete(id);
             return JsonResultModel.Success("删除成功");
         }
 

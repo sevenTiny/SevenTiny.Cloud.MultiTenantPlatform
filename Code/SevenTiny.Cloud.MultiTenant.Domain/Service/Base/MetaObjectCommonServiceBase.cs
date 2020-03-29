@@ -3,6 +3,7 @@ using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract;
 using SevenTiny.Cloud.MultiTenant.Domain.ServiceContract;
 using System;
+using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
@@ -32,6 +33,31 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
                     return Result.Error($"名称[{obj.Name}]已存在");
             }
             return Result.Success();
+        }
+
+        public void LogicDeleteByMetaObjectId(Guid metaObjectId)
+        {
+            _metaObjectCommonRepositoryBase.LogicDeleteByMetaObjectId(metaObjectId);
+        }
+
+        public List<TEntity> GetListByMetaObjectId(Guid metaObjectId)
+        {
+            return _metaObjectCommonRepositoryBase.GetListByMetaObjectId(metaObjectId);
+        }
+
+        public List<TEntity> GetListDeletedByMetaObjectId(Guid metaObjectId)
+        {
+            return _metaObjectCommonRepositoryBase.GetListDeletedByMetaObjectId(metaObjectId);
+        }
+
+        public List<TEntity> GetListUnDeletedByMetaObjectId(Guid metaObjectId)
+        {
+            return _metaObjectCommonRepositoryBase.GetListUnDeletedByMetaObjectId(metaObjectId);
+        }
+
+        public TEntity GetByCodeOrNameWithSameMetaObjectIdAndNotSameId(Guid metaObjectId, Guid id, string code, string name)
+        {
+            return _metaObjectCommonRepositoryBase.GetByCodeOrNameWithSameMetaObjectIdAndNotSameId(metaObjectId, id, code, name);
         }
     }
 }

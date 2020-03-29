@@ -15,14 +15,14 @@
             <nav class="nav navbar-nav">
                 <ul class="cl">
                     <li><a href="/CloudApplication/Select" class="dropDown_A">应用：@applicationCode </a></li>
-                    <li class="navbar-levelone"><a href="javascript:mainFrameOpen('/Home/Welcome')">应用设置</a></li>
-                    <li class="navbar-levelone current"><a href="javascript:mainFrameOpen('/MetaObject/List')">对象管理</a></li>
+                    <li class="navbar-levelone"><a href="javascript:mainFrameOpen('/Home/Welcome?applicationId=@applicationId')">应用设置</a></li>
+                    <li class="navbar-levelone current"><a href="javascript:mainFrameOpen('/MetaObject/List?applicationId=@applicationId')">对象管理</a></li>
                 </ul>
             </nav>
             <nav id="Hui-userbar" class="nav navbar-nav navbar-userbar hidden-xs">
                 <ul class="cl">
                     <li>@ViewData["UserIdentity"] </li>
-                    <li class="dropDown dropDown_hover">    
+                    <li class="dropDown dropDown_hover">
                         <a href="#" class="dropDown_A"> @ViewData["UserName"] <i class="Hui-iconfont">&#xe6d5;</i></a>
                         <ul class="dropDown-menu menu radius box-shadow">
                             <li><a href="javascript:;" onClick="myselfinfo()">个人信息</a></li>
@@ -62,7 +62,7 @@
             <dt><i class="Hui-iconfont">&#xe681; </i> 菜单设置<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
             <dd>
                 <ul>
-                    <li><a href="javascript:frameOpen('/Menue/List')">菜单列表</a></li>
+                    <li><a href="javascript:frameOpen('/Menue/List?applicationId=@applicationId')">菜单列表</a></li>
                 </ul>
             </dd>
         </dl>
@@ -70,8 +70,8 @@
             <dt><i class="Hui-iconfont">&#xe61a; </i> 数据源<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
             <dd>
                 <ul>
-                    <li><a href="javascript:frameOpen('/DataSource/ScriptDataSourceList')">脚本数据源</a></li>
-                    <li><a href="javascript:frameOpen('/DataSource/JsonDataSourceList')">Json数据源</a></li>
+                    <li><a href="javascript:frameOpen('/DataSource/ScriptDataSourceList?applicationId=@applicationId')">脚本数据源</a></li>
+                    <li><a href="javascript:frameOpen('/DataSource/JsonDataSourceList?applicationId=@applicationId')">Json数据源</a></li>
                 </ul>
             </dd>
         </dl>
@@ -96,7 +96,7 @@
         @foreach (var item in metaObjectList)
         {
             <dl id="menu-article">
-                <dt><i class="Hui-iconfont">&#xe72d;</i> @item.Name<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+                <dt title="@item.Name"><i class="Hui-iconfont">&#xe72d;</i> @item.Name.Substring(0, item.Name.Length <= 9 ? item.Name.Length : 9)<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
                 <dd>
                     <ul>
                         <li><a href="javascript:mainFrameOpen('/MetaField/List?metaObjectId=@item.Id')"><i class="Hui-iconfont">&#xe6ec;</i> 字段</a></li>

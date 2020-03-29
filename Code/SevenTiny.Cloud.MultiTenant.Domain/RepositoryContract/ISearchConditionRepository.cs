@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract
 {
-    public interface ISearchConditionRepository : IMetaObjectCommonRepositoryBase<SearchCondition>
+    internal interface ISearchConditionRepository : IMetaObjectCommonRepositoryBase<SearchCondition>
     {
     }
 }

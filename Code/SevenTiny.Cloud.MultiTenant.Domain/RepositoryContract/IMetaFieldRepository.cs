@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract
 {
-    public interface IMetaFieldRepository : IMetaObjectCommonRepositoryBase<MetaField>
+    internal interface IMetaFieldRepository : IMetaObjectCommonRepositoryBase<MetaField>
     {
         List<MetaField> GetSystemAndCustomListUnDeleted(Guid metaObjectId);
     }

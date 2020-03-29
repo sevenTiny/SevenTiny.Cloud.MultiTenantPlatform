@@ -14,7 +14,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 
         readonly ICloudApplicationRepository _applicationRepository;
 
-        public Result Update(CloudApplication application)
+        public new Result Update(CloudApplication application)
         {
             return base.UpdateWithOutCode(application, target =>
             {

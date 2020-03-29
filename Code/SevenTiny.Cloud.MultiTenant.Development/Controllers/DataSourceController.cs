@@ -6,22 +6,19 @@ using SevenTiny.Cloud.MultiTenant.Web.Models;
 using SevenTiny.Cloud.MultiTenant.Domain.Enum;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Bantina;
-using SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract;
 using System;
 
 namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 {
     public class DataSourceController : WebControllerBase
     {
-        IDataSourceRepository _dataSourceRepository;
         IDataSourceService _dataSourceService;
         ITriggerScriptService _triggerScriptService;
 
-        public DataSourceController(IDataSourceRepository dataSourceRepository, IDataSourceService dataSourceService, ITriggerScriptService triggerScriptService)
+        public DataSourceController(IDataSourceService dataSourceService, ITriggerScriptService triggerScriptService)
         {
-            _dataSourceService = dataSourceService;
             _triggerScriptService = triggerScriptService;
-            _dataSourceRepository = dataSourceRepository;
+            _dataSourceService = dataSourceService;
         }
 
         private Result CommonAddCheck(string dataSourceType, DataSource entity)
@@ -66,7 +63,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult UpdateScriptDataSource(Guid id)
         {
-            return View(ResponseModel.Success(_dataSourceRepository.GetById(id)));
+            return View(ResponseModel.Success(_dataSourceService.GetById(id)));
         }
         public IActionResult UpdateScriptDataSourceLogic(DataSource entity)
         {
@@ -89,7 +86,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult ScriptDataSourceList()
         {
-            return View(_dataSourceRepository.GetListByApplicationIdAndDataSourceType(CurrentApplicationId, DataSourceType.Script));
+            return View(_dataSourceService.GetListByApplicationIdAndDataSourceType(CurrentApplicationId, DataSourceType.Script));
         }
         #endregion
 
@@ -138,7 +135,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult UpdateJsonDataSource(Guid id)
         {
-            return View(ResponseModel.Success(_dataSourceRepository.GetById(id)));
+            return View(ResponseModel.Success(_dataSourceService.GetById(id)));
         }
         public IActionResult UpdateJsonDataSourceLogic(DataSource entity)
         {
@@ -172,13 +169,13 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult JsonDataSourceList()
         {
-            return View(_dataSourceRepository.GetListByApplicationIdAndDataSourceType(CurrentApplicationId, DataSourceType.Json));
+            return View(_dataSourceService.GetListByApplicationIdAndDataSourceType(CurrentApplicationId, DataSourceType.Json));
         }
         #endregion
 
         public IActionResult LogicDelete(Guid id)
         {
-            _dataSourceRepository.LogicDelete(id);
+            _dataSourceService.LogicDelete(id);
             return JsonResultModel.Success("删除成功");
         }
     }

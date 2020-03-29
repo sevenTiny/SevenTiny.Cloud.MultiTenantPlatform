@@ -2,6 +2,7 @@
 using SevenTiny.Bantina;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Domain.Repository;
+using System;
 using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.ServiceContract
@@ -27,5 +28,6 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.ServiceContract
         /// <returns></returns>
         Result ValidateFormData(int formId, BsonDocument bsonElements);
         Result ValidateFormData(int formId, List<BsonDocument> bsonElements);
+        List<MetaField> GetSystemAndCustomListUnDeleted(Guid metaObjectId);
     }
 }

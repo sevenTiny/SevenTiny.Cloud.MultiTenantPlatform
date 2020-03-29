@@ -79,7 +79,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
         }
 
         /// <summary>
-        /// 当前对象编码
+        /// 这个即将移除
         /// </summary>
         protected string CurrentMetaObjectCode
         {

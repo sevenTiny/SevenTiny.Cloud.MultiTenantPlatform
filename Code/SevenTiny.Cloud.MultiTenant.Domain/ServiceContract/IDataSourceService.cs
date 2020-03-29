@@ -8,6 +8,6 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.ServiceContract
 {
     public interface IDataSourceService : ICommonServiceBase<DataSource>
     {
-        Result Update(DataSource entity);
+        List<DataSource> GetListByApplicationIdAndDataSourceType(Guid applicationId, DataSourceType dataSourceType);
     }
 }

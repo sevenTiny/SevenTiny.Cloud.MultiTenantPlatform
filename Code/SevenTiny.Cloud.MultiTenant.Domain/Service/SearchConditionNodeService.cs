@@ -389,12 +389,22 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
             }
         }
 
-        public Result Update(SearchConditionNode entity)
+        public new Result Update(SearchConditionNode entity)
         {
             return base.UpdateWithOutCode(entity, target => {
                 target.Text = entity.Text;
                 target.Visible = entity.Visible;
             });
+        }
+
+        public List<SearchConditionNode> GetListBySearchConditionId(Guid id)
+        {
+            return _searchConditionNodeRepository.GetListBySearchConditionId(id);
+        }
+
+        public List<SearchConditionNode> GetParameterTypeListBySearchConditionId(Guid id)
+        {
+            return _searchConditionNodeRepository.GetParameterTypeListBySearchConditionId(id);
         }
     }
 }

@@ -17,7 +17,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
         {
         }
 
-        public Result Update(Menue entity)
+        public new Result Update(Menue entity)
         {
             return base.UpdateWithOutCode(entity, target => {
                 target.Icon = entity.Icon;

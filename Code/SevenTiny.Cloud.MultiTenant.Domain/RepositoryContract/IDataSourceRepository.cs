@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract
 {
-    public interface IDataSourceRepository : ICommonRepositoryBase<DataSource>
+    internal interface IDataSourceRepository : ICommonRepositoryBase<DataSource>
     {
         List<DataSource> GetListByApplicationIdAndDataSourceType(Guid applicationId, DataSourceType dataSourceType);
     }

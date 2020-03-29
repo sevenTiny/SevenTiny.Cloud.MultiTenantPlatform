@@ -7,7 +7,6 @@ using SevenTiny.Bantina;
 using SevenTiny.Bantina.Validation;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Domain.Enum;
-using SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract;
 using SevenTiny.Cloud.MultiTenant.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenant.Web.Models;
 
@@ -16,17 +15,15 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
     public class TriggerScriptController : WebControllerBase
     {
         readonly ITriggerScriptService _triggerScriptService;
-        ITriggerScriptRepository _triggerScriptRepository;
 
-        public TriggerScriptController(ITriggerScriptRepository triggerScriptRepository, ITriggerScriptService triggerScriptService)
+        public TriggerScriptController(ITriggerScriptService triggerScriptService)
         {
             _triggerScriptService = triggerScriptService;
-            _triggerScriptRepository = triggerScriptRepository;
         }
 
         public IActionResult List()
         {
-            return View(_triggerScriptRepository.GetListUnDeletedByMetaObjectId(CurrentMetaObjectId));
+            return View(_triggerScriptService.GetListUnDeletedByMetaObjectId(CurrentMetaObjectId));
         }
 
         public IActionResult Add()
@@ -54,7 +51,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
                     entity.Code = $"{CurrentMetaObjectCode}.TriggerScript.{entity.Code}";
                     entity.CreateBy = CurrentUserId;
 
-                    return _triggerScriptRepository.Add(entity);
+                    return _triggerScriptService.Add(entity);
                 });
 
             if (!result.IsSuccess)
@@ -65,7 +62,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult Update(Guid id)
         {
-            var obj = _triggerScriptRepository.GetById(id);
+            var obj = _triggerScriptService.GetById(id);
             return View(ResponseModel.Success(obj));
         }
 
@@ -96,7 +93,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult LogicDelete(Guid id)
         {
-            _triggerScriptRepository.LogicDelete(id);
+            _triggerScriptService.LogicDelete(id);
             return JsonResultModel.Success("删除成功");
         }
 

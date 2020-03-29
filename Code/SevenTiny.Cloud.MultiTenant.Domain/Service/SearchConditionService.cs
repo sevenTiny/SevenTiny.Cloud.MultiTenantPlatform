@@ -19,7 +19,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
         /// 更新对象
         /// </summary>
         /// <param name="metaField"></param>
-        public Result Update(SearchCondition searchCondition)
+        public new Result Update(SearchCondition searchCondition)
         {
             return base.UpdateWithOutCode(searchCondition);
         }

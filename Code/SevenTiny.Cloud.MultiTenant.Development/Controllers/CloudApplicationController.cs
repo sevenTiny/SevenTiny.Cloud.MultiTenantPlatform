@@ -12,26 +12,24 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 {
     public class CloudApplicationController : WebControllerBase
     {
-        public CloudApplicationController(ICloudApplicationService applicationService, ICloudApplicationRepository cloudApplicationRepository, IMetaObjectRepository metaObjectRepository)
+        public CloudApplicationController(ICloudApplicationService applicationService,IMetaObjectService metaObjectService)
         {
             _applicationService = applicationService;
-            _cloudApplicationRepository = cloudApplicationRepository;
-            _metaObjectRepository = metaObjectRepository;
+            _metaObjectService = metaObjectService;
         }
 
         ICloudApplicationService _applicationService;
-        ICloudApplicationRepository _cloudApplicationRepository;
-        IMetaObjectRepository _metaObjectRepository;
+        IMetaObjectService _metaObjectService;
 
         public IActionResult Select()
         {
-            var list = _cloudApplicationRepository.GetListUnDeleted();
+            var list = _applicationService.GetListUnDeleted();
             return View(list);
         }
 
         public IActionResult List()
         {
-            var list = _cloudApplicationRepository.GetListUnDeleted();
+            var list = _applicationService.GetListUnDeleted();
             return View(list);
         }
 
@@ -66,7 +64,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult Update(Guid id)
         {
-            var application = _cloudApplicationRepository.GetById(id);
+            var application = _applicationService.GetById(id);
             return View(ResponseModel.Success(application));
         }
 
@@ -90,7 +88,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult LogicDelete(Guid id)
         {
-            _cloudApplicationRepository.LogicDelete(id);
+            _applicationService.LogicDelete(id);
             return JsonResultModel.Success("删除成功");
         }
 
@@ -104,7 +102,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
             ViewData["ApplicationCode"] = applicationCode;
             ViewData["ApplicationId"] = applicationId;
-            ViewData["MetaObjects"] = _metaObjectRepository.GetMetaObjectListUnDeletedByApplicationId(applicationId);
+            ViewData["MetaObjects"] = _metaObjectService.GetMetaObjectListUnDeletedByApplicationId(applicationId);
 
             return View();
         }

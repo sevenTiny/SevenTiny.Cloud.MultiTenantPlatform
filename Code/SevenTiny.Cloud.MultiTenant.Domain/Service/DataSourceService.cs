@@ -25,13 +25,18 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
         /// 更新对象
         /// </summary>
         /// <param name="entity"></param>
-        public Result Update(DataSource entity)
+        public new Result Update(DataSource entity)
         {
             return UpdateWithOutCode(entity, target =>
             {
                 target.Language = entity.Language;
                 target.Script = entity.Script;
             });
+        }
+
+        public List<DataSource> GetListByApplicationIdAndDataSourceType(Guid applicationId, DataSourceType dataSourceType)
+        {
+            return _sourceRepository.GetListByApplicationIdAndDataSourceType(applicationId, dataSourceType);
         }
     }
 }

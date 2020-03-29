@@ -5,6 +5,5 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.ServiceContract
 {
     public interface IMenueService : IMetaObjectCommonServiceBase<Menue>
     {
-        Result Update(Menue entity);
     }
 }

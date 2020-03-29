@@ -38,7 +38,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
         /// 更新对象
         /// </summary>
         /// <param name="source"></param>
-        public Result Update(TriggerScript source)
+        public new Result Update(TriggerScript source)
         {
             return base.UpdateWithOutCode(source, _ =>
             {
@@ -70,6 +70,11 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
         }
 
         public List<TriggerScript> GetTriggerScriptListUnDeletedByMetaObjectIdAndServiceType(Guid metaObjectId, int serviceType)
+        {
+            return _triggerScriptRepository.GetUnDeletedListByMetaObjectIdAndServiceType(metaObjectId, serviceType);
+        }
+
+        public List<TriggerScript> GetUnDeletedListByMetaObjectIdAndServiceType(Guid metaObjectId, int serviceType)
         {
             return _triggerScriptRepository.GetUnDeletedListByMetaObjectIdAndServiceType(metaObjectId, serviceType);
         }

@@ -6,6 +6,5 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.ServiceContract
 {
     public interface ISearchConditionService : IMetaObjectCommonServiceBase<SearchCondition>
     {
-        Result Update(SearchCondition searchCondition);
     }
 }

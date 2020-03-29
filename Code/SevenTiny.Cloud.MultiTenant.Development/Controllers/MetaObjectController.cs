@@ -2,7 +2,6 @@
 using SevenTiny.Bantina;
 using SevenTiny.Bantina.Validation;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
-using SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract;
 using SevenTiny.Cloud.MultiTenant.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenant.Web.Models;
 using System;
@@ -11,19 +10,16 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 {
     public class MetaObjectController : WebControllerBase
     {
-        public MetaObjectController(IMetaObjectService metaObjectService, IMetaObjectRepository metaObjectRepository)
+        public MetaObjectController(IMetaObjectService metaObjectService)
         {
             _metaObjectService = metaObjectService;
-            _metaObjectRepository = metaObjectRepository;
         }
 
         IMetaObjectService _metaObjectService;
-        IMetaObjectRepository _metaObjectRepository;
 
-        public IActionResult List()
+        public IActionResult List(Guid applicationId)
         {
-            var a = _metaObjectRepository.GetMetaObjectListUnDeletedByApplicationId(CurrentApplicationId);
-            return View(_metaObjectRepository.GetMetaObjectListUnDeletedByApplicationId(CurrentApplicationId));
+            return View(_metaObjectService.GetMetaObjectListUnDeletedByApplicationId(applicationId));
         }
 
         public IActionResult Add()
@@ -53,7 +49,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult Update(Guid id)
         {
-            var metaObject = _metaObjectRepository.GetById(id);
+            var metaObject = _metaObjectService.GetById(id);
             return View(ResponseModel.Success(metaObject));
 
         }
@@ -78,7 +74,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult LogicDelete(Guid id)
         {
-            _metaObjectRepository.LogicDelete(id);
+            _metaObjectService.LogicDelete(id);
             return JsonResultModel.Success("删除成功");
         }
     }

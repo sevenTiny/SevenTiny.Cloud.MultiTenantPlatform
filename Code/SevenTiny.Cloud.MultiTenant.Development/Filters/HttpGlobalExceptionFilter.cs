@@ -14,41 +14,19 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Filters
     /// </summary>
     public class HttpGlobalExceptionFilter : IExceptionFilter
     {
-        readonly IHostingEnvironment _env;
+        readonly IWebHostEnvironment _env;
 
-        public HttpGlobalExceptionFilter(IHostingEnvironment env)
+        public HttpGlobalExceptionFilter(IWebHostEnvironment env)
         {
             _env = env;
         }
 
         public void OnException(ExceptionContext context)
         {
-            var json = new ErrorResponse("未知错误,请重试");
-
-            if (_env.IsDevelopment()) json.DeveloperMessage = context.Exception;
-
-            //context.Result = new ApplicationErrorResult(json);
+            context.Result = new ContentResult { Content = context.Exception.Message };
             context.HttpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
             context.ExceptionHandled = true;
-        }
-
-        public class ApplicationErrorResult : ObjectResult
-        {
-            public ApplicationErrorResult(object value) : base(value)
-            {
-                StatusCode = (int)HttpStatusCode.InternalServerError;
-            }
-        }
-
-        public class ErrorResponse
-        {
-            public ErrorResponse(string msg)
-            {
-                Message = msg;
-            }
-            public string Message { get; set; }
-            public object DeveloperMessage { get; set; }
         }
     }
 }

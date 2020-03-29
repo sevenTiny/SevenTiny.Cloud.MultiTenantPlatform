@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using SevenTiny.Bantina;
 using SevenTiny.Bantina.Validation;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
-using SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract;
 using SevenTiny.Cloud.MultiTenant.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenant.Web.Models;
 using System;
@@ -13,12 +12,10 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
     public class MenueController : WebControllerBase
     {
         IMenueService _menueService;
-        IMenueRepository _menueRepository;
 
-        public MenueController(IMenueService menueService, IMenueRepository menueRepository)
+        public MenueController(IMenueService menueService)
         {
             _menueService = menueService;
-            _menueRepository = menueRepository;
         }
 
         public IActionResult Setting()
@@ -28,7 +25,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult List()
         {
-            var list = _menueRepository.GetListUnDeletedByMetaObjectId(CurrentMetaObjectId);
+            var list = _menueService.GetListUnDeletedByMetaObjectId(CurrentMetaObjectId);
             return View(list);
         }
 
@@ -62,7 +59,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult Update(Guid id)
         {
-            var application = _menueRepository.GetById(id);
+            var application = _menueService.GetById(id);
             return View(ResponseModel.Success(application));
         }
 
@@ -89,7 +86,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult LogicDelete(Guid id)
         {
-            _menueRepository.LogicDelete(id);
+            _menueService.LogicDelete(id);
             return JsonResultModel.Success("删除成功");
         }
     }

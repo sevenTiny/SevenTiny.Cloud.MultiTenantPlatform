@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract
 {
-    public interface ICloudInterfaceRepository : IMetaObjectCommonRepositoryBase<CloudInterface>
+    internal interface ICloudInterfaceRepository : IMetaObjectCommonRepositoryBase<CloudInterface>
     {
         bool CheckFormIdExist(Guid formId);
     }

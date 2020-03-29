@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SevenTiny.Bantina;
 using SevenTiny.Bantina.Validation;
+using SevenTiny.Cloud.MultiTenant.Application.ServiceContract;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
-using SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract;
 using SevenTiny.Cloud.MultiTenant.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenant.Web.Models;
 using System;
@@ -12,20 +12,18 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
     public class MetaFieldController : WebControllerBase
     {
         readonly IMetaFieldService _metaFieldService;
-        readonly IMetaFieldRepository _metaFieldRepository;
-        readonly IMetaObjectRepository _metaObjectRepository;
+        private IMetaFieldAppService _metaFieldAppService;
 
-        public MetaFieldController(IMetaFieldService metaFieldService, IMetaObjectRepository metaObjectRepository, IMetaFieldRepository metaFieldRepository)
+        public MetaFieldController(IMetaFieldService metaFieldService, IMetaFieldAppService metaFieldAppService)
         {
             _metaFieldService = metaFieldService;
-            _metaObjectRepository = metaObjectRepository;
-            _metaFieldRepository = metaFieldRepository;
+            _metaFieldAppService = metaFieldAppService;
         }
 
         public IActionResult List(Guid metaObjectId)
         {
             SetMetaObjectInfoToSession(metaObjectId);
-            return View(_metaFieldRepository.GetListUnDeletedByMetaObjectId(metaObjectId));
+            return View(_metaFieldService.GetListUnDeletedByMetaObjectId(metaObjectId));
         }
 
         public IActionResult Add()
@@ -44,7 +42,8 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
                 {
                     entity.MetaObjectId = CurrentMetaObjectId;
                     entity.CreateBy = CurrentUserId;
-                    return _metaFieldService.Add(entity);
+                    entity.ShortCode = entity.Name;
+                    return _metaFieldAppService.Add(entity, CurrentMetaObjectId);
                 });
 
             if (!result.IsSuccess)
@@ -55,7 +54,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult Update(Guid id)
         {
-            var metaObject = _metaFieldRepository.GetById(id);
+            var metaObject = _metaFieldService.GetById(id);
             return View(ResponseModel.Success(metaObject));
         }
 
@@ -79,7 +78,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult LogicDelete(Guid id)
         {
-            return _metaFieldRepository.LogicDelete(id).ToJsonResultModel();
+            return _metaFieldService.LogicDelete(id).ToJsonResultModel();
         }
     }
 }

@@ -3,6 +3,7 @@ using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract;
 using SevenTiny.Cloud.MultiTenant.Domain.ServiceContract;
 using System;
+using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
@@ -85,6 +86,81 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
             target.ModifyTime = DateTime.Now;
 
             return _commonRepositoryBase.Update(target);
+        }
+
+        public Result Delete(Guid id)
+        {
+            return _commonRepositoryBase.Delete(id);
+        }
+
+        public Result LogicDelete(Guid id)
+        {
+            return _commonRepositoryBase.LogicDelete(id);
+        }
+
+        public Result Recover(Guid id)
+        {
+            return _commonRepositoryBase.Recover(id);
+        }
+
+        public TEntity GetById(Guid id)
+        {
+            return _commonRepositoryBase.GetById(id);
+        }
+
+        public TEntity GetByCode(string code)
+        {
+            return _commonRepositoryBase.GetByCode(code);
+        }
+
+        public List<TEntity> GetListAll()
+        {
+            return _commonRepositoryBase.GetListAll();
+        }
+
+        public List<TEntity> GetListDeleted()
+        {
+            return _commonRepositoryBase.GetListDeleted();
+        }
+
+        public List<TEntity> GetListUnDeleted()
+        {
+            return _commonRepositoryBase.GetListUnDeleted();
+        }
+
+        public TEntity GetByCodeWithoutSameId(Guid id, string code)
+        {
+            return _commonRepositoryBase.GetByCodeWithoutSameId(id, code);
+        }
+
+        public Result<IList<TEntity>> BatchAdd(IList<TEntity> entities)
+        {
+            return _commonRepositoryBase.BatchAdd(entities);
+        }
+
+        public Result Update(TEntity entity)
+        {
+            return _commonRepositoryBase.Update(entity);
+        }
+
+        public Result Delete(TEntity entity)
+        {
+            return _commonRepositoryBase.Delete(entity);
+        }
+
+        public void TransactionBegin()
+        {
+            _commonRepositoryBase.TransactionBegin();
+        }
+
+        public void TransactionCommit()
+        {
+            _commonRepositoryBase.TransactionCommit();
+        }
+
+        public void TransactionRollback()
+        {
+            _commonRepositoryBase.TransactionRollback();
         }
     }
 }

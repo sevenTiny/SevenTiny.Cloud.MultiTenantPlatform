@@ -2,7 +2,6 @@
 using SevenTiny.Bantina;
 using SevenTiny.Bantina.Validation;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
-using SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract;
 using SevenTiny.Cloud.MultiTenant.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenant.Web.Models;
 using System;
@@ -14,28 +13,24 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
     public class SearchConditionController : WebControllerBase
     {
         ISearchConditionService _searchConditionService;
-        ISearchConditionRepository _searchConditionRepository;
-        ISearchConditionNodeRepository _searchConditionNodeRepository;
         ISearchConditionNodeService _searchConditionNodeService;
-        IMetaFieldRepository _metaFieldRepository;
+        IMetaFieldService _metaFieldService;
 
-        public SearchConditionController(IMetaFieldRepository metaFieldRepository, ISearchConditionNodeService searchConditionNodeService, ISearchConditionNodeRepository searchConditionNodeRepository, ISearchConditionRepository searchConditionRepository, ISearchConditionService searchConditionService, IMetaFieldService _metaFieldService, ISearchConditionNodeService _conditionAggregationService)
+        public SearchConditionController(IMetaFieldService metaFieldService, ISearchConditionNodeService searchConditionNodeService, ISearchConditionService searchConditionService, ISearchConditionNodeService _conditionAggregationService)
         {
+            _metaFieldService = metaFieldService;
             _searchConditionService = searchConditionService;
-            _searchConditionRepository = searchConditionRepository;
-            _searchConditionNodeRepository = searchConditionNodeRepository;
             _searchConditionNodeService = searchConditionNodeService;
-            _metaFieldRepository = metaFieldRepository;
         }
 
         public IActionResult List()
         {
-            return View(_searchConditionRepository.GetListUnDeletedByMetaObjectId(CurrentMetaObjectId));
+            return View(_searchConditionService.GetListUnDeletedByMetaObjectId(CurrentMetaObjectId));
         }
 
         public IActionResult SearchItemList(Guid id)
         {
-            return View(_searchConditionNodeRepository.GetListBySearchConditionId(id));
+            return View(_searchConditionNodeService.GetListBySearchConditionId(id));
         }
 
         public IActionResult Add()
@@ -56,7 +51,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
                     //组合编码
                     entity.Code = $"{CurrentMetaObjectCode}.SearchCondition.{entity.Code}";
                     entity.CreateBy = CurrentUserId;
-                    return _searchConditionRepository.Add(entity);
+                    return _searchConditionService.Add(entity);
                 });
 
             if (!result.IsSuccess)
@@ -67,7 +62,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult Update(Guid id)
         {
-            var entity = _searchConditionRepository.GetById(id);
+            var entity = _searchConditionService.GetById(id);
             return View(ResponseModel.Success(entity));
         }
 
@@ -91,7 +86,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult SearchItemUpdate(Guid id)
         {
-            var entity = _searchConditionNodeRepository.GetById(id);
+            var entity = _searchConditionNodeService.GetById(id);
             return View(ResponseModel.Success(entity));
         }
 
@@ -119,13 +114,13 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult Delete(Guid id)
         {
-            return _searchConditionRepository.Delete(id).ToJsonResultModel();
+            return _searchConditionService.Delete(id).ToJsonResultModel();
         }
 
         public IActionResult AggregationCondition(Guid id)
         {
-            ViewData["AggregationConditions"] = _searchConditionNodeRepository.GetListBySearchConditionId(id);
-            ViewData["MetaFields"] = _metaFieldRepository.GetListUnDeletedByMetaObjectId(CurrentMetaObjectId);
+            ViewData["AggregationConditions"] = _searchConditionNodeService.GetListBySearchConditionId(id);
+            ViewData["MetaFields"] = _metaFieldService.GetListUnDeletedByMetaObjectId(CurrentMetaObjectId);
             ViewData["searchConditionId"] = id;
             return View();
         }
@@ -163,7 +158,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
         [HttpGet]
         public IActionResult AggregateConditionTreeView(Guid id)
         {
-            List<SearchConditionNode> conditions = _searchConditionNodeRepository.GetListBySearchConditionId(id);
+            List<SearchConditionNode> conditions = _searchConditionNodeService.GetListBySearchConditionId(id);
 
             SearchConditionNode condition = conditions?.FirstOrDefault(t => t.ParentId == Guid.Empty);
             if (condition != null)
