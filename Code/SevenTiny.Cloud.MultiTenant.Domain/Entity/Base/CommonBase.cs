@@ -8,6 +8,8 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Entity
     /// </summary>
     public abstract class CommonBase
     {
+        [Column]
+        public int TenantId { get; set; }
         [Key]
         [Column]
         public Guid Id { get; set; }

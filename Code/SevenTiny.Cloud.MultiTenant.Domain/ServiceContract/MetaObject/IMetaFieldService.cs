@@ -63,5 +63,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.ServiceContract
         /// <param name="sortFields"></param>
         /// <returns></returns>
         SortDefinition<BsonDocument> GetSortDefinitionBySortFields(QueryPiplineContext queryPiplineContext, SortField[] sortFields);
+
+        List<MetaField> GetMetaFieldsIncludeSystemFields();
     }
 }

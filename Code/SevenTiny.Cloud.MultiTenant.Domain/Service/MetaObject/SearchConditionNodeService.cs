@@ -16,7 +16,7 @@ using System.Linq.Expressions;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
-    internal class SearchConditionNodeService : CommonServiceBase<SearchConditionNode>, ISearchConditionNodeService
+    internal class SearchConditionNodeService : MetaObjectCommonServiceBase<SearchConditionNode>, ISearchConditionNodeService
     {
         public SearchConditionNodeService(IMetaFieldService metaFieldService, IMetaFieldRepository metaFieldRepository, ISearchConditionNodeRepository searchConditionNodeRepository) : base(searchConditionNodeRepository)
         {

@@ -10,7 +10,7 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Entity
     /// </summary>
     [Table]
     [TableCaching]
-    public class SearchConditionNode : CommonBase
+    public class SearchConditionNode : MetaObjectCommonBase
     {
         [Column]
         public string Icon { get; set; }

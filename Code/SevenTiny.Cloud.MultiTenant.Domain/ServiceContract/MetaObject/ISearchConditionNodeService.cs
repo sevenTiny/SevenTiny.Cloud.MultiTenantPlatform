@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.ServiceContract
 {
-    public interface ISearchConditionNodeService : ICommonServiceBase<SearchConditionNode>
+    public interface ISearchConditionNodeService : IMetaObjectCommonServiceBase<SearchConditionNode>
     {
         Result AggregateCondition(Guid interfaceConditionId, Guid brotherNodeId, int conditionJointTypeId, Guid fieldId, int conditionTypeId, string conditionValue, int conditionValueTypeId);
 
