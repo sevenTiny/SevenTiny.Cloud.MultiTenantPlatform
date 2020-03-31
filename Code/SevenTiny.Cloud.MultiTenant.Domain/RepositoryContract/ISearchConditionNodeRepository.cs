@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.RepositoryContract
 {
-    internal interface ISearchConditionNodeRepository : ICommonRepositoryBase<SearchConditionNode>
+    internal interface ISearchConditionNodeRepository : IMetaObjectCommonRepositoryBase<SearchConditionNode>
     {
         List<SearchConditionNode> GetListBySearchConditionId(Guid id);
         List<SearchConditionNode> GetParameterTypeListBySearchConditionId(Guid id);

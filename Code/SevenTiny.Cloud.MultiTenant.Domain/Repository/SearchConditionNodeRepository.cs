@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Repository
 {
-    internal class SearchConditionNodeRepository : CommonRepositoryBase<SearchConditionNode>, ISearchConditionNodeRepository
+    internal class SearchConditionNodeRepository : MetaObjectCommonRepositoryBase<SearchConditionNode>, ISearchConditionNodeRepository
     {
         public SearchConditionNodeRepository(MultiTenantPlatformDbContext multiTenantPlatformDbContext) : base(multiTenantPlatformDbContext)
         {
