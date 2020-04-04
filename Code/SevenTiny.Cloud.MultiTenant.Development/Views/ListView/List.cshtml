@@ -5,11 +5,14 @@
     Layout = $"~/Views/Shared/_LayoutHeaderStyle.cshtml";
     List<ListView> entities = Model as List<ListView> ?? new List<ListView>();
 }
-
+@{
+    ViewData["Level_2"] = "视图列表管理";
+}
+@await Html.PartialAsync("~/Views/Shared/_PartialNavigation.cshtml")
 <article class="cl pd-20">
     <div class="cl pd-5 bg-1 bk-gray">
         <span class="l">
-            <a class="btn btn-primary radius" href="/ListView/Add"><i class="Hui-iconfont">&#xe600;</i> 新增对象列表</a>
+            <a class="btn btn-primary radius" href="/ListView/Add"><i class="Hui-iconfont">&#xe600;</i> 新增列表</a>
         </span>
         <span class="r">共有数据：<strong>@entities?.Count</strong> 条</span>
     </div>

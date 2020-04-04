@@ -6,7 +6,10 @@
     Layout = $"~/Views/Shared/_LayoutHeaderStyle.cshtml";
     List<CloudInterface> entities = (Model as List<CloudInterface>) ?? new List<CloudInterface>();
 }
-
+@{
+    ViewData["Level_2"] = "接口管理";
+}
+@await Html.PartialAsync("~/Views/Shared/_PartialNavigation.cshtml")
 <article class="cl pd-20">
     <div class="cl pd-5 bg-1 bk-gray">
         <span class="l">
@@ -60,7 +63,7 @@
 <script type="text/javascript">
     $('.table-sort').dataTable({
         "aLengthMenu": [[50, 100, -1], ["50", "100", "All"]],//二组数组，第一组数量，
-        "aaSorting": [[8, "asc"],[7, "asc"]],//默认第几个排序
+        "aaSorting": [[8, "asc"], [7, "asc"]],//默认第几个排序
         "bStateSave": true,//状态保存
         "aoColumnDefs": [
             //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示

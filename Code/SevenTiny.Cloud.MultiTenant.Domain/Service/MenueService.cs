@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 {
-    internal class MenueService : MetaObjectCommonServiceBase<Menue>, IMenueService
+    internal class MenueService : CommonServiceBase<Menue>, IMenueService
     {
         public MenueService(IMenueRepository menueRepository) : base(menueRepository)
         {

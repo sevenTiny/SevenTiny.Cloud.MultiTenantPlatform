@@ -5,6 +5,7 @@ using SevenTiny.Cloud.MultiTenant.Domain.Enum;
 using SevenTiny.Cloud.MultiTenant.Domain.ServiceContract;
 using SevenTiny.Cloud.MultiTenant.Infrastructure.Configs;
 using SevenTiny.Cloud.MultiTenant.Web.Models;
+using System;
 
 namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 {
@@ -23,8 +24,9 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
             _cloudInterfaceService = cloudInterfaceService;
         }
 
-        public IActionResult List()
+        public IActionResult List(Guid metaObjectId)
         {
+            SetMetaObjectInfoToSession(metaObjectId);
             return View(_cloudInterfaceService.GetListUnDeletedByMetaObjectId(CurrentMetaObjectId));
         }
 

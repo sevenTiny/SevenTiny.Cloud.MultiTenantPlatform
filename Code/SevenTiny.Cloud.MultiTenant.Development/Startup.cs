@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using SevenTiny.Cloud.MultiTenant.Bootstrapper;
 using SevenTiny.Cloud.MultiTenant.Development.Filters;
 using SevenTiny.Cloud.MultiTenant.Domain;
 using SevenTiny.Cloud.MultiTenant.Infrastructure.Configs;

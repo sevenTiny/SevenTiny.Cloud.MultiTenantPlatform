@@ -6,7 +6,10 @@
     Layout = $"~/Views/Shared/_LayoutHeaderStyle.cshtml";
     List<IndexView> entities = (Model as List<IndexView>) ?? new List<IndexView>();
 }
-
+@{
+    ViewData["Level_2"] = "视图管理";
+}
+@await Html.PartialAsync("~/Views/Shared/_PartialNavigation.cshtml")
 <article class="cl pd-20">
     <div class="cl pd-5 bg-1 bk-gray">
         <span class="l">

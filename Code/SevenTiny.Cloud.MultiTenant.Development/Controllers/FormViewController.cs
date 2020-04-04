@@ -10,17 +10,18 @@ using System.Linq;
 
 namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 {
-    public class FormController : WebControllerBase
+    public class FormViewController : WebControllerBase
     {
-        public FormController(IFormViewService formViewService)
+        public FormViewController(IFormViewService formViewService)
         {
             _formViewService = formViewService;
         }
 
         readonly IFormViewService _formViewService;
 
-        public IActionResult List()
+        public IActionResult List(Guid metaObjectId)
         {
+            SetMetaObjectInfoToSession(metaObjectId);
             return View(_formViewService.GetListUnDeletedByMetaObjectId(CurrentMetaObjectId));
         }
 

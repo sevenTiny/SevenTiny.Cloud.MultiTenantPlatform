@@ -7,7 +7,7 @@ using System.Text;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.Repository
 {
-    internal class MenueRepository : MetaObjectCommonRepositoryBase<Menue>, IMenueRepository
+    internal class MenueRepository : CommonRepositoryBase<Menue>, IMenueRepository
     {
         public MenueRepository(MultiTenantPlatformDbContext multiTenantPlatformDbContext) : base(multiTenantPlatformDbContext)
         {

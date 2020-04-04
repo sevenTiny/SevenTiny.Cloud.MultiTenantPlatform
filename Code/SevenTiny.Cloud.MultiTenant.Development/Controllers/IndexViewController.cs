@@ -23,8 +23,9 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
             this._searchConditionService = searchConditionService;
         }
 
-        public IActionResult List()
+        public IActionResult List(Guid metaObjectId)
         {
+            SetMetaObjectInfoToSession(metaObjectId);
             return View(_indexViewService.GetListUnDeletedByMetaObjectId(CurrentMetaObjectId));
         }
 

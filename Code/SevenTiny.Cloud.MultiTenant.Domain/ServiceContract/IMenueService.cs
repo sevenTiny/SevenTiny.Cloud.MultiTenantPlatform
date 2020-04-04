@@ -3,7 +3,7 @@ using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 
 namespace SevenTiny.Cloud.MultiTenant.Domain.ServiceContract
 {
-    public interface IMenueService : IMetaObjectCommonServiceBase<Menue>
+    public interface IMenueService : ICommonServiceBase<Menue>
     {
     }
 }

@@ -5,7 +5,10 @@
     Layout = $"~/Views/Shared/_LayoutHeaderStyle.cshtml";
     List<FormView> entities = Model as List<FormView> ?? new List<FormView>();
 }
-
+@{
+    ViewData["Level_2"] = "表单管理";
+}
+@await Html.PartialAsync("~/Views/Shared/_PartialNavigation.cshtml")
 <article class="cl pd-20">
     <div class="cl pd-5 bg-1 bk-gray">
         <span class="l">

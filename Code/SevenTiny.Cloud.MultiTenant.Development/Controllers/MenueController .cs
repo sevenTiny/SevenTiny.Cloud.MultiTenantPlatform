@@ -25,7 +25,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         public IActionResult List()
         {
-            var list = _menueService.GetListUnDeletedByMetaObjectId(CurrentMetaObjectId);
+            var list = _menueService.GetListUnDeleted();
             return View(list);
         }
 
