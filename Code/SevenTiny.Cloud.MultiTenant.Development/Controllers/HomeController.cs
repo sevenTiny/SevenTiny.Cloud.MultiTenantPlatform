@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SevenTiny.Cloud.MultiTenant.Infrastructure.Logging;
 using SevenTiny.Cloud.MultiTenant.Web.Models;
+using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
 namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
