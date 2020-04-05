@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SevenTiny.Bantina;
-using SevenTiny.Cloud.MultiTenant.Infrastructure.ValueObject;
+using SevenTiny.Cloud.MultiTenant.Infrastructure.Models;
 
 namespace SevenTiny.Cloud.MultiTenant.Web.Models
 {
-    public class JsonResultModel
+    internal class JsonResultModel
     {
-        public static JsonResult Success(string msg, object data = null)
+        public static JsonResult Success(string message, object data = null)
         {
-            return new JsonResult(new { success = true, msg = msg, data = data });
+            return new JsonResult(new Infrastructure.Models.ResponseModel { Success = true, Message = message, Data = data });
         }
 
         public static JsonResult Error(string msg)
@@ -17,29 +17,15 @@ namespace SevenTiny.Cloud.MultiTenant.Web.Models
         }
     }
 
-    public static class JsonResultModelExtension
+    internal static class JsonResultModelExtension
     {
         public static JsonResult ToJsonResultModel(this Result result)
         {
-            if (result.IsSuccess)
-            {
-                return JsonResultModel.Success(result.Message);
-            }
-            else
-            {
-                return JsonResultModel.Error(result.Message);
-            }
+            return new JsonResult(result.ToResultModel());
         }
         public static JsonResult ToJsonResultModel<T>(this Result<T> result)
         {
-            if (result.IsSuccess)
-            {
-                return JsonResultModel.Success(result.Message, result.Data);
-            }
-            else
-            {
-                return JsonResultModel.Error(result.Message);
-            }
+            return new JsonResult(result.ToResultModel());
         }
     }
 }

@@ -27,11 +27,20 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
         ITriggerScriptRepository _triggerScriptRepository;
         IDataSourceRepository _dataSourceRepository;
 
-        public new Result Add(TriggerScript triggerScript)
+        public new Result Add(TriggerScript entity)
         {
-            triggerScript.ScriptType = (int)ScriptType.MetaObject;
-            triggerScript.ServiceMethod = (int)ServiceMethod.Post;
-            return base.Add(triggerScript);
+            return Result.Success()
+               .ContinueEnsureArgumentNotNullOrEmpty(entity, nameof(entity))
+               .ContinueEnsureArgumentNotNullOrEmpty(entity.MetaObjectId, nameof(entity.MetaObjectId))
+               //拼接编码
+               .Continue(_ =>
+               {
+                   entity.ScriptType = (int)ScriptType.MetaObject;
+                   entity.ServiceMethod = (int)ServiceMethod.Post;
+                   entity.Code = string.Concat(_triggerScriptRepository.GetMetaObjectCodeById(entity.MetaObjectId), ".TriggerScript.", entity.Code);
+                   return _;
+               })
+               .Continue(_ => base.Add(entity));
         }
 
         /// <summary>

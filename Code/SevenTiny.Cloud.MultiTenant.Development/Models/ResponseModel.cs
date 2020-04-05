@@ -1,11 +1,10 @@
 ﻿using SevenTiny.Bantina;
-using SevenTiny.Cloud.MultiTenant.Infrastructure.ValueObject;
 
 namespace SevenTiny.Cloud.MultiTenant.Web.Models
 {
     public class ResponseModel
     {
-        public bool IsSuccess { get; set; } = true;
+        public bool IsSuccess { get; set; }
         public string Message { get; set; }
         public object Data { get; set; }
 
@@ -25,7 +24,7 @@ namespace SevenTiny.Cloud.MultiTenant.Web.Models
             => new ResponseModel { IsSuccess = false, Message = message, Data = data };
     }
 
-    public static class ResponseModelExtension
+    internal static class ResponseModelExtension
     {
         public static ResponseModel ToResponseModel(this Result result, object data = null)
             =>

@@ -7,13 +7,13 @@
     ListView fieldList = result.Data as ListView ?? new ListView();
 }
 @{
-    ViewData["Level_1"] = "对象设置";
+    ViewData["Level_1"] = "表单管理";
     ViewData["Level_2"] = "新增表单";
 }
 @await Html.PartialAsync("~/Views/Shared/_PartialNavigation.cshtml")
 
 <article class="page-container">
-    <form class="form form-horizontal validate" id="form-article-add" method="post" action="/Form/AddLogic">
+    <form class="form form-horizontal validate" id="form-article-add" method="post" action="/FormView/AddLogic">
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>名称：</label>
             <div class="formControls col-xs-8 col-sm-9">

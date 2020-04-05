@@ -17,6 +17,19 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
         }
 
         IFormViewRepository _formRepository;
-       
+
+        public new Result Add(FormView entity)
+        {
+            return Result.Success()
+               .ContinueEnsureArgumentNotNullOrEmpty(entity, nameof(entity))
+               .ContinueEnsureArgumentNotNullOrEmpty(entity.MetaObjectId, nameof(entity.MetaObjectId))
+               //拼接编码
+               .Continue(_ =>
+               {
+                   entity.Code = string.Concat(_formRepository.GetMetaObjectCodeById(entity.MetaObjectId), ".Form.", entity.Code);
+                   return _;
+               })
+               .Continue(_ => base.Add(entity));
+        }
     }
 }

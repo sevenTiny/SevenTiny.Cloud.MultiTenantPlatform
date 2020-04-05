@@ -22,6 +22,20 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
 
         IMetaFieldRepository _metaFieldRepository;
 
+        public new Result Add(MetaField entity)
+        {
+            return Result.Success()
+               .ContinueEnsureArgumentNotNullOrEmpty(entity, nameof(entity))
+               .ContinueEnsureArgumentNotNullOrEmpty(entity.MetaObjectId, nameof(entity.MetaObjectId))
+               //拼接编码
+               .Continue(_ =>
+               {
+                   entity.Code = string.Concat(_metaFieldRepository.GetMetaObjectCodeById(entity.MetaObjectId), ".", entity.Code);
+                   return _;
+               })
+               .Continue(_ => base.Add(entity));
+        }
+
         public Dictionary<string, MetaField> GetMetaFieldDicUnDeleted(Guid metaObjectId)
         {
             var metaFields = _metaFieldRepository.GetSystemAndCustomListUnDeleted(metaObjectId);

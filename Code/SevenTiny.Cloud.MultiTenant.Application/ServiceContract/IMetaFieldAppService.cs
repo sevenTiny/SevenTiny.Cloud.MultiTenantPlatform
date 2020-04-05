@@ -6,6 +6,5 @@ namespace SevenTiny.Cloud.MultiTenant.Application.ServiceContract
 {
     public interface IMetaFieldAppService
     {
-        Result Add(MetaField entity, Guid metaObjectId);
     }
 }

@@ -13,5 +13,9 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.ServiceContract
         List<TEntity> GetListDeletedByMetaObjectId(Guid metaObjectId);
         List<TEntity> GetListUnDeletedByMetaObjectId(Guid metaObjectId);
         TEntity GetByCodeOrNameWithSameMetaObjectIdAndNotSameId(Guid metaObjectId, Guid id, string code, string name);
+
+        MetaObject GetMetaObjectById(Guid metaObjectId);
+        string GetMetaObjectCodeById(Guid metaObjectId);
+        string GetMetaObjectNameById(Guid metaObjectId);
     }
 }

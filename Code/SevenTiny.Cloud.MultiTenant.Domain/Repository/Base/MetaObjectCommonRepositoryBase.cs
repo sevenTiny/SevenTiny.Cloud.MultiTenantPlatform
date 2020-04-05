@@ -1,4 +1,5 @@
 ﻿using SevenTiny.Bantina;
+using SevenTiny.Bantina.Validation;
 using SevenTiny.Cloud.MultiTenant.Domain.DbContext;
 using SevenTiny.Cloud.MultiTenant.Domain.Entity;
 using SevenTiny.Cloud.MultiTenant.Domain.Enum;
@@ -41,5 +42,22 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Repository
         /// <returns></returns>
         public TEntity GetByCodeOrNameWithSameMetaObjectIdAndNotSameId(Guid metaObjectId, Guid id, string code, string name)
             => _dbContext.Queryable<TEntity>().Where(t => t.MetaObjectId == metaObjectId && t.Id != id && (t.Code.Equals(code) || t.Name.Equals(name))).FirstOrDefault();
+
+        public MetaObject GetMetaObjectById(Guid metaObjectId)
+        {
+            var metaObject = _dbContext.Queryable<MetaObject>().Where(t => t.Id == metaObjectId).FirstOrDefault();
+            Ensure.ArgumentNotNullOrEmpty(metaObject, nameof(metaObject), $"未找到 metaobjectId[{metaObjectId}] 对应的数据");
+            return metaObject;
+        }
+
+        public string GetMetaObjectNameById(Guid metaObjectId)
+        {
+            return GetMetaObjectById(metaObjectId).Name;
+        }
+
+        public string GetMetaObjectCodeById(Guid metaObjectId)
+        {
+            return GetMetaObjectById(metaObjectId).Code;
+        }
     }
 }

@@ -26,6 +26,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
 
         protected void SetMetaObjectInfoToSession(Guid metaObjectId)
         {
+            //HttpContext.Response.Cookies.Append("MetaObjectId", metaObjectId.ToString());
             HttpContext.Session.SetString("MetaObjectId", metaObjectId.ToString());
         }
 

@@ -17,12 +17,12 @@ namespace SevenTiny.Cloud.MultiTenant.Bootstrapper
 
         public static IServiceProvider ServiceProviderInstance { get; set; }
 
-        public static IInterface GetService<IInterface>()
+        public static TInterface GetService<TInterface>()
         {
             if (ServiceProviderInstance == null)
                 throw new ArgumentNullException($"ServiceProviderInstance is null,please set value in bootstrap");
 
-            return ServiceProviderInstance.GetServices<IInterface>().First();
+            return ServiceProviderInstance.GetServices<TInterface>().First();
         }
 
         public static void InjectDependency(IServiceCollection services)

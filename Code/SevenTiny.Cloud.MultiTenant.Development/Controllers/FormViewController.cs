@@ -25,6 +25,11 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
             return View(_formViewService.GetListUnDeletedByMetaObjectId(CurrentMetaObjectId));
         }
 
+        public IActionResult RedirectToList()
+        {
+            return Redirect("/FormView/List?metaObjectId=" + CurrentMetaObjectId);
+        }
+
         public IActionResult Add()
         {
             return View();
@@ -40,19 +45,15 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
                .Continue(_ =>
                {
                    entity.MetaObjectId = CurrentMetaObjectId;
-                   //组合编码
-                   entity.Code = $"{CurrentMetaObjectCode}.FormView.{entity.Code}";
                    entity.CreateBy = CurrentUserId;
 
                    return _formViewService.Add(entity);
                });
 
-
             if (!result.IsSuccess)
                 return View("Add", result.ToResponseModel(entity));
 
-
-            return RedirectToAction("List");
+            return RedirectToList();
         }
 
         public IActionResult Update(Guid id)
@@ -76,7 +77,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
             if (!result.IsSuccess)
                 return View("Update", result.ToResponseModel(entity));
 
-            return RedirectToAction("List");
+            return RedirectToList();
         }
 
         public IActionResult LogicDelete(Guid id)

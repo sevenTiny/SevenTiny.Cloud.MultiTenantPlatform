@@ -59,5 +59,20 @@ namespace SevenTiny.Cloud.MultiTenant.Domain.Service
         {
             return _metaObjectCommonRepositoryBase.GetByCodeOrNameWithSameMetaObjectIdAndNotSameId(metaObjectId, id, code, name);
         }
+
+        public MetaObject GetMetaObjectById(Guid metaObjectId)
+        {
+            return _metaObjectCommonRepositoryBase.GetMetaObjectById(metaObjectId);
+        }
+
+        public string GetMetaObjectNameById(Guid metaObjectId)
+        {
+            return _metaObjectCommonRepositoryBase.GetMetaObjectNameById(metaObjectId);
+        }
+
+        public string GetMetaObjectCodeById(Guid metaObjectId)
+        {
+            return _metaObjectCommonRepositoryBase.GetMetaObjectCodeById(metaObjectId);
+        }
     }
 }

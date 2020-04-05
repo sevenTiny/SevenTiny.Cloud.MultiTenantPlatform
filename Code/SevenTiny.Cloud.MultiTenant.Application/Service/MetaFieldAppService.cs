@@ -16,22 +16,5 @@ namespace SevenTiny.Cloud.MultiTenant.Application.Service
 
         private IMetaObjectService _metaObjectService;
         private IMetaFieldService _metaFieldService;
-
-        public Result Add(MetaField entity, Guid metaObjectId)
-        {
-            return Result.Success()
-                .ContinueEnsureArgumentNotNullOrEmpty(entity, nameof(entity))
-                //拼接编码
-                .Continue(_ =>
-                {
-                    var metaObject = _metaObjectService.GetById(metaObjectId);
-                    if (metaObject == null)
-                        return Result.Error($"[{metaObjectId}] 对应的对象信息未找到");
-
-                    entity.Code = string.Concat(metaObject.Code, ".", entity.Code);
-                    return _;
-                })
-                .Continue(_ => _metaFieldService.Add(entity));
-        }
     }
 }

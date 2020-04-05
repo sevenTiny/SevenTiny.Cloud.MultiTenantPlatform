@@ -43,7 +43,7 @@ namespace SevenTiny.Cloud.MultiTenant.Development.Controllers
                     entity.MetaObjectId = CurrentMetaObjectId;
                     entity.CreateBy = CurrentUserId;
                     entity.ShortCode = entity.Name;
-                    return _metaFieldAppService.Add(entity, CurrentMetaObjectId);
+                    return _metaFieldService.Add(entity);
                 });
 
             if (!result.IsSuccess)
